@@ -1,0 +1,15 @@
+<table class="table" >
+  <thead>
+    <tr>
+      <th ng-repeat = "heading in tableHeading" ng-click="sort($index)">{{heading | humanize}}
+        <i ng-if="sortFlag[$index]==1" class="fa fa-angle-up"></i>
+        <i ng-if="sortFlag[$index]==-1" class="fa fa-angle-down"></i>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <div >
+      <tr table-row ng-repeat = "row in tableData" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" selectable = "isSelectable"></tr>
+    </div>
+  </tbody>
+</table>

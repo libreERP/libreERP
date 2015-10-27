@@ -1,0 +1,41 @@
+<div class="row container-fluid">
+  <div class="input-group">
+    <input ng-show="searchShow" type="text" class="form-control" placeholder="Search" ng-model = "searchText">
+    <div class="input-group-btn">
+      <a ng-repeat = "view in views" ng-if="views.length > 1" class='btn btn-default ' ng-click = "changeView($index)"><i class="fa {{view.icon}}"></i></a>
+      <!-- <a class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="#">Use in report</a></li>
+        <li><a href="#">Export</a></li>
+        <li><a href="#">Print</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#">Send via email</a></li>
+      </ul> -->
+    </div>
+  </div>
+</div>
+<nav>
+  <ul class="pagination pull-right">
+    <li ng-repeat="num in itemsNumPerView" ng-class="{'active' : itemsNumPerView[$index] == itemsPerView}" ng-click="changeNumView(itemsNumPerView[$index])"><a href="">{{num}}</a></li>
+    <li ng-if="!searchShow" ng-click="fetchData()"><a href=""><i class="fa fa-refresh"></i></a></li>
+  </ul>
+  <ul class="pagination pull-right" style="margin-right: 10px;">
+    <li ng-repeat = "option in multiselectOptions" ng-click = "multiSelectAction(option.text)"><a href="" style="color: #6f6f6f;"><i class = "{{option.icon}}">  {{option.text | humanize}}</i></a></li>
+  </ul>
+  <ul class="pagination">
+    <li ng-click="loadPrevSetPages()">
+      <a href="" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li ng-repeat="page in pageList" ng-class="{'active':pageList[$index]==pageNo}" ng-click="changePage(pageList[$index])"><a href="">{{page}}</a></li>
+    <li ng-click="loadNextSetPages()">
+      <a href="" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+<div class="row container-fluid">
+  <div ng-include = "views[viewMode].template"></div>
+</div>

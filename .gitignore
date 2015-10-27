@@ -1,0 +1,4 @@
+*.html~
+!spec/*.html~
+*.pyc
+!spec/*.pyc
