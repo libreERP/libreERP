@@ -1,0 +1,30 @@
+{% load staticfiles%}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Index - Employee</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" charset="utf-8">
+    <style>
+      .asteriskField {
+        display: none;
+      }
+      /*body {
+        background: url({% static 'images/background4.jpg' %}) no-repeat center center fixed;
+      }*/
+    </style>
+  </head>
+  <body>
+    <div class="col-md-4 col-md-offset-4">
+      {% crispy form %}
+    </div>
+
+    {% include 'footer.html' %}
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
