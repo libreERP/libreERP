@@ -1,0 +1,31 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/angular-aside.css' %}" charset="utf-8">
+    {% block specific_head %}{% endblock %}
+    {% block specific_css %}{% endblock %}
+  </head>
+  <body>
+
+    {% block header %}{% endblock %}
+
+    {% block content %}{% endblock %}
+
+    {% block footer %}{% endblock %}
+
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/angular.min.js' %}"></script>
+    <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'js/ui-bootstrap-tpls-0.13.4.min.js' %}"></script>
+    <script src="{% static 'js/angular-aside.js' %}"></script>
+    <script src="{% static 'js/autobahn.min.js' %}"></script>
+
+    {% block specific_js %}{% endblock %}
+  </body>
+</html>
