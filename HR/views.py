@@ -9,29 +9,20 @@ from django.template import RequestContext
 from .forms import loginForm
 
 def Login(request):
-
     if request.user.is_authenticated():
         return redirect(reverse('HR:home'))
-    form = loginForm(request.POST or None)
-    context = {
-        "form":form,
-    }
-    if form.is_valid():
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username = username , password = password)
-        if user is not None:
-            login(request , user)
-            # print "Success"
-            if request.GET:
-                return redirect(request.GET['next'])
-            else:
-                # print "Success but nowhere to redirect"
-                return redirect(reverse('HR:home'))
-        else:
-            print "Wrong credentials"
-
-    return render(request , 'login.html', context)
+    if request.method == 'POST':
+    	username = request.POST['username']
+    	password = request.POST['password']
+    	user = authenticate(username = username , password = password)
+        print user
+    	if user is not None:
+    	    login(request , user)
+    	    if request.GET:
+    		    return redirect(request.GET['next'])
+    	    else:
+    		    return redirect('index')
+    return render(request , 'login.html' , {})
 
 def Logout(request):
     logout(request)
