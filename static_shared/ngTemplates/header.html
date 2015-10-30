@@ -1,0 +1,74 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navBar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        Brand <i class="fa fa-angle-right"></i>
+      </a>
+      <div class="navbar-brand" >HR</div>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navBar">
+
+  		<ul class="nav navbar-nav">
+  			<li ng-class="{active: $state.includes('home')}"><a ui-sref="home"><i class="fa fa-home"></i> Home</a></li>
+  			<li ng-class="{active: $state.includes('admin')}"><a ui-sref="admin"><i class="fa fa-user"></i> Admin</a></li>
+  		</ul>
+
+      <form class="navbar-form navbar-right" role="search">
+        <input type="text" class="form-control col-md-2" placeholder="">
+      </form>
+  		<ul class="nav navbar-nav navbar-right">
+  			<li class="dropdown">
+  			  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Name}}  <span class="glyphicon glyphicon-chevron-down"></span></a>
+  			  <ul class="dropdown-menu">
+    				<li><img class="img-responsive" width="200px" alt="profile-pic" src="" style="top:-5px; position:relative; width:200px"></li>
+    				<li><div style="text-align:center; -moz-user-select: none;"> </br><small>(HR Associate)</small></div></li>
+    				<li role="separator" class="divider"></li>
+    				<li><a href=""><i class="fa fa-gears"></i> Settings</a></li>
+            <li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+    				<li role="separator" class="divider"></li>
+    				<li><a href="#"><i class="fa fa-question"></i> Help</a></li>
+    				<li><a href="#"> <i class="fa fa-info"></i> About</a></li>
+  			  </ul>
+  			</li>
+  		</ul>
+      <ul class = "nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" style="width:55px" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope-o fa-lg"></i><span class="label label-success" style="position: absolute;top: 5px;">0</span></a>
+          <ul class="dropdown-menu navDropDownList">
+            <li>
+              <!-- inner menu: contains the actual data -->
+              <ul class="nav" style="position:relative; top:-5px;">
+                <div ng-repeat="message in ims">
+                <!-- <message-strip data = "message" open-chat="openChatWindow(message.originator)"></message-strip> -->
+                </div>
+              </ul>
+            </li>
+            <a href="#"><i class = "fa fa-external-link"></i> See All Messages</a>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" style="width:55px" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-flag-o fa-lg"></i><span class="label label-warning" style="position: absolute;top: 5px;">0</span></a>
+          <ul class="dropdown-menu navDropDownList">
+            <li>
+              <!-- inner menu: contains the actual data -->
+              <ul class="nav" style="position:relative; top:-5px;">
+                <div ng-repeat="notice in notifications">
+
+                  <!-- <notification-strip data = "notice" ></notification-strip> -->
+                </div>
+              </ul>
+            </li>
+            <a href="#"><i class = "fa fa-external-link"></i> See All Notifications</a>
+          </ul>
+        </li>
+      </ul> <!-- /. notification icons group -->
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>

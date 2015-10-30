@@ -1,0 +1,108 @@
+/*Nav bar dropdowns*/
+
+.navDropDownList > li > ul{
+  height: 400px;
+  width:400px;
+  list-style: outside none none;
+  box-sizing:border-box;
+  display: block;
+}
+.navDropDownList > a{
+  position: relative;
+  left: 10px;
+  text-decoration: none;
+}
+.navBarInfoList:hover, .navBarInfoList:focus{
+  border-left-color: #ffb206;
+  cursor: pointer;
+  background: #f5f5f5;
+}
+.navBarInfoList{
+  border-left-style: solid;
+  border-left-width: 6px;
+  border-left-color: #ffffff;
+  box-sizing:border-box;
+  display: block;
+  height: 60px;
+  border-bottom-color: #ebe7e7;
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+}
+.navBarInfoList>a{
+  color : #1266b4;
+}
+
+/*.navbar-form >input{
+  border-radius: 20px;
+}*/
+
+.chatWindow{
+  position:fixed;
+  bottom:0px;
+  /*right:30px;*/
+  width:300px;
+  /*height:500px;*/
+  background: #f9f9f9;
+  border-top-style: solid;
+  border-top-width: 4px;
+  border-top-color: #e3a10f;
+  z-index:10;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.chatWindow > .header{
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #bfbfbf;
+  height: 36px;
+  /*background: #e4e4e4;*/
+
+}
+.chatWindow > .header > .container-fluid{
+  padding: 7px;
+  /*height: 40px;*/
+}
+.chatWindow > .header > .container-fluid:hover{
+  cursor: default;
+}
+.chatWindow > .header > .container-fluid>.username{
+  padding-left: 10px;
+  font-size: 15px;
+}
+.chatWindow > .header > .container-fluid>.onlineStatus{
+  color: #00be52;
+  font-size: 15px;
+}
+.chatWindow > .footer{
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #bfbfbf;
+  /*background: #390061;*/
+}
+.chatWindow > .footer > .container-fluid{
+  padding: 10px;
+  /*height: 40px;*/
+}
+.messageView{
+  overflow:auto;
+  position: absolute;
+  box-sizing: border-box;
+  display: block;
+  height: 405px;
+  width: 100%;
+}
+.messageBubble{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 4px;
+  padding: 10px;
+  /*width: 100%;*/
+  border-style: solid;
+  border-color: #89ccae;
+  border-width: 1px;
+
+}

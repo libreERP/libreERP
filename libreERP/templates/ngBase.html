@@ -1,0 +1,43 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="main">
+  <head>
+    <meta charset="utf-8">
+    <title>LibreERP</title>
+    <!-- stock css libraries -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/angular-aside.css' %}" charset="utf-8">
+    <!-- custom css -->
+    <link rel="stylesheet" href="{% static 'css/custom/base.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/custom/navbarControls.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/social.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" charset="utf-8">
+
+  </head>
+  <body>
+
+    <div ng-include="headerUrl"></div>
+    <div ui-view></div>
+
+    <!-- Stock JS libraries -->
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/angular.min.js' %}"></script>
+    <script src="{% static 'js/angular-ui-router.js' %}"></script>
+    <script src="{% static 'js/angular-messages.min.js' %}"></script>
+    <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'js/ui-bootstrap-tpls-0.13.4.min.js' %}"></script>
+    <script src="{% static 'js/angular-aside.js' %}"></script>
+    <script src="{% static 'js/autobahn.min.js' %}"></script>
+    <!-- Custom JS files -->
+    <script src="{% static 'js/custom/nativeJS.js' %}"></script>
+    <script src="{% static 'js/custom/ngLibreERP.js' %}"></script>
+    <script src="{% static 'js/custom/directives.js' %}"></script>
+    <script src="{% static 'js/custom/services.js' %}"></script>
+    <script src="{% static 'js/custom/module.home.js' %}"></script>
+    <script src="{% static 'js/custom/module.admin.js' %}"></script>
+
+  </body>
+</html>

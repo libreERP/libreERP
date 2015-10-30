@@ -1,0 +1,19 @@
+
+<div class="container-fluid " >
+  <div class="row">
+    <div class="panel-group col-md-2 nav-sidebarAccordion" id="accordion">
+      <div ui-view="menu"></div>
+    </div>
+    <div class="col-md-10 ">
+      <breadcrumb></breadcrumb>
+      <section class="content-header">
+        <ol class="breadcrumb">
+        <li><a href="#"> Home</a></li>
+        <li> <a href="#">Dashboard</a></li>
+        <li class="active">Mail</li>
+        </ol>
+      </section>
+      <div ui-view></div>
+    </div>
+  </div>
+</div>

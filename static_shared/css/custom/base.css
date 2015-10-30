@@ -1,4 +1,31 @@
-/*
+:root {
+  --themeMain: #29547d;
+  --headerNavbarHighlight:#123658;
+}
+
+body {
+  background-color: #eee;
+  padding-top:70px;
+}
+
+.nav-sidebar{
+  background-color: var(--verticalNavbarBg);
+}
+.nav-sidebar> li > a {
+	color:var(--themeMain);
+}
+.nav-sidebar> .active > a {
+  color: #fff;
+  background-color: var(--themeMain);
+}
+.nav-sidebar> li > a:hover, .nav-sidebar > li >a:focus {
+	background-color: var(--themeMain);
+	color: #fff;
+}
+
+
+
+/*Nav bar*/
 
 .navbar-default {
   background-color: var(--themeMain);
@@ -55,4 +82,4 @@
     color: #ffffff;
     background-color: var(--headerNavbarHighlight);
   }
-}*/
+}
