@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User , Group
+from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import *
 
@@ -19,6 +20,13 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'profile' , 'designation')
+    def create(self , validated_data):
+        user = User.objects.create(**validated_data)
+        user.email = user.username + '@cioc.com'
+        password =  self.context['request'].data['password']
+        user.set_password(password)
+        user.save()
+        return user
 
 class groupSerializer(serializers.ModelSerializer):
     class Meta:

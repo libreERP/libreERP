@@ -1,9 +1,12 @@
-var app = angular.module('app' , ['ui.router']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' ]);
 
-app.config(function($stateProvider ,  $urlRouterProvider){
+app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider){
 
   $urlRouterProvider.otherwise('/home');
-
+  $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+  $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+  $httpProvider.defaults.withCredentials = true;
+  
 });
 
 app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state,   $stateParams) {

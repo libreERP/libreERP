@@ -1,18 +1,12 @@
-ngCIOC.directive('breadcrumb', function () {
+app.directive('breadcrumb', function () {
   return {
-    template: '<section class="content-header">'+
-      '<ol class="breadcrumb">'+
-      '<li><a href="#"> Home</a></li>'+
-      '<li> <a href="#">Dashboard</a></li>'+
-      '<li class="active">Mail</li>'
-      '</ol>'
-    '</section>',
+    templateUrl: '/breadcrumb.html',
     restrict: 'E',
-    replace:true,
-    scope:{
-      data : '=',
-      visible : '=',
-      submitFn :'&',
+    replace: true,
+    scope: false,
+    controller : function($scope , $state){
+      var stateName = $state.current.name;
+      $scope.stateParts = stateName.split('.');
     },
   };
 });

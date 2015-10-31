@@ -21,6 +21,8 @@
     <div ng-include="headerUrl"></div>
     <div ui-view></div>
 
+    <!-- contains very common ng templates used in the directives -->
+    <div ng-include="'/static/ngTemplates/ngTemplateSnippets.html'"></div>
     <!-- Stock JS libraries -->
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -28,7 +30,7 @@
     <script src="{% static 'js/angular-ui-router.js' %}"></script>
     <script src="{% static 'js/angular-messages.min.js' %}"></script>
     <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
-    <script src="{% static 'js/ui-bootstrap-tpls-0.13.4.min.js' %}"></script>
+    <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
     <script src="{% static 'js/angular-aside.js' %}"></script>
     <script src="{% static 'js/autobahn.min.js' %}"></script>
     <!-- Custom JS files -->
