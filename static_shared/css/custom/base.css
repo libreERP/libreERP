@@ -1,8 +1,3 @@
-:root {
-  --themeMain: #037493;
-  --headerNavbarHighlight:#04414f;
-}
-
 body {
   background-color: #eee;
   padding-top:70px;
@@ -24,12 +19,12 @@ body {
 }
 
 .breadcrumb {
-    /*background-color: var(--themeMain);*/
+    background-color: var(--themeMain);
     border-radius: 0px;
 }
-/*.breadcrumb a {
+.breadcrumb a {
   color: white;
-}*/
+}
 
 /*Nav bar*/
 

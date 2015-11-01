@@ -18,27 +18,27 @@ app.config(function($stateProvider ){
   })
   .state('home.mail', {
     url: "/mail",
-    template: '<div> Loren Ipsum Text in the mail board</div>',
+    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the mail board</div>',
     controller: 'home.mail'
   })
   .state('home.social', {
     url: "/social",
-    template: '<div> Loren Ipsum Text in the dash board</div>',
+    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
     controller: 'home.social'
   })
   .state('home.news', {
     url: "/news",
-    template: '<div> Loren Ipsum Text in the dash board</div>',
+    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
     controller: 'home.news'
   })
   .state('home.calender', {
     url: "/calender",
-    template: '<div> Loren Ipsum Text in the dash board</div>',
+    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
     controller: 'home.calender'
   })
   .state('home.notes', {
     url: "/notes",
-    template: '<div> Loren Ipsum Text in the dash board</div>',
+    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
     controller: 'home.notes'
   })
 

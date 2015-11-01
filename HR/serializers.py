@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User , Group
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from rest_framework.exceptions import *
 from .models import *
 
 
@@ -13,7 +14,7 @@ class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:
         model = userProfile
-        fields = ( 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
+        fields = ( 'url' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
         read_only_fields = ('website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
 
 class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,9 +34,9 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'profile' , 'designation')
     def create(self , validated_data):
-        user = User.objects.create(**validated_data)
         if not self.context['request'].user.is_superuser:
-            return self.context['request'].user
+            raise PermissionDenied(detail=None)
+        user = User.objects.create(**validated_data)
         user.email = user.username + '@cioc.com'
         password =  self.context['request'].data['password']
         user.set_password(password)

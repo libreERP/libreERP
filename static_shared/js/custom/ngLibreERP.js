@@ -20,7 +20,14 @@ app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state
 app.controller('main' , function($scope , $state , userProfileService , $aside){
   $scope.me = userProfileService.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
-  $scope.openSettings = function(position, backdrop) {
+  $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
+  $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
+  $scope.$watchGroup(['themeObj.main' , 'themeObj.highlight'] , function(newValue , oldValue){
+    $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
+  })
+
+
+  $scope.openSettings = function(position, backdrop , theme) {
     $scope.asideState = {
       open: true,
       position: position
@@ -31,19 +38,40 @@ app.controller('main' , function($scope , $state , userProfileService , $aside){
     }
 
     $aside.open({
-      template: '<p>Some heading</p>',
+      templateUrl: '/static/ngTemplates/settings.html',
       placement: position,
-      size: 'lg',
+      size: 'md',
       backdrop: backdrop,
-      controller: function($scope, $modalInstance) {
-        $scope.ok = function(e) {
-          $modalInstance.close();
-          e.stopPropagation();
-        };
-        $scope.cancel = function(e) {
-          $modalInstance.dismiss();
-          e.stopPropagation();
-        };
+      controller: function($scope, $modalInstance , userProfileService , $http) {
+        $scope.theme = theme;
+        emptyFile = new File([""], "");
+        $scope.settings = {displayPicture : emptyFile}
+        $scope.me = userProfileService.get('mySelf');
+        $scope.statusMessage = '';
+        $scope.saveSettings = function(){
+          var fd = new FormData();
+          for(key in $scope.settings){
+            fd.append( key , $scope.settings[key]);
+          }
+          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+          then(function(response){
+            $scope.statusMessage = response.status + ' : ' + response.statusText;
+            $scope.httpStatus = 'success';
+            setTimeout(function () {
+              $scope.statusMessage = '';
+              $scope.httpStatus = '';
+              $scope.$apply();
+            }, 4000);
+          },function(response){
+            $scope.httpStatus = 'danger';
+            $scope.statusMessage = response.status + ' : ' + response.statusText;
+            setTimeout(function () {
+              $scope.statusMessage = '';
+              $scope.httpStatus = '';
+              $scope.$apply();
+            }, 4000);
+          });
+        }
       }
     }).result.then(postClose, postClose);
   }
