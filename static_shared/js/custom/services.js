@@ -17,6 +17,21 @@ app.factory('userProfileService', function(){
   }
 });
 
+app.filter('getDP' , function(userProfileService){
+  return function(userUrl){
+    user = userProfileService.get(userUrl);
+    return user.profile.displayPicture;
+  }
+})
+
+
+app.filter('getName' , function(userProfileService){
+  return function(userUrl){
+    profile = userProfileService.get(userUrl);
+    return profile.first_name + ' ' + profile.last_name;
+  }
+})
+
 function myProfile(){
   var httpRequest = new XMLHttpRequest()
   httpRequest.open('GET', "/api/HR/users/?mode=mySelf&format=json" , false);

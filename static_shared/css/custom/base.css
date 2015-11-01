@@ -1,6 +1,6 @@
 :root {
-  --themeMain: #29547d;
-  --headerNavbarHighlight:#123658;
+  --themeMain: #037493;
+  --headerNavbarHighlight:#04414f;
 }
 
 body {
@@ -23,11 +23,17 @@ body {
 	color: #fff;
 }
 
-
+.breadcrumb {
+    /*background-color: var(--themeMain);*/
+    border-radius: 0px;
+}
+/*.breadcrumb a {
+  color: white;
+}*/
 
 /*Nav bar*/
 
-.navbar-default {
+/*.navbar-default {
   background-color: var(--themeMain);
   border-color:var(--headerNavbarHighlight);
 }
@@ -82,4 +88,4 @@ body {
     color: #ffffff;
     background-color: var(--headerNavbarHighlight);
   }
-}
+}*/

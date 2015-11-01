@@ -42,6 +42,11 @@ class userProfileViewSet(viewsets.ModelViewSet):
     serializer_class = userProfileSerializer
     queryset = userProfile.objects.all()
 
+class userProfileAdminModeViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, isAdmin ,)
+    serializer_class = userProfileAdminModeSerializer
+    queryset = userProfile.objects.all()
+
 class userDesignationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     queryset = userDesignation.objects.all()
@@ -49,7 +54,7 @@ class userDesignationViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly ,)
     # queryset = User.objects.all().order_by('-date_joined')
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']

@@ -6,6 +6,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'users' , UserViewSet , base_name = 'user')
 router.register(r'userProfile' , userProfileViewSet , base_name ='userprofile')
+router.register(r'userProfileAdminMode' , userProfileAdminModeViewSet , base_name ='userProfileAdminMode')
 router.register(r'userDesignation' , userDesignationViewSet , base_name = 'userdesignation')
 router.register(r'groups' , GroupViewSet)
 

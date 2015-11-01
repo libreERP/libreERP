@@ -1,38 +1,30 @@
-<breadcrumb></breadcrumb>
+<div style="background:white; display: block; min-height:700px;padding-bottom:50px;box-shadow: 10px 10px 5px #888;">
+  <breadcrumb></breadcrumb>
+  <div class="container-fluid">
 
-  <div ng-hide="statusMessage==''" class="alert alert-{{httpStatus}} fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{statusMessage}}</div>
-
-  <uib-tabset>
-    <uib-tab >
-      <uib-tab-heading>
-        <i class="fa fa-plus"></i> New
-      </uib-tab-heading>
-      <div class="container-fluid">
-        <form ng-submit="createUser()">
-          <h3>Create new user</h3>
-          </hr>
-          <div class="form-group" >
-            <label for="username">Username</label>
-            <input type="text" class="form-control" ng-model="newUser.username" required id="username" placeholder="username">
-          </div>
-          <div class="form-group">
-            <label for="firstname">First Name</label>
-            <input type="text" class="form-control" ng-model="newUser.firstName" required id="firstname" placeholder="First Name">
-          </div>
-          <div class="form-group">
-            <label for="lastname">Last Name</label>
-            <input type="text" class="form-control" ng-model="newUser.lastName" required id="lastname" placeholder="Last Name">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" ng-model="newUser.password" required id="exampleInputPassword1" placeholder="Password">
-          </div>
-          <button type="submit" class="btn btn-primary">Create</button>
-        <form>
-      </div>
-    </uib-tab>
-    <uib-tab heading="Static title">Profile Edit</uib-tab>
-    <uib-tab heading="Static title">Static content</uib-tab>
-    <uib-tab heading="Static title">Static content</uib-tab>
-
-  </uib-tabset>
+    <div ng-hide="statusMessage==''" class="alert alert-{{httpStatus}} fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{statusMessage}}</div>
+    <uib-tabset>
+      <uib-tab >
+        <uib-tab-heading>
+          New  <i class="fa fa-plus"></i>
+        </uib-tab-heading>
+        <div class="col-md-6">
+          <generic-Form template="'/newUserForm.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
+        </div>
+      </uib-tab>
+      <uib-tab >
+        <uib-tab-heading>
+          Edit Profile <i class="fa fa-pencil"></i>
+        </uib-tab-heading>
+        <div class="col-md-6">
+          <generic-Form template="'/profileEditForm.html'" data="profile" submit-Fn="editProfile()" form-title="'Edit Profile'" wizard="true" max-page="5"></generic-Form>
+        </div>
+      </uib-tab>
+      <uib-tab heading="Edit Designation">
+        <div class="col-md-6">
+        </div>
+      </uib-tab>
+      <uib-tab heading="Other Settings">Static content</uib-tab>
+    </uib-tabset>
+  </div>
+</div>
