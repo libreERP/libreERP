@@ -29,10 +29,10 @@ class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
 class userSerializer(serializers.HyperlinkedModelSerializer):
     profile = userProfileSerializer(many=False , read_only=True)
     designation = userDesignationSerializer(many = False , read_only=True) # to get the organisational details for the user
-    extra_kwargs = {'password': {'write_only': True}}
     class Meta:
         model = User
-        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'profile' , 'designation')
+        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'profile' , 'designation' , 'password')
+        extra_kwargs = {'password': {'write_only': True}}
     def create(self , validated_data):
         if not self.context['request'].user.is_superuser:
             raise PermissionDenied(detail=None)

@@ -43,15 +43,39 @@ app.controller('main' , function($scope , $state , userProfileService , $aside){
       size: 'md',
       backdrop: backdrop,
       controller: function($scope, $modalInstance , userProfileService , $http) {
-        $scope.theme = theme;
         emptyFile = new File([""], "");
-        $scope.settings = {displayPicture : emptyFile}
+        $scope.settings = {displayPicture : emptyFile , theme : theme}
         $scope.me = userProfileService.get('mySelf');
         $scope.statusMessage = '';
+        $scope.settings.password='';
+        $scope.cancel = function(e) {
+          $modalInstance.dismiss();
+          e.stopPropagation();
+        };
         $scope.saveSettings = function(){
           var fd = new FormData();
           for(key in $scope.settings){
-            fd.append( key , $scope.settings[key]);
+            if ($scope.settings[key] == emptyFile) {
+            }else{
+              if ($scope.settings.password!='' && $scope.settings.password != $scope.settings.password2) {
+                $scope.statusMessage = 'Password does not match';
+                $scope.httpStatus = 'danger';
+                setTimeout(function () {
+                  $scope.statusMessage = '';
+                  $scope.httpStatus = '';
+                  $scope.$apply();
+                }, 4000);
+                return;
+              }
+              if (typeof $scope.settings[key] =='object' && typeof $scope.settings[key].size == 'undefined'&& typeof $scope.settings[key].name == 'undefined' ) {
+                val = $scope.settings[key];
+                for(key2 in val){
+                  fd.append( key2 , val[key2]);
+                }
+              }else if(key.indexOf('password')==-1){
+                fd.append( key , $scope.settings[key]);
+              }
+            }
           }
           $http({method : 'PATCH' , url : $scope.me.profile.url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
           then(function(response){

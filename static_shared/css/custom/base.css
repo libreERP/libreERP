@@ -26,6 +26,61 @@ body {
   color: white;
 }
 
+.shaddowed{
+  box-shadow: 1px 1px 2px #888;
+}
+.card{
+  display: block;
+  padding-bottom:40px;
+}
+
+.bg-white{
+  background-color: white !important;
+}
+
+.bg-aqua{
+  background-color: #3d9483 !important;
+}
+
+.bg-green{
+    background-color: #066339 !important;
+}
+
+.bg-yellow {
+    background-color: #F39C12 !important;
+}
+
+.bg-red{
+    background-color: #a34337 !important;
+}
+
+.bg-blue {
+  background-color: #2673a6 !important;
+}
+
+.bg-black {
+  background-color: #34495e !important;
+}
+.bg-orange {
+  background-color: #b16c04 !important;
+}
+.bg-purple {
+  background-color: #8e44ad !important;
+}
+.bg-olive {
+  background-color: #828504 !important;
+
+}
+.bg-fuchsia {
+  background-color: #ad2a72 !important;
+
+}
+
+
+.bg-red, .bg-yellow, .bg-aqua, .bg-blue, .bg-light-blue, .bg-green, .bg-navy, .bg-teal, .bg-olive, .bg-lime, .bg-orange, .bg-fuchsia, .bg-purple, .bg-maroon, .bg-black, .bg-red-active, .bg-yellow-active, .bg-aqua-active, .bg-blue-active, .bg-light-blue-active, .bg-green-active, .bg-navy-active, .bg-teal-active, .bg-olive-active, .bg-lime-active, .bg-orange-active, .bg-fuchsia-active, .bg-purple-active, .bg-maroon-active, .bg-black-active {
+  color: #FFF !important;
+}
+
 /*Nav bar*/
 
 /*.navbar-default {
