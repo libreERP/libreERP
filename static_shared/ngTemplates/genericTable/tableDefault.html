@@ -1,7 +1,7 @@
-<table class="table" >
+<table class="table">
   <thead>
     <tr>
-      <th ng-repeat = "heading in tableHeading" ng-click="sort($index)">{{heading | humanize}}
+      <th ng-repeat = "heading in tableHeading" ng-click="sort($index)" style="cursor:pointer;">{{heading | humanize}}
         <i ng-if="sortFlag[$index]==1" class="fa fa-angle-up"></i>
         <i ng-if="sortFlag[$index]==-1" class="fa fa-angle-down"></i>
       </th>

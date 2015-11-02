@@ -1,0 +1,17 @@
+<div ng-repeat="item in tableData">
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box {{$index | rainbow}}">
+      <span class="info-box-icon {{$index | rainbow}}"><img style="width: 100%;" class="img" ng-src="{{item.url | getDP}}"></span>
+      <div class="info-box-content">
+        <span class="info-box-text">{{item.url | getName}}</span>
+        <span class="info-box-number">5,200</span>
+        <div class="progress">
+          <div class="progress-bar" style="width: 50%"></div>
+        </div>
+        <span class="progress-description">
+          50% Increase in 30 Days
+        </span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+  </div><!-- /.col -->
+</div>

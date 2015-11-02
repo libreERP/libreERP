@@ -3,24 +3,24 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
-
+from PIM.serializers import *
 
 class userDesignationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = userDesignation
-        fields = ('domainType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
+        model = designation
+        fields = ('url' , 'domainType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
 
 class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:
-        model = userProfile
+        model = profile
         fields = ( 'url' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
         read_only_fields = ('website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
 
 class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
     """ Only admin """
     class Meta:
-        model = userProfile
+        model = profile
         fields = ( 'url', 'empID', 'dateOfBirth' , 'anivarsary' , 'permanentAddressStreet' , 'permanentAddressCity' , 'permanentAddressPin', 'permanentAddressState' , 'permanentAddressCountry',
         'localAddressStreet' , 'localAddressCity' , 'localAddressPin' , 'localAddressState' , 'localAddressCountry' , 'prefix', 'gender' , 'email', 'email2', 'mobile' , 'emergency' , 'tele' , 'website',
         'sign', 'IDPhoto' , 'TNCandBond' , 'resume' ,  'certificates', 'transcripts' , 'otherDocs' , 'almaMater' , 'pgUniversity' , 'docUniversity' , 'fathersName' , 'mothersName' , 'wifesName' , 'childCSV',
@@ -28,11 +28,12 @@ class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
 
 class userSerializer(serializers.HyperlinkedModelSerializer):
     profile = userProfileSerializer(many=False , read_only=True)
-    designation = userDesignationSerializer(many = False , read_only=True) # to get the organisational details for the user
     class Meta:
         model = User
-        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'profile' , 'designation' , 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' )
+        read_only_fields = ('designation' , 'profile' , 'settings')
+        extra_kwargs = {'password': {'write_only': True} }
+
     def create(self , validated_data):
         if not self.context['request'].user.is_superuser:
             raise PermissionDenied(detail=None)
@@ -44,8 +45,12 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         return user
     def update (self, instance, validated_data):
         user = self.context['request'].user
-        user.set_password(validated_data['password'])
-        user.save()
+        u = authenticate(username = user.username , password = self.context['request'].data['oldPassword'])
+    	if u is not None:
+            user.set_password(validated_data['password'])
+            user.save()
+        else :
+            raise PermissionDenied(detail=None)
         return user
 
 class groupSerializer(serializers.ModelSerializer):

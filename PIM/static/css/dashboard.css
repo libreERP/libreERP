@@ -143,6 +143,7 @@
 }
 .widget-user-2 .widget-user-header {
     padding: 20px;
+    min-height: 95px;
 }
 
 .widget-user-2 .widget-user-image > img {
@@ -154,7 +155,8 @@
   border-radius: 50%;
 }
 .widget-user-2 .widget-user-username, .widget-user-2 .widget-user-desc {
-    margin-left: 75px;
+    padding-right: 20px;
+    float: right;
 }
 .widget-user-2 .widget-user-username {
     margin-top: 5px;
@@ -163,9 +165,6 @@
     font-weight: 300;
 }
 
-.widget-user-2 .widget-user-username, .widget-user-2 .widget-user-desc {
-    margin-left: 75px;
-}
 .widget-user-2 .widget-user-desc {
     margin-top: 0px;
 }

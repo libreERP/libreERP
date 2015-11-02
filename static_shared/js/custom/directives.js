@@ -11,143 +11,6 @@ app.directive('breadcrumb', function () {
   };
 });
 
-
-app.filter('rainbow' , function(){
-  return function(input){
-    // console.log(input);
-    input +=1;
-    if (input%10 == 1){
-      return "bg-aqua";
-    } else if (input%10 == 2){
-      return "bg-yellow";
-    } else if (input%10 == 3) {
-      return "bg-green";
-    }else if (input%10 == 4) {
-      return "bg-blue";
-    }else if (input%10 == 5) {
-      return "bg-orange";
-    } else if (input%10 == 6){
-      return "bg-purple";
-    } else if (input%10 == 7) {
-      return "bg-red";
-    }else if (input%10 == 8) {
-      return "bg-black";
-    }else if (input%10 == 9) {
-      return "bg-olive";
-    } else{
-      return "bg-fuchsia";
-    }
-  }
-})
-
-
-app.filter('timeAgo' , function(){
-  return function(input){
-    t = new Date(input);
-    var now = new Date();
-    var diff = Math.floor((now - t)/60000)
-    if (diff<60) {
-      return diff+'M';
-    }else if (diff>=60 && diff<60*24) {
-      return Math.floor(diff/60)+'H';
-    }else if (diff>=60*24) {
-      return Math.floor(diff/(60*24))+'D';
-    }
-  }
-})
-
-app.filter('humanize' , function(){
-  return function(input){
-    // insert a space before all caps
-    input = input.replace('_' , ' ');
-    input = input.replace(/([A-Z])/g, ' $1');
-    // uppercase the first character
-    input = input.replace(/^./, function(str){ return str.toUpperCase(); });
-    return input;
-  }
-})
-
-app.filter('getIcon' , function(){
-  return function(input){
-    // console.log(scope.common);
-    switch (input) {
-      case 'LM':
-        return 'fa-book';
-      case 'PLM':
-        return 'fa-square-o';
-      case 'Social':
-        return 'fa-facebook-square';
-      case 'Payroll':
-        return 'fa-money'
-      default:
-        return 'fa-bell-o';
-    }
-  }
-})
-
-app.filter('explodeObj' , function(){
-  return function(input){
-    if (typeof input =='object' && input!=null){
-      toReturn = '';
-      // console.log(input);
-      for(key in input){
-        val = input[key];
-        if (val != null && typeof val !='object'){
-          // console.log('The key is ' + key + ' and the value is ' + val);
-          urlTest = isUrl(val);
-          // console.log(urlTest);
-          if ( urlTest.type == 'hyperLink') {
-            toReturn += '<a href=' + val + '> <i class="fa fa-link"></i> </a>';
-          } else if (urlTest.type == 'image') {
-            toReturn += ' <i class="fa fa-picture-o"></i> ';
-          } else if (urlTest.type == 'pdf') {
-            toReturn += ' <i class="fa fa-file-pdf-o"></i> ';
-          } else if (urlTest.type == 'odt') {
-            toReturn += ' <i class="fa fa-file-text-o"></i> ';
-          } else if(urlTest.type == 'string') {
-            toReturn += val + ' , ';
-          } else if(urlTest.type == 'number') {
-            toReturn += val + ' , ';
-          } else{
-            toReturn += urlTest.type + ' , ';
-          }
-        } else{
-          // console.log('The value is null for the key' + key);
-          toReturn += '';
-        }
-      }
-      return toReturn;
-    }else {
-      urlTest = isUrl(input);
-      // console.log(urlTest);
-      if ( urlTest.type == 'hyperLink') {
-        return '<a href=' + input + '> <i class="fa fa-link"></i> </a>';
-      } else if (urlTest.type == 'image') {
-        return ' <i class="fa fa-picture-o"></i> ';
-      } else if (urlTest.type == 'pdf') {
-        return ' <i class="fa fa-file-pdf-o"></i> ';
-      } else if (urlTest.type == 'odt') {
-        return ' <i class="fa fa-file-text-o"></i> ';
-      } else if(urlTest.type == 'string' || urlTest.type == 'number') {
-        return input ;
-      } else{
-        return input ;
-      }
-    }
-  }
-})
-
-app.filter('decorateCount' , function(){
-  return function(input){
-    if (input ==1){
-      return "";
-    }
-    else {
-      return "("+input+")";
-    }
-  }
-})
-
 app.directive('fileModel', ['$parse', function ($parse) {
   return {
     restrict: 'A',
@@ -164,22 +27,6 @@ app.directive('fileModel', ['$parse', function ($parse) {
   };
 }]);
 
-app.service('ngHttpSocket', ['$http', function ($http) {
-  this.uploadFileToUrl = function(data, uploadUrl){
-
-    $http.post(uploadUrl, data, {
-      transformRequest: angular.identity,
-      headers: {'Content-Type': undefined}
-    })
-    .success(function(){
-    })
-    .error(function(){
-
-    });
-  }
-}]);
-
-
 /*
 This directive allows us to pass a function in on an enter key to do what we want.
  */
@@ -194,5 +41,380 @@ app.directive('ngEnter', function () {
         event.preventDefault();
       }
     });
+  };
+});
+
+app.directive('genericForm', function () {
+  return {
+    templateUrl: '/genericForm.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      template : '=',
+      submitFn : '&',
+      data :'=',
+      formTitle : '=',
+      wizard : '=',
+      maxPage : '=',
+    },
+    controller : function($scope , $state){
+      $scope.page = 1;
+      $scope.next = function(){
+        $scope.page +=1;
+        if ($scope.page>$scope.maxPage) {
+          $scope.page = $scope.maxPage;
+        }
+      }
+      $scope.prev = function(){
+        $scope.page -=1;
+        if ($scope.page<1) {
+          $scope.page = 1;
+        }
+      }
+    },
+  };
+});
+
+app.directive('genericTable', function () {
+  return {
+    templateUrl: '/static/ngTemplates/genericTable/genericSearch.html',
+    restrict: 'E',
+    transclude: true,
+    replace: false,
+    scope: {
+      tableData :'=',
+      resourceUrl : '=',
+      primarySearchField : '=',
+      callbackFn : '=',
+      views : '=',
+      graphTemplate : '=',
+      options : '=',
+      multiselectOptions : '=',
+      search : '=',
+      getParams :'=',
+    },
+    controller : function($scope , $http, $templateCache, $timeout , userProfileService , $aside) {
+      if ( typeof $scope.multiselectOptions == 'undefined' || $scope.multiselectOptions.length ==0 ) {
+        $scope.isSelectable = false;
+      } else {
+        $scope.isSelectable = true;
+      }
+
+      if ( typeof $scope.options == 'undefined' || $scope.options.length ==0 ) {
+        $scope.haveOptions = false;
+      } else {
+        $scope.haveOptions = true;
+      }
+      if ( typeof $scope.search == 'undefined' || $scope.search  ) {
+        $scope.searchShow = true;
+      } else {
+        $scope.searchShow = false;
+      }
+
+      $scope.$watch('tableData' , function(newValue , oldValue){
+        $scope.selectStates = [];
+        if ($scope.isSelectable) {
+          for (var i = 0; i < $scope.tableData.length; i++) {
+            $scope.selectStates.push({value : false , disabled : false});
+          }
+        }
+      });
+
+      $scope.tableData = [];
+      $scope.searchText = '';
+      $scope.originalTable = [];
+      $scope.itemsNumPerView = [5, 10, 20];
+      $scope.itemsPerView = 5;
+      $scope.pageList = [1];
+      $scope.pageNo = 1; // default page number set to 0
+      $scope.viewMode = 'list';
+      $scope.numOfPagesPerView = 5;
+      $scope.viewMode = 0;
+
+      $scope.changeView = function(mode){
+        $scope.viewMode = mode;
+      }
+      $scope.multiSelectAction = function(action){
+        items = [];
+        for (var i = 0; i < $scope.selectStates.length; i++) {
+          if ($scope.selectStates[i].value == true) {
+            items.push($scope.tableData[i].url);
+          }
+        }
+        $scope.callbackFn(items , action , 'multi')
+      };
+
+      $scope.fullTextSearch = function(str){
+        rowsContaining = [];
+        str = str.toLowerCase();
+        // console.log(str);
+        for (var i = 0; i < $scope.originalTable.length; i++) {
+
+          row = $scope.originalTable[i];
+          for (key in row){
+            val = row[key].toString().toLowerCase();
+            if (val.indexOf(str) !=-1){
+              rowsContaining.push(i)
+              break;
+            };
+            rowNested = row[key];
+            if (typeof rowNested == 'object') {
+              for (keyNested in rowNested){
+                if (rowNested[keyNested] != null) {
+                  valNested = rowNested[keyNested].toString().toLowerCase();
+                  if (valNested.indexOf(str) !=-1){
+                    if (rowsContaining.indexOf(i) == -1) {
+                      rowsContaining.push(i)
+                      break;
+                    }
+                  };
+                }
+              };
+            }
+          };
+        } // main for loop
+
+        $scope.tableData = [];
+        for (var i = 0; i < rowsContaining.length; i++) {
+          $scope.tableData.push($scope.originalTable[rowsContaining[i]]);
+        }
+      }
+      $scope.fetchData = function(searchStr){
+        if (typeof searchStr=='undefined') {
+          searchStr = '';
+        }
+        fetch.method = 'GET';
+        if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField =='') {
+          fetch.url = $scope.resourceUrl +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+        } else {
+          fetch.url = $scope.resourceUrl +'?&'+ $scope.primarySearchField +'__contains=' + searchStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+        }
+        if (typeof $scope.getParams != 'undefined') {
+          for (var i = 0; i < $scope.getParams.length; i++) {
+            fetch.url += '&'+$scope.getParams[i].key + '='+ $scope.getParams[i].value;
+          }
+        }
+        $http({method: fetch.method, url: fetch.url}).
+          then(function(response) {
+            // console.log(response);
+            $scope.pageCount = Math.floor(response.data.count/$scope.itemsPerView)+1;
+            if ($scope.pageCount<$scope.pageList[0]) {
+              $scope.pageList = [1];
+            } else {
+              $scope.pageList = [$scope.pageList[0]];
+            }
+            for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+              if ($scope.pageList.length<$scope.numOfPagesPerView) {
+                $scope.pageList.push(i);
+              }
+            }
+            // console.log($scope.pageList);
+            $scope.tableData = response.data.results;
+            $scope.originalTable = angular.copy($scope.tableData);
+            $scope.sortFlag = [];
+            $scope.tableHeading = [];
+            for (key in $scope.tableData[0]){
+              $scope.tableHeading.push(key);
+              $scope.sortFlag.push(0);  // by default no sort is applied , 1 for accending and -1 for descending
+            }
+            if ($scope.isSelectable) {
+              $scope.tableHeading.unshift('Select');
+              $scope.sortFlag.unshift(-2); // no sort can be applied on this column
+            }
+
+            if ($scope.haveOptions) {
+              $scope.tableHeading.push('Options')
+              $scope.sortFlag.push(-2); // no sort possible
+            }
+          }, function(response) {
+
+        });
+      }
+
+      $scope.$watch('getStr' , function(newValue , oldValue){
+        $scope.fetchData(newValue);
+      });
+
+      $scope.$watch('searchText', function(newValue , oldValue){
+        parts = newValue.split('>');
+        if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField == '') {
+          searchStr = newValue;
+        } else {
+          $scope.getStr = parts[0].trim();
+          if (typeof parts[1] == 'undefined'){
+            searchStr = '';
+          }else{
+            searchStr = parts[1].trim();
+          };
+        }
+        // console.log(searchStr);
+        $scope.fullTextSearch(searchStr);
+      });
+
+      $scope.changePage = function(toPage){
+        // change page number ot the seleted page
+        $scope.pageNo = toPage;
+        $scope.fetchData();
+        // console.log("will change the page now" + toPage);
+
+      }
+
+      $scope.loadPrevSetPages = function(){
+        // function to load prev set of pages
+        var currentlyFirst = $scope.pageList[0];
+        if (currentlyFirst!=1) {
+          $scope.pageList = [currentlyFirst - $scope.numOfPagesPerView];
+          // console.log(pageCount);
+          for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+            if ($scope.pageList.length<$scope.numOfPagesPerView) {
+              $scope.pageList.push(i);
+            }
+          }
+        }
+      }
+      $scope.loadNextSetPages = function(){
+        // function to load the next set of pages
+        // console.log($scope.pageList[$scope.pageList.length -1]);
+        var currentlyLast = $scope.pageList[$scope.pageList.length -1];
+        if (currentlyLast!=$scope.pageCount) {
+          $scope.pageList = [currentlyLast+1];
+          // console.log(pageCount);
+          for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+            if ($scope.pageList.length<$scope.numOfPagesPerView) {
+              $scope.pageList.push(i);
+            }
+          }
+        }
+      }
+      $scope.changeNumView = function(num){
+        $scope.itemsPerView = num;
+        $scope.changePage(1);
+        $scope.fetchData();
+        // console.log($scope.pageNo);
+      }
+      $scope.sort = function(col){
+        $scope.tableSnap = angular.copy($scope.tableData);
+        if ($scope.sortFlag[col]==-2) {
+          console.log("No sort possible");
+          return;
+        }
+
+        // console.log("will sort according to col " + col);
+        colData = [];
+        len =$scope.tableData.length;
+        var indices = new Array(len);
+        for (var i = 0; i < len; i++) {
+          colData.push($scope.tableData[i][$scope.tableHeading[col]]);
+          indices[i] = i;
+        }
+        if ($scope.sortFlag[col]==0 || $scope.sortFlag[col]==-1) {
+          indices.sort(function (a, b) { return colData[a] < colData[b] ? -1 : colData[a] > colData[b] ? 1 : 0; });
+          $scope.sortFlag[col] = 1;
+
+        }else{
+          indices.sort(function (a, b) { return colData[a] > colData[b] ? -1 : colData[a] < colData[b] ? 1 : 0; });
+          $scope.sortFlag[col] = -1;
+        }
+
+        for (var i = 0; i < $scope.sortFlag.length; i++) {
+          if (i !=col && $scope.sortFlag[i] !==-2) {
+            $scope.sortFlag[i] = 0;
+          }
+        }
+        // console.log(indices)
+        // console.log($scope.sortFlag);
+        for(var i =0 ; i < len ; i++){
+          $scope.tableData[i] = angular.copy($scope.tableSnap[indices[i]])
+        }
+      };
+    },
+    // attrs is the attrs passed from the main scope
+    link: function postLink(scope, element, attrs) {
+
+    }
+  };
+});
+
+app.directive('tableRow', function () {
+  return {
+    templateUrl:  '/static/ngTemplates/genericTable/tableRow.html',
+    restrict: 'A',
+    transclude: true,
+    replace: true,
+    scope:{
+      data : '=',
+      rowAction : '=',
+      options : '=',
+      checkbox : '=',
+      selectable : '=',
+    },
+    controller : function($scope){
+
+      if (typeof $scope.options == 'undefined') {
+        $scope.optionsShow = false;
+      }else{
+        $scope.optionsShow = true;
+      }
+    },
+    // attrs is the attrs passed from the main scope
+    link: function postLink(scope, element, attrs) {
+
+    }
+  };
+});
+// alert("Came in the ngSeachEmp js file");
+
+
+app.directive('messageStrip', function () {
+  return {
+    template: '<li class="container-fluid navBarInfoList" ng-click="openChat()">'+
+      '<a class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
+        '<img class="img-circle" ng-src="{{data.originator | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; top:-8px; "/>'+
+        '<div class="col-md-10 pull-right" style="position: relative; top:-10px">'+
+          '<span class="text-muted">{{data.originator | getName}}</span> {{data.count | decorateCount}}<small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
+          '<br>{{data.message | limitTo:35}}'+
+        '</div>'+
+      '</a>'+
+    '</li>',
+    restrict: 'E',
+    transclude: true,
+    replace:true,
+    scope:{
+      data : '=',
+      openChat :'&',
+    },
+    controller : function($scope){
+    },
+    // attrs is the attrs passed from the main scope
+    link: function postLink(scope, element, attrs) {
+
+    }
+  };
+});
+
+app.directive('notificationStrip', function () {
+  return {
+    template: '<li class="container-fluid navBarInfoList" >'+
+      '<a href="{{data.url}}" class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
+        '<i class="fa {{data.originator | getIcon:this}} fa-2x"></i>'+
+        '<div class="col-md-11 pull-right" style="position: relative; top:-10px">'+
+          '<span class="text-muted">{{data.originator}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
+          '<br>{{data.shortInfo | limitTo:45 }}'+
+        '</div>'+
+      '</a>'+
+    '</li>',
+    restrict: 'E',
+    transclude: true,
+    replace:true,
+    scope:{
+      data : '=',
+    },
+    controller : function($scope){
+      // console.log($scope.data);
+    },
+    // attrs is the attrs passed from the main scope
+    link: function postLink(scope, element, attrs) {
+
+    }
   };
 });

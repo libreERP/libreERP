@@ -11,8 +11,6 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 
-from .forms import loginForm
-
 def Login(request):
     if request.user.is_authenticated():
         return redirect(reverse('ERP'))
@@ -40,16 +38,16 @@ def home(request):
 class userProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = userProfileSerializer
-    queryset = userProfile.objects.all()
+    queryset = profile.objects.all()
 
 class userProfileAdminModeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, isAdmin ,)
     serializer_class = userProfileAdminModeSerializer
-    queryset = userProfile.objects.all()
+    queryset = profile.objects.all()
 
 class userDesignationViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    queryset = userDesignation.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin ,)
+    queryset = designation.objects.all()
     serializer_class = userDesignationSerializer
 
 

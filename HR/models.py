@@ -20,7 +20,7 @@ def getTranscriptsPath(instance , filename ):
 def getOtherDocsPath(instance , filename ):
     return 'HR/doc/Others/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
-class userProfile(models.Model):
+class profile(models.Model):
     user = models.OneToOneField(User)
     PREFIX_CHOICES = (
         ('NA' , 'NA'),
@@ -82,69 +82,70 @@ class userProfile(models.Model):
     note2 = models.TextField(max_length = 500 , null = True , blank = True)
     note3 = models.TextField(max_length = 500 , null = True , blank = True)
 
-User.profile = property(lambda u : userProfile.objects.get_or_create(user = u)[0])
+User.profile = property(lambda u : profile.objects.get_or_create(user = u)[0])
 
-class userDesignation(models.Model):
+MANAGEMENT_RANK_CHOICE = (
+    ('NOTS' , 'Not Selected..'),
+    ('DIRE' , 'Director'),
+    ('DEPD' , 'Deputy Director'),
+    ('MANA' , 'Manager'),
+    ('DMAN' , 'Deputy Manager'),
+    ('EXEC' , 'Executive'),
+    ('ASSO' , 'Associate'),
+    ('GENS' , 'General Staff'),
+)
+UNIT_TYPE_CHOICE = (
+    ('NOT' , 'Not selected..'),
+    ('RND' , 'Research and Development'),
+    ('OPE' , 'Operational'),
+    ('MAN' , 'Management'),
+)
 
-    UNIT_TYPE_CHOICE = (
-        ('NOT' , 'Not selected..'),
-        ('RND' , 'Research and Development'),
-        ('OPE' , 'Operational'),
-        ('MAN' , 'Management'),
-    )
+RND_RANK_CHOICE = (
+    ('Not Selected..' , 'Not Selected..'),
+    ('Director' , 'Director'),
+    ('Deputy Director' , 'Deputy Director'),
+    ('Department Head' , 'Department Head'),
+    ('Prof. InCharge' , 'Prof. InCharge'),
+    ('Group Leader' , 'Group Leader'),
+    ('Senior Scientist' , 'Senior Scientist'),
+    ('Scientist' , 'Scientist'),
+    ('Undergraduate Student' , 'Undergraduate Student'),
+    ('Master Student' , 'Master Student'),
+    ('PhD Candidate' , 'PhD Candidate'),
+    ('Post Doctoral Candidate' , 'Post Doctoral Candidate'),
+    ('Senior Engineer' , 'Senior Engineer'),
+    ('Engineer' , 'Engineer'),
+    ('Technician' , 'Technician'),
+    ('General Staff' , 'General Staff'),
+)
 
-    RND_RANK_CHOICE = (
-        ('Not Selected..' , 'Not Selected..'),
-        ('Director' , 'Director'),
-        ('Deputy Director' , 'Deputy Director'),
-        ('Department Head' , 'Department Head'),
-        ('Prof. InCharge' , 'Prof. InCharge'),
-        ('Group Leader' , 'Group Leader'),
-        ('Senior Scientist' , 'Senior Scientist'),
-        ('Scientist' , 'Scientist'),
-        ('Undergraduate Student' , 'Undergraduate Student'),
-        ('Master Student' , 'Master Student'),
-        ('PhD Candidate' , 'PhD Candidate'),
-        ('Post Doctoral Candidate' , 'Post Doctoral Candidate'),
-        ('Senior Engineer' , 'Senior Engineer'),
-        ('Engineer' , 'Engineer'),
-        ('Technician' , 'Technician'),
-        ('General Staff' , 'General Staff'),
-    )
+OPERATIONAL_RANK_CHOICE = (
+    ('NOTS' , 'Not Selected..'),
+    ('DIRE' , 'Director'),
+    ('DEPD' , 'Deputy Director'),
+    ('MANA' , 'Manager'),
+    ('LEAD' , 'lead'),
+    ('SENG' , 'Senior Engineer'),
+    ('ENGI' , 'Engineer'),
+    ('TECH' , 'Technician'),
+    ('GENS' , 'General Staff'),
+)
 
-    OPERATIONAL_RANK_CHOICE = (
-        ('NOTS' , 'Not Selected..'),
-        ('DIRE' , 'Director'),
-        ('DEPD' , 'Deputy Director'),
-        ('MANA' , 'Manager'),
-        ('LEAD' , 'lead'),
-        ('SENG' , 'Senior Engineer'),
-        ('ENGI' , 'Engineer'),
-        ('TECH' , 'Technician'),
-        ('GENS' , 'General Staff'),
-    )
 
-    MANAGEMENT_RANK_CHOICE = (
-        ('NOTS' , 'Not Selected..'),
-        ('DIRE' , 'Director'),
-        ('DEPD' , 'Deputy Director'),
-        ('MANA' , 'Manager'),
-        ('DMAN' , 'Deputy Manager'),
-        ('EXEC' , 'Executive'),
-        ('ASSO' , 'Associate'),
-        ('GENS' , 'General Staff'),
-    )
-    DOMAIN_CHOICES = (
-        ('NA' , 'Not Assigned'),
-        ('AUTO' , 'Automotive'),
-        ('SERVICE' , 'Service'),
-        ('RND' , 'University'),
-        ('FMCG' , 'FMCG'),
-        ('POWER' , 'Power'),
-        ('PHARMA' , 'Pharmaceuticals'),
-        ('MANUFAC' , 'Manufacturing'),
-        ('TELE' , 'Tele Communications'),
-    )
+DOMAIN_CHOICES = (
+    ('NA' , 'Not Assigned'),
+    ('AUTO' , 'Automotive'),
+    ('SERVICE' , 'Service'),
+    ('RND' , 'University'),
+    ('FMCG' , 'FMCG'),
+    ('POWER' , 'Power'),
+    ('PHARMA' , 'Pharmaceuticals'),
+    ('MANUFAC' , 'Manufacturing'),
+    ('TELE' , 'Tele Communications'),
+)
+class designation(models.Model):
+
 
     """ One more field can be user here
     """
@@ -158,4 +159,4 @@ class userDesignation(models.Model):
     primaryApprover = models.ForeignKey(User, related_name = "approving" , null=True)
     secondaryApprover = models.ForeignKey(User , related_name = "alsoApproving" , null=True)
 
-User.designation = property(lambda u : userDesignation.objects.get_or_create(user = u)[0])
+User.designation = property(lambda u : designation.objects.get_or_create(user = u)[0])

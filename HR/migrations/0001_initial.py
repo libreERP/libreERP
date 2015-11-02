@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='userDesignation',
+            name='designation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('domainType', models.CharField(default=b'NOT', max_length=3, choices=[(b'NOT', b'Not selected..'), (b'RND', b'Research and Development'), (b'OPE', b'Operational'), (b'MAN', b'Management')])),
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='userProfile',
+            name='profile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('empID', models.PositiveIntegerField(unique=True, null=True)),

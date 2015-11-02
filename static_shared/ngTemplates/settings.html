@@ -23,7 +23,11 @@
     <hr>
     <h3>Change password</h3>
     <div class="form-group">
-      <label for="password">Password</label>
+      <label for="oldPassword">Old Password</label>
+      <input type="password" class="form-control" ng-model="settings.oldPassword" id="oldPassword" placeholder="Old Password">
+    </div>
+    <div class="form-group">
+      <label for="password">New Password</label>
       <input type="password" class="form-control" ng-model="settings.password" id="password" placeholder="Password">
     </div>
     <div class="form-group" ng-class="{'has-error' : settings.password!=settings.password2 && settings.password!=''}">

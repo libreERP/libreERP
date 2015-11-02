@@ -1,36 +1,37 @@
 app.factory('userProfileService', function(){
   var userProfiles = [];
-  if (typeof userProfiles["mySelf"]=="undefined") {
-    me = myProfile();
-    userProfiles["mySelf"] = me;
-    userProfiles[me.url] = me;
-  }
-
   return {
-    get : function(userUrl){
-      if (typeof userProfiles[userUrl]=="undefined") {
-        var user = getUser(userUrl);
-        userProfiles[userUrl]= user
+    get : function(userUrl , refetch){
+      if (typeof userProfiles[userUrl]=="undefined" || refetch) {
+        if (userUrl=='mySelf') {
+          me = myProfile();
+          userProfiles["mySelf"] = me;
+          userProfiles[me.url] = me;
+        } else {
+          var user = getUser(userUrl);
+          userProfiles[userUrl]= user
+        }
       }
       return userProfiles[userUrl];
     },
   }
 });
 
-app.filter('getDP' , function(userProfileService){
-  return function(userUrl){
-    user = userProfileService.get(userUrl);
-    return user.profile.displayPicture;
-  }
-})
+app.service('ngHttpSocket', ['$http', function ($http) {
+  this.uploadFileToUrl = function(data, uploadUrl){
 
+    $http.post(uploadUrl, data, {
+      transformRequest: angular.identity,
+      headers: {'Content-Type': undefined}
+    })
+    .success(function(){
+    })
+    .error(function(){
 
-app.filter('getName' , function(userProfileService){
-  return function(userUrl){
-    profile = userProfileService.get(userUrl);
-    return profile.first_name + ' ' + profile.last_name;
+    });
   }
-})
+}]);
+
 
 function myProfile(){
   var httpRequest = new XMLHttpRequest()

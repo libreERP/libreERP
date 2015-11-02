@@ -16,7 +16,7 @@ app.config(function($stateProvider){
 
   .state('admin.search', {
     url: "/search",
-    template: '<div> Loren Ipsum Text</div>',
+    templateUrl: '/static/ngTemplates/admin.search.html',
     controller: 'admin.search'
   })
 
@@ -28,48 +28,13 @@ app.config(function($stateProvider){
 
 });
 
-app.directive('genericForm', function () {
-  return {
-    templateUrl: '/genericForm.html',
-    restrict: 'E',
-    replace: true,
-    scope: {
-      template : '=',
-      submitFn : '&',
-      data :'=',
-      formTitle : '=',
-      wizard : '=',
-      maxPage : '=',
-    },
-    controller : function($scope , $state){
-      $scope.page = 1;
-      $scope.next = function(){
-        $scope.page +=1;
-        if ($scope.page>$scope.maxPage) {
-          $scope.page = $scope.maxPage;
-        }
-      }
-      $scope.prev = function(){
-        $scope.page -=1;
-        if ($scope.page<1) {
-          $scope.page = 1;
-        }
-      }
-    },
-  };
-});
-
 app.controller('admin' , function($scope , userProfileService){
-  // console.log(userProfileService.get('mySelf'));
+
+
 });
 
 app.controller('admin.manageUsers' , function($scope , $http , $aside){
   emptyFile = new File([""], "");
-  // $scope.profile = {'empID' : '', 'dateOfBirth' : '' , 'anivarsary' : '' , 'permanentAddressStreet' : '', 'permanentAddressCity' : '', 'permanentAddressPin' : '', 'permanentAddressState' : '', 'permanentAddressCountry' : '',
-  //     'localAddressStreet' : '', 'localAddressCity' : '', 'localAddressPin' : '', 'localAddressState' : '', 'localAddressCountry' : '', 'prefix' : '', 'gender' :'', 'email' : '', 'email2' : '', 'mobile' : '', 'emergency' : '',
-  //     'tele': '' , 'website': '' ,'sign' :emptyFile, 'IDPhoto' :emptyFile, 'TNCandBond' :emptyFile , 'resume' :emptyFile,  'certificates' :emptyFile, 'transcripts' :emptyFile, 'otherDocs' :emptyFile, 'almaMater' : '', 'pgUniversity' : '', 'docUniversity' : '', 'fathersName' : '',
-  //     'mothersName' : '', 'wifesName' : '', 'childCSV': '','note1' : '' , 'note2' : '', 'note3': '' };
-
   $scope.profileEditorUser = '/api/HR/userProfileAdminMode/1';
   $scope.editProfile = function(){
     console.log("Going to submit the profile data");
@@ -197,5 +162,43 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside){
 
 });
 app.controller('admin.search' , function($scope ){
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+      {name : 'thumbnail' , icon : 'fa-th-large' , template : '/static/ngTemplates/empSearch/tableThumbnail.html'},
+      {name : 'icon' , icon : 'fa-th' , template : '/static/ngTemplates/empSearch/tableIcon.html'},
+      {name : 'graph' , icon : 'fa-pie-chart' , template : '/static/ngTemplates/empSearch/tableGraph.html'}
+    ];
+
+  $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
+    others : [{icon : '' , text : 'social' },
+      {icon : '' , text : 'learning' },
+      {icon : '' , text : 'leaveManagement' },
+      {icon : '' , text : 'editProfile' },
+      {icon : '' , text : 'editDesignation' }]
+    };
+
+  $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
+    {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
+    {icon : 'fa fa-envelope-o' , text : 'message' }
+  ];
+
+  $scope.tableAction = function(urls , action , mode){
+    console.log(mode);
+    console.log(action);
+    console.log(urls);
+    if (typeof mode == 'undefined') {
+      if (action == 'im') {
+        var scope = angular.element(document.getElementById('instantMessangerCtrl')).scope();
+        scope.$apply(function() {
+          scope.addIMWindow(urls);
+        });
+      }
+      // for the single select actions
+    } else {
+      if (mode == 'multi') {
+
+      }
+    }
+  }
+
 
 });

@@ -17,17 +17,27 @@ app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state
 ]);
 
 // Main controller is mainly for the Navbar and also contains some common components such as clipboad etc
-app.controller('main' , function($scope , $state , userProfileService , $aside){
+app.controller('main' , function($scope , $state , userProfileService , $aside , $http){
   $scope.me = userProfileService.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
+
+  $http({method : 'GET' , url : $scope.me.settings}).
+  then(function(response){
+    for(key in response.data.theme){
+      if (key !='url') {
+        console.log(key);
+        $scope.themeObj[key] = response.data.theme[key];
+      }
+    }
+  } , function(response){});
+
   $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   $scope.$watchGroup(['themeObj.main' , 'themeObj.highlight'] , function(newValue , oldValue){
     $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   })
-
-
-  $scope.openSettings = function(position, backdrop , theme) {
+  settings = {theme : $scope.themeObj , mobile : $scope.me.profile.mobile };
+  $scope.openSettings = function(position, backdrop , data ) {
     $scope.asideState = {
       open: true,
       position: position
@@ -35,6 +45,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside){
 
     function postClose() {
       $scope.asideState.open = false;
+      $scope.me = userProfileService.get('mySelf' , true)
     }
 
     $aside.open({
@@ -44,60 +55,118 @@ app.controller('main' , function($scope , $state , userProfileService , $aside){
       backdrop: backdrop,
       controller: function($scope, $modalInstance , userProfileService , $http) {
         emptyFile = new File([""], "");
-        $scope.settings = {displayPicture : emptyFile , theme : theme}
+        $scope.settings = settings;
+        $scope.settings.displayPicture = emptyFile;
         $scope.me = userProfileService.get('mySelf');
         $scope.statusMessage = '';
         $scope.settings.password='';
         $scope.cancel = function(e) {
           $modalInstance.dismiss();
-          e.stopPropagation();
+          // e.stopPropagation();
         };
+
+        $scope.successMsg = function(response){
+          $scope.statusMessage = response.status + ' : ' + response.statusText;
+          $scope.httpStatus = 'success';
+          setTimeout(function () {
+            $scope.statusMessage = '';
+            $scope.httpStatus = '';
+            $scope.$apply();
+          }, 4000);
+        }
+        $scope.errorMsg = function(response){
+          $scope.httpStatus = 'danger';
+          $scope.statusMessage = response.status + ' : ' + response.statusText;
+          setTimeout(function () {
+            $scope.statusMessage = '';
+            $scope.httpStatus = '';
+            $scope.$apply();
+          }, 4000);
+        }
         $scope.saveSettings = function(){
-          var fd = new FormData();
-          for(key in $scope.settings){
-            if ($scope.settings[key] == emptyFile) {
-            }else{
-              if ($scope.settings.password!='' && $scope.settings.password != $scope.settings.password2) {
-                $scope.statusMessage = 'Password does not match';
-                $scope.httpStatus = 'danger';
-                setTimeout(function () {
-                  $scope.statusMessage = '';
-                  $scope.httpStatus = '';
-                  $scope.$apply();
-                }, 4000);
-                return;
-              }
-              if (typeof $scope.settings[key] =='object' && typeof $scope.settings[key].size == 'undefined'&& typeof $scope.settings[key].name == 'undefined' ) {
-                val = $scope.settings[key];
-                for(key2 in val){
-                  fd.append( key2 , val[key2]);
-                }
-              }else if(key.indexOf('password')==-1){
-                fd.append( key , $scope.settings[key]);
-              }
-            }
+          console.log($scope.settings);
+          var fdProfile = new FormData();
+          if ($scope.settings.displayPicture != emptyFile) {
+            fdProfile.append('displayPicture'  , $scope.settings.displayPicture);
           }
-          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
-          then(function(response){
-            $scope.statusMessage = response.status + ' : ' + response.statusText;
-            $scope.httpStatus = 'success';
-            setTimeout(function () {
-              $scope.statusMessage = '';
-              $scope.httpStatus = '';
-              $scope.$apply();
-            }, 4000);
-          },function(response){
-            $scope.httpStatus = 'danger';
-            $scope.statusMessage = response.status + ' : ' + response.statusText;
-            setTimeout(function () {
-              $scope.statusMessage = '';
-              $scope.httpStatus = '';
-              $scope.$apply();
-            }, 4000);
+          if (isNumber($scope.settings.mobile)) {
+            fdProfile.append('mobile' , $scope.settings.mobile);
+          }
+          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).then(function(){
+
+            $http({method : 'PATCH' , url : $scope.me.settings, data : {presence : "Busy"  , user : $scope.me.url}}).
+            then(function(response){
+              $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).then($scope.successMsg,$scope.errorMsg);});
+            if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {
+              $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).then($scope.successMsg,$scope.errorMsg);
+            }
           });
+
         }
       }
     }).result.then(postClose, postClose);
   }
+
+  // $scope.fetchNotifications = function() {
+  //   // console.log("going to fetch notifictions");
+  //   $scope.method = 'GET';
+  //   $scope.url = '/api/notification/';
+  //   $scope.notifications = [];
+  //   $scope.notificationCount =0;
+  //   $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
+  //     then(function(response) {
+  //       $scope.notificationFetchStatus = response.status;
+  //       // console.log(response);
+  //       $scope.notificationCount = response.data.length;
+  //       for (var i = 0; i < response.data.length; i++) {
+  //         var notification = response.data[i]
+  //         $scope.notifications.push(notification)
+  //       }
+  //     }, function(response) {
+  //       $scope.notificationFetchStatus = response.status;
+  //   });
+  // };
+  // $scope.usersProfile = [];
+  // $scope.fetchMessages = function() {
+  //   $scope.method = 'GET';
+  //   $scope.url = '/api/chatMessage/';
+  //   $scope.ims = [];
+  //   $scope.imsCount = 0;
+  //   var senders = [];
+  //   $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
+  //     then(function(response) {
+  //       $scope.messageFetchStatus = response.status;
+  //       $scope.imsCount = response.data.length;
+  //       // console.log(response.data);
+  //       for (var i = 0; i < response.data.length; i++) {
+  //         var im = response.data[i];
+  //         // console.log(senders.indexOf(im.originator));
+  //         if (im.originator != null){
+  //           if (senders.indexOf(im.originator) ==-1){
+  //             $scope.ims.push(im);
+  //             senders.push(im.originator);
+  //             $scope.ims[senders.indexOf(im.originator)].count =1;
+  //           }else{
+  //           $scope.ims[senders.indexOf(im.originator)].count +=1;
+  //           }
+  //         }
+  //         // console.log(senders);
+  //         // console.log($scope.ims);
+  //       }
+  //     }, function(response) {
+  //       $scope.messageFetchStatus = response.status;
+  //   });
+  // };
+  // $scope.fetchNotifications();
+  // $scope.fetchMessages();
+  // $scope.openChatWindow = function(url){
+  //   // console.log(url);
+  //   // console.log("Will open the chat window");
+  //   var scope = angular.element(document.getElementById('instantMessangerCtrl')).scope();
+  //   // console.log(scope);
+  //   scope.$apply(function() {
+  //     scope.addIMWindow(url);
+  //   });
+  // }
 
 });
