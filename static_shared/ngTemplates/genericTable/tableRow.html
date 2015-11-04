@@ -3,9 +3,9 @@
   <td ng-repeat = "(key , val) in data" ><span ng-bind-html="val | explodeObj"></span></td>
   <td ng-if = "optionsShow">
     <div class="input-group-btn">
-      <a class="btn btn-default btn-sm" ng-click = "rowAction(data.url , options.main.text)"> <i class="fa {{options.main.icon}}"></i></a>
-      <a class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
-      <ul class="dropdown-menu pull-right">
+      <a class="btn btn-default btn-sm" ng-click = "rowAction(data.url , options.main.text)"> <i class="fa {{options.main.icon}}"></i> {{options.main.text | uppercase}}</a>
+      <a ng-if="otherOptions" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+      <ul ng-if="otherOptions" class="dropdown-menu pull-right">
         <li ng-repeat="option in options.others"><a href="" ng-click = "rowAction(data.url , option.text)">{{option.text | humanize}}</a></li>
       </ul>
     </div>

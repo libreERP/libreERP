@@ -26,7 +26,6 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   then(function(response){
     for(key in response.data.theme){
       if (key !='url') {
-        console.log(key);
         $scope.themeObj[key] = response.data.theme[key];
       }
     }
@@ -53,7 +52,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
       placement: position,
       size: 'md',
       backdrop: backdrop,
-      controller: function($scope, $modalInstance , userProfileService , $http) {
+      controller: function($scope, $uibModalInstance  , userProfileService , $http) {
         emptyFile = new File([""], "");
         $scope.settings = settings;
         $scope.settings.displayPicture = emptyFile;
@@ -61,7 +60,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
         $scope.statusMessage = '';
         $scope.settings.password='';
         $scope.cancel = function(e) {
-          $modalInstance.dismiss();
+          $uibModalInstance.dismiss();
           // e.stopPropagation();
         };
 
@@ -84,7 +83,6 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
           }, 4000);
         }
         $scope.saveSettings = function(){
-          console.log($scope.settings);
           var fdProfile = new FormData();
           if ($scope.settings.displayPicture != emptyFile) {
             fdProfile.append('displayPicture'  , $scope.settings.displayPicture);
@@ -107,66 +105,87 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     }).result.then(postClose, postClose);
   }
 
-  // $scope.fetchNotifications = function() {
-  //   // console.log("going to fetch notifictions");
-  //   $scope.method = 'GET';
-  //   $scope.url = '/api/notification/';
-  //   $scope.notifications = [];
-  //   $scope.notificationCount =0;
-  //   $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
-  //     then(function(response) {
-  //       $scope.notificationFetchStatus = response.status;
-  //       // console.log(response);
-  //       $scope.notificationCount = response.data.length;
-  //       for (var i = 0; i < response.data.length; i++) {
-  //         var notification = response.data[i]
-  //         $scope.notifications.push(notification)
-  //       }
-  //     }, function(response) {
-  //       $scope.notificationFetchStatus = response.status;
-  //   });
-  // };
-  // $scope.usersProfile = [];
-  // $scope.fetchMessages = function() {
-  //   $scope.method = 'GET';
-  //   $scope.url = '/api/chatMessage/';
-  //   $scope.ims = [];
-  //   $scope.imsCount = 0;
-  //   var senders = [];
-  //   $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
-  //     then(function(response) {
-  //       $scope.messageFetchStatus = response.status;
-  //       $scope.imsCount = response.data.length;
-  //       // console.log(response.data);
-  //       for (var i = 0; i < response.data.length; i++) {
-  //         var im = response.data[i];
-  //         // console.log(senders.indexOf(im.originator));
-  //         if (im.originator != null){
-  //           if (senders.indexOf(im.originator) ==-1){
-  //             $scope.ims.push(im);
-  //             senders.push(im.originator);
-  //             $scope.ims[senders.indexOf(im.originator)].count =1;
-  //           }else{
-  //           $scope.ims[senders.indexOf(im.originator)].count +=1;
-  //           }
-  //         }
-  //         // console.log(senders);
-  //         // console.log($scope.ims);
-  //       }
-  //     }, function(response) {
-  //       $scope.messageFetchStatus = response.status;
-  //   });
-  // };
-  // $scope.fetchNotifications();
-  // $scope.fetchMessages();
-  // $scope.openChatWindow = function(url){
-  //   // console.log(url);
-  //   // console.log("Will open the chat window");
-  //   var scope = angular.element(document.getElementById('instantMessangerCtrl')).scope();
-  //   // console.log(scope);
-  //   scope.$apply(function() {
-  //     scope.addIMWindow(url);
-  //   });
-  // }
+  $scope.fetchNotifications = function() {
+    // console.log("going to fetch notifictions");
+    $scope.method = 'GET';
+    $scope.url = '/api/PIM/notification/';
+    $scope.notifications = [];
+    $http({method: $scope.method, url: $scope.url}).
+      then(function(response) {
+        $scope.notificationFetchStatus = response.status;
+        for (var i = 0; i < response.data.length; i++) {
+          var notification = response.data[i]
+          $scope.notifications.push(notification)
+        }
+      }, function(response) {
+        $scope.notificationFetchStatus = response.status;
+    });
+  };
+  $scope.fetchMessages = function() {
+    $scope.method = 'GET';
+    $scope.url = '/api/PIM/chatMessage/';
+    $scope.ims = [];
+    var senders = [];
+    $http({method: $scope.method, url: $scope.url}).
+      then(function(response) {
+        $scope.messageFetchStatus = response.status;
+        // console.log(response.data);
+        peopleInvolved = [];
+        for (var i = 0; i < response.data.length; i++) {
+          var im = response.data[i];
+          if (im.originator == $scope.me.url) {
+            if (peopleInvolved.indexOf(im.user)==-1) {
+              peopleInvolved.push(im.user)
+            }
+          } else{
+            if (peopleInvolved.indexOf(im.originator)==-1) {
+              peopleInvolved.push(im.originator)
+            }
+          }
+        }
+        for (var i = 0; i < peopleInvolved.length; i++) {
+          for (var j = 0; j < response.data.length; j++) {
+            var im = response.data[j];
+            var friend = peopleInvolved[i];
+            if (friend==im.originator || friend==im.user) {
+              count = 0;
+              for (var k = 0; k < response.data.length; k++) {
+                im2 = response.data[k]
+                if (im2.originator == friend || im2.user == friend) {
+                  count += 1;
+                }
+              }
+              im.count = count;
+              $scope.ims.push(im);
+              break;
+            }
+          }
+        }
+      }, function(response) {
+        $scope.messageFetchStatus = response.status;
+    });
+  };
+  $scope.fetchNotifications();
+  $scope.fetchMessages();
+
+  $scope.imWindows = [ ]
+
+  $scope.addIMWindow = function(url){
+    if ($scope.imWindows.length<=4) {
+      for (var i = 0; i < $scope.imWindows.length; i++) {
+        if ($scope.imWindows[i].url == url) {
+          return;
+        }
+      }
+      me = userProfileService.get("mySelf");
+      if (url != me.url.split('?')[0]) {
+        friend = userProfileService.get(url)
+        $scope.imWindows.push({url:url , username : friend.username});
+      }
+    }
+  }
+  $scope.closeIMWindow = function(pos){
+    $scope.imWindows.splice(pos, 1);
+  }
 
 });

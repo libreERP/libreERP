@@ -30,23 +30,23 @@
     				<li><img class="img-responsive" width="200px" alt="profile-pic" ng-src="{{me.profile.displayPicture}}" style="top:-5px; position:relative; width:200px"></li>
     				<li><div style="text-align:center; -moz-user-select: none;">{{me.email}}</br><small>(HR Associate)</small></div></li>
     				<li role="separator" class="divider"></li>
-    				<li><a href="" ng-click="openSettings('right' , false , settings )"><i class="fa fa-gears"></i> Settings</a></li>
-            <li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+    				<li><a href="" ng-click="openSettings('right' , false , settings )"><i class="fa fa-gears fa-fw"></i> Settings</a></li>
+            <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
     				<li role="separator" class="divider"></li>
-    				<li><a href="#"><i class="fa fa-question"></i> Help</a></li>
-    				<li><a href="#"> <i class="fa fa-info"></i> About</a></li>
+    				<li><a href="#"><i class="fa fa-question fa-fw"></i> Help</a></li>
+    				<li><a href="#"> <i class="fa fa-info fa-fw"></i> About</a></li>
   			  </ul>
   			</li>
   		</ul>
       <ul class = "nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" style="width:55px" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope-o fa-lg"></i><span class="label label-success" style="position: absolute;top: 5px;">0</span></a>
+          <a class="dropdown-toggle" data-toggle="dropdown" style="width:55px" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-envelope-o fa-lg"></i><span class="label label-success" style="position: absolute;top: 5px;">{{ims.length}}</span></a>
           <ul class="dropdown-menu navDropDownList">
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="nav" style="position:relative; top:-5px;">
                 <div ng-repeat="message in ims">
-                <!-- <message-strip data = "message" open-chat="openChatWindow(message.originator)"></message-strip> -->
+                <message-strip data = "message" open-chat="addIMWindow"></message-strip>
                 </div>
               </ul>
             </li>
@@ -54,14 +54,14 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown-toggle" style="width:55px" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-flag-o fa-lg"></i><span class="label label-warning" style="position: absolute;top: 5px;">0</span></a>
+          <a class="dropdown-toggle" style="width:55px" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-flag-o fa-lg"></i><span class="label label-warning" style="position: absolute;top: 5px;">{{notifications.length}}</span></a>
           <ul class="dropdown-menu navDropDownList">
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="nav" style="position:relative; top:-5px;">
                 <div ng-repeat="notice in notifications">
 
-                  <!-- <notification-strip data = "notice" ></notification-strip> -->
+                  <notification-strip data = "notice" ></notification-strip>
                 </div>
               </ul>
             </li>
@@ -72,3 +72,7 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+
+<div ng-repeat="friend in imWindows">
+  <chat-window friend-url="friend.url" pos="$index" id="chatWindow{{friend.username}}" cancel="closeIMWindow($index)"></chat-window>
+</div>

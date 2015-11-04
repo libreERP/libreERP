@@ -355,6 +355,11 @@ app.directive('tableRow', function () {
       }else{
         $scope.optionsShow = true;
       }
+      if (typeof $scope.options.others == 'undefined') {
+        $scope.otherOptions = false;
+      }else{
+        $scope.otherOptions = true;
+      }
     },
     // attrs is the attrs passed from the main scope
     link: function postLink(scope, element, attrs) {
@@ -367,11 +372,11 @@ app.directive('tableRow', function () {
 
 app.directive('messageStrip', function () {
   return {
-    template: '<li class="container-fluid navBarInfoList" ng-click="openChat()">'+
+    template: '<li class="container-fluid navBarInfoList" ng-click="openChat(friend)">'+
       '<a class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
-        '<img class="img-circle" ng-src="{{data.originator | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; top:-8px; "/>'+
+        '<img class="img-circle" ng-src="{{friend | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; top:-8px; "/>'+
         '<div class="col-md-10 pull-right" style="position: relative; top:-10px">'+
-          '<span class="text-muted">{{data.originator | getName}}</span> {{data.count | decorateCount}}<small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
+          '<span class="text-muted">{{friend | getName}}</span> {{data.count | decorateCount}}<small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
           '<br>{{data.message | limitTo:35}}'+
         '</div>'+
       '</a>'+
@@ -381,13 +386,15 @@ app.directive('messageStrip', function () {
     replace:true,
     scope:{
       data : '=',
-      openChat :'&',
+      openChat :'=',
     },
-    controller : function($scope){
-    },
-    // attrs is the attrs passed from the main scope
-    link: function postLink(scope, element, attrs) {
-
+    controller : function($scope , userProfileService){
+      $scope.me = userProfileService.get('mySelf');
+      if ($scope.me.url.split('?')[0]==$scope.data.originator) {
+        $scope.friend = $scope.data.user;
+      }else{
+        $scope.friend = $scope.data.originator;
+      }
     }
   };
 });
@@ -416,5 +423,138 @@ app.directive('notificationStrip', function () {
     link: function postLink(scope, element, attrs) {
 
     }
+  };
+});
+
+
+app.directive('chatWindow', function (userProfileService) {
+  return {
+    template: '<div class="chatWindow" style="height:{{toggle?500:36}}px;right:{{location}}px;">'+
+      '<div class="header">'+
+        '<div class="container-fluid">'+
+          '<i class="fa fa-circle onlineStatus"></i>'+
+          '<span class="username">{{friend.url | getName}}</span>'+
+          '<span class="pull-right"><i class="fa fa-chevron-down" ng-click="toggle=!toggle"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-close" ng-click= "cancel()"></i></span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="messageView container-fluid" ng-show="toggle" id="scrollArea{{pos}}">'+
+        '<div ng-repeat="message in ims">'+
+          '<div class="row" ng-if="!senderIsMe[$index]">'+
+            '<div class="col-md-3">'+
+              '<img class="img-responsive img-circle" ng-src="{{message.originator | getDP}}" width="40px" height="50px" alt="P" style="position:relative; top:10px;margin-left:5px;">'+
+            '</div>'+
+            '<div class="col-md-8 messageBubble"> <p style="word-wrap: break-word;">{{message.message}}</p>'+
+            '</div>'+
+          '</div>'+
+          // for the bubble with sender picture is on the left
+          '<div class="row" ng-if="senderIsMe[$index]">'+
+            '<div class="col-md-8 col-md-offset-1 messageBubble"> <p style="word-wrap: break-word;"> {{message.message}}</p>'+
+            '</div>'+
+            '<div class="col-md-3">'+
+              '<img class="img-responsive img-circle" ng-src="{{message.originator | getDP}}" width="40px" height="50px" alt="P" style="position:relative; top:10px;margin-left:5px;">'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="row" style="height:40px;">'+
+          '<span ng-show="isTyping" style = "padding:10px; id="typingStatus">Typing..</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="footer" ng-show="toggle">'+
+        '<div class="container-fluid">'+
+          '<input type="text" class="form-control" name="name" value="" style="width:100%"  ng-enter="send()" ng-model="messageToSend"></input>'+
+        '</div>'+
+      '</div>'+
+    '</div>',
+    restrict: 'E',
+    transclude: true,
+    replace:true,
+    scope:{
+      friendUrl : '=',
+      pos : '=',
+      cancel :'&',
+    },
+    controller : function($scope ,$location,  $anchorScroll, $http, $templateCache, $timeout){
+      // console.log($scope.pos);
+      $scope.me = userProfileService.get("mySelf");
+      $scope.friend = userProfileService.get($scope.friendUrl);
+      // console.log($scope.friend);
+      $scope.isTyping = false;
+      $scope.toggle = true;
+      $scope.messageToSend = "";
+      $scope.status = "N"; // neutral / No action being performed
+      $scope.send = function(){
+        console.log("going to publish" + $scope.messageToSend);
+        msg = angular.copy($scope.messageToSend)
+        if (msg!="") {
+
+          $scope.status = "M"; // contains message
+          $scope.ims.push({message: msg , originator: $scope.me.url})
+          $scope.senderIsMe.push(true);
+          connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , msg , $scope.me.username], {}, {acknowledge: true}).then(
+            function (publication) {
+              dataToSend = {message:msg , user: $scope.friendUrl , read:false};
+              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/', cache: $templateCache})
+            },
+            function (error) {
+              dataToSend = {message:msg , user: $scope.friendUrl , read:false};
+              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/', cache: $templateCache})
+            }
+          );
+          $scope.messageToSend = "";
+        }
+      }; // send function
+      $scope.fetchMessages = function() {
+        $scope.method = 'GET';
+        $scope.url = '/api/PIM/chatMessageBetween/?other='+$scope.friend.username;
+        $scope.ims = [];
+        $scope.imsCount = 0;
+        $scope.senderIsMe = [];
+        $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
+          then(function(response) {
+            $scope.messageFetchStatus = response.status;
+            $scope.imsCount = response.data.length;
+            for (var i = 0; i < response.data.length; i++) {
+              var im = response.data[i];
+              sender = userProfileService.get(im.originator)
+              if (sender.username == $scope.me.username) {
+                $scope.senderIsMe.push(true);
+              }else {
+                $scope.senderIsMe.push(false);
+              }
+              $scope.ims.push(im);
+              // console.log($scope.ims.length);
+            }
+          }, function(response) {
+            $scope.messageFetchStatus = response.status;
+        });
+      };
+      $scope.fetchMessages();
+      $scope.scroll = function(){
+        var $id= $("#scrollArea"+$scope.pos);
+        $id.scrollTop($id[0].scrollHeight);
+      }
+    },
+    // attrs is the attrs passed from the main scope
+    link: function postLink(scope, element, attrs) {
+      scope.$watch('messageToSend', function(newValue , oldValue ){
+        // console.log("changing");
+        scope.status = "T"; // the sender is typing a message
+        if (newValue!="") {
+          connection.session.publish('service.chat.'+ scope.friend.username, [scope.status , scope.messageToSend , scope.me.username]);
+        }
+        scope.status = "N";
+      }); // watch for the messageTosend
+      scope.$watch('ims.length', function( ){
+        setTimeout( function(){
+          scope.scroll();
+        }, 500 );
+      });
+      scope.$watch('pos', function( newValue , oldValue){
+        // console.log(newValue);
+        scope.location = 30+newValue*320;
+        // console.log("setting the new position value");
+        // console.log();
+      });
+    } // link
   };
 });

@@ -1,7 +1,7 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html ng-app="app" ng-controller="main">
+<html ng-app="app" ng-controller="main" id="main">
   <head>
     <meta charset="utf-8">
     <title>LibreERP</title>
@@ -36,6 +36,10 @@
     <script src="{% static 'js/angular-aside.min.js' %}"></script>
     <script src="{% static 'js/autobahn.min.js' %}"></script>
     <!-- Custom JS files -->
+    <script type="text/javascript">
+      var wampBindName = "{{user.username}}";
+    </script>
+    <script src="{% static 'js/custom/wampProcessors.js' %}"></script>
     <script src="{% static 'js/custom/nativeJS.js' %}"></script>
     <script src="{% static 'js/custom/ngLibreERP.js' %}"></script>
     <script src="{% static 'js/custom/directives.js' %}"></script>
@@ -43,6 +47,7 @@
     <script src="{% static 'js/custom/services.js' %}"></script>
     <script src="{% static 'js/module.home.js' %}"></script>
     <script src="{% static 'js/module.admin.js' %}"></script>
-
+    <script type="text/javascript">
+  </script>
   </body>
 </html>

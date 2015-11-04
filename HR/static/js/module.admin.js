@@ -76,14 +76,6 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside){
     });
   }
 
-  $http({method :'OPTIONS' , url : '/api/HR/userProfileAdminMode'}).
-  then(function(response){
-    $scope.formData = response.data.actions.POST;
-    console.log(response.data.actions.POST);
-  } , function(response){
-    console.log(response);
-  });
-
   $http({method :'GET' , url : $scope.profileEditorUser}).
   then(function(response){
     $scope.profile = response.data;
@@ -169,11 +161,11 @@ app.controller('admin.search' , function($scope ){
     ];
 
   $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
-    others : [{icon : '' , text : 'social' },
-      {icon : '' , text : 'learning' },
-      {icon : '' , text : 'leaveManagement' },
-      {icon : '' , text : 'editProfile' },
-      {icon : '' , text : 'editDesignation' }]
+    // others : [{icon : '' , text : 'social' },
+    //   {icon : '' , text : 'learning' },
+    //   {icon : '' , text : 'leaveManagement' },
+    //   {icon : '' , text : 'editProfile' },
+    //   {icon : '' , text : 'editDesignation' }]
     };
 
   $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
@@ -187,10 +179,7 @@ app.controller('admin.search' , function($scope ){
     console.log(urls);
     if (typeof mode == 'undefined') {
       if (action == 'im') {
-        var scope = angular.element(document.getElementById('instantMessangerCtrl')).scope();
-        scope.$apply(function() {
-          scope.addIMWindow(urls);
-        });
+        $scope.$parent.$parent.addIMWindow(urls);
       }
       // for the single select actions
     } else {

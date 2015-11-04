@@ -39,7 +39,9 @@ function myProfile(){
   httpRequest.send(null);
   if (httpRequest.status === 200) { // successfully
     var temp = JSON.parse(httpRequest.responseText);
-    return temp[0];
+    me = temp[0];
+    me.url = me.url.split('?')[0]
+    return me;
   }
 }
 
@@ -53,6 +55,7 @@ function getUser(urlGet , mode){
   httpRequest.send(null);
   if (httpRequest.status === 200) { // successfully
     user = JSON.parse(httpRequest.responseText);
+    user.url = user.url.split('?')[0];
     return user
   }
 }
