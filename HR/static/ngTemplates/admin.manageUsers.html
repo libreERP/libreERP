@@ -12,19 +12,18 @@
           <generic-Form template="'/newUserForm.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
         </div>
       </uib-tab>
-      <uib-tab >
+      <uib-tab heading="Search" active="searchTabActive">
+        <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "'/api/HR/users/'" search="true"
+            primary-Search-Field="'username'" views='views' multiselect-Options = 'multiselectOptions' get-Params = "getParams"></generic-Table>
+      </uib-tab>
+      <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
         <uib-tab-heading>
-          Edit Profile <i class="fa fa-pencil"></i>
+          {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index)"></i>
         </uib-tab-heading>
-        <div class="col-md-6">
-          <generic-Form template="'/profileEditForm.html'" data="profile" submit-Fn="editProfile()" form-title="'Edit Profile'" wizard="true" max-page="5"></generic-Form>
+        <div ng-if="tab.app == 'profileEditor'">
+          <profile-Editor obj-Url="tab.objUrl"></profile-Editor>
         </div>
       </uib-tab>
-      <uib-tab heading="Edit Designation">
-        <div class="col-md-6">
-        </div>
-      </uib-tab>
-      <uib-tab heading="Other Settings">Static content</uib-tab>
     </uib-tabset>
   </div>
 </div>

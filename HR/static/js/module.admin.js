@@ -6,18 +6,15 @@ app.config(function($stateProvider){
     views: {
        "": {
           templateUrl: '/static/ngTemplates/admin.html',
-          controller: 'admin'
        },
        "menu@admin": {
           templateUrl: '/static/ngTemplates/adminMenu.html',
+        },
+        "@admin": {
+          template: '<h1>Dashboard</h1>',
+          controller : 'admin'
         }
     }
-  })
-
-  .state('admin.search', {
-    url: "/search",
-    templateUrl: '/static/ngTemplates/admin.search.html',
-    controller: 'admin.search'
   })
 
   .state('admin.manageUsers', {
@@ -29,73 +26,11 @@ app.config(function($stateProvider){
 });
 
 app.controller('admin' , function($scope , userProfileService){
-
+  
 
 });
 
 app.controller('admin.manageUsers' , function($scope , $http , $aside){
-  emptyFile = new File([""], "");
-  $scope.profileEditorUser = '/api/HR/userProfileAdminMode/1';
-  $scope.editProfile = function(){
-    console.log("Going to submit the profile data");
-    console.log($scope.profile);
-    var fd = new FormData();
-    for(key in $scope.profile){
-      if (key!='url' ) {
-        console.log('For the key '  + key + ' the value is ' + $scope.profile[key]);
-        if ($scope.profileFormStructure[key].type.indexOf('integer')!=-1 ) {
-          if ($scope.profile[key]!= null) {
-            fd.append( key , parseInt($scope.profile[key]));
-          }
-        }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
-          if ($scope.profile[key]!= null) {
-            fd.append( key , $scope.profile[key]);
-          }
-        }else{
-          fd.append( key , $scope.profile[key]);
-        }
-      }
-    }
-    $http({method : 'PATCH' , url : $scope.profileUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
-    then(function(response){
-      $scope.statusMessage = "Posted";
-      $scope.httpStatus = 'success';
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.httpStatus = '';
-        $scope.$apply();
-      }, 4000);
-    },function(response){
-      $scope.httpStatus = 'danger';
-      $scope.statusMessage = response.status + ' : ' + response.statusText;
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.httpStatus = '';
-        $scope.$apply();
-      }, 4000);
-    });
-  }
-
-  $http({method :'GET' , url : $scope.profileEditorUser}).
-  then(function(response){
-    $scope.profile = response.data;
-    console.log($scope.profile);
-    $http({method :'OPTIONS' , url : '/api/HR/userProfileAdminMode'}).
-    then(function(response){
-      $scope.profileFormStructure = response.data.actions.POST;
-      for(key in $scope.profileFormStructure){
-        if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
-          $scope.profile[key] = emptyFile;
-        }
-      }
-      console.log($scope.profile);
-      $scope.profileUrl = $scope.profile.url.replace('userProfile' , 'userProfileAdminMode')
-    } , function(response){
-      console.log(response);
-    });
-  } , function(response){
-    console.log(response);
-  });
 
   $scope.statusMessage = '';
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
@@ -123,37 +58,14 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside){
     });
   }
 
-  $scope.openAside = function(position, backdrop) {
-    $scope.asideState = {
-      open: true,
-      position: position
-    };
+  $scope.tabs = [];
+  $scope.searchTabActive = true;
 
-    function postClose() {
-      $scope.asideState.open = false;
-    }
-
-    $aside.open({
-      templateUrl: '/static/ngTemplates/admin.manageUsers.html',
-      placement: position,
-      size: 'lg',
-      backdrop: backdrop,
-      controller: function($scope, $modalInstance) {
-        $scope.ok = function(e) {
-          $modalInstance.close();
-          e.stopPropagation();
-        };
-        $scope.cancel = function(e) {
-          $modalInstance.dismiss();
-          e.stopPropagation();
-        };
-      }
-    }).result.then(postClose, postClose);
+  $scope.closeTab = function(index){
+    $scope.tabs.splice(index , 1)
   }
 
 
-});
-app.controller('admin.search' , function($scope ){
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
       {name : 'thumbnail' , icon : 'fa-th-large' , template : '/static/ngTemplates/empSearch/tableThumbnail.html'},
       {name : 'icon' , icon : 'fa-th' , template : '/static/ngTemplates/empSearch/tableIcon.html'},
@@ -161,11 +73,11 @@ app.controller('admin.search' , function($scope ){
     ];
 
   $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
-    // others : [{icon : '' , text : 'social' },
-    //   {icon : '' , text : 'learning' },
-    //   {icon : '' , text : 'leaveManagement' },
-    //   {icon : '' , text : 'editProfile' },
-    //   {icon : '' , text : 'editDesignation' }]
+    others : [{icon : '' , text : 'social' },
+      {icon : '' , text : 'learning' },
+      {icon : '' , text : 'leaveManagement' },
+      {icon : '' , text : 'editProfile' },
+      {icon : '' , text : 'editDesignation' }]
     };
 
   $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
@@ -173,13 +85,24 @@ app.controller('admin.search' , function($scope ){
     {icon : 'fa fa-envelope-o' , text : 'message' }
   ];
 
-  $scope.tableAction = function(urls , action , mode){
-    console.log(mode);
-    console.log(action);
-    console.log(urls);
+  $scope.tableAction = function(target , action , mode){
     if (typeof mode == 'undefined') {
       if (action == 'im') {
-        $scope.$parent.$parent.addIMWindow(urls);
+        $scope.$parent.$parent.addIMWindow(target);
+      } else if (action == 'editProfile') {
+        $scope.searchTabActive = false;
+        alreadyOpen = false;
+        for (var i = 0; i < $scope.tabs.length; i++) {
+          if ($scope.tabs[i].objUrl == target) {
+            $scope.tabs[i].active = true;
+            alreadyOpen = true;
+          }else{
+            $scope.tabs[i].active = false;
+          }
+        }
+        if (!alreadyOpen) {
+          $scope.tabs.push({title : 'Edit Profile' , cancel : true , app : 'profileEditor' , objUrl : target , active : true})
+        }
       }
       // for the single select actions
     } else {
@@ -188,6 +111,5 @@ app.controller('admin.search' , function($scope ){
       }
     }
   }
-
 
 });

@@ -1,5 +1,5 @@
 <div class="row container-fluid">
-  <div class="input-group">
+  <div class="input-group" style="padding-top:15px;">
     <input ng-show="searchShow" type="text" class="form-control" placeholder="Search" ng-model = "searchText">
     <div class="input-group-btn">
       <a ng-repeat = "view in views" ng-if="views.length > 1" class='btn btn-default ' ng-click = "changeView($index)"><i class="fa {{view.icon}}"></i></a>

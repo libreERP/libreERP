@@ -11,6 +11,79 @@ app.directive('breadcrumb', function () {
   };
 });
 
+app.directive('profileEditor', function () {
+  return {
+    templateUrl: '/profileEditor.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      objUrl :'=',
+    },
+    controller : function($scope , $http){
+      $scope.user = angular.copy($scope.objUrl);
+      $scope.user = $scope.user.replace('users' , 'profileAdminMode')
+      $scope.resourceUrl = '/api/HR/profileAdminMode'
+      emptyFile = new File([""], "");
+      method = 'options';
+      $http({method :method , url : $scope.resourceUrl}).
+      then(function(response){
+        $scope.profileFormStructure = response.data.actions.POST;
+        $http({method :'GET' , url : $scope.user}).
+        then(function(response){
+          $scope.profile = response.data;
+          for(key in $scope.profileFormStructure){
+            if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
+              $scope.profile[key] = emptyFile;
+            }
+          }
+          $scope.profileUrl = $scope.profile.url.replace('profile' , 'profileAdminMode')
+        } , function(response){});
+      }, function(response){});
+
+      $scope.updateProfile = function(){
+        console.log("Going to submit the profile data");
+        console.log($scope.profile);
+        var fd = new FormData();
+        for(key in $scope.profile){
+          if (key!='url' && $scope.profile[key] != null) {
+            if ($scope.profileFormStructure[key].type.indexOf('integer')!=-1 ) {
+              if ($scope.profile[key]!= null) {
+                fd.append( key , parseInt($scope.profile[key]));
+              }
+            }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
+              if ($scope.profile[key]!= null) {
+                fd.append( key , $scope.profile[key]);
+              }
+            }else if ($scope.profileFormStructure[key].type.indexOf('url')!=-1 && ($scope.profile[key]==null || $scope.profile[key]=='')) {
+              // fd.append( key , 'http://localhost');
+            }else{
+              fd.append( key , $scope.profile[key]);
+            }
+          }
+        }
+        $http({method : 'PATCH' , url : $scope.profileUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+        then(function(response){
+          $scope.statusMessage = "Posted";
+          $scope.httpStatus = 'success';
+          setTimeout(function () {
+            $scope.statusMessage = '';
+            $scope.httpStatus = '';
+            $scope.$apply();
+          }, 4000);
+        },function(response){
+          $scope.httpStatus = 'danger';
+          $scope.statusMessage = response.status + ' : ' + response.statusText;
+          setTimeout(function () {
+            $scope.statusMessage = '';
+            $scope.httpStatus = '';
+            $scope.$apply();
+          }, 4000);
+        });
+      }
+    },
+  };
+});
+
 app.directive('fileModel', ['$parse', function ($parse) {
   return {
     restrict: 'A',
@@ -53,6 +126,7 @@ app.directive('genericForm', function () {
       template : '=',
       submitFn : '&',
       data :'=',
+      objUrl : '=',
       formTitle : '=',
       wizard : '=',
       maxPage : '=',
