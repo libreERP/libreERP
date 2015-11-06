@@ -19,16 +19,18 @@ app.directive('profileEditor', function () {
     scope: {
       objUrl :'=',
     },
-    controller : function($scope , $http){
-      $scope.user = angular.copy($scope.objUrl);
-      $scope.user = $scope.user.replace('users' , 'profileAdminMode')
-      $scope.resourceUrl = '/api/HR/profileAdminMode'
+    controller : function($scope , $http , userProfileService){
+      $scope.userUrl = angular.copy($scope.objUrl);
+      user = userProfileService.get($scope.userUrl);
+      $scope.userUrl = $scope.userUrl.replace('users' , 'profileAdminMode');
+      $scope.resourceUrl = '/api/HR/profileAdminMode';
+      $scope.formTitle = 'Edit Profile for ' + user.first_name + ' ' + user.last_name;
       emptyFile = new File([""], "");
       method = 'options';
       $http({method :method , url : $scope.resourceUrl}).
       then(function(response){
         $scope.profileFormStructure = response.data.actions.POST;
-        $http({method :'GET' , url : $scope.user}).
+        $http({method :'GET' , url : $scope.userUrl}).
         then(function(response){
           $scope.profile = response.data;
           for(key in $scope.profileFormStructure){
@@ -168,6 +170,17 @@ app.directive('genericTable', function () {
       getParams :'=',
     },
     controller : function($scope , $http, $templateCache, $timeout , userProfileService , $aside) {
+      $scope.tableData = [];
+      $scope.searchText = '';
+      $scope.originalTable = [];
+      $scope.itemsNumPerView = [5, 10, 20];
+      $scope.itemsPerView = 5;
+      $scope.pageList = [1];
+      $scope.pageNo = 1; // default page number set to 0
+      $scope.viewMode = 'list';
+      $scope.numOfPagesPerView = 5;
+      $scope.viewMode = 0;
+
       if ( typeof $scope.multiselectOptions == 'undefined' || $scope.multiselectOptions.length ==0 ) {
         $scope.isSelectable = false;
       } else {
@@ -194,16 +207,6 @@ app.directive('genericTable', function () {
         }
       });
 
-      $scope.tableData = [];
-      $scope.searchText = '';
-      $scope.originalTable = [];
-      $scope.itemsNumPerView = [5, 10, 20];
-      $scope.itemsPerView = 5;
-      $scope.pageList = [1];
-      $scope.pageNo = 1; // default page number set to 0
-      $scope.viewMode = 'list';
-      $scope.numOfPagesPerView = 5;
-      $scope.viewMode = 0;
 
       $scope.changeView = function(mode){
         $scope.viewMode = mode;

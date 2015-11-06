@@ -1,0 +1,59 @@
+<div class="row">
+  <!-- Widget: user widget style 1 -->
+  <div class="box box-widget widget-user">
+    <!-- Add the bg color to the header using any of the bg-* classes -->
+    <div class="widget-user-header bg-black" style="background: url({{user.socialData.coverPic}}) no-repeat scroll center center / cover">
+    </div>
+    <div class="widget-user-image">
+      <img class="img-circle" ng-src="{{user.url | getDP}}">
+    </div>
+
+  </div><!-- /.widget-user -->
+</div>
+
+<div class="row">
+  <h4 class="profile-username text-center">{{user.url | getName}}</h4>
+  <ul class="list-group list-group-unbordered">
+    <li class="list-group-item">Projects <span class="pull-right badge bg-blue">31</span></li>
+    <li class="list-group-item">Tasks <span class="pull-right badge bg-aqua">5</span></li>
+    <li class="list-group-item">Completed Projects <span class="pull-right badge bg-green">12</span></li>
+    <li class="list-group-item">Followers <span class="pull-right badge bg-red">842</span></li>
+  </ul>
+  <div align="center" ng-if="!myProfile">
+    <a class="btn btn-success btn-sm"><i class="fa fa-user-plus"></i></a>
+    <a class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i></a>
+  </div>
+
+  <!-- About Me Box -->
+  <div class="box box-primary">
+    <div class="box-header with-border">
+      <h4 class="box-title">About Me</h4>
+      <p class="text-muted" align="justify">{{user.socialData.aboutMe}}</p>
+      <hr>
+    </div><!-- /.box-header -->
+    <div class="box-body">
+      <strong><i class="fa fa-book margin-r-5"></i>  Education</strong>
+      <br>
+      <br>
+      <p class="text-muted"> <i class="fa fa-minus"></i>
+        {{user.profile.almaMater}}
+      </p>
+      <br>
+      <hr>
+
+      <strong><i class="fa fa-flask margin-r-5"></i> Department</strong>
+      <p class="text-muted">{{user.designationData.department}}</p>
+
+      <hr>
+
+      <strong><i class="fa fa-file-text-o margin-r-5"></i> Status</strong>
+      <p class="text-muted">{{user.socialData.status}}</p>
+
+      <hr>
+
+      <strong><i class="fa fa-envelope margin-r-5"></i> Contact</strong>
+      <h5 class="description-text"><i class="fa fa-at"></i>{{user.username}} , <i class="fa fa-mobile"></i>&nbsp;&nbsp; {{user.profile.mobile}}</h5>
+    </div><!-- /.box-body -->
+  </div><!-- /.box -->
+</div>
+<!-- Profile Image -->

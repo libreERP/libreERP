@@ -14,7 +14,7 @@ class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:
         model = profile
-        fields = ( 'url' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity')
+        fields = ( 'url' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity' )
         read_only_fields = ('website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity' , )
 
 class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
@@ -30,7 +30,7 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
     profile = userProfileSerializer(many=False , read_only=True)
     class Meta:
         model = User
-        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' )
+        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' , 'social')
         read_only_fields = ('designation' , 'profile' , 'settings' , )
         extra_kwargs = {'password': {'write_only': True} }
 

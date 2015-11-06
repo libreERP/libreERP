@@ -5,6 +5,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'post' , postViewSet , base_name ='post')
+router.register(r'social' , socialViewSet , base_name ='social')
 router.register(r'picture' , pictureViewSet , base_name ='picture')
 router.register(r'album' , albumViewSet , base_name ='album')
 router.register(r'postComment' , postCommentsViewSet , base_name ='postcomment')

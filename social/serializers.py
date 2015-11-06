@@ -137,3 +137,8 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         if count==0: # if there wasn't any photo supplied or the photo does not owned by the sender
             a.delete()
         return a
+
+class socialSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = social
+        fields = ('url' , 'status' , 'aboutMe' , 'coverPic' )

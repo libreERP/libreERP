@@ -128,7 +128,7 @@ app.directive('post', function () {
               }
               dataToSend = {text: $scope.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
               // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-              $http({method: 'POST', data:dataToSend, url: '/api/socialPostComment/'}).
+              $http({method: 'POST', data:dataToSend, url: '/api/social/postComment/'}).
                 then(function(response) {
                   $scope.data.comments.push(response.data)
                   $scope.textToComment = "";
@@ -161,7 +161,7 @@ app.directive('post', function () {
               } else {
                 dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
                 // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-                $http({method: 'POST', data:dataToSend, url: '/api/socialPostLike/'}).
+                $http({method: 'POST', data:dataToSend, url: '/api/social/postLike/'}).
                   then(function(response) {
                     $scope.liked = true;
                     $scope.data.likes.push(response.data)
@@ -276,7 +276,7 @@ app.directive('album', function () {
               }
               dataToSend = {text: $scope.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
               // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-              $http({method: 'POST', data:dataToSend, url: '/api/socialPictureComment/'}).
+              $http({method: 'POST', data:dataToSend, url: '/api/social/pictureComment/'}).
                 then(function(response) {
                   $scope.textToComment = "";
                   $scope.data.comments.push(response.data)
@@ -310,7 +310,7 @@ app.directive('album', function () {
               } else {
                 dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
                 // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-                $http({method: 'POST', data:dataToSend, url: '/api/socialPictureLike/'}).
+                $http({method: 'POST', data:dataToSend, url: '/api/social/pictureLike/'}).
                   then(function(response) {
                     $scope.liked = true;
                     $scope.data.likes.push(response.data)
@@ -325,17 +325,45 @@ app.directive('album', function () {
     },
   };
 });
+app.directive('socialProfile', function () {
+  return {
+    templateUrl: '/static/ngTemplates/socialProfile.html',
+    restrict: 'E',
+    replace: false,
+    scope: {
+      userUrl : '=',
+    },
+    controller : 'socialProfileController',
+  };
+});
 
-app.controller('socialController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window) {
+app.controller('socialProfileController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window) {
+  emptyFile = new File([""], "");
 
-  $scope.me = userProfileService.get('mySelf');
-  $scope.user = $scope.me;
-  $scope.user.albums = userProfileService.social(user.username , 'albums');
-  $scope.user.posts = userProfileService.social(user.username , 'post');
-  $scope.user.pictures = userProfileService.social(user.username , 'pictures');
+  $scope.user = userProfileService.get($scope.userUrl, true);
+  $scope.user.albums = userProfileService.social($scope.user.username, 'albums');
+  $scope.user.posts = userProfileService.social($scope.user.username , 'post');
+  $scope.user.pictures = userProfileService.social($scope.user.username , 'pictures');
   $scope.droppedObjects = [];
+  $scope.data = {draggableObjects : []};
   $scope.statusMessage = '';
   $scope.picturePost = {photo : {}};
+  if ($scope.user.username == userProfileService.get('mySelf').username) {
+    $scope.myProfile = true;
+  }else {
+    $scope.myProfile = false;
+  }
+  $http({method:'GET' , url : $scope.user.social}).then(
+    function(response){
+      $scope.user.socialData = response.data;
+      $scope.user.socialData.coverPicFile = emptyFile;
+    }
+  )
+  $http({method:'GET' , url : $scope.user.designation}).then(
+    function(response){
+      $scope.user.designationData = response.data;
+    }
+  )
 
   $scope.refreshFeeds = function(){
 
@@ -357,7 +385,7 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
   $scope.refreshFeeds();
 
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
-  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : 'pradeep'}];
+  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
 
   $scope.removeFromTempAlbum = function(index){
     pic = $scope.droppedObjects[index];
@@ -379,7 +407,7 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
     for (var i = 0; i < $scope.droppedObjects.length; i++) {
       uri = $scope.droppedObjects[i].url.split('/?')[0];
       // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
-      pk = uri.split('socialPicture/')[1];
+      pk = uri.split('picture/')[1];
       $scope.tempAlbum.photos.push(pk);
     }
     dataToPost = {
@@ -388,7 +416,7 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
       photos : $scope.tempAlbum.photos,
     };
     // console.log(dataToPost);
-    $http({method: 'POST' , data : dataToPost , url : '/api/socialAlbum/'}).
+    $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
       $scope.tempAlbum = {title : '' , photos: []};
       $scope.droppedObjects = [];
@@ -421,8 +449,8 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
     var index = $scope.droppedObjects.indexOf(data);
     if (index == -1){
       $scope.droppedObjects.push(data);
-      var index = $scope.draggableObjects.indexOf(data);
-      $scope.draggableObjects.splice(index , 1);
+      var index = $scope.data.draggableObjects.indexOf(data);
+      $scope.data.draggableObjects.splice(index , 1);
     }
   }
   var f = new File([""], "");
@@ -432,7 +460,7 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
     fd.append('attachment', $scope.post.attachment);
     fd.append('text' , $scope.post.text );
     fd.append('user' , $scope.me.url);
-    var uploadUrl = "/api/socialPost/";
+    var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       $scope.post = {attachment : f , text: ''};
@@ -462,7 +490,7 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
     fd.append('photo', $scope.picturePost.photo);
     fd.append('tagged' , '');
     fd.append('user' , $scope.me.url);
-    var uploadUrl = "/api/socialPicture/";
+    var uploadUrl = "/api/social/picture/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       $scope.picturePost = {photo : {}};
@@ -487,9 +515,44 @@ app.controller('socialController', function($scope , $http , $timeout , userProf
       }, 4000);
     });
   };
+  $scope.saveSocial = function(){
+
+    var fd = new FormData();
+    fd.append('status', $scope.user.socialData.status);
+    if ($scope.user.socialData.coverPicFile != emptyFile) {
+      fd.append('coverPic', $scope.user.socialData.coverPicFile);
+    }
+    fd.append('aboutMe' , $scope.user.socialData.aboutMe);
+    var uploadUrl = $scope.user.social;
+    $http({method : 'PATCH' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      $scope.picturePost = {photo : {}};
+      $scope.statusMessage = "Saved";
+      if ($scope.user.url == $scope.me.url) {
+        $scope.user.pictures.push(response.data);
+        $scope.status = 'success';
+      }
+      setTimeout(function () {
+        $scope.statusMessage = '';
+        $scope.status = '';
+        $scope.$apply();
+      }, 4000);
+
+    },function(response){
+      $scope.status = 'danger';
+      $scope.statusMessage = response.status + ' : ' +  response.statusText;
+      setTimeout(function () {
+        $scope.statusMessage = '';
+        $scope.status = '';
+        $scope.$apply();
+      }, 4000);
+    });
+  };
 });
 
-scroll = function(element){
-  var $id= $(element);
-  $id.scrollTop($id[0].scrollHeight);
-}
+app.controller('socialController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , $state) {
+  $scope.user = userProfileService.get('mySelf').url.split('users/')[0]+'users/'+$state.params.id+'/';
+  if ($state.params.id == '') {
+    $scope.user = userProfileService.get('mySelf').url;
+  }
+});

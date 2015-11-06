@@ -22,9 +22,9 @@ app.config(function($stateProvider ){
     controller: 'home.mail'
   })
   .state('home.social', {
-    url: "/social",
-    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
-    controller: 'home.social'
+    url: "/social/:id",
+    templateUrl: '/static/ngTemplates/app.social.html',
+    controller: 'socialController'
   })
   .state('home.news', {
     url: "/news",

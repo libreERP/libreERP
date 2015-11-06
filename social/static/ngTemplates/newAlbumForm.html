@@ -1,0 +1,38 @@
+<div class="row container-fluid" style="height:700px;margin-top:15px;">
+  <div class="col-md-9">
+    <div class="row">
+      <div class="container-fluid" style="margin-top:10px;">
+        <form class="form-horizontal" name = "postForm" ng-submit= "publishPost()">
+          <div class="form-group">
+            <label class="control-label col-sm-3" for="post">Album Name:</label>
+            <div class="col-md-9">
+              <div class="input-group">
+                <input type="text" name="albumTitle" value="" class="form-control " ng-model="tempAlbum.title"></input>
+                <span class="input-group-btn">
+                  <button type="button" ng-click="createAlbum()" class="btn btn-success ">Create</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div style="display:block;box-sizing:border-box;height:700px;padding:10px;">
+        <generic-Table resource-Url = "'/api/social/picture/'" search="false" views='views' get-Params = "getParams" table-Data="data.draggableObjects"></generic-Table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div style="border: 1px #3d9483 solid; display:block;box-sizing:border-box;height:700px;overflow:auto;" ng-drop="true" ng-drop-success="onDropComplete($data,$event)">
+      <div ng-repeat="obj in droppedObjects" ng-drag-data="obj" data-allow-transform="true">
+        <div class="container" style="position:relative; width:100%; padding:20px;" ng-mouseover="deleteObjOption=true" ng-mouseleave="deleteObjOption=false">
+          <span>
+            <i ng-show="deleteObjOption" ng-click = "removeFromTempAlbum($index)" class="fa fa-times-circle fa-3x" style="position:absolute;top:0px;right:0px;text-align: center;;z-index:10;cursor:pointer"></i>
+          </span>
+          <img height="auto" width="100%" ng-src="{{obj.photo}}" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,6 @@ body {
   background-color: #eee;
   padding-top:70px;
 }
-
 .nav-sidebar{
   background-color: var(--verticalNavbarBg);
 }
@@ -13,9 +12,12 @@ body {
   color: #fff;
   background-color: var(--themeMain);
 }
-.nav-sidebar> li > a:hover, .nav-sidebar > li >a:focus {
+.nav-sidebar> li > a:hover, .nav-sidebar > li >a:focus , .sidebarList> li > a:focus , .sidebarList> li > a:active{
 	background-color: var(--themeMain);
 	color: #fff;
+}
+.sidebarList> li > a {
+	color:#337AB7;
 }
 
 .breadcrumb {

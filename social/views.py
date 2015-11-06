@@ -7,6 +7,7 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from django.shortcuts import render
 from .serializers import *
 from .models import *
+from API.permissions import *
 
 # Create your views here.
 class postViewSet(viewsets.ModelViewSet):
@@ -64,3 +65,8 @@ class pictureLikesViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = pictureLikeSerializer
     queryset = pictureLike.objects.all()
+
+class socialViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, isOwnerOrReadOnly)
+    serializer_class = socialSerializer
+    queryset = social.objects.all()

@@ -58,3 +58,13 @@ class pictureLike(like):
     parent = models.ForeignKey(picture , related_name  = 'likes')
 class pictureComment(comment):
     parent = models.ForeignKey(picture , related_name = 'comments')
+    
+def getSocialCoverPictureUploadPath(instance , filename ):
+    return 'social/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
+class social(models.Model):
+    user = models.OneToOneField(User)
+    aboutMe = models.TextField(max_length = 1000 , null = True)
+    status = models.CharField(max_length = 100 , null = True) # social status
+    coverPic = models.ImageField(upload_to = getSocialCoverPictureUploadPath , null = True , blank = True)
+
+User.social = property(lambda u : social.objects.get_or_create(user = u)[0])

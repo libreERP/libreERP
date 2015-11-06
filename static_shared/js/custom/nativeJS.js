@@ -23,7 +23,10 @@ range = function(min, max, step){
   return input;
 };
 
-
+scroll = function(element){
+  var $id= $(element);
+  $id.scrollTop($id[0].scrollHeight);
+}
 
 function isNumber(num){
   if (typeof num=='string') {

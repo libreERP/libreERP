@@ -1,0 +1,78 @@
+<div class="col-md-3">
+  <div ng-include = "'/static/ngTemplates/profileInfoCol.html'"></div>
+</div>
+<div class="col-md-9">
+    <!-- Custom Tabs -->
+  <uib-tabset>
+    <uib-tab heading="Activity" >
+      <div style="margin-top:15px;">
+        <ul class="timeline timeline-inverse">
+          <div ng-repeat="feed in sortedFeeds">
+            <post ng-if ="feed.type=='post'" data = "user.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
+            <album ng-if = "feed.type == 'album'" data = "user.albums[feed.index]"></album>
+          </div>
+        </ul>
+      </div>
+    </uib-tab>
+    <uib-tab class="pull-right" ng-if="myProfile">
+      <uib-tab-heading>
+        <i class="fa fa-plus"></i>
+      </uib-tab-heading>
+      <div style="margin-top:15px;">
+        <div ng-hide="statusMessage==''" class="alert alert-{{status}} fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>{{statusMessage}}</div>
+        <uib-tabset justified="true">
+          <uib-tab heading="Post" >
+            <uib-tab-heading>
+              <i class="fa fa-comment-o"></i>  Post
+            </uib-tab-heading>
+            <div style="margin-top:15px;">
+              <div ng-include="'/static/ngTemplates/newPostForm.html'"></div>
+            </div>
+          </uib-tab>
+          <uib-tab >
+            <uib-tab-heading>
+              <i class="fa fa-picture-o"></i>  Picture
+            </uib-tab-heading>
+            <div style="margin-top:15px;">
+              <div ng-include="'/static/ngTemplates/newPictureForm.html'"></div>
+            </div>
+          </uib-tab>
+          <uib-tab heading="Album" >
+            <uib-tab-heading>
+              <i class="fa fa-th-large"></i>  Album
+            </uib-tab-heading>
+            <div ng-include="'/static/ngTemplates/newAlbumForm.html'"></div>
+          </uib-tab>
+          <uib-tab heading="Album" >
+            <uib-tab-heading>
+              <i class="fa fa-black-tie"></i>  Profile
+            </uib-tab-heading>
+            <div style="margin-top:15px;">
+              <form class="form-horizontal" name = "postForm" ng-submit= "saveSocial()">
+                <div class="form-group">
+                  <label class="control-label col-sm-3" for="about">About me:</label>
+                  <div class="col-md-7">
+                    <textarea type="text" rows="3" name="about" value="" class="form-control " required ng-model="user.socialData.aboutMe"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-3" for="status">Status:</label>
+                  <div class="col-md-7">
+                    <textarea type="text" rows="2" name="status" value="" class="form-control " required ng-model="user.socialData.status"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-sm-3" for="cover">Cover Picture:</label>
+                  <div class="col-sm-7">
+                    <input type="file" name="cover" file-model="user.socialData.coverPicFile">
+                  </div>
+                </div>
+                <button type="submit" class = "btn btn-primary pull-right" name="button">Save</button>
+              </form>
+            </div>
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </uib-tab>
+  </uib-tabset>
+</div>

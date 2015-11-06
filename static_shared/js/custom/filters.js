@@ -136,6 +136,9 @@ app.filter('decorateCount' , function(){
 
 app.filter('getDP' , function(userProfileService){
   return function(userUrl){
+    if (typeof userUrl == 'undefined') {
+      return ;
+    }
     user = userProfileService.get(userUrl);
     return user.profile.displayPicture;
   }
@@ -144,7 +147,9 @@ app.filter('getDP' , function(userProfileService){
 
 app.filter('getName' , function(userProfileService){
   return function(userUrl){
-    console.log(userUrl);
+    if (typeof userUrl == 'undefined') {
+      return '';
+    }
     profile = userProfileService.get(userUrl);
     return profile.first_name + ' ' + profile.last_name;
   }

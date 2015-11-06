@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="/profileEditor.html">
   <div class="col-md-6">
-    <generic-Form template="'/profileEditForm.html'" data="profile" submit-Fn="updateProfile()" form-title="'Edit Profile for '" obj-Url="objUrl" wizard="true" max-page="5"></generic-Form>
+    <generic-Form template="'/profileEditForm.html'" data="profile" submit-Fn="updateProfile()" form-title="formTitle" obj-Url="objUrl" wizard="true" max-page="5"></generic-Form>
   </div>
 </script>
 
@@ -34,7 +34,7 @@
 
 <script type="text/ng-template" id="/genericForm.html">
   <form ng-submit="submitFn()">
-    <h3>{{formTitle}} {{objUrl | getName}}</h3>
+    <h3>{{formTitle}} </h3>
 
     </hr>
     <nav ng-if="wizard">

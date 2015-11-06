@@ -26,11 +26,11 @@ app.config(function($stateProvider){
 });
 
 app.controller('admin' , function($scope , userProfileService){
-  
+
 
 });
 
-app.controller('admin.manageUsers' , function($scope , $http , $aside){
+app.controller('admin.manageUsers' , function($scope , $http , $aside , $state){
 
   $scope.statusMessage = '';
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
@@ -103,6 +103,8 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside){
         if (!alreadyOpen) {
           $scope.tabs.push({title : 'Edit Profile' , cancel : true , app : 'profileEditor' , objUrl : target , active : true})
         }
+      } else if (action == 'social') {
+        $state.go('home.social' , {id : target.split('users/')[1].split('/')[0]})
       }
       // for the single select actions
     } else {
