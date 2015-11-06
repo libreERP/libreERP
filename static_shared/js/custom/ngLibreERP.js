@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' ]);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' ]);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider){
 

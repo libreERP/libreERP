@@ -144,6 +144,7 @@ app.filter('getDP' , function(userProfileService){
 
 app.filter('getName' , function(userProfileService){
   return function(userUrl){
+    console.log(userUrl);
     profile = userProfileService.get(userUrl);
     return profile.first_name + ' ' + profile.last_name;
   }

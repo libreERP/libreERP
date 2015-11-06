@@ -9,6 +9,7 @@ app.factory('userProfileService', function(){
           userProfiles[me.url] = me;
         } else {
           var user = getUser(userUrl);
+          console.log(userUrl);
           userProfiles[userUrl]= user
         }
       }

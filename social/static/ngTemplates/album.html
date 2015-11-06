@@ -1,0 +1,65 @@
+<div class="modal-header bg-red">
+  <div class="container-fluid">
+    <div class="col-md-5 pull-right">
+      <div style="float:right;padding-top:10px;">
+        <div class="row" style="text-align:right;">
+          <a style="text-decoration: none; color: white" href="" ng-click = "viewMode ='likes'">{{data.likes.length==0? '':data.likes.length}}  Likes <i ng-click="like()" class="fa {{liked ?'fa-thumbs-up':'fa-thumbs-o-up'}} fa-lg"></i></a>
+        </div>
+        <div class="row" style="text-align:right;">
+          <a href="" style="text-decoration: none; color: white" ng-click = "viewMode ='comments'">{{ data.comments.length==0? '':data.comments.length }} Comments <i class="fa fa-comment-o fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="pull-left">
+      <div class="col-md-4">
+        <img ng-src="{{data.user | getDP}}" height="60px" width="60px" style="float:right; position:relative;"/>
+      </div>
+      <div class="col-md-8">
+        <div class="row">
+          <h4><a href=""> </a> {{data.user | getName}}</h4>
+        </div>
+        <div class="row">
+          <span style="color:white;padding-top:10px;">
+            <!-- <span class="dropdown">
+              <i class="fa fa-chevron-down dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="" ng-click = "edit()"><i class="fa fa-pencil"></i>  Edit</a></li>
+                <li><a href="" ng-click = "delete()"><i class="fa fa-trash"></i>  Delete</a></li>
+              </ul>
+            </span> -->
+            {{data.created | date:'dd MMM yyyy, hh:mm a'}}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-body" id="postModalBody">
+  <img style="width: 100%; height:500px;" class="img" ng-src="{{data.photo}}">
+</div>
+<div class="modal-footer" >
+  <div class="container" style="text-align:left;position:absolute;overflow:auto;box-sizing: border-box;display:block; height:{{commentsHeight}}%; width:98%; padding-right:50px;transform: translate(0px,-10px);"  id = "commentsArea">
+    <div class="row" ng-if="viewMode == 'comments'">
+      <div ng-repeat="comment in data.comments">
+        <comment-bubble data = "comment" on-Delete = "deleteComment($index)"></comment-bubble>
+      </div>
+    </div>
+    <div class="row" ng-if = "viewMode == 'likes'">
+      <div class="col-md-3 col-sm-6 col-xs-12" ng-repeat = "like in data.likes">
+        <span class="info-box-icon" style="background-color:white;">
+          <div class="row">
+            <img style="width: 50%;" class="img" ng-src="{{like.user | getDP}}">
+          </div>
+          <div class="row {{$index | rainbow}}" style="background:white;height:40px; margin-bottom:10px;">
+            <span style="color:black;font-size:12px;color:white; top:-25px;position:relative;">{{like.user | getName}}</span>
+          </div>
+        </span>
+      </div><!-- /.col -->
+    </div>
+  </div>
+  <div class="row">
+    <div style="padding:10px;position:absolute;width:100%; bottom:0px; border-top:solid 1px #E5E5E5;" class="container-fluid" id="commentInput">
+      <input class="form-control" ng-enter="comment()" type="text" ng-model= "textToComment">
+    </div>
+  </div>
+</div>

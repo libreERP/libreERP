@@ -1,0 +1,20 @@
+<li><i class="fa fa-commenting-o bg-blue"></i>
+  <div class="timeline-item">
+    <span class="time"><i class="fa fa-clock-o"></i> {{data.created | timeAgo}} ago</span>
+    <h3 class="timeline-header" >
+      <a href=""><img ng-src="{{data.user | getDP}}" height="40px" width="40px"/> </a>
+      {{data.user | getName}}
+
+    </h3>
+    <div class="timeline-body">
+      {{data.text}}
+    </div>
+    <div class="timeline-footer" >
+      <a style="text-decoration: none;" href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
+        {{data.likes.length==0? '':data.likes.length}} {{data.likes.length<=1? 'Like':'likes'}} <i class="fa fa-thumbs-o-up"></i>
+      </a>
+      <a href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
+        {{data.comments.length==0? '' :data.comments.length}} {{data.comments.length<=1? 'Comment':'Comments'}} <i class="fa fa-comment-o"></i></a>
+    </div>
+  </div>
+</li>
