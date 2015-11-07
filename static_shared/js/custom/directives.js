@@ -570,11 +570,11 @@ app.directive('chatWindow', function (userProfileService) {
           connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , msg , $scope.me.username], {}, {acknowledge: true}).then(
             function (publication) {
               dataToSend = {message:msg , user: $scope.friendUrl , read:false};
-              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/', cache: $templateCache})
+              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'})
             },
             function (error) {
               dataToSend = {message:msg , user: $scope.friendUrl , read:false};
-              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/', cache: $templateCache})
+              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'})
             }
           );
           $scope.messageToSend = "";
@@ -586,7 +586,7 @@ app.directive('chatWindow', function (userProfileService) {
         $scope.ims = [];
         $scope.imsCount = 0;
         $scope.senderIsMe = [];
-        $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
+        $http({method: $scope.method, url: $scope.url}).
           then(function(response) {
             $scope.messageFetchStatus = response.status;
             $scope.imsCount = response.data.length;

@@ -74,5 +74,103 @@
         </uib-tabset>
       </div>
     </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        <i class="fa fa-picture-o"></i>  Photos
+      </uib-tab-heading>
+      <div class="container" style="padding-top:15px;">
+        <div class="row">
+          <div class="col-md-3 col-sm-4 col-xs-6" ng-repeat= "picture in user.pictures"><img class="shaddowed" ng-src="{{picture.photo}}"  height="180" width="280"/></div>
+        </div>
+      </div>
+
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        <i class="fa fa-book"></i>  Publications
+      </uib-tab-heading>
+      <div class="container-fluid" style="padding-top:15px;">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="text-center">
+              <h3 class="text-muted">Publications</h3>
+            </div>
+            <div class="row">
+              <ul>
+                <li> Patil MD, Nataraj PSV, Vyawahare VA. Automated design of fractional PI QFT controller using interval constraint satisfaction technique (ICST), Nonlinear Dynamics, DOI 10.1007/s11071-012-0357-7</li>
+                <li> Patil MD, Nataraj PSV, Automated synthesis of multivariable QFT controller using interval constraint satisfaction technique, Journal of Process Control, 2012; 22(4) </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class=" text-center">
+              <h3 class="text-muted">Projects</h3>
+            </div>
+            <div class="row">
+              <ul>
+                <li><h4>HeadCopter</h4></li>
+                Guide: Prof. K P Karunakaran, IITB
+                </br>
+                Discription: Some discription of the project.Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
+
+                <li><h4>HeadCopter</h4></li>
+                Guide: Prof. K P Karunakaran, IITB
+                </br>
+                Discription: Some discription of the project B. Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        <i class="fa fa-wrench"></i>  Competencies
+      </uib-tab-heading>
+      <div class="container-fluid" style="padding-top:15px;">
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <h3 class="text-muted">Skills</h3>
+          </div>
+
+          <div class="col-md-2 col-md-offset-1">
+            <div class="row">
+              <div align="center" class="demo-1" data-percent="10"></div>
+            </div>
+            <h5 class="text-muted" align="center">CSS</h5>
+          </div>
+
+          <div class="col-md-2">
+            <div class="row">
+              <div align="center" class="demo-2" data-percent="90"></div>
+            </div>
+            <h5 class="text-muted" align="center">PHP</h5>
+          </div>
+          <div class="col-md-2">
+            <div class="row">
+              <div align="center" class="demo-3" data-percent="60"></div>
+            </div>
+            <h5 class="text-muted" align="center">Python</h5>
+          </div>
+          <div class="col-md-2">
+            <div class="row">
+              <div align="center" class="demo-4" data-percent="40"></div>
+            </div>
+            <h5 class="text-muted" align="center">FreeCAD</h5>
+          </div>
+          <div class="col-md-2">
+            <div class="row">
+              <div align="center" class="demo-5" data-percent="80"></div>
+            </div>
+            <h5 class="text-muted" align="center">C++</h5>
+          </div>
+
+
+        </div>
+      </div>
+
+    </uib-tab>
   </uib-tabset>
 </div>

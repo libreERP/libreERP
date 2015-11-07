@@ -339,7 +339,7 @@ app.directive('socialProfile', function () {
 
 app.controller('socialProfileController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window) {
   emptyFile = new File([""], "");
-
+  $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
   $scope.user.albums = userProfileService.social($scope.user.username, 'albums');
   $scope.user.posts = userProfileService.social($scope.user.username , 'post');
@@ -348,7 +348,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.data = {draggableObjects : []};
   $scope.statusMessage = '';
   $scope.picturePost = {photo : {}};
-  if ($scope.user.username == userProfileService.get('mySelf').username) {
+  if ($scope.user.username == $scope.me.username) {
     $scope.myProfile = true;
   }else {
     $scope.myProfile = false;
@@ -527,9 +527,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $http({method : 'PATCH' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       $scope.picturePost = {photo : {}};
-      $scope.statusMessage = "Saved";
       if ($scope.user.url == $scope.me.url) {
         $scope.user.pictures.push(response.data);
+        $scope.statusMessage = "Saved";
         $scope.status = 'success';
       }
       setTimeout(function () {
