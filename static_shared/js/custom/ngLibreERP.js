@@ -78,9 +78,9 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
             then(function(response){
               $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).
               then(function(response){
-                Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+                Flash.create('success', response.status + ' : ' + response.statusText );
               }, function(response){
-                Flash.create('danger', response.status + ' : ' + response.statusText , 'animated slideInRight');
+                Flash.create('danger', response.status + ' : ' + response.statusText );
               });
             });
             if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {

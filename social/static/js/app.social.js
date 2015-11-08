@@ -250,7 +250,6 @@ app.directive('album', function () {
             $scope.me = userProfileService.get("mySelf");
             $scope.data = data;
             $scope.parent = parent;
-            console.log($scope.parent);
             $scope.possibleCommentHeight = 70;
             $scope.textToComment = "";
             $scope.viewMode = 'comments';
@@ -418,9 +417,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     // console.log(dataToPost);
     $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   }
   $scope.removePost = function(index){
@@ -445,9 +444,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   };
   $scope.uploadImage = function(){
@@ -458,9 +457,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/picture/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   };
   $scope.saveSocial = function(){
@@ -474,9 +473,11 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = $scope.user.social;
     $http({method : 'PATCH' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.user.socialData.coverPic = response.data.coverPic;
+      $scope.user.socialData.coverPicFile = emptyFile;
     }, function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   };
 });

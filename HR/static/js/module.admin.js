@@ -26,7 +26,6 @@ app.config(function($stateProvider){
 });
 
 app.controller('admin' , function($scope , userProfileService , Flash){
-
 });
 
 app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash){
@@ -38,10 +37,10 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
     $http({method : 'POST' , url : '/api/HR/users/', data : dataToSend }).
     then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
     }, function(response){
-      Flash.create('danger', response.status + ' : ' + response.statusText , 'animated slideInRight');
+      Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   }
 
@@ -101,4 +100,67 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     }
   }
 
+});
+
+app.directive('profileEditor', function () {
+  return {
+    templateUrl: '/profileEditor.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      objUrl :'=',
+    },
+    controller : function($scope , $http , userProfileService , Flash){
+      $scope.userUrl = angular.copy($scope.objUrl);
+      user = userProfileService.get($scope.userUrl);
+      $scope.userUrl = $scope.userUrl.replace('users' , 'profileAdminMode');
+      $scope.resourceUrl = '/api/HR/profileAdminMode';
+      $scope.formTitle = 'Edit Profile for ' + user.first_name + ' ' + user.last_name;
+      emptyFile = new File([""], "");
+      method = 'options';
+      $http({method :method , url : $scope.resourceUrl}).
+      then(function(response){
+        $scope.profileFormStructure = response.data.actions.POST;
+        $http({method :'GET' , url : $scope.userUrl}).
+        then(function(response){
+          $scope.profile = response.data;
+          for(key in $scope.profileFormStructure){
+            if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
+              $scope.profile[key] = emptyFile;
+            }
+          }
+          $scope.profileUrl = $scope.profile.url.replace('profile' , 'profileAdminMode')
+        } , function(response){});
+      }, function(response){});
+
+      $scope.updateProfile = function(){
+        console.log("Going to submit the profile data");
+        console.log($scope.profile);
+        var fd = new FormData();
+        for(key in $scope.profile){
+          if (key!='url' && $scope.profile[key] != null) {
+            if ($scope.profileFormStructure[key].type.indexOf('integer')!=-1 ) {
+              if ($scope.profile[key]!= null) {
+                fd.append( key , parseInt($scope.profile[key]));
+              }
+            }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
+              if ($scope.profile[key]!= null) {
+                fd.append( key , $scope.profile[key]);
+              }
+            }else if ($scope.profileFormStructure[key].type.indexOf('url')!=-1 && ($scope.profile[key]==null || $scope.profile[key]=='')) {
+              // fd.append( key , 'http://localhost');
+            }else{
+              fd.append( key , $scope.profile[key]);
+            }
+          }
+        }
+        $http({method : 'PATCH' , url : $scope.profileUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+        then(function(response){
+           Flash.create('success', response.status + ' : ' + response.statusText);
+        }, function(response){
+           Flash.create('danger', response.status + ' : ' + response.statusText);
+        });
+      }
+    },
+  };
 });
