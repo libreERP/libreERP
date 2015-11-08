@@ -19,6 +19,7 @@
     <style media="screen" ng-bind-html="theme"></style>
   </head>
   <body>
+    <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
 
     <div ng-include="headerUrl"></div>
     <div ui-view></div>
@@ -36,6 +37,7 @@
     <script src="{% static 'js/angular-aside.min.js' %}"></script>
     <script src="{% static 'js/autobahn.min.js' %}"></script>
     <script src="{% static 'js/ngDraggable.js' %}"></script>
+    <script src="{% static 'js/angular-flash.min.js' %}"></script>
     <!-- Custom JS files -->
     <script type="text/javascript">
       var wampBindName = "{{user.username}}";

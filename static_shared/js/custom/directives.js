@@ -19,7 +19,7 @@ app.directive('profileEditor', function () {
     scope: {
       objUrl :'=',
     },
-    controller : function($scope , $http , userProfileService){
+    controller : function($scope , $http , userProfileService , Flash){
       $scope.userUrl = angular.copy($scope.objUrl);
       user = userProfileService.get($scope.userUrl);
       $scope.userUrl = $scope.userUrl.replace('users' , 'profileAdminMode');
@@ -65,21 +65,9 @@ app.directive('profileEditor', function () {
         }
         $http({method : 'PATCH' , url : $scope.profileUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
         then(function(response){
-          $scope.statusMessage = "Posted";
-          $scope.httpStatus = 'success';
-          setTimeout(function () {
-            $scope.statusMessage = '';
-            $scope.httpStatus = '';
-            $scope.$apply();
-          }, 4000);
-        },function(response){
-          $scope.httpStatus = 'danger';
-          $scope.statusMessage = response.status + ' : ' + response.statusText;
-          setTimeout(function () {
-            $scope.statusMessage = '';
-            $scope.httpStatus = '';
-            $scope.$apply();
-          }, 4000);
+           Flash.create('success', response.status + ' : ' + response.statusText);
+        }, function(response){
+           Flash.create('danger', response.status + ' : ' + response.statusText);
         });
       }
     },

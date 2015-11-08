@@ -337,7 +337,7 @@ app.directive('socialProfile', function () {
   };
 });
 
-app.controller('socialProfileController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window) {
+app.controller('socialProfileController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
   emptyFile = new File([""], "");
   $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
@@ -418,27 +418,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     // console.log(dataToPost);
     $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
-      $scope.tempAlbum = {title : '' , photos: []};
-      $scope.droppedObjects = [];
-      $scope.statusMessage = "Posted";
-      $scope.status = 'success';
-      if ($scope.user.url == $scope.me.url) {
-        $scope.user.albums.push(response.data);
-        $scope.refreshFeeds();
-      }
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
-    },function(response){
-      $scope.status = 'danger';
-      $scope.statusMessage = response.status + ' : ' + response.statusText;
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+    }, function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
     });
   }
   $scope.removePost = function(index){
@@ -463,26 +445,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      $scope.post = {attachment : f , text: ''};
-      $scope.statusMessage = "Posted";
-      $scope.status = 'success';
-      if ($scope.user.url == $scope.me.url) {
-        $scope.user.posts.push(response.data);
-        $scope.refreshFeeds();
-      }
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
-    },function(response){
-      $scope.status = 'danger';
-      $scope.statusMessage = response.status + ' : ' + response.statusText;
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+    }, function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
     });
   };
   $scope.uploadImage = function(){
@@ -493,26 +458,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/picture/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      $scope.picturePost = {photo : {}};
-      $scope.statusMessage = "Uploaded";
-      if ($scope.user.url == $scope.me.url) {
-        $scope.user.pictures.push(response.data);
-        $scope.status = 'success';
-      }
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
-
-    },function(response){
-      $scope.status = 'danger';
-      $scope.statusMessage = response.status + ' : ' +  response.statusText;
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+    }, function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
     });
   };
   $scope.saveSocial = function(){
@@ -526,26 +474,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = $scope.user.social;
     $http({method : 'PATCH' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      $scope.picturePost = {photo : {}};
-      if ($scope.user.url == $scope.me.url) {
-        $scope.user.pictures.push(response.data);
-        $scope.statusMessage = "Saved";
-        $scope.status = 'success';
-      }
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
-
-    },function(response){
-      $scope.status = 'danger';
-      $scope.statusMessage = response.status + ' : ' +  response.statusText;
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+    }, function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
     });
   };
 });

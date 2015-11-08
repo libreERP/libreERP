@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' ]);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider){
 
@@ -52,7 +52,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
       placement: position,
       size: 'md',
       backdrop: backdrop,
-      controller: function($scope, $uibModalInstance  , userProfileService , $http) {
+      controller: function($scope, $uibModalInstance  , userProfileService , $http , Flash) {
         emptyFile = new File([""], "");
         $scope.settings = settings;
         $scope.settings.displayPicture = emptyFile;
@@ -64,24 +64,6 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
           // e.stopPropagation();
         };
 
-        $scope.successMsg = function(response){
-          $scope.statusMessage = response.status + ' : ' + response.statusText;
-          $scope.httpStatus = 'success';
-          setTimeout(function () {
-            $scope.statusMessage = '';
-            $scope.httpStatus = '';
-            $scope.$apply();
-          }, 4000);
-        }
-        $scope.errorMsg = function(response){
-          $scope.httpStatus = 'danger';
-          $scope.statusMessage = response.status + ' : ' + response.statusText;
-          setTimeout(function () {
-            $scope.statusMessage = '';
-            $scope.httpStatus = '';
-            $scope.$apply();
-          }, 4000);
-        }
         $scope.saveSettings = function(){
           var fdProfile = new FormData();
           if ($scope.settings.displayPicture != emptyFile) {
@@ -94,9 +76,20 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
 
             $http({method : 'PATCH' , url : $scope.me.settings, data : {presence : "Busy"  , user : $scope.me.url}}).
             then(function(response){
-              $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).then($scope.successMsg,$scope.errorMsg);});
+              $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).
+              then(function(response){
+                Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
+              }, function(response){
+                Flash.create('danger', response.status + ' : ' + response.statusText , 'animated slideInRight');
+              });
+            });
             if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {
-              $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).then($scope.successMsg,$scope.errorMsg);
+              $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).
+              then(function(response){
+                Flash.create('success', response.status + ' : ' + response.statusText);
+              }, function(response){
+                Flash.create('danger', response.status + ' : ' + response.statusText);
+              });
             }
           });
 

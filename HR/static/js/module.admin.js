@@ -8,10 +8,10 @@ app.config(function($stateProvider){
           templateUrl: '/static/ngTemplates/admin.html',
        },
        "menu@admin": {
-          templateUrl: '/static/ngTemplates/adminMenu.html',
+          templateUrl: '/static/ngTemplates/admin.menu.html',
         },
         "@admin": {
-          template: '<h1>Dashboard</h1>',
+          templateUrl: '/static/ngTemplates/admin.dash.html',
           controller : 'admin'
         }
     }
@@ -19,18 +19,17 @@ app.config(function($stateProvider){
 
   .state('admin.manageUsers', {
     url: "/manageUsers",
-    templateUrl: '/static/ngTemplates/admin.manageUsers.html',
+    templateUrl: '/static/ngTemplates/admin.manage.users.html',
     controller: 'admin.manageUsers'
   })
 
 });
 
-app.controller('admin' , function($scope , userProfileService){
-
+app.controller('admin' , function($scope , userProfileService , Flash){
 
 });
 
-app.controller('admin.manageUsers' , function($scope , $http , $aside , $state){
+app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash){
 
   $scope.statusMessage = '';
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
@@ -39,22 +38,10 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state){
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
     $http({method : 'POST' , url : '/api/HR/users/', data : dataToSend }).
     then(function(response){
-      $scope.httpStatus = 'success';
-      $scope.statusMessage = response.status + ' : ' + response.statusText;
+      Flash.create('success', response.status + ' : ' + response.statusText , 'animated slideInRight');
       $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.httpStatus = '';
-        $scope.$apply();
-      }, 2000);
-    } , function(response){
-      $scope.statusMessage = response.status + ' : ' + response.statusText;
-      $scope.httpStatus = 'danger';
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.httpStatus = '';
-        $scope.$apply();
-      }, 2000);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText , 'animated slideInRight');
     });
   }
 
