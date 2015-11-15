@@ -1,0 +1,36 @@
+<div class="chatWindow" style="height:{{toggle?500:36}}px;right:{{location}}px;">
+  <div class="header">
+    <div class="container-fluid">
+      <i class="fa fa-circle onlineStatus"></i>
+      <span class="username">{{friend.url | getName}}</span>
+      <span class="pull-right" style="cursor:pointer;"><i  class="fa {{ toggle? 'fa-chevron-down' :'fa-chevron-up'}}" ng-click="toggle=!toggle"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-close" ng-click= "cancel()"></i></span>
+    </div>
+  </div>
+  <div class="messageView container-fluid" ng-show="toggle" id="scrollArea{{pos}}">
+    <div ng-repeat="message in ims">
+      <div class="row" ng-if="!senderIsMe[$index]">
+        <div class="col-md-3">
+          <img class="img-responsive img-circle" ng-src="{{message.originator | getDP}}" width="40px" height="50px" alt="P" style="position:relative; top:10px;margin-left:5px;">
+        </div>
+        <div class="col-md-8 messageBubble"> <p style="word-wrap: break-word;">{{message.message}}</p>
+        </div>
+      </div>
+      <!-- // for the bubble with sender picture is on the left -->
+      <div class="row" ng-if="senderIsMe[$index]">
+        <div class="col-md-8 col-md-offset-1 messageBubble"> <p style="word-wrap: break-word;"> {{message.message}}</p>
+        </div>
+        <div class="col-md-3">
+          <img class="img-responsive img-circle" ng-src="{{message.originator | getDP}}" width="40px" height="50px" alt="P" style="position:relative; top:10px;margin-left:5px;">
+        </div>
+      </div>
+    </div>
+    <div class="row" style="height:40px;">
+      <span ng-show="isTyping" style = "padding:10px; id="typingStatus">Typing .. </span>
+    </div>
+  </div>
+  <div class="footer" ng-show="toggle">
+    <div class="container-fluid">
+      <input type="text" class="form-control" name="name" value="" style="width:100%"  ng-enter="send()" ng-model="messageToSend"></input>
+    </div>
+  </div>
+</div>
