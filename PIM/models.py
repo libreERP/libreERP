@@ -25,6 +25,7 @@ class theme(models.Model):
     parent = models.OneToOneField(settings , related_name = 'theme')
 
 User.settings = property(lambda u : settings.objects.get_or_create(user = u)[0])
+settings.theme = property(lambda s : theme.objects.get_or_create(parent = s)[0])
 
 DOMAIN_CHOICES = (
     ('SYS' , 'System'),

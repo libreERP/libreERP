@@ -26,7 +26,9 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   then(function(response){
     for(key in response.data.theme){
       if (key !='url') {
-        $scope.themeObj[key] = response.data.theme[key];
+        if (response.data.theme[key] != null) {
+          $scope.themeObj[key] = response.data.theme[key];
+        }
       }
     }
   } , function(response){});
