@@ -22,7 +22,7 @@
           <span ng-if="isOwner" class="dropdown" style="color:white;padding-top:10px;">
               <i style="cursor:pointer;" class="fa fa-chevron-down dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <!-- <li><a href="" ng-click = "edit()"><i class="fa fa-pencil"></i>  Edit</a></li> -->
+                <li><a href="" ng-click = "edit()"><i class="fa fa-pencil"></i>  Edit</a></li>
                 <li><a href="" ng-click = "deletePhoto()"><i class="fa fa-trash"></i>  Delete</a></li>
                 <li><a href="" ng-click = "deleteAlbum()"><i class="fa fa-trash"></i>  Delete All</a></li>
               </ul>
@@ -35,9 +35,14 @@
   </div>
 </div>
 <div class="modal-body" id="postModalBody">
-  <img style="width: 100%; height:500px;" class="img" ng-src="{{data.photo}}">
+  <div ng-if="editMode">
+    <div ng-include="'/static/ngTemplates/newAlbumForm.html'"></div>
+  </div>
+  <div ng-if="!editMode">
+    <img style="width: 100%; height:500px;" class="img" ng-src="{{data.photo}}">
+  </div>
 </div>
-<div class="modal-footer" >
+<div ng-if="!editMode" class="modal-footer" >
   <div class="container" style="text-align:left;position:absolute;overflow:auto;box-sizing: border-box;display:block; height:{{commentsHeight}}%; width:98%; padding-right:50px;transform: translate(0px,-10px);"  id = "commentsArea">
     <div class="row" ng-if="viewMode == 'comments'">
       <div ng-repeat="comment in data.comments">

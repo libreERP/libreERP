@@ -1,4 +1,4 @@
-<div class="row container-fluid" style="height:700px;margin-top:15px;">
+<div class="row container-fluid" style="height:{{editMode ? '600px' : '700px'}};margin-top:15px;">
   <div class="col-md-9">
     <div class="row">
       <div class="container-fluid" style="margin-top:10px;">
@@ -9,7 +9,8 @@
               <div class="input-group">
                 <input type="text" name="albumTitle" value="" class="form-control " ng-model="tempAlbum.title"></input>
                 <span class="input-group-btn">
-                  <button type="button" ng-click="createAlbum()" class="btn btn-success ">Create</button>
+                  <button type="button" ng-click="createAlbum()" class="btn btn-success " ng-if = "editMode=='undefined' || !editMode">Create</button>
+                  <button type="button" ng-click="updateAlbum()" class="btn btn-success " ng-if = "editMode">Update</button>
                 </span>
               </div>
             </div>
@@ -18,13 +19,13 @@
       </div>
     </div>
     <div class="row">
-      <div style="display:block;box-sizing:border-box;height:700px;padding:10px;">
-        <generic-Table resource-Url = "'/api/social/picture/'" search="false" views='views' get-Params = "getParams" table-Data="data.draggableObjects"></generic-Table>
+      <div style="display:block;box-sizing:border-box;height:{{editMode ? '600px' : '700px'}};padding:10px;">
+        <generic-Table resource-Url = "'/api/social/picture/'" search="false" views='views' get-Params = "getParams" table-Data="editorData.draggableObjects"></generic-Table>
       </div>
     </div>
   </div>
   <div class="col-md-3">
-    <div style="border: 1px #3d9483 solid; display:block;box-sizing:border-box;height:700px;overflow:auto;" ng-drop="true" ng-drop-success="onDropComplete($data,$event)">
+    <div style="border: 1px #3d9483 solid; display:block;box-sizing:border-box;height:{{editMode ? '600px' : '700px'}};overflow:auto;" ng-drop="true" ng-drop-success="onDropComplete($data,$event)">
       <div ng-repeat="obj in droppedObjects" ng-drag-data="obj" data-allow-transform="true">
         <div class="container" style="position:relative; width:100%; padding:20px;" ng-mouseover="deleteObjOption=true" ng-mouseleave="deleteObjOption=false">
           <span>

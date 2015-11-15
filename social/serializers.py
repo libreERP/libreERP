@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from django.core.exceptions import ValidationError
+from django.core.exceptions import *
 
 class commentLikeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -137,6 +137,28 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         if count==0: # if there wasn't any photo supplied or the photo does not owned by the sender
             a.delete()
         return a
+    def update(self ,instance , validated_data):
+        user =  self.context['request'].user
+        if instance.user != user:
+            raise PermissionDenied(detail=None)
+            return instance
+        instance.title = validated_data.pop('title')
+        instance.save()
+        existing = picture.objects.filter(album = instance)
+        for p in existing:
+            p.album = None
+            p.save()
+        photos =  self.context['request'].data['photos']
+        count = 0
+        for p in photos:
+            pk = only_numerics(p)
+            pic = picture.objects.get(pk = int(pk) , user = user)
+            pic.album = instance
+            count +=1
+            pic.save()
+        if count==0: # if there wasn't any photo supplied or the photo does not owned by the sender
+            instance.delete()
+        return instance
 
 class socialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

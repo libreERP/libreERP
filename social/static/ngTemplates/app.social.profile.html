@@ -42,7 +42,7 @@
             </uib-tab-heading>
             <div ng-include="'/static/ngTemplates/newAlbumForm.html'"></div>
           </uib-tab>
-          <uib-tab heading="Album" >
+          <uib-tab >
             <uib-tab-heading>
               <i class="fa fa-black-tie"></i>  Profile
             </uib-tab-heading>
@@ -77,9 +77,9 @@
       <uib-tab-heading>
         <i class="fa fa-picture-o"></i>  Photos
       </uib-tab-heading>
-      <div class="container" style="padding-top:15px;">
+      <div class="container-fluid" style="padding-top:15px;">
         <div class="row">
-          <div class="col-md-3 col-sm-4 col-xs-6" ng-repeat= "picture in user.pictures"><img class="shaddowed" ng-src="{{picture.photo}}"  height="180" width="280"/></div>
+          <div class="col-md-3 col-sm-4 col-xs-6" style="padding:10px;" ng-repeat= "picture in user.pictures"><img class="shaddowed" ng-src="{{picture.photo}}"  height="100" width="180"/></div>
         </div>
       </div>
 

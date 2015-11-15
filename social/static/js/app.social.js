@@ -247,10 +247,16 @@ app.directive('album', function () {
           placement: position,
           size: 'lg',
           backdrop: backdrop,
-          controller: function($scope, $uibModalInstance ) {
+          controller: function($scope, $uibModalInstance , Flash) {
             $scope.me = userProfileService.get("mySelf");
             $scope.data = data;
             $scope.parent = parent;
+            $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
+            $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
+            $scope.droppedObjects = angular.copy($scope.parent.photos);
+            $scope.tempAlbum = {title :  $scope.parent.title , photos : []};
+            $scope.editorData = {draggableObjects : []};
+            $scope.editMode = false;
             $scope.albumDelete = albumDelete;
             $scope.possibleCommentHeight = 70;
             $scope.textToComment = "";
@@ -304,7 +310,7 @@ app.directive('album', function () {
                     if (i == 0 && $scope.parent.photos.length == 0) {
                       $scope.deleteAlbum()
                     }else{
-                      if ($scope.parent.photos.length >= i) {
+                      if ($scope.parent.photos.length <= i+1) {
                         $scope.data = $scope.parent.photos[i-1];
                       } else {
                         $scope.data = $scope.parent.photos[i];
@@ -315,6 +321,9 @@ app.directive('album', function () {
               } , function(response){
 
               });
+            }
+            $scope.edit = function(){
+              $scope.editMode = true;
             }
             $scope.deleteAlbum = function(){
               $http({method : 'DELETE' , url : $scope.parent.url}).
@@ -329,7 +338,45 @@ app.directive('album', function () {
             $scope.deleteComment = function(index){
               $scope.data.comments.splice(index , 1);
             }
-
+            $scope.removeFromTempAlbum = function(index){
+              pic = $scope.droppedObjects[index];
+              $scope.droppedObjects.splice(index , 1);
+              $scope.editorData.draggableObjects.push(pic);
+            }
+            $scope.updateAlbum = function(){
+              if ($scope.droppedObjects.length == 0) {
+                Flash.create('danger', 'No photos in the album' );
+                return;
+              }
+              for (var i = 0; i < $scope.droppedObjects.length; i++) {
+                uri = $scope.droppedObjects[i].url.split('/?')[0];
+                // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
+                pk = uri.split('picture/')[1].split('/')[0];
+                $scope.tempAlbum.photos.push(pk);
+              }
+              dataToPost = {
+                user : $scope.me.url,
+                title : $scope.tempAlbum.title,
+                photos : $scope.tempAlbum.photos,
+              };
+              // console.log(dataToPost);
+              $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
+              then(function(response){
+                Flash.create('success', response.status + ' : ' + response.statusText );
+                $scope.parent.title = response.data.title;
+                $scope.parent.photos = response.data.photos;
+              }, function(response){
+                Flash.create('danger', response.status + ' : ' + response.statusText );
+              });
+            }
+            $scope.onDropComplete=function(data,evt){
+              var index = $scope.droppedObjects.indexOf(data);
+              if (index == -1){
+                $scope.droppedObjects.push(data);
+                var index = $scope.editorData.draggableObjects.indexOf(data);
+                $scope.editorData.draggableObjects.splice(index , 1);
+              }
+            }
             $scope.like = function(){
               if ($scope.liked) {
                 for (var i = 0; i < $scope.data.likes.length; i++) {
@@ -382,7 +429,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.user.posts = userProfileService.social($scope.user.username , 'post');
   $scope.user.pictures = userProfileService.social($scope.user.username , 'pictures');
   $scope.droppedObjects = [];
-  $scope.data = {draggableObjects : []};
+  $scope.editorData = {draggableObjects : []}; // for the album editor
   $scope.statusMessage = '';
   $scope.picturePost = {photo : {}};
   if ($scope.user.username == $scope.me.username) {
@@ -427,18 +474,12 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.removeFromTempAlbum = function(index){
     pic = $scope.droppedObjects[index];
     $scope.droppedObjects.splice(index , 1);
-    $scope.draggableObjects.push(pic);
+    $scope.editorData.draggableObjects.push(pic);
   }
   $scope.tempAlbum = {title : '' , photos : []};
   $scope.createAlbum = function(){
     if ($scope.droppedObjects.length == 0) {
-      $scope.status = 'danger';
-      $scope.statusMessage = 'No photo selected';
-      setTimeout(function () {
-        $scope.statusMessage = '';
-        $scope.status = '';
-        $scope.$apply();
-      }, 4000);
+      Flash.create('danger', 'No photos in the album' );
       return;
     }
     for (var i = 0; i < $scope.droppedObjects.length; i++) {
@@ -465,6 +506,14 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });
   }
+  $scope.onDropComplete=function(data,evt){
+    var index = $scope.droppedObjects.indexOf(data);
+    if (index == -1){
+      $scope.droppedObjects.push(data);
+      var index = $scope.editorData.draggableObjects.indexOf(data);
+      $scope.editorData.draggableObjects.splice(index , 1);
+    }
+  }
   $scope.removePost = function(index){
     $scope.user.posts.splice(index, 1);
     $scope.refreshFeeds();
@@ -475,14 +524,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $scope.refreshFeeds();
   }
 
-  $scope.onDropComplete=function(data,evt){
-    var index = $scope.droppedObjects.indexOf(data);
-    if (index == -1){
-      $scope.droppedObjects.push(data);
-      var index = $scope.data.draggableObjects.indexOf(data);
-      $scope.data.draggableObjects.splice(index , 1);
-    }
-  }
   var f = new File([""], "");
   $scope.post = {attachment : f , text: ''};
   $scope.publishPost = function(){
@@ -507,6 +548,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.user.pictures.push(response.data);
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });
