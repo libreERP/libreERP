@@ -1,5 +1,5 @@
 <div class="col-md-3">
-  <div ng-include = "'/static/ngTemplates/profileInfoCol.html'"></div>
+  <div ng-include = "'/static/ngTemplates/app.social.profile.infoCol.html'"></div>
 </div>
 <div class="col-md-9">
     <!-- Custom Tabs -->
@@ -9,7 +9,7 @@
         <ul class="timeline timeline-inverse">
           <div ng-repeat="feed in sortedFeeds">
             <post ng-if ="feed.type=='post'" data = "user.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
-            <album ng-if = "feed.type == 'album'" data = "user.albums[feed.index]"></album>
+            <album ng-if = "feed.type == 'album'" data = "user.albums[feed.index]" photo-Delete = "removePhoto(feed.index )" album-Delete = "removeAlbum(feed.index)"></album>
           </div>
         </ul>
       </div>

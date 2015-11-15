@@ -93,7 +93,7 @@ app.directive('post', function () {
           placement: position,
           size: 'md',
           backdrop: backdrop,
-          controller: function($scope, $modalInstance ) {
+          controller: function($scope, $uibModalInstance ) {
             $scope.me = userProfileService.get("mySelf");
             // console.log($scope);
             $scope.data = input.data;
@@ -193,11 +193,11 @@ app.directive('post', function () {
               $scope.editMode = false;
             }
 
-            $scope.delete = function(data){
+            $scope.delete = function(){
               $http({method : 'DELETE' , url : $scope.data.url}).
               then(function(response){
                 $scope.onDelete();
-                $modalInstance.close();
+                $uibModalInstance.close();
               } , function(response){
 
               });
@@ -219,7 +219,7 @@ app.directive('album', function () {
           '<h3 class="timeline-header"><a href="#">{{data.user | getName}}</a> uploaded new photos to album : {{data.title}}</h3>'+
           '<div class="timeline-body">'+
             '<div ng-repeat = "picture in data.photos" style="display: inline;">'+
-              '<img ng-click="openAlbum('+"'right'"+ ', true , picture , data)" ng-src="{{picture.photo}}" alt="..." class="margin" height="100px" width="150px" >'+
+              '<img ng-click="openAlbum('+"'right'"+ ', true , picture , data , albumDelete)" ng-src="{{picture.photo}}" alt="..." class="margin" height="100px" width="150px" >'+
             '</div>'+
           '</div>'+
         '</div>'+
@@ -229,9 +229,10 @@ app.directive('album', function () {
     replace:true,
     scope:{
       data : '=',
+      albumDelete :'&',
     },
     controller : function($scope, $http , $timeout , userProfileService , $aside , $interval , $window) {
-      $scope.openAlbum = function(position, backdrop , data , parent) {
+      $scope.openAlbum = function(position, backdrop , data , parent , albumDelete) {
         $scope.asideState = {
           open: true,
           position: position
@@ -246,10 +247,11 @@ app.directive('album', function () {
           placement: position,
           size: 'lg',
           backdrop: backdrop,
-          controller: function($scope, $modalInstance ) {
+          controller: function($scope, $uibModalInstance ) {
             $scope.me = userProfileService.get("mySelf");
             $scope.data = data;
             $scope.parent = parent;
+            $scope.albumDelete = albumDelete;
             $scope.possibleCommentHeight = 70;
             $scope.textToComment = "";
             $scope.viewMode = 'comments';
@@ -259,6 +261,11 @@ app.directive('album', function () {
                 $scope.liked = true;
                 break;
               }
+            }
+            if ($scope.data.user.split('?')[0] == $scope.me.url) {
+              $scope.isOwner = true;
+            } else {
+              $scope.isOwner = false;
             }
             setTimeout(function () {
               postBodyHeight = $("#postModalBody").height();
@@ -285,6 +292,37 @@ app.directive('album', function () {
                   }, 100);
                 }, function(response) {
                   // console.log("failed to sent the comment");
+
+              });
+            }
+            $scope.deletePhoto = function(){
+              $http({method : 'DELETE' , url : $scope.data.url}).
+              then(function(response){
+                for (var i = 0; i < $scope.parent.photos.length; i++) {
+                  if ($scope.parent.photos[i].url == $scope.data.url){
+                    $scope.parent.photos.splice(i, 1);
+                    if (i == 0 && $scope.parent.photos.length == 0) {
+                      $scope.deleteAlbum()
+                    }else{
+                      if ($scope.parent.photos.length >= i) {
+                        $scope.data = $scope.parent.photos[i-1];
+                      } else {
+                        $scope.data = $scope.parent.photos[i];
+                      }
+                    }
+                  }
+                }
+              } , function(response){
+
+              });
+            }
+            $scope.deleteAlbum = function(){
+              $http({method : 'DELETE' , url : $scope.parent.url}).
+              then(function(response){
+                $scope.albumDelete();
+                // calling the album Delete function passed with the open Album Aside function to refresh the feeds
+                $uibModalInstance.close();
+              } , function(response){
 
               });
             }
@@ -326,7 +364,7 @@ app.directive('album', function () {
 });
 app.directive('socialProfile', function () {
   return {
-    templateUrl: '/static/ngTemplates/socialProfile.html',
+    templateUrl: '/static/ngTemplates/app.social.profile.html',
     restrict: 'E',
     replace: false,
     scope: {
@@ -418,6 +456,11 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.tempAlbum.title = '';
+      $scope.tempAlbum.photos = [];
+      $scope.droppedObjects = [];
+      $scope.user.albums.push(response.data);
+      $scope.refreshFeeds();
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });
@@ -426,6 +469,12 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $scope.user.posts.splice(index, 1);
     $scope.refreshFeeds();
   }
+
+  $scope.removeAlbum = function(index){
+    $scope.user.albums.splice(index, 1);
+    $scope.refreshFeeds();
+  }
+
   $scope.onDropComplete=function(data,evt){
     var index = $scope.droppedObjects.indexOf(data);
     if (index == -1){
