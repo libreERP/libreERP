@@ -146,18 +146,18 @@ app.directive('post', function () {
 
             $scope.like = function(){
               if ($scope.liked) {
-                for (var i = 0; i < $scope.data.likes.length; i++) {
-                  if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-                    index = i;
-                    $http({method: 'DELETE', url: $scope.data.likes[i].url}).
-                      then(function(response , index) {
-                        $scope.data.likes.splice(index, 1);
+                $http({method: 'DELETE', url: $scope.data.likes[i].url}).
+                  then(function(response) {
+                    for (var i = 0; i < $scope.data.likes.length; i++) {
+                      if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+                        $scope.data.likes.splice(i, 1);
                         $scope.liked = false;
-                      }, function(response) {
-                        // console.log("failed to sent the comment");
-                    });
-                  }
-                }
+                      }
+                    }
+                  }, function(response) {
+                    // console.log("failed to sent the comment");
+                });
+
               } else {
                 dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
                 // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown

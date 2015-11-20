@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-
+from django.conf import settings as globalSettings
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from url_filter.integrations.drf import DjangoFilterBackend
@@ -33,7 +33,8 @@ def Logout(request):
 
 @login_required(login_url = '/login')
 def home(request):
-    return render(request , 'ngBase.html' , {})
+    
+    return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 class userProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

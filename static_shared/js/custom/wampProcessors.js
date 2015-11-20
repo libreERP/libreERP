@@ -1,4 +1,4 @@
-var connection = new autobahn.Connection({url: 'ws://10.140.1.232:8080/ws', realm: 'realm1'});
+var connection = new autobahn.Connection({url: 'ws://'+ wampServer +':8080/ws', realm: 'realm1'});
 
 // "onopen" handler will fire when WAMP session has been established ..
 connection.onopen = function (session) {
@@ -41,12 +41,8 @@ connection.onopen = function (session) {
   }
 
   processNotification = function(args){
-    // console.log(args);
-    var scope = angular.element(document.getElementById('main')).scope();
-    scope.$apply(function() {
-      // console.log(notificationCtrlScope);
-      scope.fetchNotifications();
-    });
+    console.log(args);
+
   }
 
   session.subscribe('service.chat.'+wampBindName, chatResonse).then(

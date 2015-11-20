@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from time import time
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.forms.models import model_to_dict
+import requests
+from django.conf import settings
+
 # Create your models here.
 def getCommentAttachmentPath(instance , filename ):
     return 'social/commentAttachments/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
@@ -58,7 +64,7 @@ class pictureLike(like):
     parent = models.ForeignKey(picture , related_name  = 'likes')
 class pictureComment(comment):
     parent = models.ForeignKey(picture , related_name = 'comments')
-    
+
 def getSocialCoverPictureUploadPath(instance , filename ):
     return 'social/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 class social(models.Model):
@@ -68,3 +74,13 @@ class social(models.Model):
     coverPic = models.ImageField(upload_to = getSocialCoverPictureUploadPath , null = True , blank = True)
 
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
+
+@receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
+def notify_server_config_changed(sender, instance, **kwargs):
+
+    requests.post("http://"+settings.WAMP_SERVER+":8080/notify",
+        json={
+          'topic': 'service.notification.' + instance.parent.user.username,
+          'args': [model_to_dict(instance)]
+        }
+    )

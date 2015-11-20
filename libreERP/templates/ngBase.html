@@ -40,6 +40,7 @@
     <script src="{% static 'js/angular-flash.js' %}"></script>
     <!-- Custom JS files -->
     <script type="text/javascript">
+      var wampServer = '{{wampServer}}';
       var wampBindName = "{{user.username}}";
     </script>
     <script src="{% static 'js/custom/wampProcessors.js' %}"></script>
