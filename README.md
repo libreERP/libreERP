@@ -23,7 +23,7 @@ The backend is Django powered to you can install it on either of windows or GNU/
 Build guide
 ===========
 
-Run the following command in your console / command prompt with superuser privilages or in virtualenv
+Run the following commands in your console / command prompt with superuser privilages or in virtualenv
 
 1. pip install django
 2. pip install djangorestframework
@@ -40,3 +40,12 @@ in order to install Crossbar.io router server please head to the Crossbar.io web
 2. apt-get install libffi-dev
 3. apt-get install libssl-dev
 4. pip install crossbar[all]
+
+WAMP server configuration
+=========================
+You can initiate a WAMP server using $ sudo crossbar init
+This will create a config.json file in it in your /home/{{username}}/.crossbar  folder
+replace the content of the config.json with the settings in ../libreERP/config.json file
+Now you can start the WAMP server with $ sudo crossbar start
+
+You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
