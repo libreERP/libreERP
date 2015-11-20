@@ -17,7 +17,7 @@ class notificationViewSet(viewsets.ModelViewSet):
     permission_classes = (isOwner, )
     serializer_class = notificationSerializer
     def get_queryset(self):
-        return notification.objects.filter(user = self.request.user)
+        return notification.objects.filter(user = self.request.user , read = False).order_by('-created')
 
 class chatMessageViewSet(viewsets.ModelViewSet):
     permission_classes = (isOwner, )

@@ -100,20 +100,29 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     }).result.then(postClose, postClose);
   }
 
-  $scope.fetchNotifications = function() {
+  $scope.fetchNotifications = function(toFetch) {
     // console.log("going to fetch notifictions");
-    $scope.method = 'GET';
+    // console.log(toFetch);
     $scope.url = '/api/PIM/notification/';
+    $scope.method = 'GET';
+    console.log(typeof toFetch);
+    if (typeof toFetch != 'undefined') {
+      $scope.url = $scope.url + toFetch.id +'/';
+      console.log($scope.url);
+      $http({method: $scope.method, url: $scope.url}).
+      then(function(response){
+        $scope.notifications.unshift(response.data);
+      } , function(response){});
+      return;
+    };
     $scope.notifications = [];
     $http({method: $scope.method, url: $scope.url}).
       then(function(response) {
-        $scope.notificationFetchStatus = response.status;
         for (var i = 0; i < response.data.length; i++) {
           var notification = response.data[i]
           $scope.notifications.push(notification)
         }
       }, function(response) {
-        $scope.notificationFetchStatus = response.status;
     });
   };
   $scope.fetchMessages = function() {

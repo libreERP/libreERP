@@ -405,10 +405,10 @@ app.directive('messageStrip', function () {
 app.directive('notificationStrip', function () {
   return {
     template: '<li class="container-fluid navBarInfoList" >'+
-      '<a href="{{data.url}}" class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
+      '<a href="" ng-click="openNotification()" class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
         '<i class="fa {{data.originator | getIcon:this}} fa-2x"></i>'+
         '<div class="col-md-11 pull-right" style="position: relative; top:-10px">'+
-          '<span class="text-muted">{{data.originator}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
+          '<span class="text-muted">{{data.originator | humanize}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
           '<br>{{data.shortInfo | limitTo:45 }}'+
         '</div>'+
       '</a>'+
@@ -421,18 +421,20 @@ app.directive('notificationStrip', function () {
     },
     controller : function($scope){
       // console.log($scope.data);
+      if ($scope.data.shortInfo.split(':')[0] == 'postLike') {
+        console.log('post like notification');
+      }
+      $scope.openNotification = function(){
+        console.log("will open notification");
+      }
     },
-    // attrs is the attrs passed from the main scope
-    link: function postLink(scope, element, attrs) {
-
-    }
   };
 });
 
 
 app.directive('chatWindow', function (userProfileService) {
   return {
-    templateUrl: '/static/ngTemplates/chatWindow.html', 
+    templateUrl: '/static/ngTemplates/chatWindow.html',
     restrict: 'E',
     transclude: true,
     replace:true,

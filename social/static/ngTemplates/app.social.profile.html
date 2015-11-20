@@ -6,6 +6,7 @@
   <uib-tabset>
     <uib-tab heading="Activity" >
       <div style="margin-top:15px;">
+        {{user.post}}
         <ul class="timeline timeline-inverse">
           <div ng-repeat="feed in sortedFeeds">
             <post ng-if ="feed.type=='post'" data = "user.posts[feed.index]" on-delete = "removePost(feed.index)"></post>

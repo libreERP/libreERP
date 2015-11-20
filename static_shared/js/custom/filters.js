@@ -61,9 +61,9 @@ app.filter('getIcon' , function(){
         return 'fa-book';
       case 'PLM':
         return 'fa-square-o';
-      case 'Social':
+      case 'social':
         return 'fa-facebook-square';
-      case 'Payroll':
+      case 'payroll':
         return 'fa-money'
       default:
         return 'fa-bell-o';

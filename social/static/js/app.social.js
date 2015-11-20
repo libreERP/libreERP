@@ -534,7 +534,12 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
+      $scope.user.posts.push(response.data);
+      $scope.refreshFeeds();
+      $scope.post.attachment = emptyFile;
+      $scope.post.text = '';
       Flash.create('success', response.status + ' : ' + response.statusText );
+
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });

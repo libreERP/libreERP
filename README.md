@@ -1,4 +1,4 @@
-# mERP
+# libreERP
 
 I started this project in August of 2015 when I needed a web interface for one of my IOT project.
 
@@ -18,7 +18,7 @@ I would be very happy if you can help me build this further. I am planning next 
 
 Installation guide for this project is as follows:
 
-The backend is Django powered to you can install it on either of windows or GNU/linux environment. I would recommend GNU/linux as you will be able to run the WAMP router server on the same machine.
+The backend is Django powered so you can install it on either of windows or GNU/linux environment. I would recommend GNU/linux as you will be able to run the WAMP router server on the same machine.
 
 Build guide
 ===========
@@ -43,9 +43,16 @@ in order to install Crossbar.io router server please head to the Crossbar.io web
 
 WAMP server configuration
 =========================
-You can initiate a WAMP server using $ sudo crossbar init
-This will create a config.json file in it in your /home/{{username}}/.crossbar  folder
-replace the content of the config.json with the settings in ../libreERP/config.json file
-Now you can start the WAMP server with $ sudo crossbar start
+You can initiate a WAMP server using
+
+$ sudo crossbar init
+
+
+This will create a config.json file in in your /home/{{username}}/.crossbar  folder.
+We need to replace the content of the config.json with the settings in ../libreERP/config.json file
+
+Now you can start the WAMP server with
+
+$ sudo crossbar start
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py

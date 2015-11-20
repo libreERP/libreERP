@@ -41,7 +41,13 @@ connection.onopen = function (session) {
   }
 
   processNotification = function(args){
-    console.log(args);
+    data = args[0];
+
+    var scope = angular.element(document.getElementById('main')).scope();
+    scope.$apply(function() {
+      scope.fetchNotifications(data);
+
+    });
 
   }
 

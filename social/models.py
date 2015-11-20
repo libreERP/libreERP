@@ -5,7 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
 import requests
-from django.conf import settings
+from django.conf import settings as globalSettings
+from PIM.models import *
 
 # Create your models here.
 def getCommentAttachmentPath(instance , filename ):
@@ -76,11 +77,13 @@ class social(models.Model):
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
 @receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
-def notify_server_config_changed(sender, instance, **kwargs):
-
-    requests.post("http://"+settings.WAMP_SERVER+":8080/notify",
-        json={
-          'topic': 'service.notification.' + instance.parent.user.username,
-          'args': [model_to_dict(instance)]
-        }
-    )
+def postLikeNotification(sender, instance, **kwargs):
+    shortInfo = 'postLike:' + str(instance.pk)
+    n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
+    if new:
+        requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+            json={
+              'topic': 'service.notification.' + instance.parent.user.username,
+              'args': [{'type' : 'social' ,'id': n.pk}]
+            }
+        )
