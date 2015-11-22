@@ -100,23 +100,30 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     }).result.then(postClose, postClose);
   }
 
-  $scope.fetchNotifications = function(toFetch) {
+  $scope.fetchNotifications = function(signal) {
     // console.log("going to fetch notifictions");
     // console.log(toFetch);
-    $scope.url = '/api/PIM/notification/';
+    url = '/api/PIM/notification/';
     $scope.method = 'GET';
-    console.log(typeof toFetch);
-    if (typeof toFetch != 'undefined') {
-      $scope.url = $scope.url + toFetch.id +'/';
-      console.log($scope.url);
-      $http({method: $scope.method, url: $scope.url}).
-      then(function(response){
-        $scope.notifications.unshift(response.data);
-      } , function(response){});
+    if (typeof signal != 'undefined') {
+      url = url + signal.id +'/';
+      if (signal.action == 'deleted') {
+        for (var i = 0; i < $scope.notifications.length; i++) {
+          if($scope.notifications[i].url.indexOf(url) !=-1){
+            $scope.notifications.splice(i , 1);
+          }
+        }
+      }else{
+
+        $http({method: $scope.method, url: url}).
+        then(function(response){
+          $scope.notifications.unshift(response.data);
+        } , function(response){});
+      }
       return;
     };
     $scope.notifications = [];
-    $http({method: $scope.method, url: $scope.url}).
+    $http({method: $scope.method, url: url}).
       then(function(response) {
         for (var i = 0; i < response.data.length; i++) {
           var notification = response.data[i]

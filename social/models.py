@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from time import time
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save , pre_delete
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
 import requests
@@ -76,14 +76,63 @@ class social(models.Model):
 
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
-@receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
-def postLikeNotification(sender, instance, **kwargs):
-    shortInfo = 'postLike:' + str(instance.pk)
-    n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
-    if new:
+def notify(type , id , action , instance):
+    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+        json={
+          'topic': 'service.notification.' + instance.parent.user.username,
+          'args': [{'type' : type ,'id': id , 'action' : action , 'objID' : instance.pk}]
+        }
+    )
+def notifyUpdates(type , action , subscribers , instance):
+    for user in subscribers:
         requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
             json={
-              'topic': 'service.notification.' + instance.parent.user.username,
-              'args': [{'type' : 'social' ,'id': n.pk}]
+              'topic': 'service.updates.' + user.username,
+              'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]
             }
         )
+
+@receiver(post_save, sender=postComment, dispatch_uid="server_post_save")
+@receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
+def postLikeNotification(sender, instance, **kwargs):
+
+    subscribers = []
+    for c in postComment.objects.filter(parent = instance.parent):
+        if c.user not in subscribers and c.user != instance.parent.user and c.user != instance.user:
+            subscribers.append(c.user)
+    if sender == postLike:
+        notifyUpdates('social.postLike' , 'created' , subscribers , instance)
+        shortInfo = 'postLike:'
+    elif sender == postComment:
+        shortInfo = 'postComment:'
+        notifyUpdates('social.postComment' , 'created' , subscribers , instance)
+    if instance.parent.user == instance.user:
+        return
+    shortInfo += str(instance.pk)
+    n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
+    if new:
+        notify('social' , n.pk , 'created' , instance)
+
+
+@receiver(pre_delete, sender=postLike, dispatch_uid="server_post_delete")
+@receiver(pre_delete, sender=postComment, dispatch_uid="server_post_delete")
+def postCommentNotificationDelete(sender, instance, **kwargs):
+    subscribers = []
+    for c in postComment.objects.filter(parent = instance.parent):
+        if c.user not in subscribers and c.user != instance.parent.user and c.user != instance.user:
+            subscribers.append(c.user)
+    if sender == postLike:
+        notifyUpdates('social.postLike' , 'deleted' , subscribers , instance)
+        shortInfo = 'postLike:'
+    elif sender == postComment:
+        shortInfo = 'postComment:'
+        notifyUpdates('social.postComment' , 'deleted' , subscribers , instance)
+    if instance.parent.user == instance.user:
+        return
+    shortInfo += str(instance.pk)
+
+    n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
+    if n.count() != 0:
+        for i in n:
+            notify('social' , i.pk , 'deleted' , instance)
+        n.delete()

@@ -41,14 +41,26 @@ connection.onopen = function (session) {
   }
 
   processNotification = function(args){
-    data = args[0];
 
     var scope = angular.element(document.getElementById('main')).scope();
     scope.$apply(function() {
-      scope.fetchNotifications(data);
-
+      scope.fetchNotifications(args[0]);
     });
+    var scope = angular.element(document.getElementById('aside')).scope();
+    if (typeof scope != 'undefined') {
+      scope.$apply(function() {
+        scope.refreshAside(args[0]);
+      });
+    }
+  }
 
+  processUpdates = function(args){
+    var scope = angular.element(document.getElementById('aside')).scope();
+    if (typeof scope != 'undefined') {
+      scope.$apply(function() {
+        scope.refreshAside(args[0]);
+      });
+    }
   }
 
   session.subscribe('service.chat.'+wampBindName, chatResonse).then(
@@ -62,6 +74,14 @@ connection.onopen = function (session) {
   session.subscribe('service.notification.'+wampBindName, processNotification).then(
     function (sub) {
       console.log("subscribed to topic 'notification'");
+    },
+    function (err) {
+      console.log("failed to subscribed: " + err);
+    }
+  );
+  session.subscribe('service.updates.'+wampBindName, processUpdates).then(
+    function (sub) {
+      console.log("subscribed to topic 'updates'");
     },
     function (err) {
       console.log("failed to subscribed: " + err);

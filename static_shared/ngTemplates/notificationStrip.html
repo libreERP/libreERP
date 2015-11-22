@@ -1,0 +1,12 @@
+<li class="container-fluid navBarInfoList" >
+  <a href="" ng-click="openNotification()" class="row" style="position: relative; top:-7px; text-decoration:none !important;">
+    <i class="fa {{data.originator | getIcon:this}} fa-2x"></i>
+    <div class="col-md-11 pull-right" style="position: relative; top:-10px">
+      <span class="text-muted">{{data.originator | humanize}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>
+      <br>
+      <div ng-if="notificationType == 'postLike'"> {{liker | getName}} <span style="color:#676767;">Liked your post </span> {{notificationData.text | limitTo:15}}</div>
+      <div ng-if="notificationType == 'postComment'"> {{liker | getName}} <span style="color:#676767;">commented on your post </span> </div>
+      <div ng-if="notificationType == 'default'"> {{data.shortInfo | limitTo:60 }}</div>
+    </div>
+  </a>
+</li>

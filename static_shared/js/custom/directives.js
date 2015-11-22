@@ -404,28 +404,64 @@ app.directive('messageStrip', function () {
 
 app.directive('notificationStrip', function () {
   return {
-    template: '<li class="container-fluid navBarInfoList" >'+
-      '<a href="" ng-click="openNotification()" class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
-        '<i class="fa {{data.originator | getIcon:this}} fa-2x"></i>'+
-        '<div class="col-md-11 pull-right" style="position: relative; top:-10px">'+
-          '<span class="text-muted">{{data.originator | humanize}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
-          '<br>{{data.shortInfo | limitTo:45 }}'+
-        '</div>'+
-      '</a>'+
-    '</li>',
+    templateUrl: '/static/ngTemplates/notificationStrip.html',
     restrict: 'E',
     transclude: true,
     replace:true,
     scope:{
       data : '=',
     },
-    controller : function($scope){
+    controller : function($scope , $http , userProfileService , $aside){
       // console.log($scope.data);
-      if ($scope.data.shortInfo.split(':')[0] == 'postLike') {
-        console.log('post like notification');
+      parts = $scope.data.shortInfo.split(':');
+      if(typeof parts[1] == 'undefined'){
+        $scope.notificationType = 'default';
+      }else {
+        $scope.notificationType = parts[0];
+      }
+      if ($scope.notificationType == 'postLike') {
+        nodeUrl = '/api/social/postLike/';
+      }
+      else if ($scope.notificationType == 'postComment') {
+        nodeUrl = '/api/social/postComment/';
+      }
+      if(typeof parts[1] != 'undefined'){
+        $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
+        then(function(response){
+          $scope.liker = response.data.user;
+          $http({method: 'GET' , url : response.data.parent}).then(function(response){
+            $scope.notificationData = response.data;
+          })
+        })
+      };
+
+      $scope.openPost = function(position, backdrop , input) {
+        $scope.asideState = {
+          open: true,
+          position: position
+        };
+
+        function postClose() {
+          $scope.asideState.open = false;
+        }
+
+        $aside.open({
+          templateUrl: '/static/ngTemplates/post.html',
+          placement: position,
+          size: 'md',
+          backdrop: backdrop,
+          controller:'postAsideCtrl',
+          resolve: {
+           input: function () {
+             return input;
+            }
+          }
+        }).result.then(postClose, postClose);
       }
       $scope.openNotification = function(){
-        console.log("will open notification");
+        if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
+          $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
+        }
       }
     },
   };

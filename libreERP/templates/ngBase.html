@@ -19,13 +19,14 @@
     <style media="screen" ng-bind-html="theme"></style>
   </head>
   <body>
+    <div ng-include="'/static/ngTemplates/ngTemplateSnippets.html'"></div>
+
     <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
 
     <div ng-include="headerUrl"></div>
     <div ui-view></div>
 
     <!-- contains very common ng templates used in the directives -->
-    <div ng-include="'/static/ngTemplates/ngTemplateSnippets.html'"></div>
     <!-- Stock JS libraries -->
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

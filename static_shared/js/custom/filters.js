@@ -33,11 +33,11 @@ app.filter('timeAgo' , function(){
     var now = new Date();
     var diff = Math.floor((now - t)/60000)
     if (diff<60) {
-      return diff+'M';
+      return diff+' Mins';
     }else if (diff>=60 && diff<60*24) {
-      return Math.floor(diff/60)+'H';
+      return Math.floor(diff/60)+' Hrs';
     }else if (diff>=60*24) {
-      return Math.floor(diff/(60*24))+'D';
+      return Math.floor(diff/(60*24))+' Days';
     }
   }
 })

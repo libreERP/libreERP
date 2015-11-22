@@ -93,121 +93,206 @@ app.directive('post', function () {
           placement: position,
           size: 'md',
           backdrop: backdrop,
-          controller: function($scope, $uibModalInstance ) {
-            $scope.me = userProfileService.get("mySelf");
-            // console.log($scope);
-            $scope.data = input.data;
-            $scope.onDelete = input.onDelete;
-            $scope.possibleCommentHeight = 70; // initial height percent setting
-            $scope.textToComment = "";
-            $scope.viewMode = 'comments';
-            $scope.liked = false;
-            for (var i = 0; i < $scope.data.likes.length; i++) {
-              if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-                $scope.liked = true;
-                break;
-              }
-            }
-            if ($scope.data.user.split('?')[0] == $scope.me.url) {
-              $scope.isOwner = true;
-            } else {
-              $scope.isOwner = false;
-            }
-            setTimeout(function () {
-              postBodyHeight = $("#postModalBody").height();
-              inputHeight = $("#commentInput").height();
-              winHeight = $(window).height();
-              defaultHeight = postBodyHeight + 5.7*inputHeight;
-              $scope.commentsHeight = Math.floor(100*(winHeight - defaultHeight)/winHeight);
-              $scope.$apply();
-              scroll("#commentsArea");
-            }, 100);
-            $scope.comment = function(){
-              if ($scope.textToComment == "") {
-                return;
-              }
-              dataToSend = {text: $scope.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
-              // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-              $http({method: 'POST', data:dataToSend, url: '/api/social/postComment/'}).
-                then(function(response) {
-                  $scope.data.comments.push(response.data)
-                  $scope.textToComment = "";
-                  $scope.viewMode = 'comments';
-                  setTimeout(function () {
-                    scroll("#commentsArea");
-                  }, 100);
-                }, function(response) {
-                  // console.log("failed to sent the comment");
-              });
-            }
-            $scope.deleteComment = function(index){
-              $scope.data.comments.splice(index , 1);
-            }
-
-            $scope.like = function(){
-              if ($scope.liked) {
-                $http({method: 'DELETE', url: $scope.data.likes[i].url}).
-                  then(function(response) {
-                    for (var i = 0; i < $scope.data.likes.length; i++) {
-                      if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-                        $scope.data.likes.splice(i, 1);
-                        $scope.liked = false;
-                      }
-                    }
-                  }, function(response) {
-                    // console.log("failed to sent the comment");
-                });
-
-              } else {
-                dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
-                // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-                $http({method: 'POST', data:dataToSend, url: '/api/social/postLike/'}).
-                  then(function(response) {
-                    $scope.liked = true;
-                    $scope.data.likes.push(response.data)
-                  }, function(response) {
-                    // console.log("failed to sent the comment");
-                });
-              }
-            }
-            $scope.enableEdit = function(){
-              $scope.editMode = true;
-              $scope.backupText = angular.copy($scope.data.text);
-            }
-            $scope.save = function(){
-              var fd = new FormData();
-              var f = new File([""], "");
-              fd.append('attachment', f);
-              fd.append('text' , $scope.data.text );
-              fd.append('user' , $scope.me.url);
-              var url = $scope.data.url;
-              $http({method : 'PATCH' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
-              then(function(response){
-                $scope.editMode = false;
-              } , function(response){
-
-              });
-            }
-            $scope.cancelEditor = function(){
-              $scope.data.text = $scope.backupText;
-              $scope.editMode = false;
-            }
-
-            $scope.delete = function(){
-              $http({method : 'DELETE' , url : $scope.data.url}).
-              then(function(response){
-                $scope.onDelete();
-                $uibModalInstance.close();
-              } , function(response){
-
-              });
+          controller:'postAsideCtrl',
+          resolve: {
+           input: function () {
+             return input;
             }
           }
         }).result.then(postClose, postClose);
       }
-
     },
   };
+});
+
+app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, userProfileService , input) {
+  $scope.me = userProfileService.get("mySelf");
+  $scope.data = input.data;
+  $scope.onDelete = input.onDelete;
+  $scope.possibleCommentHeight = 70; // initial height percent setting
+  $scope.textToComment = "";
+  $scope.viewMode = 'comments';
+  $scope.liked = false;
+  if (typeof $scope.data == 'undefined') {
+    return;
+  }
+  for (var i = 0; i < $scope.data.likes.length; i++) {
+    if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+      $scope.liked = true;
+      break;
+    }
+  }
+  if ($scope.data.user.split('?')[0] == $scope.me.url) {
+    $scope.isOwner = true;
+  } else {
+    $scope.isOwner = false;
+  }
+  setTimeout(function () {
+    postBodyHeight = $("#postModalBody").height();
+    inputHeight = $("#commentInput").height();
+    winHeight = $(window).height();
+    defaultHeight = postBodyHeight + 5.7*inputHeight;
+    $scope.commentsHeight = Math.floor(100*(winHeight - defaultHeight)/winHeight);
+    $scope.$apply();
+    scroll("#commentsArea");
+  }, 100);
+
+  $scope.refreshAside = function(signal){
+
+
+    if (signal.action == 'created') {
+
+      if (typeof signal.parent == 'number'){
+        updateType = signal.type.split('.')[1];
+        if (updateType == 'postLike') {
+          $http({method : 'GET' , url : '/api/social/postLike/' + signal.id +'/'}).
+          then(function(response){
+            if (response.data.parent == $scope.data.url.split('?')[0]) {
+              $scope.data.likes.push(response.data);
+              if (response.data.user == $scope.me.url) {
+                $scope.liked = true;
+              }
+            }
+          });
+        }else if (updateType == 'postComment') {
+          $http({method : 'GET' , url : '/api/social/postComment/' + signal.id +'/'}).
+          then(function(response){
+            if (response.data.parent == $scope.data.url.split('?')[0]) {
+              $scope.data.comments.push(response.data);
+            }
+          });
+        };
+      } else {
+        $http({method : 'GET' , url : '/api/PIM/notification/' + signal.id +'/'}).
+        then(function(response){
+          parts = response.data.shortInfo.split(':');
+          updateType = parts[0];
+          if (updateType == 'postLike') {
+            $http({method : 'GET' , url : '/api/social/postLike/' + parts[1] +'/'}).
+            then(function(response){
+              if (response.data.parent == $scope.data.url.split('?')[0]) {
+                $scope.data.likes.push(response.data);
+                if (response.data.user == $scope.me.url) {
+                  $scope.liked = true;
+                }
+              }
+            });
+          }else if (updateType == 'postComment') {
+            $http({method : 'GET' , url : '/api/social/postComment/' + parts[1] +'/'}).
+            then(function(response){
+              if (response.data.parent == $scope.data.url.split('?')[0]) {
+                $scope.data.comments.push(response.data);
+              }
+            });
+          };
+        });
+      }
+    }else if (signal.action == 'deleted'){
+      if (typeof signal.parent == 'number'){
+        id = signal.id;
+
+      }else{
+        id = signal.objID;
+      }
+
+      for (var i = 0; i < $scope.data.comments.length; i++) {
+        if ($scope.data.comments[i].url.indexOf('/api/social/postComment/'+ id) != -1){
+          $scope.data.comments.splice(i, 1);
+        }
+      }
+      for (var i = 0; i < $scope.data.likes.length; i++) {
+        if ($scope.data.likes[i].url.indexOf('/api/social/postLike/'+id) != -1){
+          $scope.data.likes.splice(i, 1);
+          for (var i = 0; i < $scope.data.likes.length; i++) {
+            if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+              $scope.liked = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+  };
+  $scope.comment = function(){
+    if ($scope.textToComment == "") {
+      return;
+    }
+    dataToSend = {text: $scope.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
+    // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
+    $http({method: 'POST', data:dataToSend, url: '/api/social/postComment/'}).
+      then(function(response) {
+        $scope.data.comments.push(response.data)
+        $scope.textToComment = "";
+        $scope.viewMode = 'comments';
+        setTimeout(function () {
+          scroll("#commentsArea");
+        }, 100);
+      }, function(response) {
+        // console.log("failed to sent the comment");
+    });
+  }
+  $scope.deleteComment = function(index){
+    $scope.data.comments.splice(index , 1);
+  }
+
+  $scope.like = function(){
+    if ($scope.liked) {
+      $http({method: 'DELETE', url: $scope.data.likes[i].url}).
+        then(function(response) {
+          for (var i = 0; i < $scope.data.likes.length; i++) {
+            if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+              $scope.data.likes.splice(i, 1);
+              $scope.liked = false;
+            }
+          }
+        }, function(response) {
+          // console.log("failed to sent the comment");
+      });
+
+    } else {
+      dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
+      // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
+      $http({method: 'POST', data:dataToSend, url: '/api/social/postLike/'}).
+        then(function(response) {
+          $scope.liked = true;
+          $scope.data.likes.push(response.data)
+        }, function(response) {
+          // console.log("failed to sent the comment");
+      });
+    }
+  }
+  $scope.enableEdit = function(){
+    $scope.editMode = true;
+    $scope.backupText = angular.copy($scope.data.text);
+  }
+  $scope.save = function(){
+    var fd = new FormData();
+    var f = new File([""], "");
+    fd.append('attachment', f);
+    fd.append('text' , $scope.data.text );
+    fd.append('user' , $scope.me.url);
+    var url = $scope.data.url;
+    $http({method : 'PATCH' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      $scope.editMode = false;
+    } , function(response){
+
+    });
+  }
+  $scope.cancelEditor = function(){
+    $scope.data.text = $scope.backupText;
+    $scope.editMode = false;
+  }
+
+  $scope.delete = function(){
+    $http({method : 'DELETE' , url : $scope.data.url}).
+    then(function(response){
+      $scope.onDelete();
+      $uibModalInstance.close();
+    } , function(response){
+
+    });
+  }
 });
 
 app.directive('album', function () {
