@@ -144,7 +144,15 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
       var nodeUrl = '/api/social/';
       if (typeof signal.parent == 'number'){
         updateType = signal.type.split('.')[1];
-        $http({method : 'GET' , url : nodeUrl + updateType + '/' + signal.id +'/'}).
+
+        if (updateType == 'commentLike') {
+          pk = signal.parent;
+          url = nodeUrl + 'postComment';
+        } else {
+          pk = signal.id;
+          url = nodeUrl + updateType;
+        }
+        $http({method : 'GET' , url : url + '/' + pk +'/'}).
         then(function(response){
           if (response.data.parent == $scope.data.url.split('?')[0]) {
             if (updateType == 'postLike') {
@@ -154,6 +162,15 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
               }
             } else if (updateType == 'postComment') {
               $scope.data.comments.push(response.data);
+            } else if (updateType == 'commentLike') {
+              $http({method : 'GET' , url : nodeUrl + updateType + '/' + signal.id +'/'}).
+              then(function(response){
+                for (var i = 0; i < $scope.data.comments.length; i++) {
+                  if( $scope.data.comments[i].url.indexOf(url + '/' + pk +'/') != -1) {
+                    $scope.data.comments[i].likes.push(response.data);
+                  }
+                }
+              })
             }
           }
         });
@@ -506,9 +523,27 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   emptyFile = new File([""], "");
   $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
-  $scope.user.albums = userProfileService.social($scope.user.username, 'albums');
-  $scope.user.posts = userProfileService.social($scope.user.username , 'post');
-  $scope.user.pictures = userProfileService.social($scope.user.username , 'pictures');
+  $scope.ready = 0;
+  var feedsItems = ['album' , 'post' , 'picture'];
+  for (var i = 0; i < feedsItems.length; i++){
+    mode = feedsItems[i];
+    $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username}).
+    then(function(response){
+      if (response.config.url.indexOf('album') != -1) {
+        $scope.user.albums = response.data;
+        $scope.ready += 1;
+      } else if (response.config.url.indexOf('post') != -1) {
+        $scope.user.posts = response.data;
+        $scope.ready += 1;
+      } else if (response.config.url.indexOf('picture') != -1) {
+        $scope.user.pictures = response.data;
+        $scope.ready += 1;
+
+      }
+    })
+  }
+
+
   $scope.droppedObjects = [];
   $scope.editorData = {draggableObjects : []}; // for the album editor
   $scope.statusMessage = '';
@@ -547,7 +582,12 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       $scope.sortedFeeds.push( $scope.rawFeeds[orderMat[i]] )
     }
   }
-  $scope.refreshFeeds();
+  $scope.$watch('ready' , function(newValue , oldValue){
+    if (newValue == 3) {
+      $scope.refreshFeeds()
+    }
+  })
+
 
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
