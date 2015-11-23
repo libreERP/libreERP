@@ -31,6 +31,10 @@ class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
         user =  self.context['request'].user
         comment = postComment(text = text , parent = parent , user = user)
         comment.save()
+        f , new = postFollower.objects.get_or_create(user = user , parent = parent )
+        if new:
+            f.enrollment = 'action'
+            f.save()
         return comment
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user

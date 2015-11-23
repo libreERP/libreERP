@@ -46,12 +46,6 @@ connection.onopen = function (session) {
     scope.$apply(function() {
       scope.fetchNotifications(args[0]);
     });
-    var scope = angular.element(document.getElementById('aside')).scope();
-    if (typeof scope != 'undefined') {
-      scope.$apply(function() {
-        scope.refreshAside(args[0]);
-      });
-    }
   }
 
   processUpdates = function(args){

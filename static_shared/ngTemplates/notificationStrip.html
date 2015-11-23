@@ -4,8 +4,9 @@
     <div class="col-md-11 pull-right" style="position: relative; top:-10px">
       <span class="text-muted">{{data.originator | humanize}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>
       <br>
-      <div ng-if="notificationType == 'postLike'"> {{liker | getName}} <span style="color:#676767;">Liked your post </span> {{notificationData.text | limitTo:15}}</div>
-      <div ng-if="notificationType == 'postComment'"> {{liker | getName}} <span style="color:#676767;">commented on your post </span> </div>
+      <div ng-if="notificationType == 'postLike'"> {{friend | getName}} <span style="color:#676767;">Liked your post </span> {{notificationData.text | limitTo:15}}</div>
+      <div ng-if="notificationType == 'postComment'"> {{friend | getName}} <span style="color:#676767;">commented on your post </span> </div>
+      <div ng-if="notificationType == 'commentLike'"> {{friend | getName}} <span style="color:#676767;">commented on your post </span> </div>
       <div ng-if="notificationType == 'default'"> {{data.shortInfo | limitTo:60 }}</div>
     </div>
   </a>

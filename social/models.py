@@ -21,6 +21,7 @@ class post(models.Model):
     text = models.TextField(null = False , max_length = 300)
     attachment = models.FileField(upload_to = getPostAttachmentPath , null = True)
     created = models.DateTimeField(auto_now = True)
+    tagged = models.ManyToManyField(User)
     def __unicode__(self):
         return self.text
 
@@ -38,21 +39,42 @@ class picture(models.Model):
     user = models.ForeignKey(User , related_name = 'socialPhotos' , null = False)
     photo = models.ImageField(upload_to = getSocialPictureUploadPath , null = False)
     created = models.DateTimeField (auto_now = True)
-    tagged = models.CharField(max_length = 1000, null = True)
+    tagged = models.ManyToManyField(User)
     album = models.ForeignKey(album , related_name = 'photos' , null = True)
 
+SUBSCRIPTION_CHOICES = (
+    ('all' , 'all'), # all the updates will be sent
+    ('daily' , 'daily'), # updates consolidated on per day basis
+    ('weekly' , 'weekly'),
+    ('monthly' , 'monthly'),
+    ('available' ,'available'),
+)
+FOLLOW_TYPE_CHOICES = (
+    ('tagged' , 'tagged'), # when the other user tagged the follower
+    ('starred' , 'starred'), # when the user subscribe to a given object
+    ('action' , 'action') # used when the following is based on the users action such as like or comment
+)
+
 class follow(models.Model):
-    user = models.ForeignKey(User , related_name ='itemsFollowing')
+    user = models.ForeignKey(User , related_name ='following')
     created = models.DateTimeField(auto_now = True)
+    subscription = models.CharField(choices = SUBSCRIPTION_CHOICES , default = 'all' , max_length = 10)
+    enrollment = models.CharField(choices = FOLLOW_TYPE_CHOICES , default = 'tagged' , max_length = 10)
+
+class postFollower(follow):
+    parent = models.ForeignKey(post , related_name = 'followers')
+
+class albumFollower(follow):
+    parent = models.ForeignKey(album , related_name = 'followers')
 
 class comment(models.Model):
-    user = models.ForeignKey(User , related_name = 'postsCommented')
+    user = models.ForeignKey(User , related_name = 'comments')
     created = models.DateTimeField(auto_now = True)
     attachment = models.FileField(upload_to = getCommentAttachmentPath , null = True)
     text = models.CharField(max_length = 200 , null = False)
 
 class like(models.Model):
-    user = models.ForeignKey(User , related_name = 'commentsLiked')
+    user = models.ForeignKey(User , related_name = 'likes')
     created = models.DateTimeField(auto_now = True)
 
 class postLike(like):
@@ -84,52 +106,62 @@ def notify(type , id , action , instance):
         }
     )
 def notifyUpdates(type , action , subscribers , instance):
-    for user in subscribers:
-        requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
-            json={
-              'topic': 'service.updates.' + user.username,
-              'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]
-            }
-        )
+    for sub in subscribers:
+
+        if sub.user != instance.user:
+            print "will send to" + str(sub.user.username)
+            requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+                json={
+                  'topic': 'service.updates.' + sub.user.username,
+                  'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]
+                }
+            )
 
 @receiver(post_save, sender=postComment, dispatch_uid="server_post_save")
+@receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
 @receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
 def postLikeNotification(sender, instance, **kwargs):
+    if sender == commentLike:
+        subscribers = postFollower.objects.filter(parent = instance.parent.parent)
+    elif sender == postComment or sender == postLike:
+        subscribers = postFollower.objects.filter(parent = instance.parent)
 
-    subscribers = []
-    for c in postComment.objects.filter(parent = instance.parent):
-        if c.user not in subscribers and c.user != instance.parent.user and c.user != instance.user:
-            subscribers.append(c.user)
     if sender == postLike:
-        notifyUpdates('social.postLike' , 'created' , subscribers , instance)
-        shortInfo = 'postLike:'
+        shortInfo = 'postLike'
     elif sender == postComment:
-        shortInfo = 'postComment:'
-        notifyUpdates('social.postComment' , 'created' , subscribers , instance)
-    if instance.parent.user == instance.user:
+        shortInfo = 'postComment'
+    elif sender == commentLike:
+        shortInfo = 'commentLike'
+
+    notifyUpdates( 'social.' + shortInfo , 'created' , subscribers , instance)
+    if instance.parent.user == instance.user or sender == commentLike:
         return
-    shortInfo += str(instance.pk)
+    shortInfo += ':' + str(instance.pk)
     n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if new:
         notify('social' , n.pk , 'created' , instance)
 
 
 @receiver(pre_delete, sender=postLike, dispatch_uid="server_post_delete")
+@receiver(pre_delete, sender=commentLike, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=postComment, dispatch_uid="server_post_delete")
 def postCommentNotificationDelete(sender, instance, **kwargs):
-    subscribers = []
-    for c in postComment.objects.filter(parent = instance.parent):
-        if c.user not in subscribers and c.user != instance.parent.user and c.user != instance.user:
-            subscribers.append(c.user)
+
+    if sender == commentLike:
+        subscribers = postFollower.objects.filter(parent = post.objects.get(comments = instance.parent))
+    elif sender == postComment or sender == postLike:
+        subscribers = postFollower.objects.filter(parent = instance.parent)
     if sender == postLike:
-        notifyUpdates('social.postLike' , 'deleted' , subscribers , instance)
-        shortInfo = 'postLike:'
+        shortInfo = 'postLike'
     elif sender == postComment:
-        shortInfo = 'postComment:'
-        notifyUpdates('social.postComment' , 'deleted' , subscribers , instance)
-    if instance.parent.user == instance.user:
+        shortInfo = 'postComment'
+    elif sender == commentLike:
+        shortInfo = 'commentLike'
+
+    notifyUpdates( 'social.' + shortInfo , 'deleted' , subscribers , instance)
+    if instance.parent.user == instance.user or sender == commentLike:
         return
-    shortInfo += str(instance.pk)
+    shortInfo += ':' + str(instance.pk)
 
     n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if n.count() != 0:

@@ -138,30 +138,25 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   }, 100);
 
   $scope.refreshAside = function(signal){
-
+    console.log(signal);
 
     if (signal.action == 'created') {
-
+      var nodeUrl = '/api/social/';
       if (typeof signal.parent == 'number'){
         updateType = signal.type.split('.')[1];
-        if (updateType == 'postLike') {
-          $http({method : 'GET' , url : '/api/social/postLike/' + signal.id +'/'}).
-          then(function(response){
-            if (response.data.parent == $scope.data.url.split('?')[0]) {
+        $http({method : 'GET' , url : nodeUrl + updateType + '/' + signal.id +'/'}).
+        then(function(response){
+          if (response.data.parent == $scope.data.url.split('?')[0]) {
+            if (updateType == 'postLike') {
               $scope.data.likes.push(response.data);
               if (response.data.user == $scope.me.url) {
                 $scope.liked = true;
               }
-            }
-          });
-        }else if (updateType == 'postComment') {
-          $http({method : 'GET' , url : '/api/social/postComment/' + signal.id +'/'}).
-          then(function(response){
-            if (response.data.parent == $scope.data.url.split('?')[0]) {
+            } else if (updateType == 'postComment') {
               $scope.data.comments.push(response.data);
             }
-          });
-        };
+          }
+        });
       } else {
         $http({method : 'GET' , url : '/api/PIM/notification/' + signal.id +'/'}).
         then(function(response){
@@ -211,7 +206,8 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
           }
         }
       }
-    }
+    } // if - else
+    scroll("#commentsArea");
   };
   $scope.comment = function(){
     if ($scope.textToComment == "") {

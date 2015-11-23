@@ -416,19 +416,14 @@ app.directive('notificationStrip', function () {
       parts = $scope.data.shortInfo.split(':');
       if(typeof parts[1] == 'undefined'){
         $scope.notificationType = 'default';
-      }else {
+      } else {
         $scope.notificationType = parts[0];
       }
-      if ($scope.notificationType == 'postLike') {
-        nodeUrl = '/api/social/postLike/';
-      }
-      else if ($scope.notificationType == 'postComment') {
-        nodeUrl = '/api/social/postComment/';
-      }
+      nodeUrl = '/api/social/' + $scope.notificationType + '/'
       if(typeof parts[1] != 'undefined'){
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
         then(function(response){
-          $scope.liker = response.data.user;
+          $scope.friend = response.data.user;
           $http({method: 'GET' , url : response.data.parent}).then(function(response){
             $scope.notificationData = response.data;
           })
