@@ -109,7 +109,7 @@ def notifyUpdates(type , action , subscribers , instance):
     for sub in subscribers:
 
         if sub.user != instance.user:
-            print "will send to" + str(sub.user.username)
+            # print "will send to" + str(sub.user.username)
             requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
                 json={
                   'topic': 'service.updates.' + sub.user.username,

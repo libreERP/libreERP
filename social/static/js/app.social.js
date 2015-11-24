@@ -108,6 +108,12 @@ app.directive('post', function () {
 app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, userProfileService , input) {
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
+  $http({method: 'GET' , url : $scope.data.url}).
+  then(function(requests){
+    for(key in requests.data){
+      $scope.data[key] = requests.data[key];
+    }
+  });
   $scope.onDelete = input.onDelete;
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
@@ -140,8 +146,8 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   $scope.refreshAside = function(signal){
     console.log(signal);
 
+    var nodeUrl = '/api/social/';
     if (signal.action == 'created') {
-      var nodeUrl = '/api/social/';
       if (typeof signal.parent == 'number'){
         updateType = signal.type.split('.')[1];
 
@@ -206,19 +212,33 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
       }else{
         id = signal.objID;
       }
+      updateType = signal.type.split('.')[1];
+      if (updateType == 'postComment') {
 
-      for (var i = 0; i < $scope.data.comments.length; i++) {
-        if ($scope.data.comments[i].url.indexOf('/api/social/postComment/'+ id) != -1){
-          $scope.data.comments.splice(i, 1);
+        for (var i = 0; i < $scope.data.comments.length; i++) {
+          if ($scope.data.comments[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
+            $scope.data.comments.splice(i, 1);
+          }
         }
-      }
-      for (var i = 0; i < $scope.data.likes.length; i++) {
-        if ($scope.data.likes[i].url.indexOf('/api/social/postLike/'+id) != -1){
-          $scope.data.likes.splice(i, 1);
-          for (var i = 0; i < $scope.data.likes.length; i++) {
-            if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-              $scope.liked = true;
-              break;
+      } else if (updateType == 'postLike') {
+
+        for (var i = 0; i < $scope.data.likes.length; i++) {
+          if ($scope.data.likes[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
+            $scope.data.likes.splice(i, 1);
+            for (var i = 0; i < $scope.data.likes.length; i++) {
+              if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+                $scope.liked = true;
+                break;
+              }
+            }
+          }
+        };
+      } else if (updateType == 'commentLike') {
+        for (var i = 0; i < $scope.data.comments.length; i++) {
+          for (var j = 0; j < $scope.data.comments[i].likes.length; j++) {
+            console.log(nodeUrl + updateType + '/' + signal.id);
+            if($scope.data.comments[i].likes[j].url.indexOf(nodeUrl + updateType + '/' + signal.id) != -1) {
+              $scope.data.comments[i].likes.splice(j,1);
             }
           }
         }
