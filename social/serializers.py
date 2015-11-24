@@ -67,6 +67,10 @@ class pictureCommentsSerializer(serializers.HyperlinkedModelSerializer):
         user =  self.context['request'].user
         comment = pictureComment(text = text , parent = parent , user = user)
         comment.save()
+        f , new = albumFollower.objects.get_or_create(user = user , parent = album.objects.get(photos = parent) )
+        if new:
+            f.enrollment = 'action'
+            f.save()
         return comment
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user

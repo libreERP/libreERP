@@ -106,15 +106,20 @@ app.directive('post', function () {
 });
 
 app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, userProfileService , input) {
+  $scope.content = 'post';
+
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
+  $scope.onDelete = input.onDelete;
   $http({method: 'GET' , url : $scope.data.url}).
   then(function(requests){
     for(key in requests.data){
       $scope.data[key] = requests.data[key];
     }
+    setTimeout(function () {
+      scroll("#commentsArea");
+    }, 100);
   });
-  $scope.onDelete = input.onDelete;
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
   $scope.viewMode = 'comments';
@@ -153,7 +158,7 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
 
         if (updateType == 'commentLike') {
           pk = signal.parent;
-          url = nodeUrl + 'postComment';
+          url = nodeUrl + $scope.content + 'Comment';
         } else {
           pk = signal.id;
           url = nodeUrl + updateType;
@@ -161,12 +166,12 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
         $http({method : 'GET' , url : url + '/' + pk +'/'}).
         then(function(response){
           if (response.data.parent == $scope.data.url.split('?')[0]) {
-            if (updateType == 'postLike') {
+            if (updateType == $scope.content + 'Like') {
               $scope.data.likes.push(response.data);
               if (response.data.user == $scope.me.url) {
                 $scope.liked = true;
               }
-            } else if (updateType == 'postComment') {
+            } else if (updateType == $scope.content+ 'Comment') {
               $scope.data.comments.push(response.data);
             } else if (updateType == 'commentLike') {
               $http({method : 'GET' , url : nodeUrl + updateType + '/' + signal.id +'/'}).
@@ -185,8 +190,8 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
         then(function(response){
           parts = response.data.shortInfo.split(':');
           updateType = parts[0];
-          if (updateType == 'postLike') {
-            $http({method : 'GET' , url : '/api/social/postLike/' + parts[1] +'/'}).
+          if (updateType == $scope.content + 'Like') {
+            $http({method : 'GET' , url : '/api/social/'+ $scope.content +'Like/' + parts[1] +'/'}).
             then(function(response){
               if (response.data.parent == $scope.data.url.split('?')[0]) {
                 $scope.data.likes.push(response.data);
@@ -195,8 +200,8 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
                 }
               }
             });
-          }else if (updateType == 'postComment') {
-            $http({method : 'GET' , url : '/api/social/postComment/' + parts[1] +'/'}).
+          }else if (updateType == $scope.content + 'Comment') {
+            $http({method : 'GET' , url : '/api/social/' + $scope.content + 'Comment/' + parts[1] +'/'}).
             then(function(response){
               if (response.data.parent == $scope.data.url.split('?')[0]) {
                 $scope.data.comments.push(response.data);
@@ -213,14 +218,14 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
         id = signal.objID;
       }
       updateType = signal.type.split('.')[1];
-      if (updateType == 'postComment') {
+      if (updateType == $scope.content + 'Comment') {
 
         for (var i = 0; i < $scope.data.comments.length; i++) {
           if ($scope.data.comments[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
             $scope.data.comments.splice(i, 1);
           }
         }
-      } else if (updateType == 'postLike') {
+      } else if (updateType == $scope.content + 'Like') {
 
         for (var i = 0; i < $scope.data.likes.length; i++) {
           if ($scope.data.likes[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
@@ -244,7 +249,9 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
         }
       }
     } // if - else
-    scroll("#commentsArea");
+    setTimeout(function () {
+      scroll("#commentsArea");
+    }, 1000);
   };
   $scope.comment = function(){
     if ($scope.textToComment == "") {
@@ -337,7 +344,7 @@ app.directive('album', function () {
           '<h3 class="timeline-header"><a href="#">{{data.user | getName}}</a> uploaded new photos to album : {{data.title}}</h3>'+
           '<div class="timeline-body">'+
             '<div ng-repeat = "picture in data.photos" style="display: inline;">'+
-              '<img ng-click="openAlbum('+"'right'"+ ', true , picture , data , albumDelete)" ng-src="{{picture.photo}}" alt="..." class="margin" height="100px" width="150px" >'+
+              '<img ng-click="openAlbum('+"'right'"+ ', true , {data : picture , parent : data , onDelete : albumDelete})" ng-src="{{picture.photo}}" alt="..." class="margin" height="100px" width="150px" >'+
             '</div>'+
           '</div>'+
         '</div>'+
@@ -350,7 +357,7 @@ app.directive('album', function () {
       albumDelete :'&',
     },
     controller : function($scope, $http , $timeout , userProfileService , $aside , $interval , $window) {
-      $scope.openAlbum = function(position, backdrop , data , parent , albumDelete) {
+      $scope.openAlbum = function(position, backdrop , input) {
         $scope.asideState = {
           open: true,
           position: position
@@ -365,161 +372,10 @@ app.directive('album', function () {
           placement: position,
           size: 'lg',
           backdrop: backdrop,
-          controller: function($scope, $uibModalInstance , Flash) {
-            $scope.me = userProfileService.get("mySelf");
-            $scope.data = data;
-            $scope.parent = parent;
-            $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
-            $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
-            $scope.droppedObjects = angular.copy($scope.parent.photos);
-            $scope.tempAlbum = {title :  $scope.parent.title , photos : []};
-            $scope.editorData = {draggableObjects : []};
-            $scope.editMode = false;
-            $scope.albumDelete = albumDelete;
-            $scope.possibleCommentHeight = 70;
-            $scope.textToComment = "";
-            $scope.viewMode = 'comments';
-            $scope.liked = false;
-            for (var i = 0; i < $scope.data.likes.length; i++) {
-              if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-                $scope.liked = true;
-                break;
-              }
-            }
-            if ($scope.data.user.split('?')[0] == $scope.me.url) {
-              $scope.isOwner = true;
-            } else {
-              $scope.isOwner = false;
-            }
-            setTimeout(function () {
-              postBodyHeight = $("#postModalBody").height();
-              inputHeight = $("#commentInput").height();
-              winHeight = $(window).height();
-              defaultHeight = postBodyHeight + 6*inputHeight;
-              $scope.commentsHeight = Math.floor(100*(winHeight - defaultHeight)/winHeight);
-              $scope.$apply();
-              scroll("#commentsArea");
-            }, 100);
-            $scope.comment = function(){
-              if ($scope.textToComment == "") {
-                return;
-              }
-              dataToSend = {text: $scope.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
-              // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-              $http({method: 'POST', data:dataToSend, url: '/api/social/pictureComment/'}).
-                then(function(response) {
-                  $scope.textToComment = "";
-                  $scope.data.comments.push(response.data)
-                  $scope.viewMode = 'comments';
-                  setTimeout(function () {
-                    scroll("#commentsArea");
-                  }, 100);
-                }, function(response) {
-                  // console.log("failed to sent the comment");
-
-              });
-            }
-            $scope.deletePhoto = function(){
-              $http({method : 'DELETE' , url : $scope.data.url}).
-              then(function(response){
-                for (var i = 0; i < $scope.parent.photos.length; i++) {
-                  if ($scope.parent.photos[i].url == $scope.data.url){
-                    $scope.parent.photos.splice(i, 1);
-                    if (i == 0 && $scope.parent.photos.length == 0) {
-                      $scope.deleteAlbum()
-                    }else{
-                      if ($scope.parent.photos.length <= i+1) {
-                        $scope.data = $scope.parent.photos[i-1];
-                      } else {
-                        $scope.data = $scope.parent.photos[i];
-                      }
-                    }
-                  }
-                }
-              } , function(response){
-
-              });
-            }
-            $scope.edit = function(){
-              $scope.editMode = true;
-            }
-            $scope.deleteAlbum = function(){
-              $http({method : 'DELETE' , url : $scope.parent.url}).
-              then(function(response){
-                $scope.albumDelete();
-                // calling the album Delete function passed with the open Album Aside function to refresh the feeds
-                $uibModalInstance.close();
-              } , function(response){
-
-              });
-            }
-            $scope.deleteComment = function(index){
-              $scope.data.comments.splice(index , 1);
-            }
-            $scope.removeFromTempAlbum = function(index){
-              pic = $scope.droppedObjects[index];
-              $scope.droppedObjects.splice(index , 1);
-              $scope.editorData.draggableObjects.push(pic);
-            }
-            $scope.updateAlbum = function(){
-              if ($scope.droppedObjects.length == 0) {
-                Flash.create('danger', 'No photos in the album' );
-                return;
-              }
-              for (var i = 0; i < $scope.droppedObjects.length; i++) {
-                uri = $scope.droppedObjects[i].url.split('/?')[0];
-                // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
-                pk = uri.split('picture/')[1].split('/')[0];
-                $scope.tempAlbum.photos.push(pk);
-              }
-              dataToPost = {
-                user : $scope.me.url,
-                title : $scope.tempAlbum.title,
-                photos : $scope.tempAlbum.photos,
-              };
-              // console.log(dataToPost);
-              $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
-              then(function(response){
-                Flash.create('success', response.status + ' : ' + response.statusText );
-                $scope.parent.title = response.data.title;
-                $scope.parent.photos = response.data.photos;
-              }, function(response){
-                Flash.create('danger', response.status + ' : ' + response.statusText );
-              });
-            }
-            $scope.onDropComplete=function(data,evt){
-              var index = $scope.droppedObjects.indexOf(data);
-              if (index == -1){
-                $scope.droppedObjects.push(data);
-                var index = $scope.editorData.draggableObjects.indexOf(data);
-                $scope.editorData.draggableObjects.splice(index , 1);
-              }
-            }
-            $scope.like = function(){
-              if ($scope.liked) {
-                for (var i = 0; i < $scope.data.likes.length; i++) {
-                  if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
-                    index = i;
-                    $http({method: 'DELETE', url: $scope.data.likes[i].url}).
-                      then(function(response , index) {
-                        $scope.data.likes.splice(index, 1);
-                        $scope.liked = false;
-                      }, function(response) {
-                        // console.log("failed to sent the comment");
-                    });
-                  }
-                }
-              } else {
-                dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
-                // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-                $http({method: 'POST', data:dataToSend, url: '/api/social/pictureLike/'}).
-                  then(function(response) {
-                    $scope.liked = true;
-                    $scope.data.likes.push(response.data)
-                  }, function(response) {
-                    // console.log("failed to sent the comment");
-                });
-              }
+          controller: 'pictureAsideCtrl',
+          resolve: {
+           input: function () {
+             return input;
             }
           }
         }).result.then(postClose, postClose);
@@ -527,6 +383,281 @@ app.directive('album', function () {
     },
   };
 });
+
+app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash , $http , userProfileService , input) {
+
+  $scope.content = 'picture';
+  $scope.me = userProfileService.get("mySelf");
+  $scope.data = input.data;
+  $scope.parent = input.parent;
+  $scope.albumDelete = input.onDelete;
+  $http({method: 'GET' , url : $scope.data.url + '&user=' + userProfileService.get($scope.data.user).username}).
+  then(function(requests){
+    for(key in requests.data){
+      $scope.data[key] = requests.data[key];
+    }
+    setTimeout(function () {
+      scroll("#commentsArea");
+    }, 100);
+  });
+  $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
+  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
+  $scope.droppedObjects = angular.copy($scope.parent.photos);
+  $scope.tempAlbum = {title :  $scope.parent.title , photos : []};
+  $scope.editorData = {draggableObjects : []};
+  $scope.editMode = false;
+  $scope.possibleCommentHeight = 70;
+  $scope.toComment = {textToComment : ''};
+  $scope.viewMode = 'comments';
+  $scope.liked = false;
+  for (var i = 0; i < $scope.data.likes.length; i++) {
+    if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+      $scope.liked = true;
+      break;
+    }
+  }
+  if ($scope.data.user.split('?')[0] == $scope.me.url) {
+    $scope.isOwner = true;
+  } else {
+    $scope.isOwner = false;
+  }
+  setTimeout(function () {
+    postBodyHeight = $("#postModalBody").height();
+    inputHeight = $("#commentInput").height();
+    winHeight = $(window).height();
+    defaultHeight = postBodyHeight + 6*inputHeight;
+    $scope.commentsHeight = Math.floor(100*(winHeight - defaultHeight)/winHeight);
+    $scope.$apply();
+    scroll("#commentsArea");
+  }, 100);
+  $scope.comment = function(){
+    if ($scope.toComment.textToComment == 's') {
+      return;
+    }
+    dataToSend = {text: $scope.toComment.textToComment , parent: $scope.data.url.split('?')[0] , user: $scope.data.user };
+    // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
+    $http({method: 'POST', data:dataToSend, url: '/api/social/pictureComment/'}).
+      then(function(response) {
+        $scope.toComment.textToComment = "";
+        $scope.data.comments.push(response.data)
+        $scope.viewMode = 'comments';
+        setTimeout(function () {
+          scroll("#commentsArea");
+        }, 100);
+      }, function(response) {
+        // console.log("failed to sent the comment");
+
+    });
+  }
+  $scope.deletePhoto = function(){
+    $http({method : 'DELETE' , url : $scope.data.url}).
+    then(function(response){
+      for (var i = 0; i < $scope.parent.photos.length; i++) {
+        if ($scope.parent.photos[i].url == $scope.data.url){
+          $scope.parent.photos.splice(i, 1);
+          if (i == 0 && $scope.parent.photos.length == 0) {
+            $scope.deleteAlbum()
+          }else{
+            if ($scope.parent.photos.length <= i+1) {
+              $scope.data = $scope.parent.photos[i-1];
+            } else {
+              $scope.data = $scope.parent.photos[i];
+            }
+          }
+        }
+      }
+    } , function(response){
+
+    });
+  }
+  $scope.edit = function(){
+    $scope.editMode = true;
+  }
+  $scope.deleteAlbum = function(){
+    $http({method : 'DELETE' , url : $scope.parent.url}).
+    then(function(response){
+      $scope.albumDelete();
+      // calling the album Delete function passed with the open Album Aside function to refresh the feeds
+      $uibModalInstance.close();
+    } , function(response){
+
+    });
+  }
+  $scope.deleteComment = function(index){
+    $scope.data.comments.splice(index , 1);
+  }
+  $scope.removeFromTempAlbum = function(index){
+    pic = $scope.droppedObjects[index];
+    $scope.droppedObjects.splice(index , 1);
+    $scope.editorData.draggableObjects.push(pic);
+  }
+  $scope.updateAlbum = function(){
+    if ($scope.droppedObjects.length == 0) {
+      Flash.create('danger', 'No photos in the album' );
+      return;
+    }
+    for (var i = 0; i < $scope.droppedObjects.length; i++) {
+      uri = $scope.droppedObjects[i].url.split('/?')[0];
+      // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
+      pk = uri.split('picture/')[1].split('/')[0];
+      $scope.tempAlbum.photos.push(pk);
+    }
+    dataToPost = {
+      user : $scope.me.url,
+      title : $scope.tempAlbum.title,
+      photos : $scope.tempAlbum.photos,
+    };
+    // console.log(dataToPost);
+    $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.parent.title = response.data.title;
+      $scope.parent.photos = response.data.photos;
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText );
+    });
+  }
+  $scope.onDropComplete=function(data,evt){
+    var index = $scope.droppedObjects.indexOf(data);
+    if (index == -1){
+      $scope.droppedObjects.push(data);
+      var index = $scope.editorData.draggableObjects.indexOf(data);
+      $scope.editorData.draggableObjects.splice(index , 1);
+    }
+  }
+  $scope.like = function(){
+    if ($scope.liked) {
+      for (var i = 0; i < $scope.data.likes.length; i++) {
+        if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+          index = i;
+          $http({method: 'DELETE', url: $scope.data.likes[i].url}).
+            then(function(response , index) {
+              $scope.data.likes.splice(index, 1);
+              $scope.liked = false;
+            }, function(response) {
+              // console.log("failed to sent the comment");
+          });
+        }
+      }
+    } else {
+      dataToSend = {parent: $scope.data.url.split('?')[0] , user: $scope.data.user};
+      // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
+      $http({method: 'POST', data:dataToSend, url: '/api/social/pictureLike/'}).
+        then(function(response) {
+          $scope.liked = true;
+          $scope.data.likes.push(response.data)
+        }, function(response) {
+          // console.log("failed to sent the comment");
+      });
+    }
+  }
+  $scope.refreshAside = function(signal){
+    console.log(signal);
+
+    var nodeUrl = '/api/social/';
+    if (signal.action == 'created') {
+      if (typeof signal.parent == 'number'){
+        updateType = signal.type.split('.')[1];
+
+        if (updateType == 'commentLike') {
+          pk = signal.parent;
+          url = nodeUrl + $scope.content + 'Comment';
+        } else {
+          pk = signal.id;
+          url = nodeUrl + updateType;
+        }
+        $http({method : 'GET' , url : url + '/' + pk +'/'}).
+        then(function(response){
+          if (response.data.parent == $scope.data.url.split('?')[0]) {
+            if (updateType == $scope.content + 'Like') {
+              $scope.data.likes.push(response.data);
+              if (response.data.user == $scope.me.url) {
+                $scope.liked = true;
+              }
+            } else if (updateType == $scope.content+ 'Comment') {
+              $scope.data.comments.push(response.data);
+            } else if (updateType == 'commentLike') {
+              $http({method : 'GET' , url : nodeUrl + updateType + '/' + signal.id +'/'}).
+              then(function(response){
+                for (var i = 0; i < $scope.data.comments.length; i++) {
+                  if( $scope.data.comments[i].url.indexOf(url + '/' + pk +'/') != -1) {
+                    $scope.data.comments[i].likes.push(response.data);
+                  }
+                }
+              })
+            }
+          }
+        });
+      } else {
+        $http({method : 'GET' , url : '/api/PIM/notification/' + signal.id +'/'}).
+        then(function(response){
+          parts = response.data.shortInfo.split(':');
+          updateType = parts[0];
+          if (updateType == $scope.content + 'Like') {
+            $http({method : 'GET' , url : '/api/social/'+ $scope.content +'Like/' + parts[1] +'/'}).
+            then(function(response){
+              if (response.data.parent == $scope.data.url.split('?')[0]) {
+                $scope.data.likes.push(response.data);
+                if (response.data.user == $scope.me.url) {
+                  $scope.liked = true;
+                }
+              }
+            });
+          }else if (updateType == $scope.content + 'Comment') {
+            $http({method : 'GET' , url : '/api/social/' + $scope.content + 'Comment/' + parts[1] +'/'}).
+            then(function(response){
+              if (response.data.parent == $scope.data.url.split('?')[0]) {
+                $scope.data.comments.push(response.data);
+              }
+            });
+          };
+        });
+      }
+    }else if (signal.action == 'deleted'){
+      if (typeof signal.parent == 'number'){
+        id = signal.id;
+
+      }else{
+        id = signal.objID;
+      }
+      updateType = signal.type.split('.')[1];
+      if (updateType == $scope.content + 'Comment') {
+
+        for (var i = 0; i < $scope.data.comments.length; i++) {
+          if ($scope.data.comments[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
+            $scope.data.comments.splice(i, 1);
+          }
+        }
+      } else if (updateType == $scope.content + 'Like') {
+
+        for (var i = 0; i < $scope.data.likes.length; i++) {
+          if ($scope.data.likes[i].url.indexOf( nodeUrl + updateType + '/'+ id) != -1){
+            $scope.data.likes.splice(i, 1);
+            for (var i = 0; i < $scope.data.likes.length; i++) {
+              if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
+                $scope.liked = true;
+                break;
+              }
+            }
+          }
+        };
+      } else if (updateType == 'commentLike') {
+        for (var i = 0; i < $scope.data.comments.length; i++) {
+          for (var j = 0; j < $scope.data.comments[i].likes.length; j++) {
+            console.log(nodeUrl + updateType + '/' + signal.id);
+            if($scope.data.comments[i].likes[j].url.indexOf(nodeUrl + updateType + '/' + signal.id) != -1) {
+              $scope.data.comments[i].likes.splice(j,1);
+            }
+          }
+        }
+      }
+    } // if - else
+    setTimeout(function () {
+      scroll("#commentsArea");
+    }, 1000);
+  };
+});
+
 app.directive('socialProfile', function () {
   return {
     templateUrl: '/static/ngTemplates/app.social.profile.html',

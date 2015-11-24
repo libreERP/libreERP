@@ -7,6 +7,7 @@ from django.forms.models import model_to_dict
 import requests
 from django.conf import settings as globalSettings
 from PIM.models import *
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your models here.
 def getCommentAttachmentPath(instance , filename ):
@@ -106,10 +107,10 @@ def notify(type , id , action , instance):
         }
     )
 def notifyUpdates(type , action , subscribers , instance):
+    print "Upto here"
     for sub in subscribers:
-
         if sub.user != instance.user:
-            # print "will send to" + str(sub.user.username)
+            print "will send to" + str(sub.user.username)
             requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
                 json={
                   'topic': 'service.updates.' + sub.user.username,
@@ -118,20 +119,28 @@ def notifyUpdates(type , action , subscribers , instance):
             )
 
 @receiver(post_save, sender=postComment, dispatch_uid="server_post_save")
-@receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
 @receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
+@receiver(post_save, sender=pictureComment, dispatch_uid="server_post_save")
+@receiver(post_save, sender=pictureLike, dispatch_uid="server_post_save")
+@receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
 def postLikeNotification(sender, instance, **kwargs):
+
     if sender == commentLike:
-        subscribers = postFollower.objects.filter(parent = instance.parent.parent)
+        try:
+            prnt = picture.objects.get(comments = instance.parent)
+        except:
+            prnt = post.objects.get(comments = instance.parent)
+
+        if prnt.__class__ == picture:
+            subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = prnt))
+        else:
+            subscribers = postFollower.objects.filter(parent = instance.parent.parent)
     elif sender == postComment or sender == postLike:
         subscribers = postFollower.objects.filter(parent = instance.parent)
+    elif sender == pictureComment or sender == pictureLike:
+        subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
 
-    if sender == postLike:
-        shortInfo = 'postLike'
-    elif sender == postComment:
-        shortInfo = 'postComment'
-    elif sender == commentLike:
-        shortInfo = 'commentLike'
+    shortInfo = sender.__name__
 
     notifyUpdates( 'social.' + shortInfo , 'created' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
@@ -143,20 +152,28 @@ def postLikeNotification(sender, instance, **kwargs):
 
 
 @receiver(pre_delete, sender=postLike, dispatch_uid="server_post_delete")
-@receiver(pre_delete, sender=commentLike, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=postComment, dispatch_uid="server_post_delete")
+@receiver(pre_delete, sender=pictureComment, dispatch_uid="server_post_delete")
+@receiver(pre_delete, sender=pictureLike, dispatch_uid="server_post_delete")
+@receiver(pre_delete, sender=commentLike, dispatch_uid="server_post_delete")
 def postCommentNotificationDelete(sender, instance, **kwargs):
 
     if sender == commentLike:
-        subscribers = postFollower.objects.filter(parent = post.objects.get(comments = instance.parent))
+        try:
+            prnt = picture.objects.get(comments = instance.parent)
+        except:
+            prnt = post.objects.get(comments = instance.parent)
+
+        if prnt.__class__ == picture:
+            subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = prnt))
+        else:
+            subscribers = postFollower.objects.filter(parent = instance.parent.parent)
     elif sender == postComment or sender == postLike:
         subscribers = postFollower.objects.filter(parent = instance.parent)
-    if sender == postLike:
-        shortInfo = 'postLike'
-    elif sender == postComment:
-        shortInfo = 'postComment'
-    elif sender == commentLike:
-        shortInfo = 'commentLike'
+    elif sender == pictureComment or sender == pictureLike:
+        subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
+
+    shortInfo = sender.__name__
 
     notifyUpdates( 'social.' + shortInfo , 'deleted' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
