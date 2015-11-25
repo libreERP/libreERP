@@ -142,4 +142,5 @@ REST_FRAMEWORK = {
     'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
 }
 
-WAMP_SERVER = '10.146.31.2'
+#WAMP_SERVER = '10.146.31.2'
+WAMP_SERVER = '127.0.0.1'

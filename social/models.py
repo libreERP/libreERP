@@ -167,14 +167,14 @@ def postCommentNotificationDelete(sender, instance, **kwargs):
         if prnt.__class__ == picture:
             subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = prnt))
         else:
-            subscribers = postFollower.objects.filter(parent = instance.parent.parent)
+            subscribers = postFollower.objects.filter(parent = prnt)
     elif sender == postComment or sender == postLike:
         subscribers = postFollower.objects.filter(parent = instance.parent)
     elif sender == pictureComment or sender == pictureLike:
         subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
 
     shortInfo = sender.__name__
-
+	
     notifyUpdates( 'social.' + shortInfo , 'deleted' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
         return
