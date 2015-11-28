@@ -40,7 +40,7 @@ class picture(models.Model):
     user = models.ForeignKey(User , related_name = 'socialPhotos' , null = False)
     photo = models.ImageField(upload_to = getSocialPictureUploadPath , null = False)
     created = models.DateTimeField (auto_now = True)
-    tagged = models.ManyToManyField(User)
+    tagged = models.ManyToManyField(User , related_name = 'taggedPictures' , blank = True)
     album = models.ForeignKey(album , related_name = 'photos' , null = True)
 
 SUBSCRIPTION_CHOICES = (

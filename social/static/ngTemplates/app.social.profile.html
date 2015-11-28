@@ -6,13 +6,18 @@
   <uib-tabset>
     <uib-tab heading="Activity" >
       <div style="margin-top:15px;">
-        {{user.post}}
         <ul class="timeline timeline-inverse">
           <div ng-repeat="feed in sortedFeeds">
-            <post ng-if ="feed.type=='post'" data = "user.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
-            <album ng-if = "feed.type == 'album'" data = "user.albums[feed.index]" photo-Delete = "removePhoto(feed.index )" album-Delete = "removeAlbum(feed.index)"></album>
+            <post ng-if ="feed.type=='post'" data = "socialResource.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
+            <album ng-if = "feed.type == 'album'" data = "socialResource.albums[feed.index]" photo-Delete = "removePhoto(feed.index )" album-Delete = "removeAlbum(feed.index)"></album>
           </div>
         </ul>
+        <nav>
+          <ul class="pager">
+            <li class="previous"><a href="" ng-click="prev()"><span aria-hidden="true">&larr;</span> Prev</a></li>
+            <li class="next"><a href="" ng-click="next()">Next <span aria-hidden="true">&rarr;</span></a></li>
+          </ul>
+        </nav>
       </div>
     </uib-tab>
     <uib-tab class="pull-right" ng-if="myProfile">
@@ -48,27 +53,7 @@
               <i class="fa fa-black-tie"></i>  Profile
             </uib-tab-heading>
             <div style="margin-top:15px;">
-              <form class="form-horizontal" name = "postForm" ng-submit= "saveSocial()">
-                <div class="form-group">
-                  <label class="control-label col-sm-3" for="about">About me:</label>
-                  <div class="col-md-7">
-                    <textarea type="text" rows="3" name="about" value="" class="form-control " required ng-model="user.socialData.aboutMe"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-sm-3" for="status">Status:</label>
-                  <div class="col-md-7">
-                    <textarea type="text" rows="2" name="status" value="" class="form-control " required ng-model="user.socialData.status"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="control-label col-sm-3" for="cover">Cover Picture:</label>
-                  <div class="col-sm-7">
-                    <input type="file" name="cover" file-model="user.socialData.coverPicFile">
-                  </div>
-                </div>
-                <button type="submit" class = "btn btn-primary pull-right" name="button">Save</button>
-              </form>
+              <div ng-include="'/static/ngTemplates/profileSettingsForm.html'"></div>
             </div>
           </uib-tab>
         </uib-tabset>
@@ -134,14 +119,12 @@
           <div class="col-sm-12 text-center">
             <h3 class="text-muted">Skills</h3>
           </div>
-
           <div class="col-md-2 col-md-offset-1">
             <div class="row">
               <div align="center" class="demo-1" data-percent="10"></div>
             </div>
             <h5 class="text-muted" align="center">CSS</h5>
           </div>
-
           <div class="col-md-2">
             <div class="row">
               <div align="center" class="demo-2" data-percent="90"></div>
@@ -166,8 +149,6 @@
             </div>
             <h5 class="text-muted" align="center">C++</h5>
           </div>
-
-
         </div>
       </div>
 

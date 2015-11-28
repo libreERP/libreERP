@@ -674,31 +674,78 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   emptyFile = new File([""], "");
   $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
-  $scope.ready = 0;
-  var feedsItems = ['album' , 'post' , 'picture'];
+
+  var feedsItems = ['picture'];
   for (var i = 0; i < feedsItems.length; i++){
     mode = feedsItems[i];
     $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username}).
     then(function(response){
+      $scope.user.pictures = response.data;
+    });
+  };
+
+  $scope.offset = {post : 0 , album : 0};
+  $scope.max = {post : 0 , album : 0};
+  $scope.limit  = 5;
+  $scope.socialResource = {posts : [] , albums : []};
+  // to get the next or prev five social content in mode = post or album based on the currect value of offset[key] and the limit
+  $scope.getFive = function(mode){
+    $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username+'&offset=' + $scope.offset[mode] + '&limit='+$scope.limit}).
+    then(function(response){
+      $scope.max['post'] = response.data.count;
       if (response.config.url.indexOf('album') != -1) {
-        $scope.user.albums = response.data;
-        $scope.ready += 1;
+        for (var i = 0; i < response.data.results.length; i++) {
+          $scope.socialResource.albums.push(response.data.results[i])
+        }
+        $scope.getFiveStatus +=1;
+        $scope.offset['album'] += $scope.limit;
       } else if (response.config.url.indexOf('post') != -1) {
-        $scope.user.posts = response.data;
-        $scope.ready += 1;
-      } else if (response.config.url.indexOf('picture') != -1) {
-        $scope.user.pictures = response.data;
-        $scope.ready += 1;
+        for (var i = 0; i < response.data.results.length; i++) {
+          $scope.socialResource.posts.push(response.data.results[i])
+        }
+        $scope.getFiveStatus +=1;
+        $scope.offset['post'] += $scope.limit;
+      };
+    });
+  };
 
-      }
-    })
+  $scope.getFiveStatus = 0;
+  $scope.feedStart = 0;
+  $scope.getFive('post');
+  $scope.getFive('album');
+
+  $scope.$watch('getFiveStatus' , function(newValue , oldValue){
+    if (newValue == 2) {
+      $scope.sortResource();
+      $scope.refreshFeeds();
+    }
+  });
+
+  $scope.prev = function(){
+    $scope.feedStart -= 5;
+    if ($scope.feedStart <0) {
+      $scope.feedStart = 0;
+    }
+    $scope.sortResource();
+    $scope.refreshFeeds();
+  };
+
+
+  $scope.next = function(){
+    $scope.getFiveStatus = 0;
+    $scope.getFive('post');
+    $scope.getFive('album');
+    $scope.feedStart += 5;
+    if ($scope.feedStart > $scope.sortedResourceFeeds.length ) {
+      $scope.feedStart -= 5;
+    }
   }
-
 
   $scope.droppedObjects = [];
   $scope.editorData = {draggableObjects : []}; // for the album editor
   $scope.statusMessage = '';
   $scope.picturePost = {photo : {}};
+
   if ($scope.user.username == $scope.me.username) {
     $scope.myProfile = true;
   }else {
@@ -716,29 +763,33 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
   )
 
-  $scope.refreshFeeds = function(){
+  $scope.sortResource = function(){
 
     orderMat = [];
-    for (var i = 0; i < $scope.user.posts.length; i++) {
-      orderMat.push( {created : $scope.user.posts[i].created , type: 'post', index : i })
+    for (var i = 0; i < $scope.socialResource.posts.length; i++) {
+      orderMat.push( {created : $scope.socialResource.posts[i].created , type: 'post', index : i })
     }
-    for (var i = 0; i < $scope.user.albums.length; i++) {
-      orderMat.push( {created : $scope.user.albums[i].created , type: 'album', index : i })
+    for (var i = 0; i < $scope.socialResource.albums.length; i++) {
+      orderMat.push( {created : $scope.socialResource.albums[i].created , type: 'album', index : i })
     }
-    $scope.rawFeeds = angular.copy(orderMat);
-
+    $scope.rawResourceFeeds = angular.copy(orderMat);
     orderMat.sortIndices(function(b, a) { return new Date(a.created).getTime() - new Date(b.created).getTime(); });
-    $scope.sortedFeeds = [];
+    $scope.sortedResourceFeeds = [];
     for (var i = 0; i < orderMat.length; i++) {
-      $scope.sortedFeeds.push( $scope.rawFeeds[orderMat[i]] )
+      $scope.sortedResourceFeeds.push( $scope.rawResourceFeeds[orderMat[i]] )
     }
   }
-  $scope.$watch('ready' , function(newValue , oldValue){
-    if (newValue == 3) {
-      $scope.refreshFeeds()
-    }
-  })
 
+
+  $scope.refreshFeeds = function(){
+    $scope.sortedFeeds = [];
+    for (var i = 0; i < 5; i++) {
+      if ($scope.feedStart + i > $scope.sortedResourceFeeds.length) {
+        break;
+      }
+      $scope.sortedFeeds.push($scope.sortedResourceFeeds[$scope.feedStart+i]);
+    }
+  }
 
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
@@ -772,7 +823,8 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       $scope.tempAlbum.title = '';
       $scope.tempAlbum.photos = [];
       $scope.droppedObjects = [];
-      $scope.user.albums.push(response.data);
+      $scope.socialResource.albums.push(response.data);
+      $scope.sortResource();
       $scope.refreshFeeds();
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
@@ -787,12 +839,14 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
   }
   $scope.removePost = function(index){
-    $scope.user.posts.splice(index, 1);
+    $scope.socialResource.posts.splice(index, 1);
+    $scope.sortResource();
     $scope.refreshFeeds();
   }
 
   $scope.removeAlbum = function(index){
-    $scope.user.albums.splice(index, 1);
+    $scope.socialResource.albums.splice(index, 1);
+    $scope.sortResource();
     $scope.refreshFeeds();
   }
 
@@ -806,7 +860,8 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      $scope.user.posts.push(response.data);
+      $scope.socialResource.posts.push(response.data);
+      $scope.sortResource();
       $scope.refreshFeeds();
       $scope.post.attachment = emptyFile;
       $scope.post.text = '';
@@ -831,7 +886,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     });
   };
   $scope.saveSocial = function(){
-
     var fd = new FormData();
     fd.append('status', $scope.user.socialData.status);
     if ($scope.user.socialData.coverPicFile != emptyFile) {

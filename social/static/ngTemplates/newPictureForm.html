@@ -4,6 +4,13 @@
     <div class="col-md-9">
       <input type="file" name = "photo" file-model = "picturePost.photo">
     </div>
-    <button type="submit" class = "btn btn-primary pull-right" name="button">Upload</button>
+
   </div>
+  <div class= "form-group">
+    <label class="control-label col-sm-2" for="tagged">Tagged :</label>
+    <div class="col-md-9">
+      <input type="text" class = "form-control" name = "tagged" placeholder="Tag people by typing the name" ng-model = "tagged.text">
+    </div>
+  </div>
+    <button type="submit" class = "btn btn-primary pull-right" name="button">Upload</button>
 </form>

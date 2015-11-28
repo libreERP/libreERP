@@ -1,0 +1,21 @@
+<form class="form-horizontal" name = "postForm" ng-submit= "saveSocial()">
+  <div class="form-group">
+    <label class="control-label col-sm-3" for="about">About me:</label>
+    <div class="col-md-7">
+      <textarea type="text" rows="3" name="about" value="" class="form-control " required ng-model="user.socialData.aboutMe"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-3" for="status">Status:</label>
+    <div class="col-md-7">
+      <textarea type="text" rows="2" name="status" value="" class="form-control " required ng-model="user.socialData.status"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-3" for="cover">Cover Picture:</label>
+    <div class="col-sm-7">
+      <input type="file" name="cover" file-model="user.socialData.coverPicFile">
+    </div>
+  </div>
+  <button type="submit" class = "btn btn-primary pull-right" name="button">Save</button>
+</form>

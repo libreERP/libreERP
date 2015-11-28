@@ -110,15 +110,14 @@ class pictureSerializer(serializers.HyperlinkedModelSerializer):
     likes = pictureLikeSerializer(many = True)
     comments = pictureCommentsSerializer(many = True)
     class Meta:
-        model = picture
-        fields = ('url' , 'user' , 'created' , 'likes' , 'photo' , 'comments' , 'tagged')
+		model = picture
+		fields = ('url' , 'user' , 'created' , 'likes' , 'photo' , 'comments' , 'tagged')
+		read_only_fields = ('tagged',)
     def create(self ,  validated_data):
         photo = validated_data.pop('photo')
-        tagged = validated_data.pop('tagged')
         user =  self.context['request'].user
         pic = picture()
         pic.photo = photo
-        pic.tagged = tagged
         pic.user = user
         pic.save()
         return pic
