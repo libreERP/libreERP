@@ -6,7 +6,9 @@
       <br>
       <div ng-if="notificationType == 'postLike'"> {{friend | getName}} <span style="color:#676767;">Liked your post </span> {{notificationData.text | limitTo:15}}</div>
       <div ng-if="notificationType == 'postComment'"> {{friend | getName}} <span style="color:#676767;">commented on your post </span> </div>
-      <div ng-if="notificationType == 'commentLike'"> {{friend | getName}} <span style="color:#676767;">commented on your post </span> </div>
+      <div ng-if="notificationType == 'pictureLike'"> {{friend | getName}} <span style="color:#676767;">Liked your photo </span></div>
+      <div ng-if="notificationType == 'pictureComment'"> {{friend | getName}} <span style="color:#676767;">commented on your photo </span> </div>
+      <div ng-if="notificationType == 'commentLike'"> {{friend | getName}} <span style="color:#676767;">Liked your comment </span> </div>
       <div ng-if="notificationType == 'default'"> {{data.shortInfo | limitTo:60 }}</div>
     </div>
   </a>

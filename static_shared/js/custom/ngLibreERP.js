@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'angularRadialgraph']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider){
 

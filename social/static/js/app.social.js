@@ -416,7 +416,7 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
       break;
     }
   }
-  if ($scope.data.user.split('?')[0] == $scope.me.url) {
+  if ($scope.data.user.split('?')[0] == $scope.me.url && $scope.parent != 'empty') {
     $scope.isOwner = true;
   } else {
     $scope.isOwner = false;
@@ -702,6 +702,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       } else if (response.config.url.indexOf('post') != -1) {
         for (var i = 0; i < response.data.results.length; i++) {
           $scope.socialResource.posts.push(response.data.results[i])
+          // console.log(response.data.results[i].text);
         }
         $scope.getFiveStatus +=1;
         $scope.offset['post'] += $scope.limit;
@@ -718,8 +719,43 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     if (newValue == 2) {
       $scope.sortResource();
       $scope.refreshFeeds();
+
     }
   });
+
+  $scope.sortResource = function(){
+
+    orderMat = [];
+    // console.log( $scope.socialResource.albums);
+    for (var i = 0; i < $scope.socialResource.albums.length; i++) {
+      orderMat.push( {created : $scope.socialResource.albums[i].created , type: 'album', index : i })
+    }
+    // console.log($scope.socialResource.posts);
+    for (var i = 0; i < $scope.socialResource.posts.length; i++) {
+      orderMat.push( {created : $scope.socialResource.posts[i].created , type: 'post', index : i })
+    }
+    $scope.rawResourceFeeds = angular.copy(orderMat);
+    orderMat.sortIndices(function(b, a) { return new Date(a.created).getTime() - new Date(b.created).getTime(); });
+    // console.log(orderMat);
+    $scope.sortedResourceFeeds = [];
+    for (var i = 0; i < orderMat.length; i++) {
+      $scope.sortedResourceFeeds.push( $scope.rawResourceFeeds[orderMat[i]] )
+    }
+    // console.log($scope.sortedResourceFeeds);
+  }
+
+
+  $scope.refreshFeeds = function(){
+    $scope.sortedFeeds = [];
+    for (var i = 0; i < 5; i++) {
+      if ($scope.feedStart + i > $scope.sortedResourceFeeds.length) {
+        break;
+      }
+      $scope.sortedFeeds.push($scope.sortedResourceFeeds[$scope.feedStart+i]);
+    }
+    // console.log($scope.sortedFeeds);
+  }
+
 
   $scope.prev = function(){
     $scope.feedStart -= 5;
@@ -732,6 +768,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
 
 
   $scope.next = function(){
+    // console.log("next clicked");
     $scope.getFiveStatus = 0;
     $scope.getFive('post');
     $scope.getFive('album');
@@ -763,33 +800,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
   )
 
-  $scope.sortResource = function(){
-
-    orderMat = [];
-    for (var i = 0; i < $scope.socialResource.posts.length; i++) {
-      orderMat.push( {created : $scope.socialResource.posts[i].created , type: 'post', index : i })
-    }
-    for (var i = 0; i < $scope.socialResource.albums.length; i++) {
-      orderMat.push( {created : $scope.socialResource.albums[i].created , type: 'album', index : i })
-    }
-    $scope.rawResourceFeeds = angular.copy(orderMat);
-    orderMat.sortIndices(function(b, a) { return new Date(a.created).getTime() - new Date(b.created).getTime(); });
-    $scope.sortedResourceFeeds = [];
-    for (var i = 0; i < orderMat.length; i++) {
-      $scope.sortedResourceFeeds.push( $scope.rawResourceFeeds[orderMat[i]] )
-    }
-  }
-
-
-  $scope.refreshFeeds = function(){
-    $scope.sortedFeeds = [];
-    for (var i = 0; i < 5; i++) {
-      if ($scope.feedStart + i > $scope.sortedResourceFeeds.length) {
-        break;
-      }
-      $scope.sortedFeeds.push($scope.sortedResourceFeeds[$scope.feedStart+i]);
-    }
-  }
 
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];

@@ -419,16 +419,44 @@ app.directive('notificationStrip', function () {
       } else {
         $scope.notificationType = parts[0];
       }
+      // console.log($scope.data);
+      // console.log($scope.notificationType);
       nodeUrl = '/api/social/' + $scope.notificationType + '/'
       if(typeof parts[1] != 'undefined'){
+        // console.log(nodeUrl + parts[1]);
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
         then(function(response){
           $scope.friend = response.data.user;
           $http({method: 'GET' , url : response.data.parent}).then(function(response){
             $scope.notificationData = response.data;
+            // console.log($scope.notificationData);
           })
         })
       };
+
+      $scope.openAlbum = function(position, backdrop , input) {
+        $scope.asideState = {
+          open: true,
+          position: position
+        };
+
+        function postClose() {
+          $scope.asideState.open = false;
+        }
+
+        $aside.open({
+          templateUrl: '/static/ngTemplates/album.html',
+          placement: position,
+          size: 'lg',
+          backdrop: backdrop,
+          controller: 'pictureAsideCtrl',
+          resolve: {
+           input: function () {
+             return input;
+            }
+          }
+        }).result.then(postClose, postClose);
+      }
 
       $scope.openPost = function(position, backdrop , input) {
         $scope.asideState = {
@@ -456,6 +484,9 @@ app.directive('notificationStrip', function () {
       $scope.openNotification = function(){
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
           $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
+        } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
+          console.log($scope.notificationData);
+          $scope.openAlbum('right', true , {data: $scope.notificationData , parent :'empty' , onDelete: function(){return;}})
         }
       }
     },

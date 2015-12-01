@@ -16,7 +16,7 @@ class postViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if 'user' in self.request.GET:
             u = User.objects.get(username = self.request.GET['user'] )
-            return post.objects.filter(user = u).order_by('created')
+            return post.objects.filter(user = u).order_by('-created')
         else :
             return post.objects.filter(user = self.request.user)
 
@@ -40,7 +40,7 @@ class albumViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if 'user' in self.request.GET:
             u = User.objects.get(username = self.request.GET['user'] )
-            return album.objects.filter(user = u).order_by('created')
+            return album.objects.filter(user = u).order_by('-created')
         else :
             return album.objects.filter(user = self.request.user)
 class postCommentsViewSet(viewsets.ModelViewSet):
