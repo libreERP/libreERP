@@ -54,14 +54,13 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown-toggle" style="width:55px" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-flag-o fa-lg"></i><span class="label label-warning" style="position: absolute;top: 5px;">{{notifications.length}}</span></a>
+          <a class="dropdown-toggle" style="width:55px" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-flag-o fa-lg"></i><span class="label label-warning" style="position: absolute;top: 5px;">{{notificationCount}}</span></a>
           <ul class="dropdown-menu navDropDownList">
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="nav" style="position:relative; top:-5px;">
                 <div ng-repeat="notice in notifications">
-
-                  <notification-strip data = "notice" ></notification-strip>
+                  <notification-strip ng-if="!notice.hide" data = "notice" ></notification-strip>
                 </div>
               </ul>
             </li>

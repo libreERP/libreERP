@@ -89,7 +89,7 @@ app.directive('post', function () {
         }
 
         $aside.open({
-          templateUrl: '/static/ngTemplates/post.html',
+          templateUrl: '/static/ngTemplates/app.social.aside.post.html',
           placement: position,
           size: 'md',
           backdrop: backdrop,
@@ -368,7 +368,7 @@ app.directive('album', function () {
         }
 
         $aside.open({
-          templateUrl: '/static/ngTemplates/album.html',
+          templateUrl: '/static/ngTemplates/app.social.aside.album.html',
           placement: position,
           size: 'lg',
           backdrop: backdrop,
@@ -391,6 +391,9 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
   $scope.data = input.data;
   $scope.parent = input.parent;
   $scope.albumDelete = input.onDelete;
+  if ($scope.data.url.indexOf('?')==-1) {
+    $scope.data.url += '?';
+  }
   $http({method: 'GET' , url : $scope.data.url + '&user=' + userProfileService.get($scope.data.user).username}).
   then(function(requests){
     for(key in requests.data){

@@ -21,25 +21,25 @@ class post(models.Model):
     user = models.ForeignKey(User , related_name = 'socialPost' , null = False)
     text = models.TextField(null = False , max_length = 300)
     attachment = models.FileField(upload_to = getPostAttachmentPath , null = True)
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
     tagged = models.ManyToManyField(User)
     def __unicode__(self):
         return self.text
 
 class postHistory(models.Model):
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
     text = models.TextField(null = False , max_length = 300)
     attachment = models.FileField(upload_to = getPostAttachmentPath , null = True)
     parent = models.ForeignKey(post , related_name = 'history' , null = False)
 
 class album(models.Model):
     user = models.ForeignKey(User , related_name = 'socialAlbums')
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
     title = models.CharField(max_length = 50, null = True)
 class picture(models.Model):
     user = models.ForeignKey(User , related_name = 'socialPhotos' , null = False)
     photo = models.ImageField(upload_to = getSocialPictureUploadPath , null = False)
-    created = models.DateTimeField (auto_now = True)
+    created = models.DateTimeField (auto_now_add = True)
     tagged = models.ManyToManyField(User , related_name = 'taggedPictures' , blank = True)
     album = models.ForeignKey(album , related_name = 'photos' , null = True)
 
@@ -58,7 +58,7 @@ FOLLOW_TYPE_CHOICES = (
 
 class follow(models.Model):
     user = models.ForeignKey(User , related_name ='following')
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
     subscription = models.CharField(choices = SUBSCRIPTION_CHOICES , default = 'all' , max_length = 10)
     enrollment = models.CharField(choices = FOLLOW_TYPE_CHOICES , default = 'tagged' , max_length = 10)
 
@@ -70,13 +70,13 @@ class albumFollower(follow):
 
 class comment(models.Model):
     user = models.ForeignKey(User , related_name = 'comments')
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
     attachment = models.FileField(upload_to = getCommentAttachmentPath , null = True)
     text = models.CharField(max_length = 200 , null = False)
 
 class like(models.Model):
     user = models.ForeignKey(User , related_name = 'likes')
-    created = models.DateTimeField(auto_now = True)
+    created = models.DateTimeField(auto_now_add = True)
 
 class postLike(like):
     parent = models.ForeignKey(post , related_name = 'likes')
@@ -145,7 +145,7 @@ def postLikeNotification(sender, instance, **kwargs):
     notifyUpdates( 'social.' + shortInfo , 'created' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
         return
-    shortInfo += ':' + str(instance.pk)
+    shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
     n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if new:
         notify('social' , n.pk , 'created' , instance)
@@ -174,11 +174,11 @@ def postCommentNotificationDelete(sender, instance, **kwargs):
         subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
 
     shortInfo = sender.__name__
-	
+
     notifyUpdates( 'social.' + shortInfo , 'deleted' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
         return
-    shortInfo += ':' + str(instance.pk)
+    shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
 
     n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if n.count() != 0:

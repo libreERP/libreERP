@@ -422,7 +422,7 @@ app.directive('notificationStrip', function () {
       // console.log($scope.data);
       // console.log($scope.notificationType);
       nodeUrl = '/api/social/' + $scope.notificationType + '/'
-      if(typeof parts[1] != 'undefined'){
+      if(typeof parts[1] != 'undefined' && $scope.data.originator == 'social'){
         // console.log(nodeUrl + parts[1]);
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
         then(function(response){
@@ -445,7 +445,7 @@ app.directive('notificationStrip', function () {
         }
 
         $aside.open({
-          templateUrl: '/static/ngTemplates/album.html',
+          templateUrl: '/static/ngTemplates/app.social.aside.album.html',
           placement: position,
           size: 'lg',
           backdrop: backdrop,
@@ -469,7 +469,7 @@ app.directive('notificationStrip', function () {
         }
 
         $aside.open({
-          templateUrl: '/static/ngTemplates/post.html',
+          templateUrl: '/static/ngTemplates/app.social.aside.post.html',
           placement: position,
           size: 'md',
           backdrop: backdrop,
@@ -485,7 +485,6 @@ app.directive('notificationStrip', function () {
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
           $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
         } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
-          console.log($scope.notificationData);
           $scope.openAlbum('right', true , {data: $scope.notificationData , parent :'empty' , onDelete: function(){return;}})
         }
       }
