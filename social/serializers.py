@@ -156,6 +156,8 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         a.save()
         tagged = self.context['request'].data['tagged']
         for tag in tagged.split(','):
+            if tag=='':
+                break
             a.tagged.add( User.objects.get(username = tag))
         count = 0
         for p in photos:

@@ -501,6 +501,9 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
   $scope.edit = function(){
     $scope.editMode = true;
   }
+  $scope.cancelEditor = function(){
+    $scope.editMode = false;
+  }
   $scope.deleteAlbum = function(){
     $http({method : 'DELETE' , url : $scope.parent.url}).
     then(function(response){

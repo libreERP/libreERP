@@ -11,6 +11,7 @@
                 <span class="input-group-btn">
                   <button type="button" ng-click="createAlbum()" class="btn btn-success " ng-if = "editMode=='undefined' || !editMode">Create</button>
                   <button type="button" ng-click="updateAlbum()" class="btn btn-success " ng-if = "editMode">Update</button>
+                  <button type="button" ng-click="cancelEditor()" class="btn btn-default " ng-if = "editMode">Cancel</button>
                 </span>
               </div>
             </div>
