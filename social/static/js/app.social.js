@@ -107,7 +107,7 @@ app.directive('post', function () {
 
 app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, userProfileService , input) {
   $scope.content = 'post';
-
+  var emptyFile = new File([""], "");
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
@@ -122,6 +122,14 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   });
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
+  var tagged = '';
+  for (var i = 0; i < $scope.data.tagged.length; i++) {
+    tagged  += userProfileService.get($scope.data.tagged[i]).username;
+    if (i != $scope.data.tagged.length-1){
+      tagged += ',';
+    }
+  }
+  $scope.postEditor = {attachment : emptyFile , tagged : tagged}
   $scope.viewMode = 'comments';
   $scope.liked = false;
   if (typeof $scope.data == 'undefined') {
@@ -307,16 +315,20 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   }
   $scope.save = function(){
     var fd = new FormData();
-    var f = new File([""], "");
-    fd.append('attachment', f);
     fd.append('text' , $scope.data.text );
     fd.append('user' , $scope.me.url);
+    if ($scope.postEditor.attachment !=emptyFile) {
+      fd.append('attachment' , $scope.postEditor.attachment);
+    }
+    fd.append('tagged' , $scope.postEditor.tagged);
+
     var url = $scope.data.url;
     $http({method : 'PATCH' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       $scope.editMode = false;
-    } , function(response){
-
+      for(key in response.data){
+        $scope.data[key] = response.data[key];
+      }
     });
   }
   $scope.cancelEditor = function(){
@@ -338,7 +350,7 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
 app.directive('album', function () {
   return {
     template:'<li>'+
-        '<i class="fa fa-camera bg-purple"></i>'+
+        '<i class="fa fa-camera bg-aqua"></i>'+
         '<div class="timeline-item">'+
           '<span class="time"><i class="fa fa-clock-o"></i> {{data.created | timeAgo}} ago</span>'+
           '<h3 class="timeline-header"><a href="#">{{data.user | getName}}</a> uploaded new photos to album : {{data.title}}</h3>'+
@@ -403,10 +415,23 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
       scroll("#commentsArea");
     }, 100);
   });
+  $http({method: 'GET' , url : $scope.parent.url + '&user=' + userProfileService.get($scope.data.user).username}).
+  then(function(requests){
+    for(key in requests.data){
+      $scope.parent[key] = requests.data[key];
+    }
+  });
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
   $scope.droppedObjects = angular.copy($scope.parent.photos);
-  $scope.tempAlbum = {title :  $scope.parent.title , photos : []};
+  var tagged = '';
+  for (var i = 0; i < $scope.parent.tagged.length; i++) {
+    tagged  += userProfileService.get($scope.parent.tagged[i]).username;
+    if (i != $scope.parent.tagged.length-1){
+      tagged += ',';
+    }
+  }
+  $scope.tempAlbum = {title :  $scope.parent.title , photos : [] , tagged : tagged};
   $scope.editorData = {draggableObjects : []};
   $scope.editMode = false;
   $scope.possibleCommentHeight = 70;
@@ -509,6 +534,7 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
       user : $scope.me.url,
       title : $scope.tempAlbum.title,
       photos : $scope.tempAlbum.photos,
+      tagged : $scope.tempAlbum.tagged,
     };
     // console.log(dataToPost);
     $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
@@ -516,6 +542,7 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.parent.title = response.data.title;
       $scope.parent.photos = response.data.photos;
+      $scope.parent.tagged = response.data.tagged;
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });
@@ -692,6 +719,45 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.limit  = 5;
   $scope.socialResource = {posts : [] , albums : []};
   // to get the next or prev five social content in mode = post or album based on the currect value of offset[key] and the limit
+
+
+  $scope.getFiveStatus = 0;
+  $scope.feedStart = 0;
+
+  $scope.$watch('getFiveStatus' , function(newValue , oldValue){
+    if (newValue == 2) {
+      $scope.sortResource();
+      $scope.refreshFeeds();
+    }
+  });
+
+  $scope.droppedObjects = [];
+  $scope.editorData = {draggableObjects : []}; // for the album editor
+  $scope.statusMessage = '';
+  $scope.picturePost = {photo : {} , tagged : ''};
+
+  if ($scope.user.username == $scope.me.username) {
+    $scope.myProfile = true;
+  }else {
+    $scope.myProfile = false;
+  }
+  $http({method:'GET' , url : $scope.user.social}).then(
+    function(response){
+      $scope.user.socialData = response.data;
+      $scope.user.socialData.coverPicFile = emptyFile;
+    }
+  )
+  $http({method:'GET' , url : $scope.user.designation}).then(
+    function(response){
+      $scope.user.designationData = response.data;
+    }
+  )
+
+
+  $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ]; // to be used in the album editor
+  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
+  $scope.tempAlbum = {title : '' , photos : [] , tagged : ''};
+
   $scope.getFive = function(mode){
     $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username+'&offset=' + $scope.offset[mode] + '&limit='+$scope.limit}).
     then(function(response){
@@ -713,18 +779,8 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     });
   };
 
-  $scope.getFiveStatus = 0;
-  $scope.feedStart = 0;
   $scope.getFive('post');
   $scope.getFive('album');
-
-  $scope.$watch('getFiveStatus' , function(newValue , oldValue){
-    if (newValue == 2) {
-      $scope.sortResource();
-      $scope.refreshFeeds();
-
-    }
-  });
 
   $scope.sortResource = function(){
 
@@ -746,8 +802,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
     // console.log($scope.sortedResourceFeeds);
   }
-
-
   $scope.refreshFeeds = function(){
     $scope.sortedFeeds = [];
     for (var i = 0; i < 5; i++) {
@@ -758,8 +812,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
     // console.log($scope.sortedFeeds);
   }
-
-
   $scope.prev = function(){
     $scope.feedStart -= 5;
     if ($scope.feedStart <0) {
@@ -768,7 +820,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $scope.sortResource();
     $scope.refreshFeeds();
   };
-
 
   $scope.next = function(){
     // console.log("next clicked");
@@ -781,38 +832,12 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
   }
 
-  $scope.droppedObjects = [];
-  $scope.editorData = {draggableObjects : []}; // for the album editor
-  $scope.statusMessage = '';
-  $scope.picturePost = {photo : {}};
-
-  if ($scope.user.username == $scope.me.username) {
-    $scope.myProfile = true;
-  }else {
-    $scope.myProfile = false;
-  }
-  $http({method:'GET' , url : $scope.user.social}).then(
-    function(response){
-      $scope.user.socialData = response.data;
-      $scope.user.socialData.coverPicFile = emptyFile;
-    }
-  )
-  $http({method:'GET' , url : $scope.user.designation}).then(
-    function(response){
-      $scope.user.designationData = response.data;
-    }
-  )
-
-
-  $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
-  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
-
   $scope.removeFromTempAlbum = function(index){
     pic = $scope.droppedObjects[index];
     $scope.droppedObjects.splice(index , 1);
     $scope.editorData.draggableObjects.push(pic);
   }
-  $scope.tempAlbum = {title : '' , photos : []};
+
   $scope.createAlbum = function(){
     if ($scope.droppedObjects.length == 0) {
       Flash.create('danger', 'No photos in the album' );
@@ -828,12 +853,14 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       user : $scope.me.url,
       title : $scope.tempAlbum.title,
       photos : $scope.tempAlbum.photos,
+      tagged : $scope.tempAlbum.tagged,
     };
     // console.log(dataToPost);
     $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.tempAlbum.title = '';
+      $scope.tempAlbum.tagged = '';
       $scope.tempAlbum.photos = [];
       $scope.droppedObjects = [];
       $scope.socialResource.albums.push(response.data);
@@ -870,6 +897,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     fd.append('attachment', $scope.post.attachment);
     fd.append('text' , $scope.post.text );
     fd.append('user' , $scope.me.url);
+    fd.append('tagged' , $scope.post.tagged)
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
@@ -878,8 +906,8 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       $scope.refreshFeeds();
       $scope.post.attachment = emptyFile;
       $scope.post.text = '';
+      $scope.post.tagged = '';
       Flash.create('success', response.status + ' : ' + response.statusText );
-
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });
@@ -887,13 +915,16 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.uploadImage = function(){
     var fd = new FormData();
     fd.append('photo', $scope.picturePost.photo);
-    fd.append('tagged' , '');
+    fd.append('tagged' , $scope.picturePost.tagged.split(','));
     fd.append('user' , $scope.me.url);
     var uploadUrl = "/api/social/picture/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.user.pictures.push(response.data);
+      $scope.picturePost.photo = emptyFile;
+      $scope.picturePost.tagged = '';
+
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     });

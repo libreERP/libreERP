@@ -36,6 +36,8 @@ class album(models.Model):
     user = models.ForeignKey(User , related_name = 'socialAlbums')
     created = models.DateTimeField(auto_now_add = True)
     title = models.CharField(max_length = 50, null = True)
+    tagged = models.ManyToManyField(User , related_name = 'taggedAlbums' , blank = True)
+
 class picture(models.Model):
     user = models.ForeignKey(User , related_name = 'socialPhotos' , null = False)
     photo = models.ImageField(upload_to = getSocialPictureUploadPath , null = False)
@@ -73,6 +75,7 @@ class comment(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     attachment = models.FileField(upload_to = getCommentAttachmentPath , null = True)
     text = models.CharField(max_length = 200 , null = False)
+    tagged = models.ManyToManyField(User , related_name = 'taggedComments' , blank = True)
 
 class like(models.Model):
     user = models.ForeignKey(User , related_name = 'likes')

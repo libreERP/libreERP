@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from django.core.exceptions import *
+from django.contrib.auth.models import *
 
 class commentLikeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -24,7 +25,8 @@ class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = postComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes')
+        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        read_only_fields = ('tagged',)
     def create(self , validated_data):
         text = validated_data.pop('text')
         parent = validated_data.pop('parent')
@@ -60,7 +62,8 @@ class pictureCommentsSerializer(serializers.HyperlinkedModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = pictureComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes')
+        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        read_only_fields = ('tagged',)
     def create(self , validated_data):
         text = validated_data.pop('text')
         parent = validated_data.pop('parent')
@@ -86,22 +89,35 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
     comments = postCommentsSerializer(many = True , read_only = True)
     class Meta:
         model = post
-        fields = ('url' , 'user' , 'created' , 'likes' , 'text' , 'attachment' , 'comments')
+        fields = ('url' , 'user' , 'created' , 'likes' , 'text' , 'attachment' , 'comments', 'tagged')
+        read_only_fields = ('tagged',)
 
     def create(self ,  validated_data):
-        text = validated_data.pop('text')
         user =  self.context['request'].user
         p = post()
         p.user = user
-        p.text = text
-        # p.attachment = attached
+        p.text = validated_data.pop('text')
+        p.attachment = validated_data.pop('attachment')
         p.save()
+        tagged = self.context['request'].data['tagged']
+        for tag in tagged.split(','):
+            p.tagged.add( User.objects.get(username = tag))
         return p
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
         if instance.user == user:
             instance.text = validated_data.pop('text');
+            try:
+                instance.attachment = validated_data.pop('attachment')
+            except:
+                pass
             instance.save()
+            tagged = self.context['request'].data['tagged']
+            instance.tagged.clear()
+            for tag in tagged.split(','):
+                instance.tagged.add( User.objects.get(username = tag))
+        else:
+            raise PermissionDenied(detail=None)
         return instance
 
 
@@ -120,6 +136,9 @@ class pictureSerializer(serializers.HyperlinkedModelSerializer):
         pic.photo = photo
         pic.user = user
         pic.save()
+        tagged = self.context['request'].data['tagged']
+        for tag in tagged.split(','):
+            pic.tagged.add( User.objects.get(username = tag))
         return pic
 def only_numerics(seq):
     return filter(type(seq).isdigit, seq)
@@ -128,12 +147,16 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
     photos = pictureSerializer(many = True , read_only = True)
     class Meta:
         model = album
-        fields = ('url' , 'user' , 'created' , 'photos', 'title' )
+        fields = ('url' , 'user' , 'created' , 'photos', 'title' , 'tagged')
+        read_only_fields = ('tagged',)
     def create(self ,  validated_data):
         photos =  self.context['request'].data['photos']
         user =  self.context['request'].user
         a = album(user = user , title = validated_data.pop('title'))
         a.save()
+        tagged = self.context['request'].data['tagged']
+        for tag in tagged.split(','):
+            a.tagged.add( User.objects.get(username = tag))
         count = 0
         for p in photos:
             pk = only_numerics(p)
@@ -150,7 +173,11 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
             raise PermissionDenied(detail=None)
             return instance
         instance.title = validated_data.pop('title')
+        instance.tagged.clear()
         instance.save()
+        tagged = self.context['request'].data['tagged']
+        for tag in tagged.split(','):
+            instance.tagged.add( User.objects.get(username = tag))
         existing = picture.objects.filter(album = instance)
         for p in existing:
             p.album = None

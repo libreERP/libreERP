@@ -39,21 +39,29 @@
         <textarea type="text" rows="3" name="post" value="" class="form-control " required ng-model="data.text"></textarea>
       </div>
     </div>
+    <div class= "form-group">
+      <label class="control-label col-sm-2" for="tagged">Tagged :</label>
+      <div class="col-md-10">
+        <input type="text" class = "form-control" name = "tagged" placeholder="Tag people by typing the name" ng-model = "postEditor.tagged">
+      </div>
+    </div>
     <div class="form-group">
       <label class="control-label col-sm-2" for="attachment">Attachment:</label>
-      <div class="col-sm-6">
-        <input type="file" name="attachment" file-model="data.attachment">
+      <div class="col-sm-10">
+        <input type="file" name="attachment" file-model="postEditor.attachment">
       </div>
-      <div class="col-md-4">
-        <div class="btn-group pull-right">
-          <button ng-click="cancelEditor()" class = "btn btn-default" name="button">Cancel</button>
-          <button type="submit" class = "btn btn-success" name="button">Save</button>
-        </div>
-      </div>
+    </div>
+    <div class="btn-group pull-right">
+      <button ng-click="cancelEditor()" class = "btn btn-default" name="button">Cancel</button>
+      <button type="submit" class = "btn btn-success" name="button">Save</button>
     </div>
   </form>
   <div ng-if="!editMode">
     {{data.text}}
+    <div class="container-fluid">
+      <!-- to be used for displaying attachment , tagged peoples and other details such as history -->
+      <span class="pull-right" ng-if="data.attachment!=null"><a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a></span>
+    </div>
   </div>
 </div>
 <div class="modal-footer" ng-show="!editMode">

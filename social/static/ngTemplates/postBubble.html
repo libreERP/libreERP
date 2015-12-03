@@ -1,4 +1,4 @@
-<li><i class="fa fa-commenting-o bg-blue"></i>
+<li><i class="fa fa-commenting-o bg-yellow"></i>
   <div class="timeline-item">
     <span class="time"><i class="fa fa-clock-o"></i> {{data.created | timeAgo}} ago</span>
     <h3 class="timeline-header" >
@@ -14,7 +14,16 @@
         {{data.likes.length==0? '':data.likes.length}} {{data.likes.length<=1? 'Like':'likes'}} <i class="fa fa-thumbs-o-up"></i>
       </a>
       <a href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-        {{data.comments.length==0? '' :data.comments.length}} {{data.comments.length<=1? 'Comment':'Comments'}} <i class="fa fa-comment-o"></i></a>
+        {{data.comments.length==0? '' :data.comments.length}} {{data.comments.length<=1? 'Comment':'Comments'}} <i class="fa fa-comment-o"></i>
+      </a>
+      <span class="pull-right" ng-if="data.attachment!=null" style="margin-left:10px;">
+        <a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a>
+      </span>
+      <div class="pull-right" style="display:inline;">
+        <div ng-repeat = "user in data.tagged" class="postTags">
+          {{user | getName:'short'}}
+        </div>
+      </div>
     </div>
   </div>
 </li>

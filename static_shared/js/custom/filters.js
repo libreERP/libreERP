@@ -146,11 +146,14 @@ app.filter('getDP' , function(userProfileService){
 
 
 app.filter('getName' , function(userProfileService){
-  return function(userUrl){
+  return function(userUrl , mode){
     if (typeof userUrl == 'undefined') {
       return '';
     }
     profile = userProfileService.get(userUrl);
+    if (mode == 'short') {
+      return profile.first_name;
+    }
     return profile.first_name + ' ' + profile.last_name;
   }
 })
