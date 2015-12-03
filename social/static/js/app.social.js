@@ -27,7 +27,7 @@ app.directive('commentBubble', function () {
           for (var i = 0; i < $scope.data.likes.length; i++) {
             if ($scope.data.likes[i].user.split('?')[0] == $scope.me.url) {
               index = i;
-              console.log($scope.data.likes[i]);
+              // console.log($scope.data.likes[i]);
               $http({method: 'DELETE', url: $scope.data.likes[i].url}).
                 then(function(response , index) {
                   $scope.data.likes.splice(index, 1);
@@ -157,7 +157,7 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   }, 100);
 
   $scope.refreshAside = function(signal){
-    console.log(signal);
+    // console.log(signal);
 
     var nodeUrl = '/api/social/';
     if (signal.action == 'created') {
@@ -249,7 +249,7 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
       } else if (updateType == 'commentLike') {
         for (var i = 0; i < $scope.data.comments.length; i++) {
           for (var j = 0; j < $scope.data.comments[i].likes.length; j++) {
-            console.log(nodeUrl + updateType + '/' + signal.id);
+            // console.log(nodeUrl + updateType + '/' + signal.id);
             if($scope.data.comments[i].likes[j].url.indexOf(nodeUrl + updateType + '/' + signal.id) != -1) {
               $scope.data.comments[i].likes.splice(j,1);
             }
@@ -674,7 +674,7 @@ app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash ,
       } else if (updateType == 'commentLike') {
         for (var i = 0; i < $scope.data.comments.length; i++) {
           for (var j = 0; j < $scope.data.comments[i].likes.length; j++) {
-            console.log(nodeUrl + updateType + '/' + signal.id);
+            // console.log(nodeUrl + updateType + '/' + signal.id);
             if($scope.data.comments[i].likes[j].url.indexOf(nodeUrl + updateType + '/' + signal.id) != -1) {
               $scope.data.comments[i].likes.splice(j,1);
             }

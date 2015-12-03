@@ -60,7 +60,14 @@
     {{data.text}}
     <div class="container-fluid">
       <!-- to be used for displaying attachment , tagged peoples and other details such as history -->
-      <span class="pull-right" ng-if="data.attachment!=null"><a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a></span>
+      <span class="pull-right" ng-if="data.attachment!=null" style="margin-left:10px;">
+        <a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a>
+      </span>
+      <div class="pull-right" style="display:inline;">
+        <div ng-repeat = "user in data.tagged" class="postTags">
+          {{user | getName:'short'}}
+        </div>
+      </div>
     </div>
   </div>
 </div>

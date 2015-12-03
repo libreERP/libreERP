@@ -112,11 +112,11 @@ def notify(type , id , action , instance):
 def notifyUpdates(type , action , subscribers , instance):
     print "Upto here"
     for sub in subscribers:
-        if sub.user != instance.user:
-            print "will send to" + str(sub.user.username)
+        if sub != instance.user:
+            print "will send to" + str(sub.username)
             requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
                 json={
-                  'topic': 'service.updates.' + sub.user.username,
+                  'topic': 'service.updates.' + sub.username,
                   'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]
                 }
             )
@@ -139,9 +139,20 @@ def postLikeNotification(sender, instance, **kwargs):
         else:
             subscribers = postFollower.objects.filter(parent = instance.parent.parent)
     elif sender == postComment or sender == postLike:
-        subscribers = postFollower.objects.filter(parent = instance.parent)
+        subscribers = []
+        for sub in postFollower.objects.filter(parent = instance.parent):
+            subscribers.append(sub.user)
+        for sub in instance.parent.tagged.all():
+            if sub not in subscribers:
+                subscribers.append(sub)
     elif sender == pictureComment or sender == pictureLike:
-        subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
+        a = album.objects.get(photos = instance.parent)
+        subscribers = []
+        for sub in albumFollower.objects.filter(parent = a):
+            subscribers.append(sub.user)
+        for sub in a.tagged.all():
+            if sub not in subscribers:
+                subscribers.append(sub)
 
     shortInfo = sender.__name__
 
@@ -149,6 +160,8 @@ def postLikeNotification(sender, instance, **kwargs):
     if instance.parent.user == instance.user or sender == commentLike:
         return
     shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
+    if sender==pictureComment:
+        shortInfo += ':' + str(a.pk)
     n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if new:
         notify('social' , n.pk , 'created' , instance)
@@ -172,17 +185,28 @@ def postCommentNotificationDelete(sender, instance, **kwargs):
         else:
             subscribers = postFollower.objects.filter(parent = prnt)
     elif sender == postComment or sender == postLike:
-        subscribers = postFollower.objects.filter(parent = instance.parent)
+        subscribers = []
+        for sub in postFollower.objects.filter(parent = instance.parent):
+            subscribers.append(sub.user)
+        for sub in instance.parent.tagged.all():
+            if sub not in subscribers:
+                subscribers.append(sub)
     elif sender == pictureComment or sender == pictureLike:
-        subscribers = albumFollower.objects.filter(parent = album.objects.get(photos = instance.parent))
-
+        a = album.objects.get(photos = instance.parent)
+        subscribers = []
+        for sub in albumFollower.objects.filter(parent = a):
+            subscribers.append(sub.user)
+        for sub in a.tagged.all():
+            if sub not in subscribers:
+                subscribers.append(sub)
     shortInfo = sender.__name__
 
     notifyUpdates( 'social.' + shortInfo , 'deleted' , subscribers , instance)
     if instance.parent.user == instance.user or sender == commentLike:
         return
     shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
-
+    if sender==pictureComment:
+        shortInfo += ':' + str(a.pk)
     n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if n.count() != 0:
         for i in n:

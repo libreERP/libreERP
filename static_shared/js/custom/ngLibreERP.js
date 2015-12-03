@@ -109,12 +109,15 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     $scope.method = 'GET';
     if (typeof signal != 'undefined') {
       url = url + signal.id +'/';
+      // console.log(signal);
       if (signal.action == 'deleted') {
-        for (var i = 0; i < $scope.notifications.length; i++) {
-          if($scope.notifications[i].url.indexOf(url) !=-1){
-            $scope.notifications.splice(i , 1);
+        for (var i = 0; i < $scope.rawNotifications.length; i++) {
+          if($scope.rawNotifications[i].url.indexOf(url) !=-1){
+            // console.log("found");
+            $scope.rawNotifications.splice(i , 1);
           }
         }
+        $scope.refreshNotification();
       }else{
 
         $http({method: $scope.method, url: url}).

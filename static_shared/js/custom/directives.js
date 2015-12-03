@@ -411,9 +411,10 @@ app.directive('notificationStrip', function () {
     scope:{
       data : '=',
     },
-    controller : function($scope , $http , userProfileService , $aside){
+    controller : function($scope , $http , userProfileService , $aside ){
       // console.log($scope.data);
       parts = $scope.data.shortInfo.split(':');
+      // console.log(parts);
       if(typeof parts[1] == 'undefined'){
         $scope.notificationType = 'default';
       } else {
@@ -430,8 +431,14 @@ app.directive('notificationStrip', function () {
           $http({method: 'GET' , url : response.data.parent}).then(function(response){
             $scope.notificationData = response.data;
             // console.log($scope.notificationData);
-          })
-        })
+            if ($scope.notificationType == 'pictureComment') {
+              $http({method : 'GET' , url : '/api/social/album/' +  $scope.data.shortInfo.split(':')[3] + '/?user=' + userProfileService.get($scope.notificationData.user).username}).
+              then(function(response){
+                $scope.objParent = response.data;
+              });
+            };
+          });
+        });
       };
 
       $scope.openAlbum = function(position, backdrop , input) {
@@ -485,7 +492,9 @@ app.directive('notificationStrip', function () {
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
           $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
         } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
-          $scope.openAlbum('right', true , {data: $scope.notificationData , parent :'empty' , onDelete: function(){return;}})
+
+          console.log($scope.objParent);
+          $scope.openAlbum('right', true , {data: $scope.notificationData , parent : $scope.objParent , onDelete: function(){return;}})
         }
       }
     },
