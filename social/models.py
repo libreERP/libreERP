@@ -99,6 +99,7 @@ class social(models.Model):
     aboutMe = models.TextField(max_length = 1000 , null = True)
     status = models.CharField(max_length = 100 , null = True) # social status
     coverPic = models.ImageField(upload_to = getSocialCoverPictureUploadPath , null = True , blank = True)
+    followers = models.ManyToManyField(User , related_name = 'peopleFollowing' , blank = True)
 
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
@@ -151,16 +152,10 @@ def getSubscribers(sender , instance):
 
     return subscribers
 
-@receiver(post_save, sender=postComment, dispatch_uid="server_post_save")
-@receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
-@receiver(post_save, sender=pictureComment, dispatch_uid="server_post_save")
-@receiver(post_save, sender=pictureLike, dispatch_uid="server_post_save")
-@receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
-def postLikeNotification(sender, instance, **kwargs):
-
+def sendNotificationsAndUpdates(sender , instance , mode):
     shortInfo = sender.__name__
 
-    notifyUpdates( 'social.' + shortInfo , 'created' , getSubscribers(sender, instance) , instance)
+    notifyUpdates( 'social.' + shortInfo , mode , getSubscribers(sender, instance) , instance)
     if instance.parent.user == instance.user or sender == commentLike:
         return
     shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
@@ -171,6 +166,16 @@ def postLikeNotification(sender, instance, **kwargs):
         notify('social' , n.pk , 'created' , instance)
 
 
+@receiver(post_save, sender=postComment, dispatch_uid="server_post_save")
+@receiver(post_save, sender=postLike, dispatch_uid="server_post_save")
+@receiver(post_save, sender=pictureComment, dispatch_uid="server_post_save")
+@receiver(post_save, sender=pictureLike, dispatch_uid="server_post_save")
+@receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
+def postLikeNotification(sender, instance, **kwargs):
+    sendNotificationsAndUpdates(sender , instance , 'created')
+
+
+
 @receiver(pre_delete, sender=postLike, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=postComment, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=pictureComment, dispatch_uid="server_post_delete")
@@ -178,16 +183,4 @@ def postLikeNotification(sender, instance, **kwargs):
 @receiver(pre_delete, sender=commentLike, dispatch_uid="server_post_delete")
 def postCommentNotificationDelete(sender, instance, **kwargs ):
 
-    shortInfo = sender.__name__
-
-    notifyUpdates( 'social.' + shortInfo , 'deleted' , getSubscribers(sender , instance) , instance)
-    if instance.parent.user == instance.user or sender == commentLike:
-        return
-    shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
-    if sender==pictureComment:
-        shortInfo += ':' + str(a.pk)
-    n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
-    if n.count() != 0:
-        for i in n:
-            notify('social' , i.pk , 'deleted' , instance)
-        n.delete()
+    sendNotificationsAndUpdates(sender , instance , 'deleted')

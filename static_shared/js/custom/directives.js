@@ -412,7 +412,6 @@ app.directive('notificationStrip', function () {
       data : '=',
     },
     controller : function($scope , $http , userProfileService , $aside ){
-      // console.log($scope.data);
       parts = $scope.data.shortInfo.split(':');
       // console.log(parts);
       if(typeof parts[1] == 'undefined'){
@@ -489,6 +488,11 @@ app.directive('notificationStrip', function () {
         }).result.then(postClose, postClose);
       }
       $scope.openNotification = function(){
+        $http({method: 'PATCH' , url : $scope.data.url , data : {read : true}}).
+        then(function(response){
+          $scope.$parent.notificationClicked($scope.data.url);
+          $scope.data.read = true;
+        });
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
           $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
         } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
@@ -550,22 +554,19 @@ app.directive('chatWindow', function (userProfileService) {
         $scope.imsCount = 0;
         $scope.senderIsMe = [];
         $http({method: $scope.method, url: $scope.url}).
-          then(function(response) {
-            $scope.messageFetchStatus = response.status;
-            $scope.imsCount = response.data.length;
-            for (var i = 0; i < response.data.length; i++) {
-              var im = response.data[i];
-              sender = userProfileService.get(im.originator)
-              if (sender.username == $scope.me.username) {
-                $scope.senderIsMe.push(true);
-              }else {
-                $scope.senderIsMe.push(false);
-              }
-              $scope.ims.push(im);
-              // console.log($scope.ims.length);
+        then(function(response) {
+          $scope.imsCount = response.data.length;
+          for (var i = 0; i < response.data.length; i++) {
+            var im = response.data[i];
+            sender = userProfileService.get(im.originator)
+            if (sender.username == $scope.me.username) {
+              $scope.senderIsMe.push(true);
+            }else {
+              $scope.senderIsMe.push(false);
             }
-          }, function(response) {
-            $scope.messageFetchStatus = response.status;
+            $scope.ims.push(im);
+            // console.log($scope.ims.length);
+          }
         });
       };
       $scope.fetchMessages();

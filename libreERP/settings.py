@@ -93,6 +93,18 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'django',
+#         'USER': 'root',
+#         'PASSWORD': '123',
+#         'HOST': '10.146.31.175',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
+
+
 # AUTH_PROFILE_MODULE = 'HR.userProfile'
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

@@ -102,8 +102,8 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
 
   $scope.fetchNotifications = function(signal) {
     // By default the signal is undefined when the user logs in. In that case it fetches all the data.
-    // signal is passed by the WAMP processor for real time notifiction delivery.
-    // console.log("going to fetch notifictions");
+    // signal is passed by the WAMP processor for real time notification delivery.
+    // console.log("going to fetch notifications");
     // console.log(toFetch);
     url = '/api/PIM/notification/';
     $scope.method = 'GET';
@@ -143,25 +143,39 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   $scope.refreshNotification = function(){
     $scope.notificationParent = [];
     $scope.notifications = [];
-    $scope.notificationCount = 0;
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
       var notification = $scope.rawNotifications[i];
       parts = notification.shortInfo.split(':');
       parentPk = parts[2];
       notificationType = parts[0];
       parentNotificationIndex = $scope.notificationParent.indexOf(parentPk+':'+notificationType);
-      if ( parentNotificationIndex == -1){ // this is new notification for this parent of notificaion type
-        $scope.notificationCount += 1;
+      if ( parentNotificationIndex == -1){ // this is new notification for this parent of notification type
+
         notification.hide = false;
         notification.multi = false;
-      } else { // there is already a notificaion for this parent
+      } else { // there is already a notification for this parent
         $scope.notifications[parentNotificationIndex].multi = true;
         notification.hide = true
       };
       $scope.notifications.push(notification)
       $scope.notificationParent.push(parentPk+':'+notificationType);
     }
+    $scope.notificationsCount = 0;
+    for (var i = 0; i < $scope.notifications.length; i++) {
+      if (! $scope.notifications[i].read ) {
+        $scope.notificationsCount += 1;
+      }
+    }
   };
+
+  $scope.notificationClicked = function(url){
+    for (var i = 0; i < $scope.rawNotifications.length; i++) {
+      if ($scope.rawNotifications[i].url.cleanUrl() == url.cleanUrl()){
+        $scope.rawNotifications[i].read = true;
+      }
+    }
+    $scope.refreshNotification();
+  }
 
   $scope.fetchMessages = function() {
     // This is because the chat system is build along with the notification system. Since this is the part whcih is common accros all the modules
@@ -169,6 +183,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     $scope.url = '/api/PIM/chatMessage/';
     $scope.ims = [];
     var senders = [];
+    $scope.instantMessagesCount = 0;
     $http({method: $scope.method, url: $scope.url}).
       then(function(response) {
         $scope.messageFetchStatus = response.status;
@@ -194,9 +209,12 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
               count = 0;
               for (var k = 0; k < response.data.length; k++) {
                 im2 = response.data[k]
-                if (im2.originator == friend || im2.user == friend) {
+                if ((im2.originator == friend || im2.user == friend) && im2.read == false) {
                   count += 1;
                 }
+              }
+              if (count !=0){
+                $scope.instantMessagesCount += 1;
               }
               im.count = count;
               $scope.ims.push(im);

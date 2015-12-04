@@ -84,3 +84,7 @@ String.prototype.endsWith = function(str){
   }
   return (this.match(str+"$")==str)
 }
+
+String.prototype.cleanUrl = function(){
+  return this.split('?')[0]
+}

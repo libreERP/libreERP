@@ -10,6 +10,7 @@ from .models import *
 from API.permissions import *
 
 # Create your views here.
+
 class postViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = postSerializer

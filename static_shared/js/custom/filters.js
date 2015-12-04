@@ -125,7 +125,7 @@ app.filter('explodeObj' , function(){
 
 app.filter('decorateCount' , function(){
   return function(input){
-    if (input ==1){
+    if (input == 0){
       return "";
     }
     else {

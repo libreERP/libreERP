@@ -199,4 +199,24 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
 class socialSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = social
-        fields = ('url' , 'status' , 'aboutMe' , 'coverPic' )
+        fields = ('url' , 'status' , 'aboutMe' , 'coverPic' , 'followers')
+        read_only_fields = ('followers',)
+    def update(self , instance,  validated_data):
+        user =  self.context['request'].user
+        if 'friend' in self.context['request'].data:
+            toFollow = self.context['request'].data['friend']
+            mode = self.context['request'].data['mode']
+            u = User.objects.get(username = toFollow)
+            if mode == 'follow':
+                if u not in instance.followers.all():
+                    u.social.followers.add(user)
+            else:
+                u.social.followers.remove(user)
+        else:
+            instance.status = validated_data.pop('status')
+            instance.aboutMe = validated_data.pop('aboutMe')
+            try:
+                instance.coverPic = validated_data.pop('coverPic')
+            except:
+                pass
+        return instance

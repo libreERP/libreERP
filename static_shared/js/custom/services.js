@@ -37,6 +37,9 @@ function myProfile(){
 function getUser(urlGet , mode){
   // console.log(urlGet);
   var httpRequest = new XMLHttpRequest()
+  if (urlGet.indexOf('api/HR')==-1) {
+    urlGet = '/api/HR/users/'+ urlGet + '/'
+  }
   if (urlGet.indexOf('json')==-1) {
     urlGet += '?format=json';
   }
