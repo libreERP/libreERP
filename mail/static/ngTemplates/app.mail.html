@@ -1,0 +1,127 @@
+<div class="shaddowed card bg-white" style="min-height:750px;">
+  <breadcrumb></breadcrumb>
+
+
+  <div class="col-md-1">
+    <button type="button" class="btn btn-default" style="width:100%;" name="button">Compose <i class="fa fa-pencil-square-o"></i></button>
+    <ul class="nav nav-sidebar " >
+      <li ng-class="{active: $state.includes('home.mail.inbox')}"><a ui-sref="home" ><div align="center">Inbox</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.starred')}"><a ui-sref="home.mail"><div align="center">Starred</i></div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.sent')}"><a ui-sref="home.social"><div align="center">Sent</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.drafts')}"><a ui-sref="home.news"><div align="center">Drafts</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.spam')}"><a ui-sref="home.calender"><div align="center">Spam</div></a></li>
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <ul class="nav">
+
+      <li class="container-fluid" >
+        <div class="row">
+          <input type="text" class="form-control" name="search" placeholder="Search..">
+        </div>
+      </li>
+      <li class="container-fluid emailListOptions" >
+        <div class="row">
+          <div class="col-md-5" style="position: relative;top:12px;">
+            <input  type="checkbox" name="name">
+            <span style="position: relative;top:-2px;left:5px;">Select all<span>
+          </div>
+          <div class="col-md-7" style="position: relative;top:10px;cursor:pointer;">
+            <div class="btn-group pull-right">
+              <span class="fa fa-angle-down fa-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></span>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+              </ul>
+            </div>
+          </div>
+                <!-- Split button -->
+        </div>
+      </li>
+
+      <div ng-repeat="email in emails track by $index">
+        <email-strip data = "email"></email-strip>
+      </div>
+
+      <li class="container-fluid" >
+        <div class="row">
+          <nav>
+            <ul class="pager">
+              <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
+              <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+            </ul>
+          </nav>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+  <div class="col-md-7">
+    <div class="container-fluid">
+      <div class="row">
+        <div ng-if="!editor" class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
+          <button type="button" class="btn btn-default"><i class="fa fa-reply-all"></i> Reply all</button>
+          <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
+          <button type="button" class="btn btn-default"><i class="fa fa-trash"></i> Delete</button>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Move to
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#">Reminder</a></li>
+              <li><a href="#">important</a></li>
+              <li><a href="#">Spam</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div ng-if="editor" class="btn-group" role="group" aria-label="...">
+          <button type="button" class="btn btn-default"><i class="fa fa-paper-plane"></i> Send</button>
+          <button type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
+        </div>
+        <div ng-if="!editor" class="btn-group pull-right" role="group" aria-label="...">
+          <button type="button" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
+          <button type="button" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
+        </div>
+
+      </div>
+      <div class="row" style="padding:10px;" ng-if="editor">
+        <div class="container-fluid">
+          <div class= "form-group">
+            <label class="control-label col-sm-2" for="subject">Subject :</label>
+            <div class="col-md-10">
+              <input type="text" class = "form-control" name = "subject" placeholder="Subject" ng-model = "htmlcontent">
+            </div>
+          </div>
+          <div class= "form-group">
+            <label class="control-label col-sm-2" for="to">To :</label>
+            <div class="col-md-10">
+              <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "">
+            </div>
+          </div>
+          <div class= "form-group">
+            <label class="control-label col-sm-2" for="cc">CC :</label>
+            <div class="col-md-10">
+              <input type="text" class = "form-control" name = "cc" placeholder="CC" ng-model = "">
+            </div>
+          </div>
+          <div class= "form-group">
+            <label class="control-label col-sm-2" for="bcc">BCC :</label>
+            <div class="col-md-10">
+              <input type="text" class = "form-control" name = "bcc" placeholder="bcc" ng-model = "">
+            </div>
+          </div>
+        </div>
+        <div class="row" style="padding:10px;">
+          <div text-angular="text-angular" name="htmlcontent" ng-model="htmlcontent"  ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -18,13 +18,13 @@ app.config(function($stateProvider ){
   })
   .state('home.mail', {
     url: "/mail",
-    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the mail board</div>',
-    controller: 'home.mail'
+    templateUrl: '/static/ngTemplates/app.mail.html',
+    controller: 'controller.mail'
   })
   .state('home.social', {
     url: "/social/:id",
     templateUrl: '/static/ngTemplates/app.social.html',
-    controller: 'socialController'
+    controller: 'controller.social'
   })
   .state('home.news', {
     url: "/news",

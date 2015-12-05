@@ -375,15 +375,7 @@ app.directive('tableRow', function () {
 
 app.directive('messageStrip', function () {
   return {
-    template: '<li class="container-fluid navBarInfoList" ng-click="openChat(friend)">'+
-      '<a class="row" style="position: relative; top:-7px; text-decoration:none !important;">'+
-        '<img class="img-circle" ng-src="{{friend | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; top:-8px; "/>'+
-        '<div class="col-md-10 pull-right" style="position: relative; top:-10px">'+
-          '<span class="text-muted">{{friend | getName}}</span> {{data.count | decorateCount}}<small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>'+
-          '<br>{{data.message | limitTo:35}}'+
-        '</div>'+
-      '</a>'+
-    '</li>',
+    templateUrl: '/static/ngTemplates/messageStrip.html',
     restrict: 'E',
     transclude: true,
     replace:true,

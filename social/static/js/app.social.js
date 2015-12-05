@@ -93,7 +93,7 @@ app.directive('post', function () {
           placement: position,
           size: 'md',
           backdrop: backdrop,
-          controller:'postAsideCtrl',
+          controller:'controller.social.aside.post',
           resolve: {
            input: function () {
              return input;
@@ -105,7 +105,7 @@ app.directive('post', function () {
   };
 });
 
-app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, userProfileService , input) {
+app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, userProfileService , input) {
   $scope.content = 'post';
   var emptyFile = new File([""], "");
   $scope.me = userProfileService.get("mySelf");
@@ -392,7 +392,7 @@ app.directive('album', function () {
           placement: position,
           size: 'lg',
           backdrop: backdrop,
-          controller: 'pictureAsideCtrl',
+          controller: 'controller.social.aside.picture',
           resolve: {
            input: function () {
              return input;
@@ -404,7 +404,7 @@ app.directive('album', function () {
   };
 });
 
-app.controller('pictureAsideCtrl' , function($scope, $uibModalInstance , Flash , $http , userProfileService , input) {
+app.controller('controller.social.aside.picture' , function($scope, $uibModalInstance , Flash , $http , userProfileService , input) {
 
   $scope.content = 'picture';
   $scope.me = userProfileService.get("mySelf");
@@ -707,11 +707,11 @@ app.directive('socialProfile', function () {
     scope: {
       userUrl : '=',
     },
-    controller : 'socialProfileController',
+    controller : 'controller.social.profile',
   };
 });
 
-app.controller('socialProfileController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
+app.controller('controller.social.profile', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
   emptyFile = new File([""], "");
   $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
@@ -826,7 +826,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   $scope.getFive('album');
 
   $scope.sortResource = function(){
-
+    // console.log("now sorting the rawResourceFeeds");
     orderMat = [];
     // console.log( $scope.socialResource.albums);
     for (var i = 0; i < $scope.socialResource.albums.length; i++) {
@@ -846,6 +846,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     // console.log($scope.sortedResourceFeeds);
   }
   $scope.refreshFeeds = function(){
+    // console.log("now refreshing the post");
     $scope.sortedFeeds = [];
     for (var i = 0; i < 5; i++) {
       if ($scope.feedStart + i > $scope.sortedResourceFeeds.length) {
@@ -855,6 +856,18 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     }
     // console.log($scope.sortedFeeds);
   }
+  $scope.removePost = function(index){
+    // console.log("removed post");
+    $scope.socialResource.posts.splice(index, 1);
+    $scope.sortResource();
+    $scope.refreshFeeds();
+  }
+  $scope.removeAlbum = function(index){
+    // console.log("removed album");
+    $scope.socialResource.albums.splice(index, 1);
+    $scope.sortResource();
+    $scope.refreshFeeds();
+  }
   $scope.prev = function(){
     $scope.feedStart -= 5;
     if ($scope.feedStart <0) {
@@ -863,7 +876,6 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     $scope.sortResource();
     $scope.refreshFeeds();
   };
-
   $scope.next = function(){
     // console.log("next clicked");
     $scope.getFiveStatus = 0;
@@ -874,13 +886,11 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       $scope.feedStart -= 5;
     }
   }
-
   $scope.removeFromTempAlbum = function(index){
     pic = $scope.droppedObjects[index];
     $scope.droppedObjects.splice(index , 1);
     $scope.editorData.draggableObjects.push(pic);
   }
-
   $scope.createAlbum = function(){
     if ($scope.droppedObjects.length == 0) {
       Flash.create('danger', 'No photos in the album' );
@@ -921,17 +931,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
       $scope.editorData.draggableObjects.splice(index , 1);
     }
   }
-  $scope.removePost = function(index){
-    $scope.socialResource.posts.splice(index, 1);
-    $scope.sortResource();
-    $scope.refreshFeeds();
-  }
 
-  $scope.removeAlbum = function(index){
-    $scope.socialResource.albums.splice(index, 1);
-    $scope.sortResource();
-    $scope.refreshFeeds();
-  }
 
   var f = new File([""], "");
   $scope.post = {attachment : f , text: ''};
@@ -993,7 +993,7 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
   };
 });
 
-app.controller('socialController', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , $state) {
+app.controller('controller.social', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , $state) {
   $scope.user = userProfileService.get('mySelf').url.split('users/')[0]+'users/'+$state.params.id+'/';
   if ($state.params.id == '') {
     $scope.user = userProfileService.get('mySelf').url;

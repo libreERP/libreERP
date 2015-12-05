@@ -1,11 +1,22 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'angularRadialgraph']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'angularRadialgraph' , 'textAngular']);
 
-app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider){
+app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
 
   $urlRouterProvider.otherwise('/home');
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
   $httpProvider.defaults.withCredentials = true;
+
+  $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
+    taOptions.toolbar = [
+      ['h1', 'h2', 'h3', 'p', 'pre', 'quote'],
+      ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo'],
+      ['justifyLeft', 'justifyCenter', 'justifyRight'],[ 'indent', 'outdent'],
+      ['html','insertLink']
+    ];
+    return taOptions;
+  }]);
+
 
 });
 

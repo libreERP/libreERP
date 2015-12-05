@@ -1,0 +1,40 @@
+.emailStrip{
+  border-left-style: solid;
+  border-left-width: 6px;
+  border-left-color: #ffffff;
+  box-sizing:border-box;
+  display: block;
+  height: 60px;
+  border-bottom-color: #ebe7e7;
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+}
+
+.emailStrip:hover, .emailStrip:focus , .selectedEmail{
+  border-left-color: #007cc2;
+  cursor: pointer;
+  background: #f5f5f5;
+}
+
+.emailListOptions{
+  border-left-style: solid;
+  border-left-width: 6px;
+  border-left-color: #ffffff;
+  box-sizing:border-box;
+  display: block;
+  height: 50px;
+  border-bottom-color: #ebe7e7;
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+}
+
+.ta-editor {
+  position: relative;
+  top: 10px;
+  min-height: 400px;
+  max-height: 400px;
+  height: auto;
+  overflow: auto;
+  font-family: inherit;
+  font-size: 100%;
+}

@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'PIM',
     'social',
     'homepage',
+    'mail',
 
 )
 

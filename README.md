@@ -34,7 +34,7 @@ Run the following commands in your console / command prompt with superuser privi
 7. pip install pillow
 8. pip install requests
 
-in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document works (For installation on windows please refer http://crossbar.io)
+in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document worked (For installation on windows please refer http://crossbar.io)
 
 1. apt-get install python-dev
 2. apt-get install libffi-dev
@@ -49,7 +49,7 @@ $ sudo crossbar init
 
 
 This will create a config.json file in in your /home/{{username}}/.crossbar  folder.
-We need to replace the content of the config.json with the settings in ../libreERP/config.json file
+We need to replace the content of the config.json with the settings in {{project folder}}/.crossbar/config.json file
 
 Now you can start the WAMP server with
 
@@ -57,7 +57,7 @@ $ sudo crossbar start
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
 
-You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder.
+You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder but in the settings you can ucomment the SQLite part and uncomment the DB connection settings for MySQL
 
 Once setup you can run : $ python manage.py runserver
 
