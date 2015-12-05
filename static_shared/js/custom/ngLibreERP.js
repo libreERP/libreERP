@@ -141,24 +141,33 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   };
 
   $scope.refreshNotification = function(){
-    $scope.notificationParent = [];
+    notificationParent = [];
     $scope.notifications = [];
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
       var notification = $scope.rawNotifications[i];
       parts = notification.shortInfo.split(':');
       parentPk = parts[2];
       notificationType = parts[0];
-      parentNotificationIndex = $scope.notificationParent.indexOf(parentPk+':'+notificationType);
+      parentNotificationIndex = notificationParent.indexOf(parentPk+':'+notificationType);
       if ( parentNotificationIndex == -1){ // this is new notification for this parent of notification type
-
-        notification.hide = false;
-        notification.multi = false;
+        $scope.rawNotifications[i].hide = false;
       } else { // there is already a notification for this parent
-        $scope.notifications[parentNotificationIndex].multi = true;
-        notification.hide = true
+        $scope.rawNotifications[i].hide = true
       };
-      $scope.notifications.push(notification)
-      $scope.notificationParent.push(parentPk+':'+notificationType);
+      notificationParent.push(parentPk+':'+notificationType);
+    }
+    for (var i = 0; i < $scope.rawNotifications.length; i++) {
+      notification = $scope.rawNotifications[i];
+      if (notification.hide == false) {
+        notification.multi = false;
+        for (var j = i+1; j < $scope.rawNotifications.length; j++) {
+          if (notificationParent[j]==notificationParent[i]) {
+            notification.multi = true;
+            break;
+          }
+        }
+        $scope.notifications.push(notification)
+      }
     }
     $scope.notificationsCount = 0;
     for (var i = 0; i < $scope.notifications.length; i++) {

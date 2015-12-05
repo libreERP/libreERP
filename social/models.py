@@ -159,11 +159,15 @@ def sendNotificationsAndUpdates(sender , instance , mode):
     if instance.parent.user == instance.user or sender == commentLike:
         return
     shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
-    if sender==pictureComment:
-        shortInfo += ':' + str(a.pk)
     n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if new:
-        notify('social' , n.pk , 'created' , instance)
+        notify('social' , n.pk , mode , instance)
+    if mode == 'deleted':
+        n = notification.objects.filter(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
+        if n.count() != 0:
+            for i in n:
+                notify('social' , i.pk , 'deleted' , instance)
+            n.delete()
 
 
 @receiver(post_save, sender=postComment, dispatch_uid="server_post_save")

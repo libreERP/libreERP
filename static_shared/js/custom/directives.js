@@ -498,7 +498,7 @@ app.directive('notificationStrip', function () {
         } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
 
           console.log($scope.objParent);
-          $scope.openAlbum('right', true , {data: $scope.notificationData , parent : $scope.objParent , onDelete: function(){return;}})
+          $scope.openAlbum('right', true , {data: $scope.notificationData , parent : $scope.objParent , onDelete: ""})
         }
       }
     },

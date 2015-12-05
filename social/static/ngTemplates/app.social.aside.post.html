@@ -23,7 +23,7 @@
             <i style="cursor:pointer;" class="fa fa-chevron-down dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
               <li><a href="" ng-click = "enableEdit()"><i class="fa fa-pencil"></i>  Edit</a></li>
-              <li><a href="" ng-click = "delete(data)"><i class="fa fa-trash"></i>  Delete</a></li>
+              <li ng-if="onDelete.length != 0" ><a href="" ng-click = "delete(data)"><i class="fa fa-trash"></i>  Delete</a></li>
             </ul>
           </span>
           <span>{{data.created | date:'dd MMM yyyy, hh:mm a'}}</span>

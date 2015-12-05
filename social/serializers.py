@@ -37,7 +37,6 @@ class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
         l , new = commentLike.objects.get_or_create(user = user , parent = instance)
-        l.save()
         return instance
 
 class pictureLikeSerializer(serializers.HyperlinkedModelSerializer):
@@ -95,6 +94,10 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
         p.text = validated_data.pop('text')
         p.attachment = validated_data.pop('attachment')
         p.save()
+        f , new = postFollower.objects.get_or_create(user = user , parent = p )
+        if new:
+            f.enrollment = 'action'
+            f.save()
         if 'tagged' in self.context['request'].data:
             tagged = self.context['request'].data['tagged']
             for tag in tagged.split(','):

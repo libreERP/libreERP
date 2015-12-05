@@ -50,6 +50,7 @@ connection.onopen = function (session) {
   }
 
   processUpdates = function(args){
+    console.log(args);
     var scope = angular.element(document.getElementById('aside')).scope();
     if (typeof scope != 'undefined') {
       scope.$apply(function() {

@@ -111,18 +111,24 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
+
   if (typeof $scope.data.url == 'undefined') {
     return;
   }
-  $http({method: 'GET' , url : $scope.data.url}).
-  then(function(requests){
-    for(key in requests.data){
-      $scope.data[key] = requests.data[key];
-    }
-    setTimeout(function () {
-      scroll("#commentsArea");
-    }, 100);
-  });
+  postUrl = $scope.data.url
+  if ($scope.onDelete.length != 0){ // if the post aside is initiated by the notification system then the refreshed data is already fetched by it
+    // and passed into input as data
+    postUrl += '&user='+userProfileService.get($scope.data.user).username;
+    $http({method: 'GET' , url : postUrl}).
+    then(function(requests){
+      for(key in requests.data){
+        $scope.data[key] = requests.data[key];
+      }
+    });
+  }
+  setTimeout(function () {
+    scroll("#commentsArea");
+  }, 100);
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
   var tagged = '';
@@ -160,7 +166,6 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   }, 100);
 
   $scope.refreshAside = function(signal){
-    // console.log(signal);
 
     var nodeUrl = '/api/social/';
     if (signal.action == 'created') {
@@ -346,8 +351,6 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
     then(function(response){
       $scope.onDelete();
       $uibModalInstance.close();
-    } , function(response){
-
     });
   }
 });
