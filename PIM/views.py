@@ -24,19 +24,22 @@ class chatMessageViewSet(viewsets.ModelViewSet):
     serializer_class = chatMessageSerializer
     def get_queryset(self):
         qs1 = chatMessage.objects.filter(user = self.request.user).order_by('-created')
-        msgs = []
-        usrs = []
-        for msg in qs1:
-            if msg.originator not in usrs or msg.read == False:
-                msgs.append(msg)
-                usrs.append(msg.originator)
-        qs2 = chatMessage.objects.filter(originator = self.request.user).order_by('-created')
-        usrs = []
-        for msg in qs2:
-            if msg.user not in usrs:
-                msgs.append(msg)
-                usrs.append(msg.user)
-        return msgs[:300]
+        if 'mode' in self.request.GET:
+            return qs1
+        else:
+            msgs = []
+            usrs = []
+            for msg in qs1:
+                if msg.originator not in usrs or msg.read == False:
+                    msgs.append(msg)
+                    usrs.append(msg.originator)
+            qs2 = chatMessage.objects.filter(originator = self.request.user).order_by('-created')
+            usrs = []
+            for msg in qs2:
+                if msg.user not in usrs:
+                    msgs.append(msg)
+                    usrs.append(msg.user)
+            return msgs[:300]
 
 class chatMessageBetweenViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, readOnly)
@@ -49,4 +52,4 @@ class chatMessageBetweenViewSet(viewsets.ModelViewSet):
         for msg in qs:
             msg.read = True
             msg.save()
-        return qs.order_by('created')[:30]
+        return qs.order_by('created')[:150]

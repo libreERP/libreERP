@@ -111,6 +111,9 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
+  if (typeof $scope.data.url == 'undefined') {
+    return;
+  }
   $http({method: 'GET' , url : $scope.data.url}).
   then(function(requests){
     for(key in requests.data){
@@ -320,7 +323,9 @@ app.controller('postAsideCtrl' , function($scope, $uibModalInstance , $http, use
     if ($scope.postEditor.attachment !=emptyFile) {
       fd.append('attachment' , $scope.postEditor.attachment);
     }
-    fd.append('tagged' , $scope.postEditor.tagged);
+    if ( typeof $scope.postEditor.tagged !='undefined' && $scope.postEditor.tagged != '' ) {
+      fd.append('tagged' , $scope.postEditor.tagged)
+    }
 
     var url = $scope.data.url;
     $http({method : 'PATCH' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
@@ -932,7 +937,9 @@ app.controller('socialProfileController', function($scope , $http , $timeout , u
     fd.append('attachment', $scope.post.attachment);
     fd.append('text' , $scope.post.text );
     fd.append('user' , $scope.me.url);
-    fd.append('tagged' , $scope.post.tagged)
+    if ( typeof $scope.post.tagged !='undefined' && $scope.post.tagged != '' ) {
+      fd.append('tagged' , $scope.post.tagged)
+    }
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){

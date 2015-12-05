@@ -48,8 +48,8 @@
             <li>
               <!-- inner menu: contains the actual data -->
               <ul class="nav" style="position:relative; top:-5px;">
-                <div ng-repeat="message in ims">
-                <message-strip data = "message" open-chat="addIMWindow"></message-strip>
+                <div ng-repeat="message in ims track by $index">
+                <message-strip data = "message" open-chat="addIMWindow" ></message-strip>
                 </div>
               </ul>
             </li>

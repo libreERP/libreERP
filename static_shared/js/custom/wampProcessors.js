@@ -8,36 +8,37 @@ connection.onopen = function (session) {
    // our event handler we will subscribe on our topic
    //
   function chatResonse (args) {
-    var msg = args[1];
     var status = args[0];
+    var msg = args[1];
     var friend = args[2];
-    // console.log(args);
+    console.log(args);
     // console.log("event for 'onhello' received: " + msg + " and the status is " + status);
     var scope = angular.element(document.getElementById('chatWindow'+friend)).scope();
-    // console.log(scope);
-    // console.log();
-    scope.$apply(function() {
-      // console.log(scope);
-      if (status =="T" && !scope.$$childHead.isTyping) {
-        scope.$$childHead.isTyping = true;
-        // console.log("yes its inside the T");
-        // console.log(scope);
-        setTimeout( function(){
-          var scope = angular.element(document.getElementById('chatWindow'+friend)).scope();
-          // console.log(scope);
-          scope.$apply(function() {
-            scope.$$childHead.isTyping = false;
-
-          });
-        }, 1500 );
-      }else if (status=="M") {
-        // console.log(msg);
-        scope.$$childHead.ims.push({message: msg , originator:scope.$$childHead.friendUrl})
-        scope.$$childHead.senderIsMe.push(false);
+    if (typeof scope !='undefined' ) {
+      scope.$apply(function() {
+        if (status =="T" && !scope.$$childHead.isTyping) {
+          scope.$$childHead.isTyping = true;
+          setTimeout( function(){
+            var scope = angular.element(document.getElementById('chatWindow'+friend)).scope();
+            scope.$apply(function() {
+              scope.$$childHead.isTyping = false;
+            });
+          }, 1500 );
+        }else if (status=="M") {
+          scope.$$childHead.addMessage(msg , args[3])
+          // scope.$$childHead.ims.push({message: msg , originator:scope.$$childHead.friendUrl})
+          // scope.$$childHead.senderIsMe.push(false);
+        }
+      });
+    } else {
+      if (status == 'T') {
+        return;
       }
-
-    });
-
+      var scope = angular.element(document.getElementById('main')).scope();
+      scope.$apply(function() {
+        scope.fetchAddIMWindow(args[3] , friend);
+      });
+    }
   }
 
   processNotification = function(args){

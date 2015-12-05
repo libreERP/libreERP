@@ -14,11 +14,7 @@ class postLikeSerializer(serializers.HyperlinkedModelSerializer):
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
-        if postLike.objects.filter(parent = parent , user = user).exists():
-            like = postLike.objects.get(parent = parent , user = user)
-        else:
-            like = postLike(parent = parent , user = user)
-        like.save()
+        like , new = postLike.objects.get_or_create(parent = parent , user = user)
         return like
 
 class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,7 +36,7 @@ class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
         return comment
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
-        l = commentLike(user = user , parent = instance)
+        l , new = commentLike.objects.get_or_create(user = user , parent = instance)
         l.save()
         return instance
 
@@ -99,9 +95,10 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
         p.text = validated_data.pop('text')
         p.attachment = validated_data.pop('attachment')
         p.save()
-        tagged = self.context['request'].data['tagged']
-        for tag in tagged.split(','):
-            p.tagged.add( User.objects.get(username = tag))
+        if 'tagged' in self.context['request'].data:
+            tagged = self.context['request'].data['tagged']
+            for tag in tagged.split(','):
+                p.tagged.add( User.objects.get(username = tag))
         return p
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
@@ -112,10 +109,11 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
             except:
                 pass
             instance.save()
-            tagged = self.context['request'].data['tagged']
-            instance.tagged.clear()
-            for tag in tagged.split(','):
-                instance.tagged.add( User.objects.get(username = tag))
+            if 'tagged' in self.context['request'].data:
+                tagged = self.context['request'].data['tagged']
+                instance.tagged.clear()
+                for tag in tagged.split(','):
+                    instance.tagged.add( User.objects.get(username = tag))
         else:
             raise PermissionDenied(detail=None)
         return instance

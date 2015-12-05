@@ -530,23 +530,24 @@ app.directive('chatWindow', function (userProfileService) {
         console.log("going to publish" + $scope.messageToSend);
         msg = angular.copy($scope.messageToSend)
         if (msg!="") {
-
           $scope.status = "M"; // contains message
-          $scope.ims.push({message: msg , originator: $scope.me.url})
-          $scope.senderIsMe.push(true);
-          connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , msg , $scope.me.username], {}, {acknowledge: true}).then(
-            function (publication) {
-              dataToSend = {message:msg , user: $scope.friendUrl , read:false};
-              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'})
-            },
-            function (error) {
-              dataToSend = {message:msg , user: $scope.friendUrl , read:false};
-              $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'})
-            }
-          );
-          $scope.messageToSend = "";
+          dataToSend = {message:msg , user: $scope.friendUrl , read:false};
+          $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'}).
+          then(function(response){
+            $scope.ims.push(response.data)
+            $scope.senderIsMe.push(true);
+            connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , response.data.message , $scope.me.username , response.data.url], {}, {acknowledge: true}).
+            then(function (publication) {});
+            $scope.messageToSend = "";
+          })
         }
       }; // send function
+
+      $scope.addMessage = function(msg , url){
+        $scope.ims.push({message: msg , originator:$scope.friendUrl})
+        $http({method : 'PATCH' , url : url + '?mode=' , data : {read : true}})
+      }
+
       $scope.fetchMessages = function() {
         $scope.method = 'GET';
         $scope.url = '/api/PIM/chatMessageBetween/?other='+$scope.friend.username;

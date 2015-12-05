@@ -177,53 +177,57 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     $scope.refreshNotification();
   }
 
+  $scope.refreshMessages = function(){
+    $scope.ims = [];
+    $scope.instantMessagesCount = 0;
+    peopleInvolved = [];
+    for (var i = 0; i < $scope.rawMessages.length; i++) {
+      var im = $scope.rawMessages[i];
+      if (im.originator == $scope.me.url) {
+        if (peopleInvolved.indexOf(im.user)==-1) {
+          peopleInvolved.push(im.user)
+        }
+      } else{
+        if (peopleInvolved.indexOf(im.originator)==-1) {
+          peopleInvolved.push(im.originator)
+        }
+      }
+    }
+    for (var i = 0; i < peopleInvolved.length; i++) {
+      for (var j = 0; j < $scope.rawMessages.length; j++) {
+        var im = $scope.rawMessages[j];
+        var friend = peopleInvolved[i];
+        if (friend==im.originator || friend==im.user) {
+          count = 0;
+          for (var k = 0; k < $scope.rawMessages.length; k++) {
+            im2 = $scope.rawMessages[k]
+            if ((im2.originator == friend || im2.user == friend) && im2.read == false) {
+              count += 1;
+            }
+          }
+          if (count !=0){
+            $scope.instantMessagesCount += 1;
+          }
+          im.count = count;
+          $scope.ims.push(im);
+          break;
+        }
+      }
+    }
+  }
+
   $scope.fetchMessages = function() {
     // This is because the chat system is build along with the notification system. Since this is the part whcih is common accros all the modules
     $scope.method = 'GET';
     $scope.url = '/api/PIM/chatMessage/';
     $scope.ims = [];
     var senders = [];
-    $scope.instantMessagesCount = 0;
+
     $http({method: $scope.method, url: $scope.url}).
-      then(function(response) {
-        $scope.messageFetchStatus = response.status;
-        // console.log(response.data);
-        peopleInvolved = [];
-        for (var i = 0; i < response.data.length; i++) {
-          var im = response.data[i];
-          if (im.originator == $scope.me.url) {
-            if (peopleInvolved.indexOf(im.user)==-1) {
-              peopleInvolved.push(im.user)
-            }
-          } else{
-            if (peopleInvolved.indexOf(im.originator)==-1) {
-              peopleInvolved.push(im.originator)
-            }
-          }
-        }
-        for (var i = 0; i < peopleInvolved.length; i++) {
-          for (var j = 0; j < response.data.length; j++) {
-            var im = response.data[j];
-            var friend = peopleInvolved[i];
-            if (friend==im.originator || friend==im.user) {
-              count = 0;
-              for (var k = 0; k < response.data.length; k++) {
-                im2 = response.data[k]
-                if ((im2.originator == friend || im2.user == friend) && im2.read == false) {
-                  count += 1;
-                }
-              }
-              if (count !=0){
-                $scope.instantMessagesCount += 1;
-              }
-              im.count = count;
-              $scope.ims.push(im);
-              break;
-            }
-          }
-        }
-      }, function(response) {
-        $scope.messageFetchStatus = response.status;
+    then(function(response) {
+      // console.log(response.data);
+      $scope.rawMessages = response.data;
+      $scope.refreshMessages();
     });
   };
   $scope.fetchNotifications();
@@ -232,6 +236,15 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   $scope.imWindows = [ ]
 
   $scope.addIMWindow = function(url){
+    console.log('url ' + url);
+    for (var i = 0; i < $scope.rawMessages.length; i++) {
+      console.log($scope.rawMessages[i].originator);
+      if ($scope.rawMessages[i].originator == url && $scope.rawMessages[i].read == false){
+        $scope.rawMessages[i].read = true;
+        console.log("read");
+      }
+    }
+    $scope.refreshMessages();
     if ($scope.imWindows.length<=4) {
       for (var i = 0; i < $scope.imWindows.length; i++) {
         if ($scope.imWindows[i].url == url) {
@@ -245,6 +258,18 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
       }
     }
   }
+  $scope.fetchAddIMWindow = function(msgUrl){
+    msgUrl += '?mode='
+    $http({method: 'GET' , url : msgUrl}).
+    then(function(response){
+      $scope.addIMWindow(response.data.originator)
+      response.data.read = true;
+      $scope.rawMessages.unshift(response.data);
+      $scope.refreshMessages()
+    });
+  };
+
+
   $scope.closeIMWindow = function(pos){
     $scope.imWindows.splice(pos, 1);
   }
