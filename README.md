@@ -56,3 +56,11 @@ Now you can start the WAMP server with
 $ sudo crossbar start
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
+
+You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder.
+
+Once setup you can run : $ python manage.py runserver
+
+this will host the app on localhost and can be browsed at http://localhost:8000/login
+
+login with id : "pradeep" , password : "123"
