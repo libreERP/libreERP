@@ -60,10 +60,11 @@
     </ul>
   </div>
   <div class="col-md-7">
+
     <div class="container-fluid">
       <div class="row">
         <div ng-if="!editor" class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
+          <button type="button" ng-click="reply()" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
           <button type="button" class="btn btn-default"><i class="fa fa-reply-all"></i> Reply all</button>
           <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
           <button type="button" class="btn btn-default"><i class="fa fa-trash"></i> Delete</button>
@@ -90,6 +91,32 @@
         </div>
 
       </div>
+      <div class="row" ng-if="!editor" style="padding-top:10px;">
+        <div class="row" style="border-bottom:solid 2px #e4e1e1;">
+          <div class="col-md-8">
+            <div class="col-md-2">
+              <img ng-src="{{email.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
+            </div>
+            <div class="col-md-10" style="position:relative;top:-13px;">
+              <div class="row" >
+                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{email.subject}}</h4>
+              </div>
+              <div class="row" >
+                From : <span class="text-muted"> {{email.originator | getName}}</span>
+                To : <span class="text-muted">{{me.url | getName}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <span style="float:right">{{email.created | date:'dd MMM yyyy, hh:mm a'}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="container-fluid" style="height:580px;position:absolute;overflow:auto;">
+            <div ng-bind-html="htmlcontent" style="padding-top:5px;"></div>
+          </div>
+        </div>
+      </div>
       <div class="row" style="padding:10px;" ng-if="editor">
         <div class="container-fluid">
           <div class= "form-group">
@@ -101,19 +128,19 @@
           <div class= "form-group">
             <label class="control-label col-sm-2" for="to">To :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "">
+              <input type="text" class = "form-control" name = "to" placeholder="To" >
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="cc">CC :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "cc" placeholder="CC" ng-model = "">
+              <input type="text" class = "form-control" name = "cc" placeholder="CC" >
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="bcc">BCC :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "bcc" placeholder="bcc" ng-model = "">
+              <input type="text" class = "form-control" name = "bcc" placeholder="bcc">
             </div>
           </div>
         </div>

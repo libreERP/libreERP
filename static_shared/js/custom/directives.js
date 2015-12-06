@@ -447,7 +447,7 @@ app.directive('notificationStrip', function () {
           placement: position,
           size: 'lg',
           backdrop: backdrop,
-          controller: 'pictureAsideCtrl',
+          controller: 'controller.social.aside.picture',
           resolve: {
            input: function () {
              return input;
@@ -471,7 +471,7 @@ app.directive('notificationStrip', function () {
           placement: position,
           size: 'md',
           backdrop: backdrop,
-          controller:'postAsideCtrl',
+          controller:'controller.social.aside.post',
           resolve: {
            input: function () {
              return input;
