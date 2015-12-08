@@ -5,11 +5,12 @@
   <div class="col-md-1">
     <button type="button" class="btn btn-default" style="width:100%;" name="button">Compose <i class="fa fa-pencil-square-o"></i></button>
     <ul class="nav nav-sidebar " >
-      <li ng-class="{active: $state.includes('home.mail.inbox')}"><a ui-sref="home" ><div align="center">Inbox</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.starred')}"><a ui-sref="home.mail"><div align="center">Starred</i></div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.sent')}"><a ui-sref="home.social"><div align="center">Sent</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.drafts')}"><a ui-sref="home.news"><div align="center">Drafts</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.spam')}"><a ui-sref="home.calender"><div align="center">Spam</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.inbox')}"><a ui-sref="home.mail.inbox" ><div align="center">Inbox</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.starred')}"><a ui-sref="home.mail.starred"><div align="center">Starred</i></div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.sent')}"><a ui-sref="home.mail.sent"><div align="center">Sent</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.drafts')}"><a ui-sref="home.mail.drafts"><div align="center">Drafts</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.junk')}"><a ui-sref="home.mail.junk"><div align="center">Spam</div></a></li>
+      <li ng-class="{active: $state.includes('home.mail.deleted')}"><a ui-sref="home.mail.deleted"><div align="center">Deleted</div></a></li>
     </ul>
   </div>
   <div class="col-md-4">
@@ -23,18 +24,19 @@
       <li class="container-fluid emailListOptions" >
         <div class="row">
           <div class="col-md-5" style="position: relative;top:12px;">
-            <input  type="checkbox" name="name">
+            <input  type="checkbox" name="name" ng-model = "selectAll">
             <span style="position: relative;top:-2px;left:5px;">Select all<span>
           </div>
           <div class="col-md-7" style="position: relative;top:10px;cursor:pointer;">
             <div class="btn-group pull-right">
               <span class="fa fa-angle-down fa-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></span>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Delete</a></li>
+                <li><a href="#">Move to</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
+                <li><a href="#">Archive</a></li>
+                <li><a href="#">Starred</a></li>
+                <li><a href="#">Reminder</a></li>
               </ul>
             </div>
           </div>
@@ -43,9 +45,8 @@
       </li>
 
       <div ng-repeat="email in emails track by $index">
-        <email-strip data = "email"></email-strip>
+        <email-strip data = "email" index="{{$index}}" goto-Mail="gotoMail"></email-strip>
       </div>
-
       <li class="container-fluid" >
         <div class="row">
           <nav>
@@ -60,14 +61,13 @@
     </ul>
   </div>
   <div class="col-md-7">
-
     <div class="container-fluid">
       <div class="row">
         <div ng-if="!editor" class="btn-group" role="group" aria-label="...">
           <button type="button" ng-click="reply()" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
           <button type="button" class="btn btn-default"><i class="fa fa-reply-all"></i> Reply all</button>
           <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
-          <button type="button" class="btn btn-default"><i class="fa fa-trash"></i> Delete</button>
+          <button type="button" class="btn btn-default" ng-click="deleteMail()"><i class="fa fa-trash"></i> Delete</button>
           <div class="btn-group" role="group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Move to
@@ -75,7 +75,7 @@
             </button>
             <ul class="dropdown-menu">
               <li><a href="#">Reminder</a></li>
-              <li><a href="#">important</a></li>
+              <li><a href="#">Star</a></li>
               <li><a href="#">Spam</a></li>
             </ul>
           </div>
@@ -86,37 +86,39 @@
           <button type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
         </div>
         <div ng-if="!editor" class="btn-group pull-right" role="group" aria-label="...">
-          <button type="button" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
-          <button type="button" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
+          <button type="button" ng-click="prevMail()" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
+          <button type="button" ng-click="nextMail()" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
         </div>
 
       </div>
+      <!-- the html/text mail viewer -->
       <div class="row" ng-if="!editor" style="padding-top:10px;">
         <div class="row" style="border-bottom:solid 2px #e4e1e1;">
           <div class="col-md-8">
             <div class="col-md-2">
-              <img ng-src="{{email.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
+              <img ng-src="{{emails[viewerMail].originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
             </div>
             <div class="col-md-10" style="position:relative;top:-13px;">
               <div class="row" >
-                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{email.subject}}</h4>
+                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emails[viewerMail].subject}}</h4>
               </div>
               <div class="row" >
-                From : <span class="text-muted"> {{email.originator | getName}}</span>
+                From : <span class="text-muted"> {{emails[viewerMail].originator | getName}}</span>
                 To : <span class="text-muted">{{me.url | getName}}</span>
               </div>
             </div>
           </div>
           <div class="col-md-4">
-            <span style="float:right">{{email.created | date:'dd MMM yyyy, hh:mm a'}}</span>
+            <span style="float:right">{{emails[viewerMail].created | date:'dd MMM yyyy, hh:mm a'}}</span>
           </div>
         </div>
         <div class="row">
           <div class="container-fluid" style="height:580px;position:absolute;overflow:auto;">
-            <div ng-bind-html="htmlcontent" style="padding-top:5px;"></div>
+            <div ng-bind-html="emails[viewerMail].body" style="padding-top:5px;"></div>
           </div>
         </div>
       </div>
+      <!-- mail composer -->
       <div class="row" style="padding:10px;" ng-if="editor">
         <div class="container-fluid">
           <div class= "form-group">
