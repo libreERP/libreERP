@@ -118,7 +118,7 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
                 for tag in tagged.split(','):
                     instance.tagged.add( User.objects.get(username = tag))
         else:
-            raise PermissionDenied(detail=None)
+            raise PermissionDenied()
         return instance
 
 
@@ -173,7 +173,7 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
     def update(self ,instance , validated_data):
         user =  self.context['request'].user
         if instance.user != user:
-            raise PermissionDenied(detail=None)
+            raise PermissionDenied()
             return instance
         instance.title = validated_data.pop('title')
         instance.tagged.clear()

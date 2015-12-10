@@ -153,6 +153,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
+    # 'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
 }
 
 WAMP_SERVER = '10.146.31.175'

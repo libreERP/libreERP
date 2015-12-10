@@ -10,6 +10,11 @@ The current state of the project is as follows :
 2. A realtime notification system based on Autobahn and Crossbar.io project is also incorporated which also made it possible to build a realtime chat system.
 3. In terms of collaboration and people's profile system I have implemented almost 50 % of Facebook can do. Posting a post, album, photos with comments and like system is also working fine.
 
+Ongoing work :
+
+An API backed IMAP-SMTP web client is being developed, I am facing issue in authenticating the Dovecot IMAP server with the Django's user data. The workaround I am using is that for each user the system will use proxy login to retrieve the mails and return the JSON response.
+
+
 The best part of the project is that the architecture I designed for this project is absolutely state of the art. Its uses RESTful API interaction, Angular JS bases interactive and responsive frontend makes it fun to work on and more importantly enjoyable to the users.
 
 Feel free to contact me at pkyisky@gmail.com if you have any doubt or question.
@@ -57,7 +62,7 @@ $ sudo crossbar start
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
 
-You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder but in the settings you can ucomment the SQLite part and uncomment the DB connection settings for MySQL
+You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder but in the settings you can comment out the SQLite part and uncomment the DB connection settings for MySQL
 
 Once setup you can run : $ python manage.py runserver
 

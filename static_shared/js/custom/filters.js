@@ -123,9 +123,27 @@ app.filter('explodeObj' , function(){
   }
 })
 
+app.filter('emailAddress' , function(){
+  return function(input){
+    if (typeof input == 'undefined') {
+      return '';
+    }
+    parts = input.split(',');
+    toReturn = '';
+    for (var i = 0; i < parts.length; i++) {
+      toReturn += parts[i].split('<')[0];
+      if (i != parts.length-1) {
+        toReturn += ' , ';
+      }
+    }
+    return toReturn;
+  }
+})
+
+
 app.filter('decorateCount' , function(){
   return function(input){
-    if (input == 0){
+    if (input == 0 || typeof input == 'undefined'){
       return "";
     }
     else {
@@ -136,11 +154,15 @@ app.filter('decorateCount' , function(){
 
 app.filter('getDP' , function(userProfileService){
   return function(userUrl){
-    if (typeof userUrl == 'undefined') {
-      return ;
+    if (typeof userUrl == 'undefined' ) {
+      return '/static/images/userIcon.png';
     }
     user = userProfileService.get(userUrl);
-    return user.profile.displayPicture;
+    if (user.profile.displayPicture == null) {
+      return '/static/images/userIcon.png';
+    }else{
+      return user.profile.displayPicture;
+    }
   }
 })
 

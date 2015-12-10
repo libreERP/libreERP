@@ -60,8 +60,9 @@
 
     </ul>
   </div>
+  <!-- {{viewerMail}} -->
   <div class="col-md-7">
-    <div class="container-fluid">
+    <div class="container-fluid" ng-if="viewerMail != -1">
       <div class="row">
         <div ng-if="!editor" class="btn-group" role="group" aria-label="...">
           <button type="button" ng-click="reply()" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
@@ -96,25 +97,25 @@
         <div class="row" style="border-bottom:solid 2px #e4e1e1;">
           <div class="col-md-8">
             <div class="col-md-2">
-              <img ng-src="{{emails[viewerMail].originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
+              <img ng-src="{{emailInView.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
             </div>
             <div class="col-md-10" style="position:relative;top:-13px;">
               <div class="row" >
-                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emails[viewerMail].subject}}</h4>
+                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emailInView.subject}}</h4>
               </div>
               <div class="row" >
-                From : <span class="text-muted"> {{emails[viewerMail].originator | getName}}</span>
-                To : <span class="text-muted">{{me.url | getName}}</span>
+                From : <span class="text-muted"> {{emailInView.sender | emailAddress}}</span>
+                To : <span class="text-muted">{{emailInView.to | emailAddress}}</span>
               </div>
             </div>
           </div>
           <div class="col-md-4">
-            <span style="float:right">{{emails[viewerMail].created | date:'dd MMM yyyy, hh:mm a'}}</span>
+            <span style="float:right">{{emailInView.date | date:'dd MMM yyyy, hh:mm a'}}</span>
           </div>
         </div>
         <div class="row">
-          <div class="container-fluid" style="height:580px;position:absolute;overflow:auto;">
-            <div ng-bind-html="emails[viewerMail].body" style="padding-top:5px;"></div>
+          <div class="container-fluid bg-white" style="height:580px;position:absolute;overflow:auto;width:100%;">
+            <div ng-bind-html="emailInView.body" style="padding-top:5px;">body</div>
           </div>
         </div>
       </div>
@@ -124,13 +125,13 @@
           <div class= "form-group">
             <label class="control-label col-sm-2" for="subject">Subject :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "subject" placeholder="Subject" ng-model = "htmlcontent">
+              <input type="text" class = "form-control" name = "subject" placeholder="Subject" ng-model = "emailInView.subject">
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="to">To :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "to" placeholder="To" >
+              <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "emailInView.sender">
             </div>
           </div>
           <div class= "form-group">
@@ -147,7 +148,7 @@
           </div>
         </div>
         <div class="row" style="padding:10px;">
-          <div text-angular="text-angular" name="htmlcontent" ng-model="htmlcontent"  ></div>
+          <div text-angular="text-angular" name="htmlcontent" ng-model="emailInView.body"  ></div>
         </div>
       </div>
     </div>
