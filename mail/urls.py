@@ -9,7 +9,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     # url(r'^', include(router.urls)),
-    url(r'$' , mailBoxView )
+    url(r'mailbox/$' , mailBoxView ),
+    url(r'folders/$' , foldersDetailsView ),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -43,9 +43,12 @@ def getMailHeader(M , id):
             decode = email.header.decode_header(msg['Subject'])[0]
             subject = unicode(decode[0])
         except:
-            subject = msg['subject']
-        decode = email.header.decode_header(msg['from'])[0]
-        sender = unicode(decode[0])
+            subject = str(msg['subject'])
+        try:
+            decode = email.header.decode_header(msg['from'])[0]
+            sender = unicode(decode[0])
+        except:
+            sender = str(msg['from'])
         return subject , msg['Date'] , sender , msg['to']
 
 def getMailBody(M , id):
@@ -58,7 +61,7 @@ def getMailBody(M , id):
                 return part.get_payload(decode = True)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def mailBoxView(request):
     """
     View to get the mailbox selected, ideally 10 at a time.
@@ -68,46 +71,70 @@ def mailBoxView(request):
         raise PermissionDenied()
 
     EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    EMAIL_FOLDER = "INBOX"
-
+    EMAIL_FOLDER = str(request.GET['folder'])
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
     except imaplib.IMAP4.error:
         print "LOGIN FAILED!!! "
 
-    if request.method == 'GET':
 
-        rv, data = M.select(EMAIL_FOLDER)
-        if rv == 'OK':
-            rv, data = M.uid('SEARCH', None, "ALL")
-            # rv, data = M.sort('REVERSE DATE', 'UTF-8' , "ALL")
+    rv, data = M.select(EMAIL_FOLDER)
+    if rv == 'OK':
+        rv, data = M.uid('SEARCH', None, "ALL")
+        # rv, data = M.sort('REVERSE DATE', 'UTF-8' , "ALL")
 
-            if rv != 'OK':
-                print "No messages found!"
-            mailIDs = data[0].split()
-            print mailIDs
-            content = []
-            for num in mailIDs:
-                subject , date , sender , to = getMailHeader(M , num)
-                # body = getMailBody(M, num)
-                content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'body' : 'body'})
-            return Response(content)
-            # print "closing mail box"
-            M.close()
+        if rv != 'OK':
+            print "No messages found!"
+        mailUIDs = data[0].split()
+        content = []
+        if len(mailUIDs)<9:
+            indexes = range(len(mailUIDs)-1, -1, -1)
         else:
-            print "ERROR: Unable to open mailbox ", rv
-        # print "logging out mailbox"
-        M.logout()
+            indexes = range(8, -1, -1) # this generates from 8 to 0 as -1 in the middle does is not included in the list
+        for index in indexes:
+            num = mailUIDs[index]
+            subject , date , sender , to = getMailHeader(M , num)
+            body = getMailBody(M, num)
+            content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'body' : body})
+        return Response(content)
+        # print "closing mail box"
+        M.close()
+    else:
+        print "ERROR: Unable to open mailbox ", rv
+    # print "logging out mailbox"
+    M.logout()
+
+
 
 def getFolders(M):
-    mailboxStatus = []
+    fodlersStatus = []
     rv, mailboxes = M.list()
     if rv == 'OK':
         # print "Mailboxes:"
-        print mailboxes.__class__
         for folder in mailboxes:
             flag , delimiter , mailbox_name =  parse_list_response(folder)
             # print "parsed response :"  + mailbox_name
             status =  M.status(mailbox_name, '(MESSAGES RECENT UIDNEXT UIDVALIDITY UNSEEN)')
-            mailboxStatus.append(status)
+            fodlersStatus.append(status)
+        return fodlersStatus
+
+@api_view(['GET'])
+def foldersDetailsView(request):
+    """
+    get the folder details
+    """
+
+
+    if request.user.username != 'pradeep':
+        raise PermissionDenied()
+
+    EMAIL_ACCOUNT = "ciocpky@gmail.com"
+    EMAIL_FOLDER = "INBOX"
+    M = imaplib.IMAP4_SSL('imap.gmail.com')
+    try:
+        rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
+    except imaplib.IMAP4.error:
+        print "LOGIN FAILED!!! "
+
+    return Response(getFolders(M))

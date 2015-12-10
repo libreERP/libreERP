@@ -4,13 +4,13 @@
 
   <div class="col-md-1">
     <button type="button" class="btn btn-default" style="width:100%;" name="button">Compose <i class="fa fa-pencil-square-o"></i></button>
+    <hr>
     <ul class="nav nav-sidebar " >
-      <li ng-class="{active: $state.includes('home.mail.inbox')}"><a ui-sref="home.mail.inbox" ><div align="center">Inbox</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.starred')}"><a ui-sref="home.mail.starred"><div align="center">Starred</i></div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.sent')}"><a ui-sref="home.mail.sent"><div align="center">Sent</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.drafts')}"><a ui-sref="home.mail.drafts"><div align="center">Drafts</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.junk')}"><a ui-sref="home.mail.junk"><div align="center">Spam</div></a></li>
-      <li ng-class="{active: $state.includes('home.mail.deleted')}"><a ui-sref="home.mail.deleted"><div align="center">Deleted</div></a></li>
+      <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders" ng-click = "changeFolder(f.onServer)">
+        <a href="" >
+          <div align="center">{{f.name}}</div>
+        </a>
+      </li>
     </ul>
   </div>
   <div class="col-md-4">
