@@ -82,6 +82,9 @@ body {
 .bg-white{
   background-color: white !important;
 }
+.bg-shaded{
+  background-color: #e9e9e9 !important;
+}
 
 .bg-aqua{
   background-color: #3d9483 !important;

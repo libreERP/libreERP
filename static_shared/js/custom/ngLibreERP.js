@@ -11,8 +11,7 @@ app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $prov
     taOptions.toolbar = [
       ['h1', 'h2', 'h3', 'p', 'pre', 'quote'],
       ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight'],[ 'indent', 'outdent'],
-      ['html','insertLink']
+      ['justifyLeft', 'justifyCenter', 'justifyRight'],[ 'indent', 'outdent', 'insertLink'],
     ];
     return taOptions;
   }]);
@@ -256,12 +255,11 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   $scope.imWindows = [ ]
 
   $scope.addIMWindow = function(url){
-    console.log('url ' + url);
+    // console.log('url ' + url);
     for (var i = 0; i < $scope.rawMessages.length; i++) {
-      console.log($scope.rawMessages[i].originator);
-      if ($scope.rawMessages[i].originator == url && $scope.rawMessages[i].read == false){
+      if ($scope.rawMessages[i].originator.cleanUrl() == url.cleanUrl() && $scope.rawMessages[i].read == false){
         $scope.rawMessages[i].read = true;
-        console.log("read");
+        // console.log("read");
       }
     }
     $scope.refreshMessages();

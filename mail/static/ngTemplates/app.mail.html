@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-default" style="width:100%;" name="button">Compose <i class="fa fa-pencil-square-o"></i></button>
     <hr>
     <ul class="nav nav-sidebar " >
-      <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders" ng-click = "changeFolder(f.onServer)">
+      <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders track by $index" ng-click = "changeFolder(f.onServer)">
         <a href="" >
           <div align="center">{{f.name}}</div>
         </a>
@@ -18,7 +18,7 @@
 
       <li class="container-fluid" >
         <div class="row">
-          <input type="text" class="form-control" name="search" placeholder="Search..">
+          <input type="text" class="form-control" placeholder="Search.." ng-model="textToSearch" ng-enter="search()">
         </div>
       </li>
       <li class="container-fluid emailListOptions" >
@@ -51,8 +51,8 @@
         <div class="row">
           <nav>
             <ul class="pager">
-              <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-              <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+              <li class="previous" ng-click="prevPage()" style="cursor:pointer;"><a><span aria-hidden="true">&larr;</span> Older</a></li>
+              <li class="next" ng-click="nextPage()" style="cursor:pointer;"><a>Newer <span aria-hidden="true">&rarr;</span></a></li>
             </ul>
           </nav>
         </div>
@@ -95,7 +95,7 @@
       <!-- the html/text mail viewer -->
       <div class="row" ng-if="!editor" style="padding-top:10px;">
         <div class="row" style="border-bottom:solid 2px #e4e1e1;">
-          <div class="col-md-8">
+          <div class="col-md-9">
             <div class="col-md-2">
               <img ng-src="{{emailInView.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
             </div>
@@ -109,7 +109,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3 pull-right">
             <span style="float:right">{{emailInView.date | date:'dd MMM yyyy, hh:mm a'}}</span>
           </div>
         </div>

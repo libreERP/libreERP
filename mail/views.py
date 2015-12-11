@@ -36,7 +36,7 @@ def parse_list_response(line):
 
 def getMailHeader(M , id):
 
-    rv, data =  M.uid('FETCH', id, '(RFC822.HEADER)')
+    rv, data =  M.uid('FETCH', id, '(RFC822.HEADER FLAGS)')
     if rv == 'OK':
         msg = email.message_from_string(data[0][1])
         try:
@@ -49,7 +49,7 @@ def getMailHeader(M , id):
             sender = unicode(decode[0])
         except:
             sender = str(msg['from'])
-        return subject , msg['Date'] , sender , msg['to']
+        return subject , msg['Date'] , sender , msg['to'] , data[1]
 
 def getMailBody(M , id):
 
@@ -72,6 +72,14 @@ def mailBoxView(request):
 
     EMAIL_ACCOUNT = "ciocpky@gmail.com"
     EMAIL_FOLDER = str(request.GET['folder'])
+    try:
+        page = int(request.GET['page'])
+    except:
+        page = 0
+    try:
+        query = str(request.GET['query']).replace('/' , '"')
+    except:
+        query = "ALL"
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
@@ -81,22 +89,25 @@ def mailBoxView(request):
 
     rv, data = M.select(EMAIL_FOLDER)
     if rv == 'OK':
-        rv, data = M.uid('SEARCH', None, "ALL")
+        rv, data = M.uid('SEARCH', None, '(' + query + ')')
         # rv, data = M.sort('REVERSE DATE', 'UTF-8' , "ALL")
+        # I think the dovecot mail server supports the sort method but gmail does not so as of now using a workaround
 
         if rv != 'OK':
             print "No messages found!"
         mailUIDs = data[0].split()
         content = []
-        if len(mailUIDs)<9:
-            indexes = range(len(mailUIDs)-1, -1, -1)
-        else:
-            indexes = range(8, -1, -1) # this generates from 8 to 0 as -1 in the middle does is not included in the list
+        print mailUIDs
+        endIndex =  len(mailUIDs)-10 - page*9
+        if endIndex<-1:
+            endIndex = -1
+        indexes = range(len(mailUIDs)-1 - page*9, endIndex , -1) # this generates from 8 to 0 as -1 in the middle does is not included in the list
+        print indexes
         for index in indexes:
             num = mailUIDs[index]
-            subject , date , sender , to = getMailHeader(M , num)
-            body = getMailBody(M, num)
-            content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'body' : body})
+            print "fetching " + str(num)
+            subject , date , sender , to , flags = getMailHeader(M , num)
+            content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
         return Response(content)
         # print "closing mail box"
         M.close()
@@ -105,6 +116,28 @@ def mailBoxView(request):
     # print "logging out mailbox"
     M.logout()
 
+@api_view(['GET'])
+def emailView(request):
+    """
+    get a perticular mail
+    """
+
+    if request.user.username != 'pradeep':
+        raise PermissionDenied()
+    EMAIL_FOLDER = str(request.GET['folder'])
+    uid = int(request.GET['uid'])
+
+    EMAIL_ACCOUNT = "ciocpky@gmail.com"
+    M = imaplib.IMAP4_SSL('imap.gmail.com')
+    try:
+        rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
+    except imaplib.IMAP4.error:
+        print "LOGIN FAILED!!! "
+
+    rv, data = M.select(EMAIL_FOLDER)
+    if rv == 'OK':
+        body = getMailBody(M, uid)
+        return Response({'body' : body , 'uid' : uid})
 
 
 def getFolders(M):
@@ -130,7 +163,6 @@ def foldersDetailsView(request):
         raise PermissionDenied()
 
     EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    EMAIL_FOLDER = "INBOX"
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')

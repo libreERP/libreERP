@@ -11,6 +11,7 @@ urlpatterns = [
     # url(r'^', include(router.urls)),
     url(r'mailbox/$' , mailBoxView ),
     url(r'folders/$' , foldersDetailsView ),
+    url(r'email/$' , emailView ),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

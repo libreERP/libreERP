@@ -26,18 +26,18 @@ Installation guide for this project is as follows:
 The backend is Django powered so you can install it on either of windows or GNU/linux environment. I would recommend GNU/linux as you will be able to run the WAMP router server on the same machine.
 
 Build guide
-===========
+-------------
 
-Run the following commands in your console / command prompt with superuser privilages or in virtualenv
+Run the following commands in your console / command prompt with super user privileges or in virtualenv ::
 
-1. pip install django
-2. pip install djangorestframework
-3. pip install markdown      
-4. pip install django-filter
-5. pip install django-url-filter
-6. pip install django-cors-headers
-7. pip install pillow
-8. pip install requests
+$ pip install django
+$ pip install djangorestframework
+$ pip install markdown      
+$ pip install django-filter
+$ pip install django-url-filter
+$ pip install django-cors-headers
+$ pip install pillow
+$ pip install requests
 
 in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document worked (For installation on windows please refer http://crossbar.io)
 
@@ -47,8 +47,8 @@ in order to install Crossbar.io router server please head to the Crossbar.io web
 4. pip install crossbar[all]
 
 WAMP server configuration
-=========================
-You can initiate a WAMP server using
+-----------------------------
+You can initiate a WAMP server using ::
 
 $ sudo crossbar init
 
@@ -56,15 +56,18 @@ $ sudo crossbar init
 This will create a config.json file in in your /home/{{username}}/.crossbar  folder.
 We need to replace the content of the config.json with the settings in {{project folder}}/.crossbar/config.json file
 
-Now you can start the WAMP server with
+Now you can start the WAMP server with ::
 
 $ sudo crossbar start
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
 
+Demo
+------
+
 You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder but in the settings you can comment out the SQLite part and uncomment the DB connection settings for MySQL
 
-Once setup you can run : $ python manage.py runserver
+Once setup you can run :: $ python manage.py runserver
 
 this will host the app on localhost and can be browsed at http://localhost:8000/login
 
