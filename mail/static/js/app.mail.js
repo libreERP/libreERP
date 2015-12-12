@@ -43,7 +43,10 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
         tempEmail.seen = tempEmail.flags.indexOf('Seen') != -1;
         $scope.emails.push(tempEmail)
       }
-      $scope.viewerMail = 0;
+      if ($scope.emails.length !=0) {
+        $scope.viewerMail = 0;
+        $scope.emails[0].seen = true;
+      }
     });
   }
 
@@ -84,6 +87,40 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     }
   });
 
+  $scope.moveMails = function(folder){
+    for (var i = 0; i < $scope.emails.length; i++) {
+      if ($scope.emails[i].selected){
+        dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[i].uid};
+        $http({method:'PATCH' , url:'/api/mail/email/' , params : dataToSend});
+      }
+    }
+    $scope.deleteMail();
+  };
+
+  $scope.flagMail = function(index , flag , action){
+    tempEmail = $scope.emails[index];
+    if (typeof action == 'undefined') {
+
+      if (tempEmail.starred == false) {
+        action = 'addFlag';
+      }else {
+        action = 'removeFlag';
+      }
+    }
+
+    $scope.emails[index].starred  = !tempEmail.starred;
+    dataToSend = {action : action , flag : flag , folder : $scope.folderSelected , uid : tempEmail.uid};
+    $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
+  };
+  $scope.flagMails = function(mode){
+    for (var i = 0; i < $scope.emails.length; i++) {
+      if ($scope.emails[i].selected) {
+        $scope.flagMail(i , 'Flagged' , mode)
+        $scope.emails[i].starred = mode=='addFlag';
+      }
+    }
+  }
+
   $scope.getMailBody = function(uid , folder){
     dataToSend = {folder : folder , uid : uid}
     $http({method : 'GET' , url : '/api/mail/email/' , params: dataToSend}).
@@ -101,8 +138,10 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     $scope.getMailbox();
     $scope.emailInView = [];
     $scope.viewerMail = -1;
+    $scope.selectAll = false;
   }
   $scope.prevPage = function(){
+    $scope.selectAll = false;
     $scope.page -=1;
     if ($scope.page <0) {
       $scope.page = 0;
@@ -118,31 +157,34 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     $scope.getMailbox();
     $scope.emailInView = [];
     $scope.viewerMail = -1;
+    $scope.selectAll = false;
   }
 
   $scope.gotoMail = function(index){
-    $scope.viewerMail = index;
+    $scope.viewerMail = parseInt(index);
     $scope.emails[index].seen = true;
   }
   $scope.nextMail = function(){
-    console.log($scope.viewerMail);
-    $scope.viewerMail = $scope.viewerMail + 1;
-
+    $scope.viewerMail += 1;
     if ($scope.viewerMail >= $scope.emails.length){
       $scope.viewerMail =  $scope.viewerMail - 1;
     }
   };
   $scope.deleteMail = function(){
-    console.log("came here ");
+    $scope.selectAll = false;
     selectedMode = false;
     i = $scope.emails.length;
     while (i--) {
       if ($scope.emails[i].selected == true){
+        dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[i].uid};
+        $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
         $scope.emails.splice(i,1)
         selectedMode = true;
       }
     }
     if (!selectedMode) {
+      dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[$scope.viewerMail].uid};
+      $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
       $scope.emails.splice($scope.viewerMail, 1);
     }
   };
@@ -171,6 +213,7 @@ app.directive('emailStrip', function () {
       openChat :'=',
       index : '@',
       gotoMail:'=',
+      flagMail:'=',
     },
     controller : function($scope , userProfileService){
       $scope.me = userProfileService.get('mySelf');

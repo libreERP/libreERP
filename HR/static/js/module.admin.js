@@ -68,7 +68,8 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
 
   $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
     {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
-    {icon : 'fa fa-envelope-o' , text : 'message' }
+    {icon : 'fa fa-envelope-o' , text : 'message' },
+    {icon : 'fa fa-file' , text : 'somethign'}
   ];
 
   $scope.tableAction = function(target , action , mode){
@@ -95,7 +96,8 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
       // for the single select actions
     } else {
       if (mode == 'multi') {
-
+        console.log(target);
+        console.log(action);
       }
     }
   }

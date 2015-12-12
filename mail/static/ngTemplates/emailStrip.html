@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <span style="position: relative;top:8px;">
         <input  type="checkbox" name="name" ng-model="data.selected">
-        <i style="position:relative;top:-4px;left:11px;" class="fa fa-star{{data.starred ? '' : '-o'}}" ng-click="data.starred = !data.starred;"></i>
+        <i style="position:relative;top:-4px;left:11px;" class="fa fa-star{{data.starred ? '' : '-o'}}" ng-click="flagMail(index , 'Flagged')"></i>
       </span>
       <img class="img-circle" ng-src="{{data.originator | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; left:19px;top:4px;"/>
       <div class="col-md-9 pull-right" style="padding-top:9px;" ng-click="gotoMail(index)">

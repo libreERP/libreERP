@@ -31,12 +31,12 @@
             <div class="btn-group pull-right">
               <span class="fa fa-angle-down fa-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></span>
               <ul class="dropdown-menu">
-                <li><a href="#">Delete</a></li>
-                <li><a href="#">Move to</a></li>
+                <li ng-click="deleteMail()"><a href="">Delete</a></li>
+                <li ng-click="flagMails('addFlag')"><a href="">Star</a></li>
+                <li ng-click="flagMails('removeFlag')"><a href="">Remove Star</a></li>
+                <li><a>Move to</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="#">Archive</a></li>
-                <li><a href="#">Starred</a></li>
-                <li><a href="#">Reminder</a></li>
+                <li ng-repeat="f in folders" ng-click="moveMails(f.onServer)"><a href="">{{f.name}}</a></li>
               </ul>
             </div>
           </div>
@@ -45,14 +45,14 @@
       </li>
 
       <div ng-repeat="email in emails track by $index">
-        <email-strip data = "email" index="{{$index}}" goto-Mail="gotoMail"></email-strip>
+        <email-strip data = "email" index="{{$index}}" goto-Mail="gotoMail" flag-Mail= "flagMail"></email-strip>
       </div>
       <li class="container-fluid" >
         <div class="row">
           <nav>
             <ul class="pager">
-              <li class="previous" ng-click="prevPage()" style="cursor:pointer;"><a><span aria-hidden="true">&larr;</span> Older</a></li>
-              <li class="next" ng-click="nextPage()" style="cursor:pointer;"><a>Newer <span aria-hidden="true">&rarr;</span></a></li>
+              <li class="previous" ng-click="prevPage()" style="cursor:pointer;"><a><span aria-hidden="true">&larr;</span> Newer</a></li>
+              <li class="next" ng-click="nextPage()" style="cursor:pointer;"><a>Older <span aria-hidden="true">&rarr;</span></a></li>
             </ul>
           </nav>
         </div>
@@ -87,21 +87,21 @@
           <button type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
         </div>
         <div ng-if="!editor" class="btn-group pull-right" role="group" aria-label="...">
-          <button type="button" ng-click="prevMail()" class="btn btn-default"><i class="fa fa-angle-left"></i></button>
-          <button type="button" ng-click="nextMail()" class="btn btn-default"><i class="fa fa-angle-right"></i></button>
+          <a type="button" ng-click="prevMail()" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
+          <a type="button" ng-click="nextMail()" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
         </div>
 
       </div>
       <!-- the html/text mail viewer -->
       <div class="row" ng-if="!editor" style="padding-top:10px;">
         <div class="row" style="border-bottom:solid 2px #e4e1e1;">
-          <div class="col-md-9">
+          <div class="col-md-10">
             <div class="col-md-2">
               <img ng-src="{{emailInView.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
             </div>
             <div class="col-md-10" style="position:relative;top:-13px;">
               <div class="row" >
-                <h4 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emailInView.subject}}</h4>
+                <h5 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emailInView.subject}}</h5>
               </div>
               <div class="row" >
                 From : <span class="text-muted"> {{emailInView.sender | emailAddress}}</span>
@@ -109,8 +109,10 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3 pull-right">
-            <span style="float:right">{{emailInView.date | date:'dd MMM yyyy, hh:mm a'}}</span>
+          <div class="col-md-2 pull-right">
+            <span style="float:right">{{emailInView.date | date:'dd MMM yyyy'}}</span>
+            <br>
+            <span style="float:right">{{emailInView.date | date:'hh:mm a'}}</span>
           </div>
         </div>
         <div class="row">

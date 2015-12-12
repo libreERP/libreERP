@@ -23,6 +23,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.core.exceptions import *
+from rest_framework import status
+
 import re
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -116,7 +118,7 @@ def mailBoxView(request):
     # print "logging out mailbox"
     M.logout()
 
-@api_view(['GET'])
+@api_view(['GET','PATCH'])
 def emailView(request):
     """
     get a perticular mail
@@ -136,8 +138,27 @@ def emailView(request):
 
     rv, data = M.select(EMAIL_FOLDER)
     if rv == 'OK':
-        body = getMailBody(M, uid)
-        return Response({'body' : body , 'uid' : uid})
+        if request.method=='GET':
+            body = getMailBody(M, uid)
+            return Response({'body' : body , 'uid' : uid})
+        elif request.method=='PATCH':
+            if 'action' in request.GET:
+                actionType = request.GET['action']
+                if actionType == 'addFlag' or actionType == 'removeFlag':
+                    if actionType =='addFlag':
+                        action = '+FLAGS'
+                    elif actionType == 'removeFlag':
+                        action = '-FLAGS'
+                    rv , data = M.uid('STORE' , uid , action , '\\'+ request.GET['flag'])
+                elif actionType == 'move':
+                    rv , data = M.uid('COPY' , uid ,  request.GET['to'])
+                    if rv == 'OK':
+                        rv , data = M.uid('STORE', uid , '+FLAGS', '(\Deleted)')
+                        M.expunge()
+            else:
+                M.close()
+                M.logout()
+        return Response(status = status.HTTP_200_OK)
 
 
 def getFolders(M):
