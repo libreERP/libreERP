@@ -11,7 +11,7 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 
-def Login(request):
+def loginView(request):
     if request.user.is_authenticated():
         return redirect(reverse('ERP'))
     if request.method == 'POST':
@@ -27,13 +27,13 @@ def Login(request):
     		    return redirect(reverse('ERP'))
     return render(request , 'login.html' , {})
 
-def Logout(request):
+def logoutView(request):
     logout(request)
     return redirect('index')
 
 @login_required(login_url = '/login')
 def home(request):
-    
+
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 class userProfileViewSet(viewsets.ModelViewSet):

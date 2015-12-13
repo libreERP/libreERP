@@ -45,7 +45,7 @@
       </li>
 
       <div ng-repeat="email in emails track by $index">
-        <email-strip data = "email" index="{{$index}}" goto-Mail="gotoMail" flag-Mail= "flagMail"></email-strip>
+        <email-strip data = "email" index="{{$index}}" goto-Mail="gotoMail" flag-Mail= "flagMail" viewing="viewerMail==$index"></email-strip>
       </div>
       <li class="container-fluid" >
         <div class="row">
@@ -66,8 +66,8 @@
       <div class="row">
         <div ng-if="!editor" class="btn-group" role="group" aria-label="...">
           <button type="button" ng-click="reply()" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
-          <button type="button" class="btn btn-default"><i class="fa fa-reply-all"></i> Reply all</button>
-          <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
+          <button type="button" ng-click = "reply('all')" class="btn btn-default"><i class="fa fa-reply-all"></i> Reply all</button>
+          <button type="button" ng-click = "reply('forward')" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
           <button type="button" class="btn btn-default" ng-click="deleteMail(true)"><i class="fa fa-trash"></i> Delete</button>
           <div class="btn-group" role="group">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -81,8 +81,9 @@
         </div>
 
         <div ng-if="editor" class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-default"><i class="fa fa-paper-plane"></i> Send</button>
-          <button type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
+          <button type="button" ng-click="sendMail()" class="btn btn-default"><i class="fa fa-paper-plane"></i> Send</button>
+          <button type="button" ng-click="saveMail()" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
+          <button type="button" ng-click="cancelEditor()" class="btn btn-default"><i class="fa fa-times"></i> Cancel</button>
         </div>
         <div ng-if="!editor" class="btn-group pull-right" role="group" aria-label="...">
           <a type="button" ng-click="prevMail()" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
@@ -125,30 +126,31 @@
           <div class= "form-group">
             <label class="control-label col-sm-2" for="subject">Subject :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "subject" placeholder="Subject" ng-model = "emailInView.subject">
+              <input type="text" class = "form-control" name = "subject" placeholder="Subject" ng-model = "editorData.subject">
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="to">To :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "emailInView.sender">
+              <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "editorData.to">
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="cc">CC :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "cc" placeholder="CC" >
+              <input type="text" class = "form-control" name = "cc" placeholder="CC" ng-model = "editorData.cc">
             </div>
           </div>
           <div class= "form-group">
             <label class="control-label col-sm-2" for="bcc">BCC :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "bcc" placeholder="bcc">
+              <input type="text" class = "form-control" name = "bcc" placeholder="bcc" ng-model = "editorData.bcc">
             </div>
           </div>
         </div>
         <div class="row" style="padding:10px;">
-          <div text-angular="text-angular" name="htmlcontent" ng-model="emailInView.body"  ></div>
+          <div text-angular="text-angular" ng-model="editorData.body" ng-if="editorData.bodyFormat!='plain'" ></div>
+          <div text-angular="text-angular" ng-model="editorData.plainBody" ng-if="editorData.bodyFormat=='plain'" ></div>
         </div>
       </div>
     </div>

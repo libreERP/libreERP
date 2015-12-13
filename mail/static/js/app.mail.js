@@ -13,7 +13,7 @@ parseEmailFlags = function(raw){
   // replacing non alphabetical chars with space , then multiple spaces with one , then removing the trailing spaces , then split
 }
 
-app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce){
+app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags){
   $scope.me = userProfileService.get('mySelf');
   $scope.viewerMail = -1;
   $scope.editor = false;
@@ -21,6 +21,11 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   $scope.folderSelected = 'INBOX';
   $scope.page = 0;
   $scope.getMailbox = function(query){
+    $scope.emailInView = [];
+    $scope.viewerMail = -1;
+    $scope.selectAll = false;
+    $scope.cancelEditor()
+
     if (typeof query == 'undefined') {
       query = 'ALL'
     };
@@ -50,10 +55,86 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     });
   }
 
+  $scope.reply = function(mode){
+    $scope.editor=!$scope.editor;
+    mail = angular.copy($scope.emailInView);
+    console.log(mail);
+    parts = mail.subject.split(':');
+    mail.subject = parts[parts.length-1];
+
+
+    if (typeof mode == 'undefined' ) {
+      mail.to = mail.sender;
+      mail.cc = '';
+      mail.subject = 'Re :' + mail.subject;
+      replyStr = '<div><br>------------Original message----------------<br>'
+
+    } else if (mode == 'all') {
+      mail.to = mail.sender;
+      mail.subject = 'Re :' + mail.subject;
+      replyStr = '<div><br>------------Original message----------------<br>'
+
+    } else if (mode == 'forward') {
+      mail.subject = 'Fwd :' + mail.subject;
+      mail.to = '';
+      mail.cc = '';
+      replyStr = '<div><br>-----------Forwarded message---------------<br>'
+
+    }
+    replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong>'+ '<br>'
+    replyStr += 'Date : '+ mail.date.toISOString().slice(0,10).replace(/-/g,"-") + '<br>'
+    replyStr += 'subject : '+ mail.subject.split(':')[0] + '<br>'
+    replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong>'+ '<br></div>'
+
+    mail.body = replyStr + mail.body;
+    if (mail.bodyFormat == 'plain') {
+      mail.plainBody = replyStr + mail.plainBody;
+    }
+    $scope.editorData = mail;
+  }
+
+  $scope.cancelEditor = function(){
+    $scope.editorData = [];
+    $scope.editor = false;
+  }
+  $scope.sendMail = function(){
+    var fd = new FormData();
+    fd.append('subject' , $scope.editorData.subject);
+    if ($scope.editorData.bodyFormat == 'plain') {
+      fd.append('body' , $scope.editorData.plainBody);
+    } else {
+      fd.append('body' , $scope.editorData.body);
+    }
+    if ($scope.editorData.to.length <=2) {
+      Flash.create('danger' , 'No reciepient specified');
+      return;
+    } else {
+      fd.append('to' , $scope.editorData.to);
+    }
+    if ('cc' in $scope.editorData && $scope.editorData.cc.length > 2) {
+      fd.append('cc' , $scope.editorData.cc);
+    }
+    if ('bcc' in $scope.editorData && $scope.editorData.bcc.length > 2) {
+      fd.append('bcc' , $scope.editorData.bcc);
+    }
+    $http({method : 'POST' , url : '/api/mail/send/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      if (response.status == 200) {
+        Flash.create('success', response.status + ' : ' + response.statusText );
+        $scope.editor = false;
+      } else {
+        Flash.create('danger', response.status + ' : ' + response.statusText );
+      }
+    });
+  }
+
+  $scope.saveMail = function(){
+    $scope.editor = false;
+  }
+
   $scope.search = function(){
     query = 'SUBJECT /'+ $scope.textToSearch + '/';
     $scope.getMailbox(query)
-    $scope.viewerMail = -1;
   };
 
   $scope.getMailbox();
@@ -133,6 +214,10 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       $scope.emails.splice($scope.viewerMail, 1);
     }
     $scope.emailInView = $scope.emails[0];
+    if ($scope.emails.length == 0) {
+      $scope.getMailbox();
+      return;
+    }
     if (typeof $scope.emails[0].body == 'undefined') {
       $scope.getMailBody($scope.emails[0].uid , $scope.folderSelected)
     }
@@ -161,13 +246,26 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     }
   }
 
-  $scope.getMailBody = function(uid , folder){
-    dataToSend = {folder : folder , uid : uid}
+  $scope.getMailBody = function(uid , folder , format){
+    if (typeof format == 'undefined') {
+      format = 'html'
+    }
+    dataToSend = {folder : folder , uid : uid , mode : format}
     $http({method : 'GET' , url : '/api/mail/email/' , params: dataToSend}).
     then(function(response){
       for (var i = 0; i < $scope.emails.length; i++) {
         if ($scope.emails[i].uid == response.data.uid){
-          $scope.emails[i].body = response.data.body;
+          if (response.data.body.indexOf('</body>') != -1) {
+            $scope.emails[i].body = $sce.trustAsHtml(response.data.body);
+            $scope.getMailBody(response.data.uid , response.data.folder , 'plain')
+          }else {
+            if (response.config.params.mode == 'plain') {
+              $scope.emails[i].plainBody = removeHtmlTags(response.data.body);
+              $scope.emails[i].bodyFormat = 'plain';
+            } else {
+              $scope.emails[i].body = response.data.body;
+            }
+          }
         }
       }
     });
@@ -176,9 +274,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   $scope.nextPage = function(){
     $scope.page += 1;
     $scope.getMailbox();
-    $scope.emailInView = [];
-    $scope.viewerMail = -1;
-    $scope.selectAll = false;
+
   }
   $scope.prevPage = function(){
     $scope.selectAll = false;
@@ -188,21 +284,21 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       return;
     }
     $scope.getMailbox();
-    $scope.emailInView = [];
-    $scope.viewerMail = -1;
+
+
   }
   $scope.changeFolder = function(to){
     $scope.page = 0;
     $scope.folderSelected = to;
     $scope.getMailbox();
-    $scope.emailInView = [];
-    $scope.viewerMail = -1;
-    $scope.selectAll = false;
+
   }
 
   $scope.gotoMail = function(index){
     $scope.viewerMail = parseInt(index);
     $scope.emails[index].seen = true;
+    $scope.cancelEditor()
+
   }
   $scope.nextMail = function(){
     $scope.viewerMail += 1;
@@ -216,14 +312,24 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     if ($scope.viewerMail<=0){
       $scope.viewerMail = 1;
     };
-    console.log($scope.viewerMail);
   };
 
-
-  $scope.reply = function(){
-    $scope.editor=!$scope.editor;
-  }
 });
+
+app.factory('removeHtmlTags', function () {
+    return function strip_tags(input, allowed) {
+      allowed = (((allowed || '') + '')
+        .toLowerCase()
+        .match(/<[a-z][a-z0-9]*>/g) || [])
+        .join(''); // making sure the allowed arg is a string containing only tags in lowercase (<a><b><c>)
+      var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+        commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+      return input.replace(commentsAndPhpTags, '').replace(tags, function($0, $1) {
+          return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+        });
+    }
+});
+
 
 app.directive('emailStrip', function () {
   return {
@@ -235,6 +341,7 @@ app.directive('emailStrip', function () {
       data : '=',
       openChat :'=',
       index : '@',
+      viewing : '=',
       gotoMail:'=',
       flagMail:'=',
     },

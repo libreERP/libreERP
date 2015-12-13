@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import sys
 import imaplib
+import smtplib
 import getpass
 import email
 import email.header
@@ -53,14 +54,39 @@ def getMailHeader(M , id):
             sender = str(msg['from'])
         return subject , msg['Date'] , sender , msg['to'] , data[1]
 
-def getMailBody(M , id):
 
-    rv, data = M.uid('FETCH', id, '(RFC822)')
-    if rv == 'OK':
-        msg = email.message_from_string(data[0][1])
-        for part in msg.walk():
-            if part.get_content_type()=='text/html':
-                return part.get_payload(decode = True)
+@api_view(['post'])
+def sendMailView(request):
+    """
+    A view to to send a mail via SMTP
+    """
+    if request.user.username != 'pradeep':
+        raise PermissionDenied()
+    EMAIL_ACCOUNT = "ciocpky@gmail.com"
+    EMAIL_PASSWORD = 'pradeepyadav'
+
+    toAddr = request.data['to']
+    msg = MIMEMultipart()
+    msg['From'] = "Pradeep <ciocpky@gmail.com>"
+    msg['To'] = toAddr
+    if 'subject' in request.data:
+        msg['Subject'] = request.data['subject']
+    if 'cc' in request.data:
+        msg['cc'] = request.data['cc']
+        toAddr += ',' + request.data['cc']
+    if 'bcc' in request.data:
+        toAddr += ',' + request.data['bcc']
+
+    msg.attach(MIMEText(request.data['body'].encode('utf-8'), 'html'))
+
+    S = smtplib.SMTP('smtp.gmail.com', 587)
+    S.starttls()
+    S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+    text = msg.as_string()
+    for address in toAddr.split(','):
+        S.sendmail(EMAIL_ACCOUNT, address, text)
+    S.quit()
+    return Response(status = status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -73,6 +99,8 @@ def mailBoxView(request):
         raise PermissionDenied()
 
     EMAIL_ACCOUNT = "ciocpky@gmail.com"
+    EMAIL_PASSWORD = 'pradeepyadav'
+
     EMAIL_FOLDER = str(request.GET['folder'])
     try:
         page = int(request.GET['page'])
@@ -84,7 +112,7 @@ def mailBoxView(request):
         query = "ALL"
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     try:
-        rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
+        rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
         print "LOGIN FAILED!!! "
 
@@ -116,6 +144,14 @@ def mailBoxView(request):
     # print "logging out mailbox"
     M.logout()
 
+def getMailBody(M , id , mode):
+    rv, data = M.uid('FETCH', id, '(RFC822)')
+    if rv == 'OK':
+        msg = email.message_from_string(data[0][1])
+        for part in msg.walk():
+            if part.get_content_type()=='text/'+mode:
+                return part.get_payload(decode = True)
+
 @api_view(['GET','PATCH'])
 def emailView(request):
     """
@@ -128,17 +164,19 @@ def emailView(request):
     uid = int(request.GET['uid'])
 
     EMAIL_ACCOUNT = "ciocpky@gmail.com"
+    EMAIL_PASSWORD = 'pradeepyadav'
+
     M = imaplib.IMAP4_SSL('imap.gmail.com')
     try:
-        rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
+        rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
         print "LOGIN FAILED!!! "
 
     rv, data = M.select(EMAIL_FOLDER)
     if rv == 'OK':
         if request.method=='GET':
-            body = getMailBody(M, uid)
-            return Response({'body' : body , 'uid' : uid})
+            body = getMailBody(M, uid , request.GET['mode'])
+            return Response({'body' : body , 'uid' : uid  , 'folder' : EMAIL_FOLDER})
         elif request.method=='PATCH':
             if 'action' in request.GET:
                 actionType = request.GET['action']

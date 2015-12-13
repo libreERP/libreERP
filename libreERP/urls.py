@@ -4,14 +4,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from homepage.views import index
-from HR.views import login , logout , home
+from HR.views import loginView , logoutView , home
 
 urlpatterns = [
     url(r"^$", index , name = 'index'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^login', login , name ='login'),
-    url(r'^logout/', logout , name ='logout'),
+    url(r'^login', loginView , name ='login'),
+    url(r'^logout/', logoutView , name ='logout'),
     url(r'^ERP/', home , name ='ERP'),
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
 ]

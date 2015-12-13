@@ -1,4 +1,4 @@
-<li class="container-fluid {{ !data.seen ?  'bg-shaded' : ''}} emailStrip {{data.selected ? 'selectedEmail' : ''}}" >
+<li class="container-fluid {{ !data.seen  ?  'bg-shaded' : ''}} emailStrip {{data.selected || viewing ? 'selectedEmail' : ''}}" >
   <div class="row">
     <div class="container-fluid">
       <span style="position: relative;top:8px;">
