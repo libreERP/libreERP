@@ -18,15 +18,46 @@ parseEmailFlags = function(raw){
 app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags){
   $scope.me = userProfileService.get('mySelf');
   $scope.viewerMail = -1;
-  $scope.editor = false;
   $scope.folders = [];
   $scope.folderSelected = 'INBOX';
   $scope.page = 0;
+
+
+  $scope.attach = function(){
+    var fd = new FormData();
+    fd.append('attachment' , $scope.editorData.file);
+    fd.append('user' , $scope.me.url.cleanUrl());
+    $http({method : 'POST' , url : '/api/mail/attachment/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      response.data.filename = response.data.attachment.split('_' + $scope.me.username + '_')[1];
+      $scope.attachments.push(response.data)
+      $scope.editorData.file = new File([""], "");
+    });
+  };
+
+  $scope.resetEditor = function(){
+    $scope.showCC = false;
+    $scope.editor = false;
+    $scope.showBCC = false;
+    $scope.editorData = [];
+    $scope.attachments = [];
+    $scope.editorData.file = new File([""], "");
+  }
+  $scope.resetEditor();
+
+  $scope.showExtraControls = function(mode){
+    if (mode == 'cc') {
+      $scope.showCC = true;
+    } else if (mode == 'bcc') {
+      $scope.showBCC = true;
+    }
+  }
   $scope.getMailbox = function(query){
     $scope.emailInView = [];
     $scope.viewerMail = -1;
     $scope.selectAll = false;
-    $scope.cancelEditor()
+    $scope.resetEditor()
+    $scope.editor = false;
 
     if (typeof query == 'undefined') {
       query = 'ALL'
@@ -79,13 +110,13 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       mail.subject = 'Fwd :' + mail.subject;
       mail.to = '';
       mail.cc = '';
-      replyStr = '<div><br>-----------Forwarded message---------------<br>'
+      replyStr = '<br><br><div>-----------Forwarded message---------------<br>'
 
     }
     replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong>'+ '<br>'
     replyStr += 'Date : '+ mail.date.toISOString().slice(0,10).replace(/-/g,"-") + '<br>'
     replyStr += 'subject : '+ mail.subject.split(':')[0] + '<br>'
-    replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong>'+ '<br></div>'
+    replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong>'+ '<br></div><br>'
 
     mail.body = replyStr + mail.body;
     if (mail.bodyFormat == 'plain') {
@@ -93,11 +124,11 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     }
     $scope.editorData = mail;
   }
-
-  $scope.cancelEditor = function(){
-    $scope.editorData = [];
-    $scope.editor = false;
+  $scope.newMail = function(){
+    $scope.resetEditor();
+    $scope.editor = true;
   }
+
   $scope.sendMail = function(){
     var fd = new FormData();
     fd.append('subject' , $scope.editorData.subject);
@@ -122,7 +153,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     then(function(response){
       if (response.status == 200) {
         Flash.create('success', response.status + ' : ' + response.statusText );
-        $scope.editor = false;
+        $scope.resetEditor();
       } else {
         Flash.create('danger', response.status + ' : ' + response.statusText );
       }
@@ -306,7 +337,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
         }
       }
     }
-    $scope.cancelEditor()
+    $scope.resetEditor();
+    $scope.editor = false;
 
   }
   $scope.nextMail = function(){

@@ -9,6 +9,8 @@ import datetime
 import os
 # For guessing MIME type based on file name extension
 import mimetypes
+import re
+
 from optparse import OptionParser
 from email import encoders
 from email.message import Message
@@ -19,14 +21,16 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 # Create your views here.
 from django.contrib.auth.models import User
+from django.core.exceptions import *
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets , permissions , serializers, status
 from rest_framework.decorators import api_view
-from django.core.exceptions import *
-from rest_framework import status
+from API.permissions import *
+from .models import mailAttachment
+from .serializers import *
 
-import re
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -227,3 +231,8 @@ def foldersDetailsView(request):
         print "LOGIN FAILED!!! "
 
     return Response(getFolders(M))
+
+class mailAttachmentViewSet(viewsets.ModelViewSet):
+    permission_classes = (isOwnerOrReadOnly,)
+    serializer_class = mailAttachmentSerializer
+    queryset = mailAttachment.objects.all()

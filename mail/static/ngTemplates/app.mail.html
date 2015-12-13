@@ -3,7 +3,7 @@
 
 
   <div class="col-md-1">
-    <button type="button" class="btn btn-default" style="width:100%;" name="button">Compose <i class="fa fa-pencil-square-o"></i></button>
+    <button type="button" ng-click="newMail()" class="btn btn-default" style="width:100%;" >Compose <i class="fa fa-pencil-square-o"></i></button>
     <hr>
     <ul class="nav nav-sidebar " >
       <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders track by $index" ng-click = "changeFolder(f.onServer)">
@@ -83,8 +83,12 @@
         <div ng-if="editor" class="btn-group" role="group" aria-label="...">
           <button type="button" ng-click="sendMail()" class="btn btn-default"><i class="fa fa-paper-plane"></i> Send</button>
           <button type="button" ng-click="saveMail()" class="btn btn-default"><i class="fa fa-floppy-o"></i> Save</button>
-          <button type="button" ng-click="cancelEditor()" class="btn btn-default"><i class="fa fa-times"></i> Cancel</button>
+          <button type="button" ng-click="resetEditor()" class="btn btn-default"><i class="fa fa-times"></i> Cancel</button>
+          <button type="button" ng-click="showExtraControls('cc')" class="btn btn-default"><i class="fa fa-plus"></i> Add CC</button>
+          <button type="button" ng-click="showExtraControls('bcc')" class="btn btn-default"><i class="fa fa-plus"></i> Add Bcc</button>
+          <button type="button" ng-click="attach()" class="btn btn-default"><i class="fa fa-file"></i> Attach</button>
         </div>
+        <input ng-if="editor" style="display:inline;" type="file" name="fileInput" id="attach" file-model = "editorData.file">
         <div ng-if="!editor" class="btn-group pull-right" role="group" aria-label="...">
           <a type="button" ng-click="prevMail()" class="btn btn-default"><i class="fa fa-angle-left"></i></a>
           <a type="button" ng-click="nextMail()" class="btn btn-default"><i class="fa fa-angle-right"></i></a>
@@ -135,16 +139,22 @@
               <input type="text" class = "form-control" name = "to" placeholder="To" ng-model = "editorData.to">
             </div>
           </div>
-          <div class= "form-group">
+          <div class= "form-group" ng-if="showCC" >
             <label class="control-label col-sm-2" for="cc">CC :</label>
             <div class="col-md-10">
-              <input type="text" class = "form-control" name = "cc" placeholder="CC" ng-model = "editorData.cc">
+              <input type="text"  class = "form-control" name = "cc" placeholder="CC" ng-model = "editorData.cc">
             </div>
           </div>
-          <div class= "form-group">
+          <div class= "form-group" ng-if="showBCC">
             <label class="control-label col-sm-2" for="bcc">BCC :</label>
             <div class="col-md-10">
               <input type="text" class = "form-control" name = "bcc" placeholder="bcc" ng-model = "editorData.bcc">
+            </div>
+          </div>
+          <div class= "form-group" ng-if="attachments.length >0">
+            <label class="control-label col-sm-2" for="bcc">Attachments :</label>
+            <div class="col-md-10">
+              <span ng-repeat="f in attachments" class="label label-primary" style="margin-right:5px;"> {{f.filename}}</span>
             </div>
           </div>
         </div>
