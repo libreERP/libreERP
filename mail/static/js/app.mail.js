@@ -4,7 +4,9 @@ parseMailboxStatus = function(raw){
   if (name.indexOf('/') != -1) {
     name = name.split('/')[1];
   }
-  toReturn = {'name' : name , 'onServer' : onServer};
+  newMail = raw[0].split('SEEN')[1];
+  newMail = parseInt(newMail.split(')')[0]);
+  toReturn = {'name' : name , 'onServer' : onServer , 'new' : newMail};
   return toReturn;
 }
 
@@ -58,7 +60,6 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   $scope.reply = function(mode){
     $scope.editor=!$scope.editor;
     mail = angular.copy($scope.emailInView);
-    console.log(mail);
     parts = mail.subject.split(':');
     mail.subject = parts[parts.length-1];
 
@@ -138,7 +139,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   };
 
   $scope.getMailbox();
-
+  // getting the list of folders and status
   $http({method : 'GET' , url : '/api/mail/folders/'}).
   then(function(response){
     for (var i = 0; i < response.data.length; i++) {
@@ -297,6 +298,14 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   $scope.gotoMail = function(index){
     $scope.viewerMail = parseInt(index);
     $scope.emails[index].seen = true;
+    for (var i = 0; i < $scope.folders.length; i++) {
+      if ($scope.folders[i].onServer== $scope.folderSelected || $scope.folders[i].name == 'All Mail'){
+        $scope.folders[i].new -= 1;
+        if ($scope.folders[i].new < 0) {
+          $scope.folders[i].new = 0;
+        }
+      }
+    }
     $scope.cancelEditor()
 
   }

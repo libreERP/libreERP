@@ -8,7 +8,7 @@
     <ul class="nav nav-sidebar " >
       <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders track by $index" ng-click = "changeFolder(f.onServer)">
         <a href="" >
-          <div align="center">{{f.name}}</div>
+          <div align="center">{{f.name}} {{f.new | decorateCount}}</div>
         </a>
       </li>
     </ul>

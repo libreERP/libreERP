@@ -72,3 +72,12 @@ else:
     print "ERROR: Unable to open mailbox ", rv
 
 M.logout()
+
+
+http://imageshack.com/a/img905/4093/Oh7x0D.png
+http://imageshack.com/a/img905/7284/NfN4Eb.png
+http://imageshack.com/a/img908/4088/W6aZQi.png
+http://imageshack.com/a/img907/7843/9tAPOZ.png
+http://imageshack.com/a/img911/795/PWXlWK.png
+http://imageshack.com/a/img910/2813/W60usy.png
+http://imageshack.com/a/img908/6159/tIf5Jp.png
