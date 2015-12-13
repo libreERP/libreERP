@@ -3,14 +3,16 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from homepage.views import index
+from HR.views import login , logout , home
 
 urlpatterns = [
-    url(r"^$", 'homepage.views.index' , name = 'index'),
+    url(r"^$", index , name = 'index'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^login', 'HR.views.Login' , name ='login'),
-    url(r'^logout/', 'HR.views.Logout' , name ='logout'),
-    url(r'^ERP/', 'HR.views.home' , name ='ERP'),
+    url(r'^login', login , name ='login'),
+    url(r'^logout/', logout , name ='logout'),
+    url(r'^ERP/', home , name ='ERP'),
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
 ]
 

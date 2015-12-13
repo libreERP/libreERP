@@ -4,7 +4,7 @@ from time import time
 from django.db.models.signals import post_save , pre_delete
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
-import requests
+import grequests
 from django.conf import settings as globalSettings
 from PIM.models import *
 from django.core.exceptions import ObjectDoesNotExist
@@ -104,18 +104,16 @@ class social(models.Model):
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
 def notify(type , id , action , instance):
-    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+    grequests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
         json={
           'topic': 'service.notification.' + instance.parent.user.username,
           'args': [{'type' : type ,'id': id , 'action' : action , 'objID' : instance.pk}]
         }
     )
 def notifyUpdates(type , action , subscribers , instance):
-    print "Upto here"
     for sub in subscribers:
         if sub != instance.user:
-            print "will send to" + str(sub.username)
-            requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+            grequests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
                 json={
                   'topic': 'service.updates.' + sub.username,
                   'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]
@@ -175,16 +173,13 @@ def sendNotificationsAndUpdates(sender , instance , mode):
 @receiver(post_save, sender=pictureComment, dispatch_uid="server_post_save")
 @receiver(post_save, sender=pictureLike, dispatch_uid="server_post_save")
 @receiver(post_save, sender=commentLike, dispatch_uid="server_post_save")
-def postLikeNotification(sender, instance, **kwargs):
+def socialCreatedUpdate(sender, instance, **kwargs):
     sendNotificationsAndUpdates(sender , instance , 'created')
-
-
 
 @receiver(pre_delete, sender=postLike, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=postComment, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=pictureComment, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=pictureLike, dispatch_uid="server_post_delete")
 @receiver(pre_delete, sender=commentLike, dispatch_uid="server_post_delete")
-def postCommentNotificationDelete(sender, instance, **kwargs ):
-
+def socialDeletedUpdate(sender, instance, **kwargs ):
     sendNotificationsAndUpdates(sender , instance , 'deleted')

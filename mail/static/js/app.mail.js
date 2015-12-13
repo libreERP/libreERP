@@ -88,15 +88,55 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   });
 
   $scope.moveMails = function(folder){
+    selectedMode = false;
     for (var i = 0; i < $scope.emails.length; i++) {
       if ($scope.emails[i].selected){
         dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[i].uid};
         $http({method:'PATCH' , url:'/api/mail/email/' , params : dataToSend});
+        selectedMode = true;
+      }
+
+    }
+    if (!selectedMode) {
+      dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[$scope.viewerMail].uid};
+      $http({method:'PATCH' , url:'/api/mail/email/' , params : dataToSend});
+    }
+    $scope.deleteMail(false);
+    $scope.emailInView = $scope.emails[0];
+    if (typeof $scope.emails[0].body == 'undefined') {
+      $scope.getMailBody($scope.emails[0].uid , $scope.folderSelected)
+    }
+  };
+  $scope.deleteMail = function(remove){
+    // if remove == true then only remove it from the UI and do not send the delete commend to the server
+    if (typeof remove == 'undefined') {
+      remove = false;
+    }
+    $scope.selectAll = false;
+    selectedMode = false;
+    i = $scope.emails.length;
+    while (i--) {
+      if ($scope.emails[i].selected == true){
+        if (remove) {
+          dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[i].uid};
+          $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
+        }
+        $scope.emails.splice(i,1)
+        selectedMode = true;
       }
     }
-    $scope.deleteMail();
+    if (!selectedMode) {
+      if (remove) {
+        dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[$scope.viewerMail].uid};
+        $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
+      }
+      $scope.emails.splice($scope.viewerMail, 1);
+    }
+    $scope.emailInView = $scope.emails[0];
+    if (typeof $scope.emails[0].body == 'undefined') {
+      $scope.getMailBody($scope.emails[0].uid , $scope.folderSelected)
+    }
   };
-
   $scope.flagMail = function(index , flag , action){
     tempEmail = $scope.emails[index];
     if (typeof action == 'undefined') {
@@ -170,24 +210,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       $scope.viewerMail =  $scope.viewerMail - 1;
     }
   };
-  $scope.deleteMail = function(){
-    $scope.selectAll = false;
-    selectedMode = false;
-    i = $scope.emails.length;
-    while (i--) {
-      if ($scope.emails[i].selected == true){
-        dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[i].uid};
-        $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
-        $scope.emails.splice(i,1)
-        selectedMode = true;
-      }
-    }
-    if (!selectedMode) {
-      dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[$scope.viewerMail].uid};
-      $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
-      $scope.emails.splice($scope.viewerMail, 1);
-    }
-  };
+
   $scope.prevMail = function(){
     $scope.viewerMail -= 1;
     if ($scope.viewerMail<=0){

@@ -99,15 +99,13 @@ def mailBoxView(request):
             print "No messages found!"
         mailUIDs = data[0].split()
         content = []
-        print mailUIDs
         endIndex =  len(mailUIDs)-10 - page*9
         if endIndex<-1:
             endIndex = -1
         indexes = range(len(mailUIDs)-1 - page*9, endIndex , -1) # this generates from 8 to 0 as -1 in the middle does is not included in the list
-        print indexes
         for index in indexes:
             num = mailUIDs[index]
-            print "fetching " + str(num)
+            # print "fetching " + str(num)
             subject , date , sender , to , flags = getMailHeader(M , num)
             content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
         return Response(content)
