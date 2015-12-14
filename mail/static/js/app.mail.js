@@ -163,6 +163,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     if (attachments.length > 0) {
       fd.append('attachments' , attachments);
     }
+    $scope.editor = false;
     $http({method : 'POST' , url : '/api/mail/send/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       if (response.status == 200) {
@@ -244,7 +245,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     i = $scope.emails.length;
     while (i--) {
       if ($scope.emails[i].selected == true){
-        if (remove) {
+        if (!remove) {
           dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[i].uid};
           $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
         }
@@ -253,7 +254,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       }
     }
     if (!selectedMode) {
-      if (remove) {
+      if (!remove) {
         dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[$scope.viewerMail].uid};
         $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
       }

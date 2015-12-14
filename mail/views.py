@@ -1,32 +1,33 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.core.exceptions import *
+
 import sys
 import imaplib
 import smtplib
 import getpass
 import email
 import email.header
+from email.message import Message
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
+from email.mime.text import MIMEText
+
 import datetime
 import os
+from os.path import basename
 # For guessing MIME type based on file name extension
 import mimetypes
 import re
+from django.conf import settings as globalSettings
 
-from optparse import OptionParser
-from email import encoders
-from email.message import Message
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 # Create your views here.
-from django.contrib.auth.models import User
-from django.core.exceptions import *
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets , permissions , serializers, status
 from rest_framework.decorators import api_view
+
 from API.permissions import *
 from .models import mailAttachment
 from .serializers import *
@@ -44,7 +45,7 @@ def parse_list_response(line):
 def getMailHeader(M , id):
 
     rv, data =  M.uid('FETCH', id, '(RFC822.HEADER FLAGS)')
-    if rv == 'OK':
+    if rv == 'OK' and None not in data:
         msg = email.message_from_string(data[0][1])
         try:
             decode = email.header.decode_header(msg['Subject'])[0]
@@ -57,6 +58,8 @@ def getMailHeader(M , id):
         except:
             sender = str(msg['from'])
         return subject , msg['Date'] , sender , msg['to'] , data[1]
+    else:
+        return None , None , None , None , None
 
 
 @api_view(['post'])
@@ -84,8 +87,17 @@ def sendMailView(request):
     msg.attach(MIMEText(request.data['body'].encode('utf-8'), 'html'))
     if 'attachments' in request.data:
         for pk in request.data['attachments'].split(','):
-            a = mailAttachment.objects.get(pk = pk)
-            print a.attachment
+            a = str(mailAttachment.objects.get(pk = pk).attachment)
+            filePath = os.path.join(globalSettings.MEDIA_ROOT , a.replace('/' , '\\'))
+            with open(filePath, "rb") as fil:
+                msg.attach(MIMEApplication(
+                    fil.read(),
+                    Content_Disposition='attachment; filename="%s"' % basename(filePath.split('_' + request.user.username + '_')[-1]),
+                    Name=basename(filePath.split('_' + request.user.username + '_')[-1])
+                ))
+            mailAttachment.objects.get(pk = pk).delete()
+            os.remove(filePath)
+
     S = smtplib.SMTP('smtp.gmail.com', 587)
     S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
@@ -142,7 +154,8 @@ def mailBoxView(request):
             num = mailUIDs[index]
             # print "fetching " + str(num)
             subject , date , sender , to , flags = getMailHeader(M , num)
-            content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
+            if date != None:
+                content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
         return Response(content)
         # print "closing mail box"
         M.close()
@@ -194,7 +207,8 @@ def emailView(request):
                         action = '-FLAGS'
                     rv , data = M.uid('STORE' , uid , action , '\\'+ request.GET['flag'])
                 elif actionType == 'move':
-                    rv , data = M.uid('COPY' , uid ,  request.GET['to'])
+
+                    rv , data = M.uid('COPY' , uid ,  str(request.GET['to']))
                     if rv == 'OK':
                         rv , data = M.uid('STORE', uid , '+FLAGS', '(\Deleted)')
                         M.expunge()
