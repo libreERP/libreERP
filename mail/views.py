@@ -82,7 +82,10 @@ def sendMailView(request):
         toAddr += ',' + request.data['bcc']
 
     msg.attach(MIMEText(request.data['body'].encode('utf-8'), 'html'))
-
+    if 'attachments' in request.data:
+        for pk in request.data['attachments'].split(','):
+            a = mailAttachment.objects.get(pk = pk)
+            print a.attachment
     S = smtplib.SMTP('smtp.gmail.com', 587)
     S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)

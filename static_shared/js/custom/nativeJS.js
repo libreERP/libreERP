@@ -85,6 +85,11 @@ String.prototype.endsWith = function(str){
   return (this.match(str+"$")==str)
 }
 
+getPK = function(input){
+  // for any object url like /api/HR/uses/1/  : this can give the pk of the object
+  return parseInt(input.match(/\/\d*\//g)[1].match(/\d+/))
+}
+
 String.prototype.cleanUrl = function(){
   return this.split('?')[0]
 }

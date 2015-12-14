@@ -7,6 +7,6 @@ def getMailAttachmentPath(instance , filename ):
     return 'mail/attachments/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
 class mailAttachment(models.Model):
-    user = models.ForeignKey(User , related_name = 'mailAttachment' , null = False)
+    user = models.ForeignKey(User , related_name = 'mailAttachments' , null = False)
     attachment = models.FileField(upload_to = getMailAttachmentPath , null = True)
     created = models.DateTimeField(auto_now_add = True)

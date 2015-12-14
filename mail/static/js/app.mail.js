@@ -1,11 +1,11 @@
 parseMailboxStatus = function(raw){
-  name = raw[0].split('"')[1];
+  name = raw[0].match(/"(.*?)"/)[1];
   onServer = name;
   if (name.indexOf('/') != -1) {
     name = name.split('/')[1];
   }
-  newMail = raw[0].split('SEEN')[1];
-  newMail = parseInt(newMail.split(')')[0]);
+  unseen = raw[0].match(/[A-Z]+\s*\d{1,2}/g)[4];
+  newMail = parseInt(unseen.match(/\s*\d/));
   toReturn = {'name' : name , 'onServer' : onServer , 'new' : newMail};
   return toReturn;
 }
@@ -30,7 +30,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     $http({method : 'POST' , url : '/api/mail/attachment/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       response.data.filename = response.data.attachment.split('_' + $scope.me.username + '_')[1];
-      $scope.attachments.push(response.data)
+      $scope.editorData.attachments.push(response.data)
       $scope.editorData.file = new File([""], "");
     });
   };
@@ -40,7 +40,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     $scope.editor = false;
     $scope.showBCC = false;
     $scope.editorData = [];
-    $scope.attachments = [];
+    $scope.editorData.attachments = [];
     $scope.editorData.file = new File([""], "");
   }
   $scope.resetEditor();
@@ -113,15 +113,17 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       replyStr = '<br><br><div>-----------Forwarded message---------------<br>'
 
     }
-    replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong>'+ '<br>'
+    frm =mail.sender.match(/\w*@\w*.\w*/)[0];
+    to = $scope.emailInView.to.match(/\w*@\w*.\w*/)[0];
+    replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong><<a href="mailto:'+ frm + '">'+ frm +'</a>><br>'
     replyStr += 'Date : '+ mail.date.toISOString().slice(0,10).replace(/-/g,"-") + '<br>'
-    replyStr += 'subject : '+ mail.subject.split(':')[0] + '<br>'
-    replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong>'+ '<br></div><br>'
-
+    replyStr += 'subject : '+ mail.subject.split(':')[1] + '<br>'
+    replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong><<a href="mailto:'+ to + '">' + to + '</a>><br></div><br>'
     mail.body = replyStr + mail.body;
     if (mail.bodyFormat == 'plain') {
       mail.plainBody = replyStr + mail.plainBody;
     }
+    mail.attachments = [];
     $scope.editorData = mail;
   }
   $scope.newMail = function(){
@@ -130,6 +132,15 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   }
 
   $scope.sendMail = function(){
+
+    attachments = '';
+    for (var i = 0; i < $scope.editorData.attachments.length; i++) {
+      attachments += getPK( $scope.editorData.attachments[i].url);
+      if (i<$scope.editorData.attachments.length-1) {
+        attachments += ',';
+      }
+    }
+
     var fd = new FormData();
     fd.append('subject' , $scope.editorData.subject);
     if ($scope.editorData.bodyFormat == 'plain') {
@@ -137,7 +148,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     } else {
       fd.append('body' , $scope.editorData.body);
     }
-    if ($scope.editorData.to.length <=2) {
+    if (typeof $scope.editorData.to == 'undefined' || $scope.editorData.to.length <=2) {
       Flash.create('danger' , 'No reciepient specified');
       return;
     } else {
@@ -148,6 +159,9 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     }
     if ('bcc' in $scope.editorData && $scope.editorData.bcc.length > 2) {
       fd.append('bcc' , $scope.editorData.bcc);
+    }
+    if (attachments.length > 0) {
+      fd.append('attachments' , attachments);
     }
     $http({method : 'POST' , url : '/api/mail/send/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
