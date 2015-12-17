@@ -13,6 +13,11 @@ class themeViewSet(viewsets.ModelViewSet):
     queryset = theme.objects.all()
     serializer_class = themeSerializer
 
+class calendarViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, isOwner )
+    queryset = calendar.objects.all()
+    serializer_class = calendarSerializer
+
 class notificationViewSet(viewsets.ModelViewSet):
     permission_classes = (isOwner, )
     serializer_class = notificationSerializer

@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="btn-group col-md-3 col-sm-12 col-xs-12">
+      <button class="btn btn-default col-sm-3 col-xs-3" ng-click="gotoPrev()"> <i class="glyphicon glyphicon-chevron-left"></i> </button>
+      <button class="btn btn-default col-sm-3 col-xs-3" ng-click="gotoNext()"> <i class="glyphicon glyphicon-chevron-right"></i></button>
+      <button class="btn btn-success col-sm-6 col-xs-6" ng-click="gotoToday()">Today</button>
+    </div>
+    <div class="headerCalender col-md-5 col-sm-12 col-xs-12">
+      <p>{{dateDisp | date:'dd MMM yyyy'}} </p>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12">
+      <div class="col-md-7 col-sm-6 col-xs-6">
+        <select class="form-control" ng-options="obj.disp for obj in listOfMonths track by obj.val"
+          ng-model="dropMonth"
+          ng-change="gotoPerticular()">
+        </select>
+      </div>
+      <div class="col-md-5 col-sm-6 col-xs-6 pull-right">
+        <select class="form-control" ng-options="obj.disp for obj in listOfYears track by obj.val"
+          ng-model="dropYear"
+          ng-change="gotoPerticular()">
+        </select>
+      </div>
+    </div>
+  </div>
+  <hr></hr>
+  <div class="row">
+    <div class="weekHeader">
+      <div class="weekDay text-muted">Sunday</div>
+      <div class="weekDay text-muted">Monday</div>
+      <div class="weekDay text-muted">Tuesday</div>
+      <div class="weekDay text-muted">Wednesday</div>
+      <div class="weekDay text-muted">Thursday</div>
+      <div class="weekDay text-muted">Friday</div>
+      <div class="weekDay text-muted">Saturday</div>
+    </div>
+  </div>
+  <div class="week">
+      <table width="100%" height="550px">
+        <tr ng-repeat="w in range(0,5)">
+          <td class="day {{(dates[w*7 + d] == (dateDisp|date : 'dd')) && (dateFlags[w*7 + d]=='Cur') ? 'dayActive': ''}}"  ng-repeat="d in range(0,6)" ng-click="showDetails(w*7 + d)">
+              <span style="top:1%;right:2%;position:absolute;" class="dayType{{dateFlags[w*7 + d]}} ">
+                {{dates[w*7 + d]}}
+              </span>
+              <div class="dayItems">
+                <div ng-if="haveItems[w*7 + d]">
+                  <div ng-repeat="i in itemsGroup[w*7 + d]">
+
+                  </div>
+                </div>
+              </div>
+          </td>
+        </tr>
+      </table>
+  </div>
+</div>

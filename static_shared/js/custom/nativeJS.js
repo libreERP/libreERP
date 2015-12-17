@@ -1,4 +1,63 @@
 // This file is to store the native JS custom functions , This should be included in the top of the imports
+
+function dateToString(date){
+  return date.getFullYear()+'-' + (date.getMonth()+1) + '-'+ (date.getDay());
+}
+
+
+function daysInMonth(month,year) {
+  return new Date(year, month, 0).getDate();
+}
+
+function getDays(month , year){
+ //====== This function gives the dates of the month and the year in the array.
+  var numDays = daysInMonth(month+1, year); // Number of days in the current month
+  var numDaysPrev = daysInMonth(month, year); // Number of days in the current month
+  var dTemp = new Date();
+  dTemp.setFullYear(year, month, 1)
+  var firstDay = dTemp.getDay();
+  var dayFlags = [];
+  var days = [];
+  var dayFlag = "";
+  var tFlag = 0;
+  var start = numDaysPrev + 1 - firstDay;
+  var temp = start;
+  var toAdd = temp;
+  if (temp>numDaysPrev){
+    temp = 1;
+    tFlag = 1;
+  }
+  for (var i= 0; i<42 ; i +=1) {
+    if (tFlag==0){
+      dayFlag = "Prev";
+      toAdd = temp;
+      temp +=1;
+      if (temp>numDaysPrev){
+        temp = 1;
+        tFlag = 1;
+      }
+    }else if (tFlag ==1){
+      dayFlag="Cur";
+      toAdd = temp;
+      temp +=1;
+      if (temp > numDays){
+        temp =1;
+        tFlag = 2;
+      }
+    }else if (tFlag ==2){
+      dayFlag = "Next";
+      toAdd = temp;
+      temp += 1;
+    }
+    days.push(toAdd);
+    dayFlags.push(dayFlag);
+  }
+  return {days: days, flags : dayFlags};
+};
+
+
+
+
 Array.prototype.sortIndices = function (func) {
   var i = j = this.length,
     that = this;

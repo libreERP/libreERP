@@ -1,0 +1,54 @@
+<div class="shaddowed card bg-white" style="min-height:750px;position:relative;">
+
+  <breadcrumb></breadcrumb>
+  <div class="col-md-10">
+
+    <generic-Calendar date="date" day-Items = "items"></generic-Calendar>
+  </div>
+  <div class="col-md-2 bg-aqua" style="position:absolute; height:100%;top:0px;right:0px;">
+    <div class="row" style="background-color:var(--themeMain);color:white;">
+
+      <div class="dayDetails">
+        <div class="sideBarDate"><i class="fa fa-calendar fa-2x pull-left"></i>{{date | date : 'dd MMM yyyy'}} </div>
+        {{dayDisp}}
+      </div>
+
+    </div>
+    <div class="row bg-purple dayInfoBox">
+      <div class=" dayDetails">
+        <div class="">
+          <i class="fa fa-clock-o fa fa-3x pull-left"></i> <i class="fa fa-sign-in"></i> : 2:26pm
+        </div>
+        <div class="">
+          <i class="fa fa-sign-out"></i> : 3:00am
+        </div>
+      </div>
+      <ul class="nav">
+        <li><a href="#"> Maternity leave <i class="fa fa-file-text-o pull-right"></i> <i class="fa fa-thumbs-o-up pull-right"></i></a></li>
+        <li><a href="#"> Casual leave <i class="fa fa-file-text-o pull-right"></i> </a></li>
+        <li><a href="#"> Paid leave <i class="fa fa-file-text-o pull-right"></i> </a></li>
+        <li><a href="#"> Compensation <i class="fa fa-file-text-o pull-right"></i></a></li>
+      </ul>
+    </div>
+    <div class="row bg-aqua">
+      <ul class="nav">
+        <li ng-init="a = false;b = false;" >
+          <div ng-click="a = !a;"  >
+            <span style="padding:10px;display:block; cursor:pointer;" class="noselect">
+              Options<i class="fa fa-bars fa-lg pull-right"></i>
+            </span>
+          </div>
+          <ul class="nav ngCalOptions" ng-if="a" >
+            <li>
+              <a style="color:white;" ng-click = "toggleLeaveFormModal()">Leave application</a>
+              <a style="color:white;" ng-click = "toggleLeaveCompensationModal()">Leave compensation</a>
+              <a style="color:white;" href="#">Summary</a>
+              <a style="color:white;" href="#">Generate report</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>

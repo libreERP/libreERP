@@ -1,0 +1,10 @@
+
+.ngCalOptions >li >a:hover ,.ngCalOptions >li >a:focus {
+  background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+}
+.ngCalOptions >li >a{
+  text-decoration: none;
+  box-sizing: border-box;
+  color: #fff;
+
+}

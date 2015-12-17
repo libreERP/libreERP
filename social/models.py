@@ -4,7 +4,7 @@ from time import time
 from django.db.models.signals import post_save , pre_delete
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
-import grequests
+import requests
 from django.conf import settings as globalSettings
 from PIM.models import *
 from django.core.exceptions import ObjectDoesNotExist
@@ -104,7 +104,8 @@ class social(models.Model):
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
 def notify(type , id , action , instance):
-    grequests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+    print "will send to " + instance.parent.user.username
+    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
         json={
           'topic': 'service.notification.' + instance.parent.user.username,
           'args': [{'type' : type ,'id': id , 'action' : action , 'objID' : instance.pk}]
@@ -113,7 +114,8 @@ def notify(type , id , action , instance):
 def notifyUpdates(type , action , subscribers , instance):
     for sub in subscribers:
         if sub != instance.user:
-            grequests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+            print "will update " + sub.username
+            requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
                 json={
                   'topic': 'service.updates.' + sub.username,
                   'args': [{'type' : type ,'parent': instance.parent.pk , 'action' : action , 'id' : instance.pk}]

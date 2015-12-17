@@ -31,10 +31,10 @@ app.config(function($stateProvider ){
     template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
     controller: 'home.news'
   })
-  .state('home.calender', {
-    url: "/calender",
-    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
-    controller: 'home.calender'
+  .state('home.calendar', {
+    url: "/calendar",
+    templateUrl: '/static/ngTemplates/app.home.calendar.html',
+    controller: 'home.calendar'
   })
   .state('home.notes', {
     url: "/notes",
@@ -45,14 +45,17 @@ app.config(function($stateProvider ){
 });
 
 app.controller("home.dash", function($scope , $state) {
+
 })
 app.controller("home.mail", function($scope , $state) {
+
 })
 app.controller("home.social", function($scope , $state) {
+
 })
 app.controller("home.news", function($scope , $state) {
+
 })
-app.controller("home.calender", function($scope , $state) {
-})
+
 app.controller("home.notes", function($scope , $state) {
 })

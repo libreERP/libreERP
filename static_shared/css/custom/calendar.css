@@ -1,0 +1,71 @@
+
+.headerCalender > p{
+  text-align: center;
+  font-size: 18px;
+  color: #868383;
+}
+ .day{
+  font-size: 13px;
+  box-sizing: border-box;
+  border: 1px solid  #f2eded;
+  position: relative;
+}
+.day:hover , .dayActive{
+  background-color:#cce6e9;
+  cursor: pointer;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+.dayTypePrev, .dayTypeNext{
+  color: #aaa4a4;
+}
+.week{
+  margin-left:2px;
+}
+.weekDay{
+  display: inline-block;
+  position: relative;
+  font-size: 15px;
+  width: 13.5%;
+  height: 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+.weekHeader{
+  box-sizing: border-box;
+  margin-bottom: 15px;
+  margin-right: 4px;
+  margin-left:4px;
+  padding-left:1%;
+}
+
+.ngCalEvents{
+  display: block;
+  height: 250px;
+  box-sizing: border-box;
+}
+.dayDetails{
+  padding:20px;
+  text-align: center;
+  height: 80px;
+}
+.sideBarDate{
+  font-size: 20px;
+}
+
+.dayItems{
+  position: absolute;
+  left: 1%;
+  bottom: 1%;
+}
+.dayInfoBox >ul{
+  display: block;
+}
+.dayInfoBox >ul >li >a:hover ,.dayInfoBox >ul >li >a:focus {
+  background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+}
+.dayInfoBox >ul >li >a{
+  text-decoration: none;
+  box-sizing: border-box;
+  color: #fff;
+
+}

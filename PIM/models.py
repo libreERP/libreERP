@@ -28,9 +28,9 @@ User.settings = property(lambda u : settings.objects.get_or_create(user = u)[0])
 settings.theme = property(lambda s : theme.objects.get_or_create(parent = s)[0])
 
 DOMAIN_CHOICES = (
-    ('SYS' , 'System'),
-    ('ADM' , 'Administration'),
-    ('APP' , 'Application')
+    ('System' , 'System'),
+    ('Administration' , 'Administration'),
+    ('Application' , 'Application')
 )
 
 class notification(models.Model):
@@ -59,22 +59,22 @@ class chatMessage(models.Model):
 def getCalendarAttachment(instance , filename ):
     return 'calendar/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, instance.originator.username, filename)
 
-class calenderItem(models.Model):
-    TYPE_CHOICE =(
-        ('NONE' , 'Not Available'),
-        ('MEET' , 'Meeting'),
-        ('REMI' , 'Reminder'),
-        ('TODO' , 'ToDo'),
-        ('EVEN' , 'EVENT'),
-        ('DEAD' , 'Deadline'),
-        ('OTHE' , 'Other'),
+class calendar(models.Model):
+    TYPE_CHOICE = (
+        ('Not Available' , 'Not Available'),
+        ('Meeting' , 'Meeting'),
+        ('Reminder' , 'Reminder'),
+        ('ToDo' , 'ToDo'),
+        ('EVENT' , 'EVENT'),
+        ('Deadline' , 'Deadline'),
+        ('Other' , 'Other'),
     )
 
     LEVEL_CHOICE = (
-        ('NOR' , 'Normal'),
-        ('CRI' , 'Critical'),
-        ('OPT' , 'Optional'),
-        ('MAN' , 'Mandatory'),
+        ('Normal' , 'Normal'),
+        ('Critical' , 'Critical'),
+        ('Optional' , 'Optional'),
+        ('Mandatory' , 'Mandatory'),
     )
 
     eventType = models.CharField(choices = TYPE_CHOICE , default = 'NONE' , max_length = 4)
@@ -83,13 +83,13 @@ class calenderItem(models.Model):
     updated = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     text = models.CharField(max_length = 200 , null = True)
-    notification = models.ForeignKey(notification)
+    notification = models.ForeignKey(notification , null = True)
     when = models.DateTimeField(null = True)
-    checked = models.BooleanField(default = False)
+    read = models.BooleanField(default = False)
     deleted = models.BooleanField(default = False)
     completed = models.BooleanField(default = False)
     canceled = models.BooleanField(default = False)
     level = models.CharField(choices = LEVEL_CHOICE , default = 'NOR' , max_length = 3)
     venue = models.CharField(max_length = 50)
     attachment = models.FileField(upload_to = getCalendarAttachment , null = True)
-    myNotes = models.CharField(max_length = 100)
+    myNotes = models.CharField(max_length = 100 , blank = True)

@@ -20,6 +20,16 @@ class notificationSerializer(serializers.HyperlinkedModelSerializer):
         model = notification
         fields = ('url' , 'message' ,'shortInfo','domain','onHold', 'link' , 'originator' , 'created' ,'updated' , 'read' , 'user')
 
+class calendarSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = calendar
+        fields = ('url' , 'eventType' ,'originator','created','updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
+    def create(self , validated_data):
+        cal = calender.objects.create(**validated_data)
+        cal.user = self.context['request'].user
+        cal.save()
+        return cal
+
 class chatMessageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = chatMessage

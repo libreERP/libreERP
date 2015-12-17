@@ -201,13 +201,14 @@ def emailView(request):
             if 'action' in request.GET:
                 actionType = request.GET['action']
                 if actionType == 'addFlag' or actionType == 'removeFlag':
-                    if actionType =='addFlag':
+                    if actionType =='addFlag' :
                         action = '+FLAGS'
                     elif actionType == 'removeFlag':
                         action = '-FLAGS'
                     rv , data = M.uid('STORE' , uid , action , '\\'+ request.GET['flag'])
+                    if request.GET['flag'] == 'Deleted':
+                        M.expunge()
                 elif actionType == 'move':
-
                     rv , data = M.uid('COPY' , uid ,  str(request.GET['to']))
                     if rv == 'OK':
                         rv , data = M.uid('STORE', uid , '+FLAGS', '(\Deleted)')

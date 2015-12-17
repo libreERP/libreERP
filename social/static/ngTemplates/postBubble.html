@@ -1,8 +1,8 @@
 <li><i class="fa fa-commenting-o bg-blue"></i>
   <div class="timeline-item">
     <span class="time"><i class="fa fa-clock-o"></i> {{data.created | timeAgo}} ago</span>
-    <h3 class="timeline-header" >
-      <a href=""><img ng-src="{{data.user | getDP}}" height="40px" width="40px"/> </a>
+    <h3 class="timeline-header" style="height:41px;">
+      <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{data.user | getDP}}" height="40px" width="40px"/>
       {{data.user | getName}}
 
     </h3>

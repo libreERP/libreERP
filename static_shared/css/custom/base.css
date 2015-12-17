@@ -29,7 +29,7 @@ body {
 }
 
 .shaddowed{
-  box-shadow: 1px 1px 2px #888;
+  box-shadow: 2px 2px 3px #888;
 }
 .card{
   display: block;
@@ -74,7 +74,14 @@ body {
 .listAddCont .action{
   top: 13px;
 }
-
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 
 
@@ -87,23 +94,23 @@ body {
 }
 
 .bg-aqua{
-  background-color: #3d9483 !important;
+  background-color: #16a085 !important;
 }
 
 .bg-green{
-    background-color: #1d8121 !important;
+    background-color: #27ae60 !important;
 }
 
 .bg-yellow {
-    background-color: #e6aa17 !important;
+    background-color: #f39c12 !important;
 }
 
 .bg-red{
-    background-color: #a34337 !important;
+    background-color: #b85246 !important;
 }
 
 .bg-blue {
-  background-color: #2673a6 !important;
+  background-color: #2980b9 !important;
 }
 
 .bg-black {
@@ -113,7 +120,7 @@ body {
   background-color: #af6a10 !important;
 }
 .bg-purple {
-  background-color: #9c27b0 !important;
+  background-color: #8e44ad !important;
 }
 .bg-olive {
   background-color: #828504 !important;
