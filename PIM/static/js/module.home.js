@@ -11,13 +11,13 @@ app.config(function($stateProvider ){
         templateUrl: '/static/ngTemplates/home.menu.html',
       },
       "@home": {
-        templateUrl: '/static/ngTemplates/dashboard.html',
+        templateUrl: '/static/ngTemplates/app.home.dashboard.html',
         controller : 'home.dash'
       }
     }
   })
   .state('home.mail', {
-    url: "/mail",
+    url: "/mail/{folder}?action",
     templateUrl: '/static/ngTemplates/app.mail.html',
     controller: 'controller.mail'
   })

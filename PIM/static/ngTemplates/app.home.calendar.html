@@ -33,17 +33,13 @@
     <div class="row bg-aqua">
       <ul class="nav">
         <li ng-init="a = false;b = false;" >
-          <div ng-click="a = !a;"  >
-            <span style="padding:10px;display:block; cursor:pointer;" class="noselect">
-              Options<i class="fa fa-bars fa-lg pull-right"></i>
-            </span>
-          </div>
-          <ul class="nav ngCalOptions" ng-if="a" >
-            <li>
-              <a style="color:white;" ng-click = "toggleLeaveFormModal()">Leave application</a>
-              <a style="color:white;" ng-click = "toggleLeaveCompensationModal()">Leave compensation</a>
-              <a style="color:white;" href="#">Summary</a>
-              <a style="color:white;" href="#">Generate report</a>
+          <ul class="nav ngCalOptions" >
+            <li >
+              <a ng-click="a = !a;" class="noselect" >Options<i class="fa fa-bars fa-lg pull-right"></i></a>
+              <a ng-if="a"  style="color:white;" ng-click = "toggleLeaveFormModal()">Leave application</a>
+              <a ng-if="a"  style="color:white;" ng-click = "toggleLeaveCompensationModal()">Leave compensation</a>
+              <a ng-if="a"  style="color:white;" href="#">Summary</a>
+              <a ng-if="a"  style="color:white;" href="#">Generate report</a>
             </li>
           </ul>
         </li>

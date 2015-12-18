@@ -7,6 +7,11 @@ body {
 }
 .nav-sidebar> li > a {
 	color:var(--themeMain);
+
+}
+.padded > li > a {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 .nav-sidebar> .active > a {
   color: #fff;
@@ -34,6 +39,7 @@ body {
 .card{
   display: block;
   padding-bottom:40px;
+  box-shadow: 0px 2px 8px rgba(26, 24, 20, 0.2);
 }
 /*/ customAlert */
 .alert.customAlert {
@@ -81,10 +87,8 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    cursor: pointer;
 }
-
-
-
 
 .bg-white{
   background-color: white !important;
@@ -102,7 +106,7 @@ body {
 }
 
 .bg-yellow {
-    background-color: #f39c12 !important;
+    background-color: #FFB424 !important;
 }
 
 .bg-red{
@@ -120,7 +124,7 @@ body {
   background-color: #af6a10 !important;
 }
 .bg-purple {
-  background-color: #8e44ad !important;
+  background-color: #795F99 !important;
 }
 .bg-olive {
   background-color: #828504 !important;

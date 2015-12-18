@@ -77,6 +77,14 @@ class calendar(models.Model):
         ('Mandatory' , 'Mandatory'),
     )
 
+    VISIBILITY_CHOICES = (
+        ('personal' , 'personal'), # if only I can see
+        ('public' , 'public'), # everyone can see
+        ('management' , 'management'), # only access level higher to me can see
+        ('friends' , 'friends'), # only fiends in the public can see
+    )
+
+    visibility = models.CharField(choices = VISIBILITY_CHOICES , default = 'personal' , max_length = 20)
     eventType = models.CharField(choices = TYPE_CHOICE , default = 'NONE' , max_length = 4)
     originator = models.CharField(null = True , max_length = 20)
     created = models.DateTimeField(auto_now_add=True)

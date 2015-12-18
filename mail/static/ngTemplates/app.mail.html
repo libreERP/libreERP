@@ -2,10 +2,10 @@
   <breadcrumb></breadcrumb>
 
 
-  <div class="col-md-1">
-    <button type="button" ng-click="newMail()" class="btn btn-default" style="width:100%;" >Compose <i class="fa fa-pencil-square-o"></i></button>
+  <div class="col-md-1" style="padding:0px;">
+    <button type="button" ng-click="newMail()" class="btn btn-default" style="width:95%;margin-left:5px;" >Compose <i class="fa fa-pencil-square-o"></i></button>
     <hr>
-    <ul class="nav nav-sidebar " >
+    <ul class="nav nav-sidebar " style="padding-top:5px;padding-bottom:5px;">
       <li ng-class="{active: folderSelected.indexOf(f.name)!=-1}" ng-repeat="f in folders track by $index" ng-click = "changeFolder(f.onServer)">
         <a href="" >
           <div align="center">{{f.name}} {{f.new | decorateCount}}</div>
@@ -106,7 +106,7 @@
             </div>
             <div class="col-md-10" style="position:relative;top:-13px;">
               <div class="row" >
-                <h5 style="font-size:20px;" class="text-muted"><a href=""> </a> {{emailInView.subject}}</h5>
+                <h5 style="font-size:16px;" class="text-muted"><a href=""> </a> {{emailInView.subject}}</h5>
               </div>
               <div class="row" >
                 From : <span class="text-muted"> {{emailInView.sender | emailAddress}}</span>
@@ -121,7 +121,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="container-fluid bg-white" style="height:580px;position:absolute;overflow:auto;width:100%;">
+          <div class="container-fluid bg-white" style="height:585px;position:absolute;overflow:auto;width:100%;">
             <div ng-bind-html="emailInView.body" style="padding-top:5px;">body</div>
           </div>
         </div>

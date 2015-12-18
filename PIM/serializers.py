@@ -25,7 +25,7 @@ class calendarSerializer(serializers.HyperlinkedModelSerializer):
         model = calendar
         fields = ('url' , 'eventType' ,'originator','created','updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
     def create(self , validated_data):
-        cal = calender.objects.create(**validated_data)
+        cal = calendar.objects.create(**validated_data)
         cal.user = self.context['request'].user
         cal.save()
         return cal

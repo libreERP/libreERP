@@ -15,11 +15,17 @@ parseEmailFlags = function(raw){
   // replacing non alphabetical chars with space , then multiple spaces with one , then removing the trailing spaces , then split
 }
 
-app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags){
+app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags , $stateParams , $state){
+  console.log($stateParams);
+
+  if ($stateParams.folder == '') {
+    $state.transitionTo('home.mail' , {folder:'inbox'})
+  }
+
   $scope.me = userProfileService.get('mySelf');
   $scope.viewerMail = -1;
   $scope.folders = [];
-  $scope.folderSelected = 'INBOX';
+  $scope.folderSelected = 'INBOX'; // name of the folder on the server, for mail its something like [GMAIL]/Sent Items
   $scope.page = 0;
 
 
@@ -184,7 +190,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     $scope.getMailbox(query)
   };
 
-  $scope.getMailbox();
+
   // getting the list of folders and status
   $http({method : 'GET' , url : '/api/mail/folders/'}).
   then(function(response){
@@ -192,17 +198,25 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       if (response.data[i][0] == 'OK'){
         rawString = response.data[i][1];
         // var match = '""INBOX" (MESSAGES 9 RECENT 0 UIDNEXT 23 UIDVALIDITY 1 UNSEEN 0)"'.exec("Sample text")
+        // i dont know why but if you call the parseMailboxStatus function seperately and assign the outout to a
+        // variable and then push that into the folders its not working
         $scope.folders.push(parseMailboxStatus(rawString))
+        var folder = $scope.folders[$scope.folders.length-1];
+        if (folder.onServer.split('/')[1] == $stateParams.folder ) {
+          $scope.folderSelected = folder.onServer;
+        }
       }
     }
+    $scope.getMailbox();
   });
   $scope.$watch('viewerMail' , function(newValue , oldValue){
-    $scope.emailInView = $scope.emails[newValue];
     if (newValue<0) {
       return;
     }
+    $scope.emailInView = $scope.emails[newValue];
     if (typeof $scope.emails[newValue].body == 'undefined') {
       $scope.getMailBody($scope.emails[newValue].uid , $scope.folderSelected)
+
     }
   });
 
@@ -335,10 +349,11 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
 
   }
   $scope.changeFolder = function(to){
+    $state.go('home.mail' , {folder : to.split('/')[1]} )
+    $stateParams.folder = to.split('/')[1];
     $scope.page = 0;
     $scope.folderSelected = to;
     $scope.getMailbox();
-
   }
 
   $scope.gotoMail = function(index){
