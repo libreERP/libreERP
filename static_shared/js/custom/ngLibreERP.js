@@ -27,7 +27,7 @@ app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state
 ]);
 
 // Main controller is mainly for the Navbar and also contains some common components such as clipboad etc
-app.controller('main' , function($scope , $state , userProfileService , $aside , $http){
+app.controller('main' , function($scope , $state , userProfileService , $aside , $http , $timeout){
   $scope.me = userProfileService.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
@@ -47,6 +47,44 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   $scope.$watchGroup(['themeObj.main' , 'themeObj.highlight'] , function(newValue , oldValue){
     $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   })
+
+  $scope.terminal = {command : '' , show : false};
+
+  $scope.parseCommand = function(){
+    if ($scope.command == '') {
+      $scope.terminal.show = false;
+      return;
+    }
+    // parse the command
+    // possible commands for the calendar app :
+    // 'remind me to ask bill for the report on the project'
+    // arrange a meeting with @team ELMS at 2 pm on alternate working day
+    // todo code review by EOD
+
+
+  };
+
+
+  $scope.$watch('terminal.show' , function(newValue , oldValue){
+    // once the termial is visible the timer starts , after 150 seconds is there is no command
+    // in the termial then the terminal is closed
+    if (newValue == false) {
+      return;
+    }
+    $timeout(function () {
+      if ($scope.terminal.command.length == 0) {
+        $scope.closeTerminal();
+      }
+    }, 150000);
+  });
+
+  $scope.closeTerminal = function(){
+    if ($scope.terminal.command.length == 0) {
+      $scope.terminal.show = false;
+    }
+  }
+
+
   settings = {theme : $scope.themeObj , mobile : $scope.me.profile.mobile };
   $scope.openSettings = function(position, backdrop , data ) {
     $scope.asideState = {

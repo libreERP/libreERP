@@ -42,12 +42,9 @@
               <span style="top:1%;right:2%;position:absolute;" class="dayType{{dateFlags[w*7 + d]}} ">
                 {{dates[w*7 + d]}}
               </span>
-              <div class="dayItems">
-                <div ng-if="haveItems[w*7 + d]">
-                  <div ng-repeat="i in itemsGroup[w*7 + d]">
-
-                  </div>
-                </div>
+              <div class="dayItems " style="position:absolute;width:102%;left:-3px;">
+                <div ng-if="itemsGroup[w*7 + d].length != 0" ng-repeat="i in itemsGroup[w*7 + d]" ng-include="itemTemplates"
+                style="height:25px;position:absolute;z-index:999;bottom:-2px;width:100%;padding:3px;" class="card {{i | rainbow}}"></div>
               </div>
           </td>
         </tr>

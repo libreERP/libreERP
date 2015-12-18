@@ -3,7 +3,7 @@
   <breadcrumb></breadcrumb>
   <div class="col-md-10">
 
-    <generic-Calendar date="date" day-Items = "items"></generic-Calendar>
+    <generic-Calendar date="date" day-Items = "items" item-Templates="{{templates}}"></generic-Calendar>
   </div>
   <div class="col-md-2 bg-aqua" style="position:absolute; height:100%;top:0px;right:0px;">
     <div class="row" style="background-color:var(--themeMain);color:white;">
@@ -25,22 +25,14 @@
       </div>
       <ul class="nav">
         <li><a href="#"> Maternity leave <i class="fa fa-file-text-o pull-right"></i> <i class="fa fa-thumbs-o-up pull-right"></i></a></li>
-        <li><a href="#"> Casual leave <i class="fa fa-file-text-o pull-right"></i> </a></li>
-        <li><a href="#"> Paid leave <i class="fa fa-file-text-o pull-right"></i> </a></li>
-        <li><a href="#"> Compensation <i class="fa fa-file-text-o pull-right"></i></a></li>
       </ul>
     </div>
-    <div class="row bg-aqua">
-      <ul class="nav">
+    <div class="row bg-aqua" style="position:absolute;bottom:0px;width:100%;">
+      <ul class="nav" >
         <li ng-init="a = false;b = false;" >
           <ul class="nav ngCalOptions" >
-            <li >
-              <a ng-click="a = !a;" class="noselect" >Options<i class="fa fa-bars fa-lg pull-right"></i></a>
-              <a ng-if="a"  style="color:white;" ng-click = "toggleLeaveFormModal()">Leave application</a>
-              <a ng-if="a"  style="color:white;" ng-click = "toggleLeaveCompensationModal()">Leave compensation</a>
-              <a ng-if="a"  style="color:white;" href="#">Summary</a>
-              <a ng-if="a"  style="color:white;" href="#">Generate report</a>
-            </li>
+            <li ng-repeat="f in availableForms"><a ng-if="a"  style="color:white;" class="noselect" ng-click = "openForm($index)">{{f.name}}</a> </li>
+            <li><a href="" ng-click="console.log('no');a = !a;" class="noselect" ng-blur="console.log('yes');a = !a;">Options<i class="fa fa-bars fa-lg pull-right"></i></a></li>
           </ul>
         </li>
       </ul>

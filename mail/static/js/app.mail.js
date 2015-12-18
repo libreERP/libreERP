@@ -333,10 +333,13 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
   }
 
   $scope.nextPage = function(){
+    if ($scope.emails.length != 9) {
+      return;
+    }
     $scope.page += 1;
     $scope.getMailbox();
-
   }
+
   $scope.prevPage = function(){
     $scope.selectAll = false;
     $scope.page -=1;
@@ -345,9 +348,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       return;
     }
     $scope.getMailbox();
-
-
   }
+
   $scope.changeFolder = function(to){
     $state.go('home.mail' , {folder : to.split('/')[1]} )
     $stateParams.folder = to.split('/')[1];
@@ -369,8 +371,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
     }
     $scope.resetEditor();
     $scope.editor = false;
-
   }
+
   $scope.nextMail = function(){
     $scope.viewerMail += 1;
     if ($scope.viewerMail >= $scope.emails.length){
@@ -384,7 +386,6 @@ app.controller('controller.mail' , function($scope , $http , $timeout , userProf
       $scope.viewerMail = 1;
     };
   };
-
 });
 
 app.factory('removeHtmlTags', function () {

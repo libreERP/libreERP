@@ -20,10 +20,7 @@
   			<li ng-class="{active: $state.includes('admin')}"><a ui-sref="admin"><i class="fa fa-user"></i> Admin</a></li>
   		</ul>
 
-      <form class="navbar-form navbar-right" role="search">
-        <input type="text" class="form-control col-md-2" placeholder="">
-      </form>
-  		<ul class="nav navbar-nav navbar-right">
+  		<ul class="nav navbar-nav navbar-right" style="margin-right:20px;">
   			<li class="dropdown">
   			  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{me.url | getName}}  <span class="glyphicon glyphicon-chevron-down"></span></a>
   			  <ul class="dropdown-menu">
@@ -74,6 +71,11 @@
           </ul>
         </li>
       </ul> <!-- /. notification icons group -->
+      <form  class="navbar-form navbar-right" role="search">
+        <i style="margin:10px;" ng-click="terminal.show = !terminal.show;" class="fa fa-usd noselect"></i>
+        <input ng-if="terminal.show" focus-me="terminal.show" type="text" class="form-control animated fadeIn" placeholder="Enter command" ng-enter="parseCommand()"
+        ng-model="selected" uib-typeahead="state as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-template-url="customTemplate.html"  ng-blur="closeTerminal()" ng-model = "terminal.command" style="width:500px;">
+      </form>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>

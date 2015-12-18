@@ -6,18 +6,25 @@ app.directive('genericCalendar' , function(){
     scope: {
       dateDisp : '=date',
       dayItems : '=',
+      itemTemplates :'@',
     },
 
     controller : function($scope){
       // Everything related to the calendar from is from this point
       // console.log($scope.dayItems);
-      $scope.listOfMonths = [{"val":0, "disp":"January"}, {"val":1, "disp":"February"}, {"val":2, "disp":"March"}, {"val":3, "disp":"April"}, {"val":4, "disp":"May"}, {"val":5, "disp":"June"}, {"val":6, "disp":"July"}, {"val":7, "disp":"August"}, {"val":8, "disp":"September"}, {"val":9, "disp":"October"}, {"val":10, "disp":"November"}, {"val":11, "disp":"December"}];
+      // console.log($scope.itemTemplates);
+
+
+      $scope.listOfMonths = [{"val":0, "disp":"January"}, {"val":1, "disp":"February"}, {"val":2, "disp":"March"}, {"val":3, "disp":"April"}, {"val":4, "disp":"May"},
+        {"val":5, "disp":"June"}, {"val":6, "disp":"July"}, {"val":7, "disp":"August"}, {"val":8, "disp":"September"}, {"val":9, "disp":"October"}, {"val":10, "disp":"November"},
+        {"val":11, "disp":"December"}];
       $scope.listOfYears = [{"val":2015, "disp":"2015"}, {"val":2016, "disp":"2016"}, {"val":2017, "disp":"2017"}, {"val":2018, "disp":"2018"}, {"val":2019, "disp":"2019"}];
-      $scope.listOfDays = [{"val":1, "disp":"Sunday"}, {"val":1, "disp":"Monday"}, {"val":1, "disp":"Tuesday"}, {"val":1, "disp":"Wednesday"}, {"val":1, "disp":"Thursday"}, {"val":1, "disp":"Friday"}, {"val":1, "disp":"Saturday"}];
+      $scope.listOfDays = [{"val":1, "disp":"Sunday"}, {"val":1, "disp":"Monday"}, {"val":1, "disp":"Tuesday"}, {"val":1, "disp":"Wednesday"}, {"val":1, "disp":"Thursday"},
+        {"val":1, "disp":"Friday"}, {"val":1, "disp":"Saturday"}];
 
       var calDate = new Date(); // the current date value known to the calendar, also the selected. For a random month its 1st day of that month.
-      var calMonth = calDate.getMonth();
-      var calYear = calDate.getFullYear();
+      var calMonth = calDate.getMonth(); // in MM format
+      var calYear = calDate.getFullYear(); // in YYYY format
 
       datesMap = getDays(calMonth, calYear);
       $scope.dates = datesMap.days;
@@ -47,6 +54,33 @@ app.directive('genericCalendar' , function(){
           $scope.dateDisp = calDate;
         };
       };
+
+      $scope.itemsGroup = [];
+      for (var i = 0; i < 42; i++) {
+        $scope.itemsGroup.push([])
+      }
+
+      $scope.$watchCollection('dates' , function(newValue , oldValue){
+        for (var i = 0; i < 42; i++) {
+          for (var j = 0; j < $scope.dayItems.length; j++) {
+            d = $scope.dayItems[j].date;
+            if ($scope.dateFlags[i] == 'Cur') {
+              if ($scope.dateDisp.getFullYear() == d.getFullYear() && $scope.dateDisp.getMonth() == d.getMonth() && $scope.dates[i] == d.getDate()) {
+                $scope.itemsGroup[i].push(j)
+              }
+            } else if ($scope.dateFlags[i] == 'Next') {
+              if ($scope.dateDisp.getFullYear() == d.getFullYear() && $scope.dateDisp.getMonth() +1 == d.getMonth() && $scope.dates[i] == d.getDate()) {
+                $scope.itemsGroup[i].push(j)
+              }
+            } else if ($scope.dateFlags[i] == 'Prev') {
+              if ($scope.dateDisp.getFullYear() == d.getFullYear() && $scope.dateDisp.getMonth()-1 == d.getMonth() && $scope.dates[i] == d.getDate()) {
+                $scope.itemsGroup[i].push(j)
+              }
+            }
+          }
+        }
+      });
+
 
       $scope.gotoToday = function(){
         var calDate = new Date(); // current day
@@ -93,6 +127,20 @@ app.directive('genericCalendar' , function(){
       };
 
     },
+  };
+});
+
+app.directive('focusMe', function($timeout) {
+  // bring any input into focus based on the focus-me = "true" attribute
+  return {
+    link: function(scope, element, attrs) {
+      scope.$watch(attrs.focusMe, function(value) {
+        if(value === true) {
+          element[0].focus();
+          scope[attrs.focusMe] = false;
+        }
+      });
+    }
   };
 });
 
