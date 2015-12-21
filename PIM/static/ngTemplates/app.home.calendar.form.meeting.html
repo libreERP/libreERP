@@ -1,0 +1,43 @@
+<div class="form-group">
+  <label class="control-label col-sm-3" for="agenda">Agenda:</label>
+  <div class="col-md-9">
+    <textarea type="text" rows="3" name="agenda" value="" class="form-control " required ng-model="meeting.agenda"></textarea>
+  </div>
+</div>
+<div class="form-group">
+  <label class="control-label col-sm-3" for="attachment">Attachment:</label>
+  <div class="col-sm-7">
+    <input type="file" name="attachment" file-model="meeting.attachment">
+  </div>
+</div>
+<div class= "form-group">
+  <label class="control-label col-sm-3" for="with">With :</label>
+  <div class="col-md-9">
+    <input type="text" class = "form-control" name = "with" placeholder="Add people by typing the name" ng-model = "meeting.with">
+  </div>
+</div>
+<div class= "form-group">
+  <label class="control-label col-sm-3" for="tagged">When :</label>
+  <div class="col-md-9">
+    <input type="date" class = "form-control" name = "tagged" placeholder="Tag people by typing the name" ng-model = "post.tagged">
+  </div>
+</div>
+
+<div class= "form-group">
+  <label class="control-label col-sm-3" for="tagged">Where :</label>
+  <div class="col-md-9">
+    <input type="text" class = "form-control" name = "tagged" placeholder="Tag people by typing the name" ng-model = "post.tagged">
+  </div>
+</div>
+
+<div class= "form-group">
+  <label class="control-label col-sm-3" for="tagged">Priority :</label>
+  <div class="col-md-9">
+    <select class="form-control">
+      <option value="Normal">Normal</option>
+      <option value="Critical">Critical</option>
+      <option value="Mandatory">Mandatory</option>
+      <option value="Optional">Optional</option>
+    </select>
+  </div>
+</div>

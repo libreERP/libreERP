@@ -29,10 +29,10 @@
     </div>
     <div class="row bg-aqua" style="position:absolute;bottom:0px;width:100%;">
       <ul class="nav" >
-        <li ng-init="a = false;b = false;" >
+        <li ng-init="a = false;" >
           <ul class="nav ngCalOptions" >
-            <li ng-repeat="f in availableForms"><a ng-if="a"  style="color:white;" class="noselect" ng-click = "openForm($index)">{{f.name}}</a> </li>
-            <li><a href="" ng-click="console.log('no');a = !a;" class="noselect" ng-blur="console.log('yes');a = !a;">Options<i class="fa fa-bars fa-lg pull-right"></i></a></li>
+            <li ng-repeat="f in availableForms"><a ng-click = "openForm(f.name)" ng-if="a"  style="color:white;" class="noselect" >{{f.name}}</a> </li>
+            <li><a href="" ng-click="a = !a;" class="noselect" ng-blur="hideAvailableOptions()">Options<i class="fa fa-bars fa-lg pull-right"></i></a></li>
           </ul>
         </li>
       </ul>

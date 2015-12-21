@@ -212,6 +212,7 @@ app.directive('genericForm', function () {
     },
     controller : function($scope , $state){
       $scope.page = 1;
+
       $scope.next = function(){
         $scope.page +=1;
         if ($scope.page>$scope.maxPage) {
