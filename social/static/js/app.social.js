@@ -107,7 +107,7 @@ app.directive('post', function () {
 
 app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, userProfileService , input) {
   $scope.content = 'post';
-  var emptyFile = new File([""], "");
+  
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;

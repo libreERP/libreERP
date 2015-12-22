@@ -4,6 +4,7 @@ function dateToString(date){
   return date.getFullYear()+'-' + (date.getMonth()+1) + '-'+ (date.getDay());
 }
 
+var emptyFile = new File([""], "");
 
 function daysInMonth(month,year) {
   return new Date(year, month, 0).getDate();

@@ -1,6 +1,9 @@
-<div class="row bg-aqua container-fluid" style="padding:10px;">
-  <h3>{{data.formTitle}}</h3>
+<div class="row bg-aqua " style="padding:10px;">
+  <div class="container-fluid">
+
+    <h3>{{data.formTitle}}</h3>
+  </div>
 </div>
 <div class="row" style="padding:10px;display:block;box-sizing:border-box;">
-  <generic-Form template="data.template" ><generic-Form>
+  <div ng-include="data.template"></div>
 </div>

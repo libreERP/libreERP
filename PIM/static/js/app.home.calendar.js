@@ -12,7 +12,7 @@ app.controller("home.calendar", function($scope ,$aside, $state , $timeout) {
     if (form == 'Meeting') {
       templateUrl = '/static/ngTemplates/app.home.calendar.aside.html';
       template = '/static/ngTemplates/app.home.calendar.form.meeting.html';
-      input = {formTitle : 'Create a meeting' , template : template};
+      input = {formTitle : 'Create a meeting' , template : template };
       position = 'left';
     }
     $scope.formAside(position, input , templateUrl);
@@ -50,6 +50,10 @@ app.controller("home.calendar", function($scope ,$aside, $state , $timeout) {
     } , 500)
   };
 
+
+
+
+
   $scope.date = new Date();
   $scope.templates = '/static/ngTemplates/app.home.calendar.items.html';
   $scope.items =
@@ -63,12 +67,46 @@ app.controller("home.calendar", function($scope ,$aside, $state , $timeout) {
   ];
 })
 app.controller('controller.home.calendar.aside.form', function($scope, $uibModalInstance , $http, userProfileService , input) {
+
   var emptyFile = new File([""], "");
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input;
 
+  $scope.saveMeeting = function(){
 
+    console.log("came to submit the meeting");
+    var fd = new FormData();
+    fd.append('text' , $scope.data.text );
+    fd.append('user' , $scope.me.url);
+    if ($scope.data.attachment !=emptyFile) {
+      fd.append('attachment' , $scope.data.attachment);
+    }
+    if ( typeof $scope.data.tagged !='undefined' && $scope.data.tagged != '' ) {
+      fd.append('tagged' , $scope.data.with)
+    }
+    if ($scope.data.when != '' ) {
+      fd.append('when' , $scope.data.when );
+    }
+    if ($scope.data.venue != '' ) {
+      fd.append('venue' , $scope.data.venue );
+    }
+    var url = '/api/PIM/calendar/';
+    $http({method : 'POST' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
 
+    },function(response){
 
+    });
 
+  };
+
+  $scope.resetMeeting = function(){
+    $scope.data.agenda = '';
+    $scope.data.attachment = emptyFile;
+    $scope.data.with = '';
+    $scope.data.when = '';
+    $scope.data.where = '';
+    $scope.data.priority = 'Normal';
+  };
+  $scope.resetMeeting();
 })
