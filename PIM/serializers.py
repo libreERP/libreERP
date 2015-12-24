@@ -23,9 +23,15 @@ class notificationSerializer(serializers.HyperlinkedModelSerializer):
 class calendarSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = calendar
-        fields = ('url' , 'eventType' ,'originator','created','updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
+        fields = ('url' , 'eventType' , 'followers' ,'originator','created','updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
+        read_only_fields = ('followers',)
     def create(self , validated_data):
         cal = calendar.objects.create(**validated_data)
+        if 'tagged' in  self.context['request'].data:
+            tagged = self.context['request'].data['tagged']
+            for tag in tagged.split(','):
+                cal.followers.add( User.objects.get(username = tag))
+
         cal.user = self.context['request'].user
         cal.save()
         return cal

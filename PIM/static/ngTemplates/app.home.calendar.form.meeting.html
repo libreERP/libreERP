@@ -2,33 +2,33 @@
   <div class="form-group">
     <label class="control-label col-sm-3" for="agenda">Agenda:</label>
     <div class="col-md-9">
-      <textarea type="text" rows="3" name="agenda" value="" class="form-control " required ng-model="data.text"></textarea>
+      <textarea type="text" rows="3"  value="" class="form-control " required ng-model="data.text"></textarea>
     </div>
   </div>
 
   <div class="form-group">
     <label class="control-label col-sm-3" for="attachment">Attachment:</label>
     <div class="col-sm-7">
-      <input type="file" name="attachment" file-model="data.attachment">
+      <input type="file" file-model="data.attachment">
     </div>
   </div>
   <div class= "form-group">
     <label class="control-label col-sm-3" for="with">With :</label>
     <div class="col-md-9">
-      <input type="text" class = "form-control" name = "with" placeholder="Add people by typing the name" ng-model = "data.with">
+      <input type="text" class = "form-control" placeholder="Add people by typing the name" ng-model = "data.with">
     </div>
   </div>
   <div class= "form-group">
     <label class="control-label col-sm-3" for="when">When :</label>
     <div class="col-md-9">
-      <input type="text" class = "form-control" name = "when" placeholder="When ?" ng-model = "data.when">
+      <input type="text" class = "form-control" placeholder="When ?" ng-model = "data.when">
     </div>
   </div>
 
   <div class= "form-group">
     <label class="control-label col-sm-3" for="where">Where :</label>
     <div class="col-md-9">
-      <input type="text" class = "form-control" name = "where" placeholder="Where ?" ng-model = "data.venue">
+      <input type="text" class = "form-control" placeholder="Where ?" ng-model = "data.venue">
     </div>
   </div>
 
@@ -44,7 +44,7 @@
     </div>
   </div>
 
-  <div class="row" style="padding:20px;">
+  <div class= "form-group container-fluid">
     <button type="submit" class="btn btn-primary">Submit</button>
     <a ng-click="resetMeeting()" class="btn btn-default">Reset</a>
   </div>

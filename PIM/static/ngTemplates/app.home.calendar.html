@@ -1,11 +1,10 @@
 <div class="shaddowed card bg-white" style="min-height:750px;position:relative;">
 
   <breadcrumb></breadcrumb>
-  <div class="col-md-10">
-
-    <generic-Calendar date="date" day-Items = "items" item-Templates="{{templates}}"></generic-Calendar>
+  <div class="col-md-9">
+    <generic-Calendar date="date" day-Items = "data.items" item-Templates="{{templates}}" day-Clicked="showDay" item-Clicked="showPerticular"></generic-Calendar>
   </div>
-  <div class="col-md-2 bg-aqua" style="position:absolute; height:100%;top:0px;right:0px;">
+  <div class="col-md-3 bg-aqua" style="position:absolute; height:100%;top:0px;right:0px;">
     <div class="row" style="background-color:var(--themeMain);color:white;">
 
       <div class="dayDetails">
@@ -24,8 +23,12 @@
         </div>
       </div>
       <ul class="nav">
-        <li><a href="#"> Maternity leave <i class="fa fa-file-text-o pull-right"></i> <i class="fa fa-thumbs-o-up pull-right"></i></a></li>
+        <li><a href="" ng-click="showPerticular($index)" ng-repeat="item in itemsToShow"> {{item.data.text}} <i class="fa fa-file-text-o pull-right"></i> <i class="fa fa-thumbs-o-up pull-right"></i></a></li>
       </ul>
+    </div>
+    <div ng-if="itemInView.type == 'Meeting'" class="container-fluid">
+      Agenda : {{itemInView.data.text}}
+      When : {{itemInView.data.when | date:'hh mm'}}
     </div>
     <div class="row bg-aqua" style="position:absolute;bottom:0px;width:100%;">
       <ul class="nav" >

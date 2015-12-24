@@ -7,12 +7,31 @@ app.directive('genericCalendar' , function(){
       dateDisp : '=date',
       dayItems : '=',
       itemTemplates :'@',
+      itemClicked : '=',
+      dayClicked : '=',
     },
 
     controller : function($scope){
-      // Everything related to the calendar from is from this point
-      // console.log($scope.dayItems);
-      // console.log($scope.itemTemplates);
+
+      $scope.refreshList = function(){
+        for (var i = 0; i < 42; i++) {
+          if ($scope.dates[i] == $scope.dateDisp.getDate() && $scope.dateFlags[i]=='Cur' ){
+            $scope.showDay(i);
+          }
+        }
+      }
+
+      $scope.$watch(function($scope){
+        return $scope.dayItems.length
+      } , function(newValue , oldValue){
+        $scope.refreshItems();
+        $scope.refreshList();
+      })
+
+      $scope.$watchCollection('dates' , function(newValue , oldValue){
+        $scope.refreshItems();
+        $scope.refreshList();
+      });
 
 
       $scope.listOfMonths = [{"val":0, "disp":"January"}, {"val":1, "disp":"February"}, {"val":2, "disp":"March"}, {"val":3, "disp":"April"}, {"val":4, "disp":"May"},
@@ -26,6 +45,7 @@ app.directive('genericCalendar' , function(){
       var calMonth = calDate.getMonth(); // in MM format
       var calYear = calDate.getFullYear(); // in YYYY format
 
+      $scope.itemInView = [];
       datesMap = getDays(calMonth, calYear);
       $scope.dates = datesMap.days;
       $scope.dateFlags = datesMap.flags;
@@ -35,32 +55,33 @@ app.directive('genericCalendar' , function(){
       $scope.dropYear ={"val":calYear, "disp":""}; // year selected in the drop down menu
       $scope.dropMonth = {"val":calMonth, "disp":""}; // Month selected in the drop down menu
 
-      $scope.showDetails = function(val){
-        if (datesMap.flags[val]=="Cur"){
-          $scope.calDate = calDate.setFullYear(calYear, calMonth, $scope.dates[val]);
+      $scope.showDay = function(input){
+
+        if (datesMap.flags[input]=="Cur"){
+          $scope.calDate = calDate.setFullYear(calYear, calMonth, $scope.dates[input]);
           $scope.dayDisp = $scope.listOfDays[calDate.getDay()].disp;
           $scope.dateDisp = calDate;
-        }else if(datesMap.flags[val]=="Prev"){
-          var selectedDate = $scope.dates[val];
+        }else if(datesMap.flags[input]=="Prev"){
+          var selectedDate = $scope.dates[input];
           $scope.gotoPrev();
           $scope.calDate = calDate.setFullYear(calYear, calMonth, selectedDate);
           $scope.dayDisp = $scope.listOfDays[calDate.getDay()].disp;
           $scope.dateDisp = calDate;
-        }else if(datesMap.flags[val]=="Next"){
-          var selectedDate = $scope.dates[val];
+        }else if(datesMap.flags[input]=="Next"){
+          var selectedDate = $scope.dates[input];
           $scope.gotoNext();
           $scope.calDate = calDate.setFullYear(calYear, calMonth, selectedDate);
           $scope.dayDisp = $scope.listOfDays[calDate.getDay()].disp;
           $scope.dateDisp = calDate;
         };
+        $scope.dayClicked($scope.itemsGroup[input]);
       };
 
-      $scope.itemsGroup = [];
-      for (var i = 0; i < 42; i++) {
-        $scope.itemsGroup.push([])
-      }
-
-      $scope.$watchCollection('dates' , function(newValue , oldValue){
+      $scope.refreshItems = function(){
+        $scope.itemsGroup = [];
+        for (var i = 0; i < 42; i++) {
+          $scope.itemsGroup.push([])
+        }
         for (var i = 0; i < 42; i++) {
           for (var j = 0; j < $scope.dayItems.length; j++) {
             d = $scope.dayItems[j].date;
@@ -79,8 +100,7 @@ app.directive('genericCalendar' , function(){
             }
           }
         }
-      });
-
+      };
 
       $scope.gotoToday = function(){
         var calDate = new Date(); // current day

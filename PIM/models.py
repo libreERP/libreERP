@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from social.models import follow
 # Create your models here.
 def getThemeImageUploadPath(instance , filename ):
     return 'PIM/images/theme/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
@@ -59,9 +59,9 @@ class chatMessage(models.Model):
 def getCalendarAttachment(instance , filename ):
     return 'calendar/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, instance.originator.username, filename)
 
+
 class calendar(models.Model):
     TYPE_CHOICE = (
-        ('Not Available' , 'Not Available'),
         ('Meeting' , 'Meeting'),
         ('Reminder' , 'Reminder'),
         ('ToDo' , 'ToDo'),
@@ -85,7 +85,7 @@ class calendar(models.Model):
     )
 
     visibility = models.CharField(choices = VISIBILITY_CHOICES , default = 'personal' , max_length = 20)
-    eventType = models.CharField(choices = TYPE_CHOICE , default = 'NONE' , max_length = 4)
+    eventType = models.CharField(choices = TYPE_CHOICE , default = 'Other' , max_length = 4)
     originator = models.CharField(null = True , max_length = 20)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -97,7 +97,8 @@ class calendar(models.Model):
     deleted = models.BooleanField(default = False)
     completed = models.BooleanField(default = False)
     canceled = models.BooleanField(default = False)
-    level = models.CharField(choices = LEVEL_CHOICE , default = 'NOR' , max_length = 3)
+    level = models.CharField(choices = LEVEL_CHOICE , default = 'Normal' , max_length = 3)
     venue = models.CharField(max_length = 50)
     attachment = models.FileField(upload_to = getCalendarAttachment , null = True)
     myNotes = models.CharField(max_length = 100 , blank = True)
+    followers = models.ManyToManyField(User , related_name = 'calendarItemsFollowing' , blank = True)
