@@ -1,0 +1,21 @@
+<form ng-submit="saveReminder()">
+
+  <div class= "form-group">
+    <label class="control-label col-sm-3">About :</label>
+    <div class="col-md-9">
+      <input type="text" class = "form-control" placeholder="Remind me to .. " ng-model = "data.text">
+    </div>
+  </div>
+
+  <div class= "form-group">
+    <label class="control-label col-sm-3">By :</label>
+    <div class="col-md-9">
+      <input type="text" class = "form-control" placeholder="By ?" ng-model = "data.when">
+    </div>
+  </div>
+
+  <div class= "form-group container-fluid">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a ng-click="resetMeeting()" class="btn btn-default">Reset</a>
+  </div>
+<form>

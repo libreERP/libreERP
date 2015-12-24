@@ -93,6 +93,7 @@ class calendar(models.Model):
     text = models.CharField(max_length = 200 , null = True)
     notification = models.ForeignKey(notification , null = True)
     when = models.DateTimeField(null = True)
+    duration = models.IntegerField(null = True)
     read = models.BooleanField(default = False)
     deleted = models.BooleanField(default = False)
     completed = models.BooleanField(default = False)

@@ -36,7 +36,7 @@
     </div>
   </div>
   <div class="week">
-    <table width="100%" height="550px">
+    <table width="100%" style="height:560px;">
       <tr ng-repeat="w in range(0,5)">
         <td class="day {{(dates[w*7 + d] == (dateDisp|date : 'dd')) && (dateFlags[w*7 + d]=='Cur') ? 'dayActive': ''}}"  ng-repeat="d in range(0,6) track by $index" ng-click="showDay(w*7 + d)">
           <span style="top:1%;right:2%;position:absolute;" class="dayType{{dateFlags[w*7 + d]}} ">

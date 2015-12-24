@@ -1,43 +1,46 @@
 app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeout) {
 
-  $scope.availableForms = [
-    {name : 'Meeting'},
-    {name : 'To Do'},
-    {name : 'Reminder'},
-  ];
-
   $scope.data = {items : []};
-  $scope.meetings = [];
   $http({url : '/api/PIM/calendar/' , method : 'GET'}).
   then(function(response){
-    $scope.meetings = response.data;
-    for (var i = 0; i < $scope.meetings.length; i++) {
-      $scope.data.items.push( {'type' : $scope.meetings[i].eventType, data : $scope.meetings[i] ,  date : new Date($scope.meetings[i].when)});
+    d = response.data;
+    for (var i = 0; i < d.length; i++) {
+      $scope.data.items.push( {'type' : d[i].eventType, data : d[i] ,  date : new Date(d[i].when)});
     }
   })
 
+  $scope.todo = [
+    {type : 'To Do' , data : {completed : true , text : 'task 1'} , date : new Date()},
+    {type : 'To Do' , data : {completed : true , text : 'task 1'} , date : new Date()},
+  ]
+
   $scope.showDay = function(input){
+    console.log(input);
     $scope.itemsToShow = [];
     for (var i = 0; i < input.length; i++) {
       $scope.itemsToShow.push($scope.data.items[input[i]]);
     }
+    $scope.itemInView = $scope.data.items[input[0]];
   };
 
-  $scope.showPerticular = function(input){
+  $scope.itemSelected = function(input){
     $scope.itemInView = $scope.itemsToShow[input];
-  };
-
-  $scope.openForm = function(form){
-    if (form == 'Meeting') {
-      templateUrl = '/static/ngTemplates/app.home.calendar.aside.html';
-      template = '/static/ngTemplates/app.home.calendar.form.meeting.html';
-      input = {formTitle : 'Create a meeting' , template : template , items : $scope.data.items};
-      position = 'left';
-    }
-    $scope.formAside(position, input , templateUrl);
   }
 
-  $scope.formAside = function( position , input , templateUrl) {
+  $scope.showPerticular = function(input){
+    $scope.itemInView = $scope.data.items[input];
+  };
+
+  $scope.openForm = function(){
+
+    templateUrl = '/static/ngTemplates/app.home.calendar.aside.html';
+    templates = {meeting : '/static/ngTemplates/app.home.calendar.form.meeting.html' , reminder : '/static/ngTemplates/app.home.calendar.form.reminder.html'};
+    input = {formTitle : 'Create an item' , template : templates , items : $scope.data.items};
+    position = 'left';
+    $scope.openAside(position, input , templateUrl);
+  }
+
+  $scope.openAside = function( position , input , templateUrl) {
     $scope.asideState = {
       open: true,
       position: position
@@ -52,7 +55,7 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
       placement: position,
       size: 'md',
       backdrop: true,
-      controller:'controller.home.calendar.aside.form',
+      controller:'controller.home.calendar.aside',
       resolve: {
        input: function () {
          return input;
@@ -68,16 +71,13 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
     } , 500)
   };
 
-
-
-
-
   $scope.date = new Date();
   $scope.templates = '/static/ngTemplates/app.home.calendar.items.html';
 
 
 })
-app.controller('controller.home.calendar.aside.form', function($scope, $uibModalInstance , $http, userProfileService , input , Flash) {
+app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, userProfileService , input , Flash) {
+  $scope.baseUrl = '/api/PIM/calendar/';
 
   var emptyFile = new File([""], "");
   $scope.me = userProfileService.get("mySelf");
@@ -101,25 +101,41 @@ app.controller('controller.home.calendar.aside.form', function($scope, $uibModal
     if ($scope.data.venue != '' ) {
       fd.append('venue' , $scope.data.venue );
     }
+    if ($scope.data.venue != '' ) {
+      fd.append('duration' , parseInt($scope.data.duration*60) );
+    }
     fd.append('level' , $scope.data.priority );
-    var url = '/api/PIM/calendar/';
-    $http({method : 'POST' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+
+    $http({method : 'POST' , url : $scope.baseUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       Flash.create('success' , response.status + ' : ' + response.statusText);
       $scope.data.items.push( {'type' : response.data.eventType, data : response.data ,  date : new Date(response.data.when)});
-      $scope.resetMeeting();
+      $scope.resetForm();
     },function(response){
       Flash.create('danger' , response.status + ' : ' + response.statusText);
     });
   };
 
-  $scope.resetMeeting = function(){
+  $scope.saveReminder = function(){
+    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $scope.data.when , venue : 'na' };
+    $http({method : 'POST' , url : $scope.baseUrl , data : data}).
+    then(function(response){
+      $scope.resetForm()
+      Flash.create('success' , response.status + ' : ' + response.statusText);
+      $scope.data.items.push( {'type' : response.data.eventType, data : response.data ,  date : new Date(response.data.when)});
+    } , function(response){
+      Flash.create('danger' , response.status + ' : ' + response.statusText);
+    });
+  };
+
+  $scope.resetForm = function(){
     $scope.data.text = '';
     $scope.data.attachment = emptyFile;
     $scope.data.with = '';
     $scope.data.when = '';
     $scope.data.venue = '';
     $scope.data.priority = 'Normal';
+    $scope.data.duration = '';
   };
-  $scope.resetMeeting();
+  $scope.resetForm();
 })

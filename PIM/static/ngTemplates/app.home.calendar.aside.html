@@ -5,5 +5,12 @@
   </div>
 </div>
 <div class="row" style="padding:10px;display:block;box-sizing:border-box;">
-  <div ng-include="data.template"></div>
+  <uib-tabset>
+      <uib-tab heading="Meeting">
+        <div ng-include="data.template.meeting"></div>
+      </uib-tab>
+      <uib-tab heading="Reminder">
+        <div ng-include="data.template.reminder"></div>
+      </uib-tab>
+    </uib-tabset>
 </div>

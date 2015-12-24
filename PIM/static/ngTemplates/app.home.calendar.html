@@ -9,36 +9,76 @@
 
       <div class="dayDetails">
         <div class="sideBarDate"><i class="fa fa-calendar fa-2x pull-left"></i>{{date | date : 'dd MMM yyyy'}} </div>
-        {{dayDisp}}
+        {{date | date :'EEEE'}}
+        <span style="position:absolute;top:10px;right:10px"><i class="fa fa-plus noselect" ng-click="openForm()"></i></span>
       </div>
 
     </div>
-    <div class="row bg-purple dayInfoBox">
-      <div class=" dayDetails">
+    <div class="row bg-purple dayInfoBox"  style="max-height:350px;overflow:auto;">
+      <!-- <div class=" dayDetails">
         <div class="">
           <i class="fa fa-clock-o fa fa-3x pull-left"></i> <i class="fa fa-sign-in"></i> : 2:26pm
         </div>
         <div class="">
           <i class="fa fa-sign-out"></i> : 3:00am
         </div>
-      </div>
+      </div> -->
       <ul class="nav">
-        <li><a href="" ng-click="showPerticular($index)" ng-repeat="item in itemsToShow"> {{item.data.text}} <i class="fa fa-file-text-o pull-right"></i> <i class="fa fa-thumbs-o-up pull-right"></i></a></li>
-      </ul>
-    </div>
-    <div ng-if="itemInView.type == 'Meeting'" class="container-fluid">
-      Agenda : {{itemInView.data.text}}
-      When : {{itemInView.data.when | date:'hh mm'}}
-    </div>
-    <div class="row bg-aqua" style="position:absolute;bottom:0px;width:100%;">
-      <ul class="nav" >
-        <li ng-init="a = false;" >
-          <ul class="nav ngCalOptions" >
-            <li ng-repeat="f in availableForms"><a ng-click = "openForm(f.name)" ng-if="a"  style="color:white;" class="noselect" >{{f.name}}</a> </li>
-            <li><a href="" ng-click="a = !a;" class="noselect" ng-blur="hideAvailableOptions()">Options<i class="fa fa-bars fa-lg pull-right"></i></a></li>
-          </ul>
+        <li>
+          <a  href="" ng-click="itemSelected($index)" ng-repeat="item in itemsToShow" class="{{itemsToShow.indexOf(itemInView)== $index ? 'highlighted':''}}">
+            <i class="fa fa-users" ng-if="item.type == 'Meeting'"></i>
+            <i class="fa fa-bell-o" ng-if="item.type == 'Reminder'"></i>
+            {{item.type=='Meeting'? item.type : item.data.text | limitTo:30}}
+            <span class="pull-right">
+              <i class="fa fa-clock-o"></i> {{item.data.when | date:'hh mm a'}}
+              <span  ng-if="item.type == 'Meeting'">
+                <i class="fa fa-building-o"></i> {{item.data.venue}}
+              </span>
+            </span>
+          </a>
+        </li>
+        <li ng-repeat="td in todo" class="noselect">
+          <span style="padding:10px 15px;;display:block;" class="inlistForm">
+            <input  type="checkbox" ng-model="td.data.completed">
+            <span style="{{td.data.completed ? 'text-decoration:line-through;' : ''}}">{{td.data.text}}</span>
+            <i ng-click="todo.splice($index , 1)" class="glyphicon glyphicon-trash pull-right" ></i>
+          </span>
         </li>
       </ul>
+    </div>
+    <div ng-if="itemInView.type == 'Meeting'" class="row container-fluid" style="padding-top:10px;padding-bottom:10px;">
+      <div class="col-md-2" style="padding-top:10px">
+        <i class="fa fa-users fa-3x"></i>
+      </div>
+      <div class="col-md-10">
+        <div class="row" style="padding-left:15px;">
+          {{itemInView.data.text}}
+        </div>
+        <div class="row" style="padding-top:10px">
+          <div class="col-md-2">
+            <i class="fa fa-clock-o fa-lg pull-right"></i>
+          </div>
+          <div class="col-md-9">
+            {{itemInView.data.when | date:'hh mm a'}}
+          </div>
+        </div>
+        <div class="row" style="padding-top:10px">
+          <div class="col-md-2">
+            <i class="fa fa-compass fa-lg pull-right"></i>
+          </div>
+          <div class="col-md-9">
+            {{itemInView.data.venue}}
+          </div>
+        </div>
+        <div class="row" style="padding-top:10px" ng-if="itemInView.data.followers.length !=0">
+          <div class="col-md-2">
+            <i class="fa fa-user fa-lg pull-right"></i>
+          </div>
+          <div class="col-md-9">
+            <span ng-repeat="f in itemInView.data.followers">{{f | getName}}<span ng-if="$index != itemInView.data.followers.length-1">  , </span></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
