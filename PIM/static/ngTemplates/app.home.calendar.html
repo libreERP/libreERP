@@ -37,11 +37,11 @@
             </span>
           </a>
         </li>
-        <li ng-repeat="td in todo" class="noselect">
+        <li ng-repeat="td in data.items" class="noselect" ng-if="td.type=='ToDo'">
           <span style="padding:10px 15px;;display:block;" class="inlistForm">
-            <input  type="checkbox" ng-model="td.data.completed">
+            <input  type="checkbox" ng-model="td.data.completed" ng-click="toggleToDo($index)">
             <span style="{{td.data.completed ? 'text-decoration:line-through;' : ''}}">{{td.data.text}}</span>
-            <i ng-click="todo.splice($index , 1)" class="glyphicon glyphicon-trash pull-right" ></i>
+            <i class="glyphicon glyphicon-trash pull-right" ng-click="deleteToDo($index)"></i>
           </span>
         </li>
       </ul>

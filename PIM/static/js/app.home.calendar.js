@@ -9,13 +9,7 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
     }
   })
 
-  $scope.todo = [
-    {type : 'To Do' , data : {completed : true , text : 'task 1'} , date : new Date()},
-    {type : 'To Do' , data : {completed : true , text : 'task 1'} , date : new Date()},
-  ]
-
   $scope.showDay = function(input){
-    console.log(input);
     $scope.itemsToShow = [];
     for (var i = 0; i < input.length; i++) {
       $scope.itemsToShow.push($scope.data.items[input[i]]);
@@ -27,6 +21,16 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
     $scope.itemInView = $scope.itemsToShow[input];
   }
 
+  $scope.toggleToDo = function(input){
+    todo = $scope.data.items[input].data;
+    $http({url : todo.url , method : 'PATCH' , data : {completed : todo.completed}})
+  }
+  $scope.deleteToDo = function(input){
+    todo = $scope.data.items[input].data;
+    $http({url : todo.url , method : 'DELETE' })
+    $scope.data.items.splice(input , 1);
+  }
+
   $scope.showPerticular = function(input){
     $scope.itemInView = $scope.data.items[input];
   };
@@ -34,7 +38,11 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
   $scope.openForm = function(){
 
     templateUrl = '/static/ngTemplates/app.home.calendar.aside.html';
-    templates = {meeting : '/static/ngTemplates/app.home.calendar.form.meeting.html' , reminder : '/static/ngTemplates/app.home.calendar.form.reminder.html'};
+    templates = {
+      meeting : '/static/ngTemplates/app.home.calendar.form.meeting.html' ,
+      reminder : '/static/ngTemplates/app.home.calendar.form.reminder.html' ,
+      todo : '/static/ngTemplates/app.home.calendar.form.todo.html'
+    };
     input = {formTitle : 'Create an item' , template : templates , items : $scope.data.items};
     position = 'left';
     $scope.openAside(position, input , templateUrl);
@@ -117,7 +125,19 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
   };
 
   $scope.saveReminder = function(){
-    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $scope.data.when , venue : 'na' };
+    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $scope.data.when  };
+    $http({method : 'POST' , url : $scope.baseUrl , data : data}).
+    then(function(response){
+      $scope.resetForm()
+      Flash.create('success' , response.status + ' : ' + response.statusText);
+      $scope.data.items.push( {'type' : response.data.eventType, data : response.data ,  date : new Date(response.data.when)});
+    } , function(response){
+      Flash.create('danger' , response.status + ' : ' + response.statusText);
+    });
+  };
+
+  $scope.saveToDo = function(){
+    data = { eventType : 'ToDo', user : $scope.me.url , text : $scope.data.text  };
     $http({method : 'POST' , url : $scope.baseUrl , data : data}).
     then(function(response){
       $scope.resetForm()

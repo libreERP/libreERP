@@ -1,0 +1,14 @@
+<form ng-submit="saveToDo()">
+
+  <div class= "form-group">
+    <label class="control-label col-sm-3">To Do :</label>
+    <div class="col-md-9">
+      <input type="text" class = "form-control" placeholder="To be done .. " ng-model = "data.text">
+    </div>
+  </div>
+
+  <div class= "form-group container-fluid">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a ng-click="resetMeeting()" class="btn btn-default">Reset</a>
+  </div>
+<form>
