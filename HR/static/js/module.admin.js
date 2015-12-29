@@ -51,7 +51,6 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     $scope.tabs.splice(index , 1)
   }
 
-
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
       {name : 'thumbnail' , icon : 'fa-th-large' , template : '/static/ngTemplates/empSearch/tableThumbnail.html'},
       {name : 'icon' , icon : 'fa-th' , template : '/static/ngTemplates/empSearch/tableIcon.html'},

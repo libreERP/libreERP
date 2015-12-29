@@ -17,8 +17,8 @@
             primary-Search-Field="'username'" views='views' multiselect-Options = 'multiselectOptions' get-Params = "getParams"></generic-Table>
       </uib-tab>
       <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
-        <uib-tab-heading>
-          {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index)"></i>
+        <uib-tab-heading ng-click="$event.stopPropagation();">
+          {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);$event.stopPropagation();"></i>
         </uib-tab-heading>
         <div ng-if="tab.app == 'profileEditor'">
           <profile-Editor obj-Url="tab.objUrl"></profile-Editor>

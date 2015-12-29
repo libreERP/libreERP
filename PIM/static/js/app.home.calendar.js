@@ -35,15 +35,19 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
     $scope.itemInView = $scope.data.items[input];
   };
 
-  $scope.openForm = function(){
+  $scope.edit = function(){
+    $scope.openForm($scope.data.items.indexOf($scope.itemInView));
+  }
 
+  $scope.openForm = function(index){
+    // index is the index of the calendar item to be edited , if its undefined then a new object will be created else edited
     templateUrl = '/static/ngTemplates/app.home.calendar.aside.html';
     templates = {
       meeting : '/static/ngTemplates/app.home.calendar.form.meeting.html' ,
       reminder : '/static/ngTemplates/app.home.calendar.form.reminder.html' ,
       todo : '/static/ngTemplates/app.home.calendar.form.todo.html'
     };
-    input = {formTitle : 'Create an item' , template : templates , items : $scope.data.items};
+    input = {formTitle : 'Create an item' , template : templates , items : $scope.data.items , editor: index};
     position = 'left';
     $scope.openAside(position, input , templateUrl);
   }
@@ -84,7 +88,7 @@ app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeo
 
 
 })
-app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, userProfileService , input , Flash) {
+app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, userProfileService , input , Flash ,$filter) {
   $scope.baseUrl = '/api/PIM/calendar/';
 
   var emptyFile = new File([""], "");
@@ -104,7 +108,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
       fd.append('tagged' , $scope.data.with)
     }
     if ($scope.data.when != '' ) {
-      fd.append('when' , $scope.data.when );
+      fd.append('when' , $filter('date')($scope.data.when , "yyyy-MM-dd'T'HH:mm:ssZ") );
     }
     if ($scope.data.venue != '' ) {
       fd.append('venue' , $scope.data.venue );
@@ -125,7 +129,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
   };
 
   $scope.saveReminder = function(){
-    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $scope.data.when  };
+    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $filter('date')($scope.data.when , "yyyy-MM-dd'T'HH:mm:ssZ")  };
     $http({method : 'POST' , url : $scope.baseUrl , data : data}).
     then(function(response){
       $scope.resetForm()
@@ -152,10 +156,23 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
     $scope.data.text = '';
     $scope.data.attachment = emptyFile;
     $scope.data.with = '';
-    $scope.data.when = '';
+    $scope.data.when = new Date();
     $scope.data.venue = '';
     $scope.data.priority = 'Normal';
     $scope.data.duration = '';
   };
-  $scope.resetForm();
+
+  if (typeof $scope.data.editor == 'undefined') {
+    $scope.resetForm();
+  } else {
+    calObj = $scope.data.items[$scope.data.editor].data;
+    console.log(calObj);
+    for (key in calObj){
+      if (key == 'when') {
+        $scope.data.when = new Date(calObj[key]);
+      } else {
+        $scope.data[key] = calObj[key];
+      }
+    }
+  }
 })

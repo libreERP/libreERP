@@ -47,8 +47,15 @@
       </ul>
     </div>
     <div ng-if="itemInView.type == 'Meeting'" class="row container-fluid" style="padding-top:10px;padding-bottom:10px;">
-      <div class="col-md-2" style="padding-top:10px">
-        <i class="fa fa-users fa-3x"></i>
+      <div class="col-md-2" >
+        <i class="fa fa-users fa-3x" style="padding-top:10px"></i>
+        <span class="dropdown" style="color:white;padding-left:18px;">
+          <i style="cursor:pointer;" class="fa fa-chevron-down dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="" ng-click = "edit()"><i class="fa fa-pencil"></i>  Edit</a></li>
+            <li><a href="" ng-click = "delete()"><i class="fa fa-trash"></i>  Delete</a></li>
+          </ul>
+        </span>
       </div>
       <div class="col-md-10">
         <div class="row" style="padding-left:15px;">
@@ -81,5 +88,4 @@
       </div>
     </div>
   </div>
-
 </div>

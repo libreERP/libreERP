@@ -8,9 +8,19 @@
   </div>
 
   <div class= "form-group">
-    <label class="control-label col-sm-3">By :</label>
-    <div class="col-md-9">
-      <input type="text" class = "form-control" placeholder="By ?" ng-model = "data.when">
+    <label class="control-label col-sm-3" style="margin-top:35px;">By :</label>
+    <div class="col-md-5">
+      <p class="input-group" style="margin-top:35px;">
+        <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.when" is-open="status.opened"  />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </p>
+    </div>
+    <div class="col-md-4">
+      <div class="row container-fluid">
+        <uib-timepicker ng-model="dt" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+      </div>
     </div>
   </div>
 
