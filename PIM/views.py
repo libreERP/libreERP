@@ -15,8 +15,9 @@ class themeViewSet(viewsets.ModelViewSet):
 
 class calendarViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, isOwner )
-    queryset = calendar.objects.all()
     serializer_class = calendarSerializer
+    def get_queryset(self):
+        return calendar.objects.filter(user =  self.request.user)
 
 class notificationViewSet(viewsets.ModelViewSet):
     permission_classes = (isOwner, )

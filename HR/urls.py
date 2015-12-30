@@ -5,6 +5,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'users' , UserViewSet , base_name = 'user')
+router.register(r'userSearch' , UserSearchViewSet , base_name = 'userSearch')
 router.register(r'profile' , userProfileViewSet , base_name ='profile')
 router.register(r'profileAdminMode' , userProfileAdminModeViewSet , base_name ='profileAdminMode')
 router.register(r'designation' , userDesignationViewSet , base_name = 'designation')

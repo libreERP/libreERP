@@ -26,6 +26,11 @@ class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
         'sign', 'IDPhoto' , 'TNCandBond' , 'resume' ,  'certificates', 'transcripts' , 'otherDocs' , 'almaMater' , 'pgUniversity' , 'docUniversity' , 'fathersName' , 'mothersName' , 'wifesName' , 'childCSV',
         'note1' , 'note2' , 'note3')
 
+class userSearchSerializer(serializers.ModelSerializer):  # to be used in the typehead tag search input, only a small set of fields is responded to reduce the bandwidth requirements
+    class Meta:
+        model = User
+        fields = ( 'pk', 'username' , 'first_name' , 'last_name' )
+
 class userSerializer(serializers.HyperlinkedModelSerializer):
     profile = userProfileSerializer(many=False , read_only=True)
     class Meta:

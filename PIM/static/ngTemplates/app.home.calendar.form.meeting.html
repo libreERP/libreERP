@@ -15,7 +15,9 @@
   <div class= "form-group">
     <label class="control-label col-sm-3" for="with">With :</label>
     <div class="col-md-9">
-      <input type="text" class = "form-control" placeholder="Add people by typing the name" ng-model = "data.with">
+      <tags-input ng-model="data.with" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+        <auto-complete source="loadTags($query)" load-on-down-arrow="true"></auto-complete>
+      </tags-input>
     </div>
   </div>
 
@@ -31,7 +33,7 @@
     </div>
     <div class="col-md-4">
       <div class="row container-fluid">
-        <uib-timepicker ng-model="dt" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+        <uib-timepicker ng-model="data.when" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
       </div>
     </div>
   </div>
@@ -53,7 +55,7 @@
   <div class= "form-group">
     <label class="control-label col-sm-3" for="tagged">Priority :</label>
     <div class="col-md-9">
-      <select class="form-control" ng-model="data.priority">
+      <select class="form-control" ng-model="data.level">
         <option value="Normal">Normal</option>
         <option value="Critical">Critical</option>
         <option value="Mandatory">Mandatory</option>
@@ -63,7 +65,9 @@
   </div>
 
   <div class= "form-group container-fluid">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a ng-click="resetMeeting()" class="btn btn-default">Reset</a>
+    <div class="btn-group">
+      <button type="submit" class="btn btn-primary">{{editMode ? 'Save':'Submit'}}</button>
+      <a ng-click="resetForm()" class="btn btn-default">Reset</a>
+    </div>
   </div>
 <form>

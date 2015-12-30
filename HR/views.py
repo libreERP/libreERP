@@ -54,7 +54,6 @@ class userDesignationViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly ,)
-    # queryset = User.objects.all().order_by('-date_joined')
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']
     serializer_class = userSerializer
@@ -66,6 +65,13 @@ class UserViewSet(viewsets.ModelViewSet):
                 return User.objects.all().order_by('-date_joined')
         else:
             return User.objects.all().order_by('-date_joined')
+
+class UserSearchViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly ,)
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['username']
+    serializer_class = userSearchSerializer
+    queryset = User.objects.all()
 
 class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

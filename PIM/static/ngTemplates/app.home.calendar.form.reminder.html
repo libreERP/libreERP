@@ -19,13 +19,15 @@
     </div>
     <div class="col-md-4">
       <div class="row container-fluid">
-        <uib-timepicker ng-model="dt" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+        <uib-timepicker ng-model="data.when" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
       </div>
     </div>
   </div>
 
   <div class= "form-group container-fluid">
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a ng-click="resetMeeting()" class="btn btn-default">Reset</a>
+    <div class="btn-group">
+      <button type="submit" class="btn btn-primary">{{editMode ? 'Save':'Submit'}}</button>
+      <a ng-click="resetForm()" class="btn btn-default">Reset</a>
+    </div>
   </div>
 <form>

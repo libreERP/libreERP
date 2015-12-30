@@ -46,11 +46,14 @@
         </li>
       </ul>
     </div>
-    <div ng-if="itemInView.type == 'Meeting'" class="row container-fluid" style="padding-top:10px;padding-bottom:10px;">
+
+    <div ng-if="['Reminder' , 'Meeting'].indexOf(itemInView.type)!=-1 " class="row container-fluid" style="padding-top:10px;padding-bottom:10px;">
+      
       <div class="col-md-2" >
-        <i class="fa fa-users fa-3x" style="padding-top:10px"></i>
+        <i ng-if="itemInView.type == 'Meeting'"  class="fa fa-users fa-3x" style="padding-top:10px"></i>
+        <i ng-if="itemInView.type == 'Reminder'" class="fa fa-bell-o fa-3x" style="padding-top:10px"></i>
         <span class="dropdown" style="color:white;padding-left:18px;">
-          <i style="cursor:pointer;" class="fa fa-chevron-down dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
+          <i style="cursor:pointer;" class="fa fa-gear dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <li><a href="" ng-click = "edit()"><i class="fa fa-pencil"></i>  Edit</a></li>
             <li><a href="" ng-click = "delete()"><i class="fa fa-trash"></i>  Delete</a></li>
@@ -69,20 +72,22 @@
             {{itemInView.data.when | date:'hh mm a'}}
           </div>
         </div>
-        <div class="row" style="padding-top:10px">
-          <div class="col-md-2">
-            <i class="fa fa-compass fa-lg pull-right"></i>
+        <div ng-if="itemInView.type == 'Meeting'" >
+          <div class="row" style="padding-top:10px">
+            <div class="col-md-2">
+              <i class="fa fa-compass fa-lg pull-right"></i>
+            </div>
+            <div class="col-md-9">
+              {{itemInView.data.venue}}
+            </div>
           </div>
-          <div class="col-md-9">
-            {{itemInView.data.venue}}
-          </div>
-        </div>
-        <div class="row" style="padding-top:10px" ng-if="itemInView.data.followers.length !=0">
-          <div class="col-md-2">
-            <i class="fa fa-user fa-lg pull-right"></i>
-          </div>
-          <div class="col-md-9">
-            <span ng-repeat="f in itemInView.data.followers">{{f | getName}}<span ng-if="$index != itemInView.data.followers.length-1">  , </span></span>
+          <div class="row" style="padding-top:10px" ng-if="itemInView.data.followers.length !=0">
+            <div class="col-md-2">
+              <i class="fa fa-user fa-lg pull-right"></i>
+            </div>
+            <div class="col-md-9">
+              <span ng-repeat="f in itemInView.data.followers">{{f | getName}}<span ng-if="$index != itemInView.data.followers.length-1">  , </span></span>
+            </div>
           </div>
         </div>
       </div>
