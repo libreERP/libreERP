@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
+from social.serializers import commentLikeSerializer
+from social.models import commentLike
 
 class themeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -65,3 +67,45 @@ class chatMessageSerializer(serializers.HyperlinkedModelSerializer):
         else:
             im.save()
             return im
+
+
+class blogLikeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = blogLike
+        fields = ('url' , 'user' , 'created' , 'parent')
+    def create(self , validated_data):
+        parent = validated_data.pop('parent')
+        user =  self.context['request'].user
+        l, new = blogLike.objects.get_or_create(parent = parent , user = user)
+        return l
+
+class blogCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = blogCategory
+        fields = ( 'title')
+
+class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
+    likes = commentLikeSerializer(many = True , read_only = True)
+    class Meta:
+        model = blogComment
+        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        read_only_fields = ('tagged', 'likes',)
+    def create(self , validated_data):
+        text = validated_data.pop('text')
+        parent = validated_data.pop('parent')
+        user =  self.context['request'].user
+        comment = blogComment(text = text , parent = parent , user = user)
+        comment.save()
+        return comment
+    def update(self, instance, validated_data): # like the comment
+        user =  self.context['request'].user
+        l , new = commentLike.objects.get_or_create(user = user , parent = instance)
+        return instance
+
+class blogSerializer(serializers.HyperlinkedModelSerializer):
+    likes = blogLikeSerializer(many = True , read_only = True)
+    comments = blogCommentsSerializer(many = True , read_only = True)
+    tags = blogCategorySerializer(many = True , read_only = True)
+    class Meta:
+        model = blogPost
+        fields = ( 'url' , 'text' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'user' , 'tags')

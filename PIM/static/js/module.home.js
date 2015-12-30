@@ -28,8 +28,8 @@ app.config(function($stateProvider ){
   })
   .state('home.news', {
     url: "/news",
-    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
-    controller: 'home.news'
+    templateUrl: '/static/ngTemplates/app.home.blog.html',
+    controller: 'home.blog'
   })
   .state('home.calendar', {
     url: "/calendar",

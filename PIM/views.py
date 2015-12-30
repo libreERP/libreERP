@@ -59,3 +59,17 @@ class chatMessageBetweenViewSet(viewsets.ModelViewSet):
             msg.read = True
             msg.save()
         return qs.order_by('created')[:150]
+
+class blogViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = blogSerializer
+    queryset = blogPost.objects.all()
+
+class blogCommentsViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = blogCommentsSerializer
+    queryset = blogComment.objects.all()
+class blogLikesViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = blogLikeSerializer
+    queryset = blogLike.objects.all()

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from social.models import follow
+from social.models import follow, comment, like
 # Create your models here.
 def getThemeImageUploadPath(instance , filename ):
     return 'PIM/images/theme/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
@@ -103,3 +103,24 @@ class calendar(models.Model):
     attachment = models.FileField(upload_to = getCalendarAttachment , null = True)
     myNotes = models.CharField(max_length = 100 , blank = True)
     followers = models.ManyToManyField(User , related_name = 'calendarItemsFollowing' , blank = True)
+
+class blogCategory(models.Model):
+    title = models.CharField(max_length = 50 , null = False , unique=True)
+
+class blogPost(models.Model):
+    FORMAT_CHOICES = (
+        ('md' , 'md'), # mark down
+        ('html' , 'html'),
+    )
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    sourceFormat = models.CharField(choices = FORMAT_CHOICES , default = 'md' , max_length = 10)
+    text = models.TextField(max_length = 10000 , null = True)
+    tags = models.ManyToManyField(blogCategory , related_name = 'blogs' , blank = True)
+
+class blogLike(like):
+    parent = models.ForeignKey(blogPost , related_name = 'likes')
+class blogComment(comment):
+    parent = models.ForeignKey(blogPost , related_name ='comments')

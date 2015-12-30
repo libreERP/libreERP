@@ -14,15 +14,15 @@ class postLikeSerializer(serializers.HyperlinkedModelSerializer):
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
-        like , new = postLike.objects.get_or_create(parent = parent , user = user)
-        return like
+        l , new = postLike.objects.get_or_create(parent = parent , user = user)
+        return l
 
 class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = postComment
         fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
-        read_only_fields = ('tagged',)
+        read_only_fields = ('tagged', 'likes',)
     def create(self , validated_data):
         text = validated_data.pop('text')
         parent = validated_data.pop('parent')
