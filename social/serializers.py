@@ -137,9 +137,10 @@ class pictureSerializer(serializers.HyperlinkedModelSerializer):
         pic.photo = photo
         pic.user = user
         pic.save()
-        tagged = self.context['request'].data['tagged']
-        for tag in tagged.split(','):
-            pic.tagged.add( User.objects.get(username = tag))
+        if 'tagged' in self.context['request'].data:
+            tagged = self.context['request'].data['tagged']
+            for tag in tagged.split(','):
+                pic.tagged.add( User.objects.get(username = tag))
         return pic
 def only_numerics(seq):
     return filter(type(seq).isdigit, seq)
@@ -155,11 +156,12 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         user =  self.context['request'].user
         a = album(user = user , title = validated_data.pop('title'))
         a.save()
-        tagged = self.context['request'].data['tagged']
-        for tag in tagged.split(','):
-            if tag=='':
-                break
-            a.tagged.add( User.objects.get(username = tag))
+        if 'tagged' in self.context['request'].data:
+            tagged = self.context['request'].data['tagged']
+            for tag in tagged.split(','):
+                if tag=='':
+                    break
+                a.tagged.add( User.objects.get(username = tag))
         count = 0
         for p in photos:
             pk = only_numerics(p)

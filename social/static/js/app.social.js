@@ -107,7 +107,7 @@ app.directive('post', function () {
 
 app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, userProfileService , input) {
   $scope.content = 'post';
-  
+
   $scope.me = userProfileService.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
@@ -131,12 +131,10 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
   }, 100);
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
-  var tagged = '';
+
+  tagged = [];
   for (var i = 0; i < $scope.data.tagged.length; i++) {
-    tagged  += userProfileService.get($scope.data.tagged[i]).username;
-    if (i != $scope.data.tagged.length-1){
-      tagged += ',';
-    }
+    tagged.push({username : userProfileService.get($scope.data.tagged[i]).username })
   }
   $scope.postEditor = {attachment : emptyFile , tagged : tagged}
   $scope.viewMode = 'comments';
@@ -317,6 +315,12 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
       });
     }
   }
+
+
+  $scope.loadTags = function(query) {
+    return $http.get('/api/HR/userSearch/?username__contains=' + query)
+  };
+
   $scope.enableEdit = function(){
     $scope.editMode = true;
     $scope.backupText = angular.copy($scope.data.text);
@@ -328,8 +332,15 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
     if ($scope.postEditor.attachment !=emptyFile) {
       fd.append('attachment' , $scope.postEditor.attachment);
     }
-    if ( typeof $scope.postEditor.tagged !='undefined' && $scope.postEditor.tagged != '' ) {
-      fd.append('tagged' , $scope.postEditor.tagged)
+    if ( typeof $scope.postEditor.tagged !='undefined' && $scope.postEditor.tagged.length != 0 ) {
+      tagStr = '';
+      for (var i = 0; i < $scope.postEditor.tagged.length; i++) {
+        tagStr += $scope.postEditor.tagged[i].username;
+        if (i != $scope.postEditor.tagged.length-1) {
+          tagStr += ','
+        }
+      }
+      fd.append('tagged' , tagStr)
     }
 
     var url = $scope.data.url;
@@ -432,12 +443,9 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
   $scope.droppedObjects = angular.copy($scope.parent.photos);
-  var tagged = '';
+  tagged = [];
   for (var i = 0; i < $scope.parent.tagged.length; i++) {
-    tagged  += userProfileService.get($scope.parent.tagged[i]).username;
-    if (i != $scope.parent.tagged.length-1){
-      tagged += ',';
-    }
+    tagged.push({username : userProfileService.get($scope.parent.tagged[i]).username })
   }
   $scope.tempAlbum = {title :  $scope.parent.title , photos : [] , tagged : tagged};
   $scope.editorData = {draggableObjects : []};
@@ -466,6 +474,11 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
     $scope.$apply();
     scroll("#commentsArea");
   }, 100);
+
+  $scope.loadTags = function(query) {
+    return $http.get('/api/HR/userSearch/?username__contains=' + query)
+  };
+
   $scope.comment = function(){
     if ($scope.toComment.textToComment == 's') {
       return;
@@ -545,8 +558,19 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
       user : $scope.me.url,
       title : $scope.tempAlbum.title,
       photos : $scope.tempAlbum.photos,
-      tagged : $scope.tempAlbum.tagged,
     };
+
+    if ( typeof $scope.tempAlbum.tagged !='undefined' && $scope.tempAlbum.tagged.length != 0 ) {
+      tagStr = '';
+      for (var i = 0; i < $scope.tempAlbum.tagged.length; i++) {
+        tagStr += $scope.tempAlbum.tagged[i].username;
+        if (i != $scope.tempAlbum.tagged.length-1) {
+          tagStr += ','
+        }
+      }
+      dataToPost.tagged =  tagStr
+    }
+
     // console.log(dataToPost);
     $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
     then(function(response){
@@ -593,7 +617,6 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
     }
   }
   $scope.refreshAside = function(signal){
-    console.log(signal);
 
     var nodeUrl = '/api/social/';
     if (signal.action == 'created') {
@@ -775,6 +798,10 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
   $scope.tempAlbum = {title : '' , photos : [] , tagged : ''};
 
+  $scope.loadTags = function(query) {
+    return $http.get('/api/HR/userSearch/?username__contains=' + query)
+  };
+
   $scope.openChat = function(){
     $scope.$parent.$parent.$parent.addIMWindow($scope.user.url);
   };
@@ -906,8 +933,19 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
       user : $scope.me.url,
       title : $scope.tempAlbum.title,
       photos : $scope.tempAlbum.photos,
-      tagged : $scope.tempAlbum.tagged,
     };
+
+    if ( typeof $scope.tempAlbum.tagged !='undefined' && $scope.tempAlbum.tagged.length != 0 ) {
+      tagStr = '';
+      for (var i = 0; i < $scope.tempAlbum.tagged.length; i++) {
+        tagStr += $scope.tempAlbum.tagged[i].username;
+        if (i != $scope.tempAlbum.tagged.length-1) {
+          tagStr += ','
+        }
+      }
+      dataToPost.tagged =  tagStr
+    }
+
     // console.log(dataToPost);
     $http({method: 'POST' , data : dataToPost , url : '/api/social/album/'}).
     then(function(response){
@@ -940,9 +978,18 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
     fd.append('attachment', $scope.post.attachment);
     fd.append('text' , $scope.post.text );
     fd.append('user' , $scope.me.url);
-    if ( typeof $scope.post.tagged !='undefined' && $scope.post.tagged != '' ) {
-      fd.append('tagged' , $scope.post.tagged)
+
+    if ( typeof $scope.post.tagged !='undefined' && $scope.post.tagged.length != 0 ) {
+      tagStr = '';
+      for (var i = 0; i < $scope.post.tagged.length; i++) {
+        tagStr += $scope.post.tagged[i].username;
+        if (i != $scope.post.tagged.length-1) {
+          tagStr += ','
+        }
+      }
+      fd.append('tagged' , tagStr)
     }
+
     var uploadUrl = "/api/social/post/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
@@ -960,7 +1007,16 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
   $scope.uploadImage = function(){
     var fd = new FormData();
     fd.append('photo', $scope.picturePost.photo);
-    fd.append('tagged' , $scope.picturePost.tagged.split(','));
+    if ( typeof $scope.picturePost.tagged !='undefined' && $scope.picturePost.tagged.length != 0 ) {
+      withStr = '';
+      for (var i = 0; i < $scope.picturePost.tagged.length; i++) {
+        withStr += $scope.picturePost.tagged[i].username;
+        if (i != $scope.picturePost.tagged.length-1) {
+          withStr += ','
+        }
+      }
+      fd.append('tagged' , withStr)
+    }
     fd.append('user' , $scope.me.url);
     var uploadUrl = "/api/social/picture/";
     $http({method : 'POST' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).

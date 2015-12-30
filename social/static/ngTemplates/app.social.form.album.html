@@ -19,7 +19,9 @@
           <div class= "form-group">
             <label class="control-label col-sm-3" for="tagged">Tagged :</label>
             <div class="col-md-9">
-              <input type="text" class = "form-control" name = "tagged" placeholder="Tag people by typing the name" ng-model = "tempAlbum.tagged">
+              <tags-input ng-model="tempAlbum.tagged" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+                <auto-complete source="loadTags($query)" load-on-down-arrow="true"></auto-complete>
+              </tags-input>
             </div>
           </div>
         </form>

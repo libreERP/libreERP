@@ -44,7 +44,7 @@
           </span>
           <div class="dayItems " style="position:absolute;width:102%;left:-2px;">
             <div ng-if="itemsGroup[w*7 + d].length != 0 && $index<2" ng-repeat="i in itemsGroup[w*7 + d] track by $index" ng-include="itemTemplates"
-            style="height:23px;position:absolute;z-index:999;bottom:{{-2 + 23*$index}}px;width:100%;padding:2px;" class="card {{i | rainbow}}" ng-click="itemClicked(i); $event.stopPropagation();"></div>
+            style="height:23px;position:absolute;z-index:99;bottom:{{-2 + 23*$index}}px;width:100%;padding:2px;" class="card {{i | rainbow}}" ng-click="itemClicked(i); $event.stopPropagation();"></div>
             <div ng-if="itemsGroup[w*7 + d].length>2" style="height:23px;position:absolute;z-index:999;bottom:{{-2 + 23*2}}px;width:100%;padding:2px;" class="card {{i | rainbow}}" ng-click="showDay(w*7 + d)">
               ... More
             </div>

@@ -244,6 +244,8 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
         for (var i = 0; i < calObj[key].length; i++) {
           $scope.data.with.push({username : userProfileService.get(calObj.followers[i]).username })
         }
+      } else if (key == 'duration') {
+        $scope.data[key] = calObj[key]/60;
       } else {
         $scope.data[key] = calObj[key];
       }
