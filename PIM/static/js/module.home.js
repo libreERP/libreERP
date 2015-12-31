@@ -26,8 +26,8 @@ app.config(function($stateProvider ){
     templateUrl: '/static/ngTemplates/app.social.html',
     controller: 'controller.social'
   })
-  .state('home.news', {
-    url: "/news",
+  .state('home.blog', {
+    url: "/blog/:id?action",
     templateUrl: '/static/ngTemplates/app.home.blog.html',
     controller: 'home.blog'
   })

@@ -38,9 +38,7 @@ class calendarSerializer(serializers.HyperlinkedModelSerializer):
         cal.save()
         return cal
     def update(self, instance, validated_data): # like the comment
-        user =  self.context['request'].user
         for key in ['eventType', 'duration' , 'text' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes']:
-            print key
             try:
                 setattr(instance , key , validated_data[key])
             except:
@@ -82,7 +80,7 @@ class blogLikeSerializer(serializers.HyperlinkedModelSerializer):
 class blogCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = blogCategory
-        fields = ( 'title')
+        fields = ('pk', 'title' )
 
 class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
@@ -108,4 +106,20 @@ class blogSerializer(serializers.HyperlinkedModelSerializer):
     tags = blogCategorySerializer(many = True , read_only = True)
     class Meta:
         model = blogPost
-        fields = ( 'url' , 'text' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'user' , 'tags')
+        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'user' , 'tags' , 'title')
+        read_only_fields = ('tags',)
+    def create(self , validated_data):
+        b = blogPost()
+        for key in ['source', 'sourceFormat', 'title']:
+            try:
+                setattr(b , key , validated_data[key])
+            except:
+                pass
+        b.save()
+        b.user.add (self.context['request'].user)
+        if 'tags' in self.context['request'].data:
+            tags = self.context['request'].data['tags']
+            for tag in tags.split(','):
+                b.tags.add( blogCategory.objects.get(title = tag))
+        b.save()
+        return b

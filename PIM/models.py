@@ -113,12 +113,21 @@ class blogPost(models.Model):
         ('html' , 'html'),
     )
 
+    STATE_CHOICES = (
+        ('saved' , 'saved'),
+        ('archived' , 'archived'),
+        ('published' , 'published'),
+        ('hidden' , 'hidden'),
+    )
+
+    title = models.CharField(max_length = 500 , null=True)
+    state = models.CharField(max_length = 20 , choices = STATE_CHOICES , default = 'saved')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User)
+    user = models.ManyToManyField(User , related_name='articles' , blank = False)
     sourceFormat = models.CharField(choices = FORMAT_CHOICES , default = 'md' , max_length = 10)
-    text = models.TextField(max_length = 10000 , null = True)
-    tags = models.ManyToManyField(blogCategory , related_name = 'blogs' , blank = True)
+    source = models.TextField(max_length = 20000 , null = True)
+    tags = models.ManyToManyField(blogCategory , related_name = 'articles' , blank = True)
 
 class blogLike(like):
     parent = models.ForeignKey(blogPost , related_name = 'likes')

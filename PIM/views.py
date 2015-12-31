@@ -65,6 +65,13 @@ class blogViewSet(viewsets.ModelViewSet):
     serializer_class = blogSerializer
     queryset = blogPost.objects.all()
 
+class blogCategoryViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = blogCategorySerializer
+    queryset = blogCategory.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+
 class blogCommentsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = blogCommentsSerializer

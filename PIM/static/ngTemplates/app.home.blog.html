@@ -1,5 +1,168 @@
-<div class="shaddowed card bg-white" style="min-height:750px;position:relative;">
+<div class="shaddowed card bg-white" style="min-height:700px;position:relative;">
 
   <breadcrumb></breadcrumb>
+  <div class="container-fluid" style="width:100%;position:relative;">
+    <div ng-if="mode == 'edit' || mode=='new'">
+      <div class="row">
+
+        <div class="form-group col-md-6">
+          <label class="control-label col-sm-2" >Title:</label>
+          <div class="col-md-10">
+            <input type="text" rows="3"  value="" class="form-control " required ng-model="editor.title"></input>
+          </div>
+        </div>
+
+        <div class= "form-group col-md-6">
+          <label class="control-label col-sm-2" >Tags :</label>
+          <div class="col-md-10">
+            <tags-input ng-model="editor.tags" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="title">
+              <auto-complete source="loadTags($query)" load-on-down-arrow="true"></auto-complete>
+            </tags-input>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <textarea ui-tinymce="tinymceOptions" ng-model="editor.source"></textarea>
+      </div>
+
+    </div>
+    <div ng-if="mode == 'list'">
+      <div class="col-md-9">
+        <div class="row">
+          <!-- Each article bubble starts from here  -->
+          <div class="container-fluid" style="padding-left:30px;padding-right:30px;">
+            <div class="row">
+              <h3 class="text-muted">Alice in Wonderland, part dos</h3>
+            </div>
+            <div class="row">
+              <p style="text-align: justify;">'You ought to be ashamed of yourself for asking such a simple question,' added the Gryphon; and then they both sat silent and looked at poor Alice, who felt ready to sink into the earth. At last the Gryphon said to the Mock Turtle, 'Drive on, old fellow! Don't be all day about it!' and he went on in these words:
+                'Yes, we went to school in the sea, though you mayn't believe it—'
+                'I never said I didn't!' interrupted Alice.
+                'You did,' said the Mock Turtle.
+              </p>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="col-md-1">
+                  <img class="img-circle" ng-src="{{ me.url | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; left:-30px;"/>
+                </div>
+                <div class="col-md-10">
+                  <div class="row">
+                    <span >{{'http://localhost:8000/api/HR/users/1/' | getName}}</span>
+                  </div>
+                  <div class="row">
+                    <span class="badge">Posted 2012-08-02 20:47:04</span>
+                    <span style="color:#666666;"> 2 Likes <i class="fa fa-thumbs-o-up"></i></span>
+                    <span style="color:#666666;"> 5 Comments <i class="fa fa-comments-o"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="pull-right">
+                  <span class="label label-default">alice</span>
+                  <span class="label label-primary">story</span>
+                  <span class="label label-success">blog</span>
+                  <span class="label label-info">personal</span>
+                  <span class="label label-warning">Warning</span>
+                  <span class="label label-danger">Danger</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <!-- article listing bubble ends here  -->
+          <!-- Each article bubble starts from here  -->
+          <div class="container-fluid" style="padding-left:30px;padding-right:30px;">
+            <div class="row">
+              <h3 class="text-muted">Provide up-to-date feedback on the progress</h3>
+            </div>
+            <div class="row">
+              <div class=" col-md-3" style="padding:10px;">
+                <img alt="Image" src="http://i.imgur.com/tAHVmXi.jpg" width="100%">
+              </div>
+              <div class="col-md-9">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation 'You ought to be ashamed of yourself for asking such a simple question,' added the Gryphon; and then they both sat silent and looked at poor Alice, who felt ready to sink into the earth. At last the Gryphon said to the Mock Turtle, 'Drive on, old fellow! Don't be all day about it!' and he went on in these words:
+                'Yes, we went to school in the sea, though you mayn't believe it—'
+                'I never said I didn't!' interrupted Alice.
+                'Yes, we went to school in the sea, though you mayn't believe it—'
+                'I never said I didn't!' interrupted Alice.
+                'You did,' said the Mock Turtle.... <a href="#">Read more</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="col-md-1">
+                  <img class="img-circle" ng-src="{{ me.url | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; left:-30px;"/>
+                </div>
+                <div class="col-md-10">
+                  <div class="row">
+                    <span >{{'http://localhost:8000/api/HR/users/1/' | getName}}</span>
+                  </div>
+                  <div class="row">
+                    <span class="badge">Posted 2012-08-02 20:47:04</span>
+                    <span style="color:#666666;"> 2 Likes <i class="fa fa-thumbs-o-up"></i></span>
+                    <span style="color:#666666;"> 5 Comments <i class="fa fa-comments-o"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="pull-right">
+                  <span class="label label-default">alice</span>
+                  <span class="label label-primary">story</span>
+                  <span class="label label-success">blog</span>
+                  <span class="label label-info">personal</span>
+                  <span class="label label-warning">Warning</span>
+                  <span class="label label-danger">Danger</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- article listing bubble ends here  -->
+          <hr>
+        </div>
+        <div class="row">
+          <nav>
+            <ul class="pager">
+              <li><a href="#">Previous</a></li>
+              <li><a href="#">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="col-md-3" >
+        <div class="row">
+          <a ui-sref="home.blog({action:'new'})" class="btn btn-default"> New <i class="fa fa-file-o"></i></a>
+          <button class="btn btn-default"> My articles <i class="fa fa-bars"></i></button>
+          <button class="btn btn-default"> Drafts <i class="fa fa-floppy-o"></i></button>
+          <input type="text" value="" class="form-control" style="width:100%;margin-top:10px;" placeholder="Search title ..">
+          <hr>
+          <div class="form-group">
+            <label> Filter by categories :</label>
+            <tags-input ng-model="data.with" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+              <auto-complete source="loadTags($query)" load-on-down-arrow="true"></auto-complete>
+            </tags-input>
+          </div>
+          <div class="form-group">
+            <label> Filter by Month :</label>
+            <div class="fullWidthDatePicker">
+              <uib-datepicker ng-model="date" min-mode="month" datepicker-mode="'month'" ></uib-datepicker>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="row ">
+          <h4>Recommended:</h4>
+          <ul class="nav nav-sidebar sidebarList" style="width: 100%;position: relative;">
+            <li><a data-toggle="tab" href="#"><span class="label label-warning">Blog</span> : Thought : New government policies to effect the service sector efficiency</a></li>
+            <li><a data-toggle="tab" href="#"><span class="label label-primary">Tutorial</span> : How to control the threads in Python</a></li>
+            <li><a data-toggle="tab" href="#"><span class="label label-info">Product</span> : A valve to optimally control the flow in the cumbuston engine</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

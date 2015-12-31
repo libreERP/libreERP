@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 
 router.register(r'blog' , blogViewSet , base_name ='blogpost')
 router.register(r'blogComment' , blogCommentsViewSet , base_name ='blogcomment')
+router.register(r'blogTags' , blogCategoryViewSet , base_name ='blogcategory')
 router.register(r'blogLike' , blogLikesViewSet , base_name ='bloglike')
 router.register(r'settings' , settingsViewSet , base_name = 'settings')
 router.register(r'theme' , themeViewSet , base_name = 'theme')
