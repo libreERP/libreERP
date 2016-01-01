@@ -64,15 +64,28 @@ class blogViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = blogSerializer
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['title']
+    filter_fields = ['title' , 'state']
     def get_queryset(self):
+        if 'state' not in self.request.GET and 'tags' not in self.request.GET and 'user' not in self.request.GET:
+            return blogPost.objects.filter( users__in=[self.request.user,])
+        if 'state' in self.request.GET:
+            st = self.request.GET['state']
+            if st != 'published':
+                qs = blogPost.objects.filter( users__in=[self.request.user,])
+            else:
+                qs = blogPost.objects.filter(state= 'published')
+        else:
+            qs = blogPost.objects.filter(state='published')
+
         if 'tags' in self.request.GET:
             tags = []
             for t in self.request.GET['tags'].split(','):
                 tags.append(blogCategory.objects.get(pk = int(t)))
-            qs = blogPost.objects.filter(tags__in=tags , state = 'published')
-        else:
-            qs = blogPost.objects.filter(state = 'published')
+            qs = qs.filter(tags__in=tags )
+
+        if 'user' in self.request.GET: # filter for a perticular user
+            qs = qs.filter(users__in=[User.objects.get(username=self.request.GET['user']),])
+
         return qs
 
 class blogCategoryViewSet(viewsets.ModelViewSet):

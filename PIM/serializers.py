@@ -121,7 +121,7 @@ class blogSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ('tags',)
     def create(self , validated_data):
         b = blogPost()
-        for key in ['source', 'sourceFormat', 'title' , 'header']:
+        for key in ['source', 'sourceFormat', 'title' , 'header' , 'state']:
             try:
                 setattr(b , key , validated_data[key])
             except:

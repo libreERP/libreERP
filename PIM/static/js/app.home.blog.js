@@ -1,9 +1,35 @@
 app.controller("home.blog", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
   $scope.me = userProfileService.get('mySelf');
   $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
+  $scope.filter = {text : '' , tags :[] , month : new Date() , state : 'published' , user : 'all'};
+
+  $scope.search = function(){
+    tags = '';
+    if ($scope.filter.tags.length !=0) {
+      for (var i = 0; i < $scope.filter.tags.length; i++) {
+        tags += $scope.filter.tags[i].pk;
+        if (i != $scope.filter.tags.length-1) {
+          tags += ',';
+        }
+      }
+    }
+    url = '/api/PIM/blog/?title__contains='+$scope.filter.text + '&state=' + $scope.filter.state;
+    if (tags !=''){
+      url += '&tags=' + tags;
+    }
+    if ($scope.filter.user != 'all') {
+      url += '&user=' + $scope.filter.user;
+    }
+    $http({method : 'GET' , url : url , data : {month : $scope.filter.month}}).
+    then(function(response){
+      $scope.blogs = response.data;
+    })
+  }
+
+
   if (typeof $stateParams.id != 'undefined' && $stateParams.action == 'edit') {
     $scope.mode = 'edit';
-    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/'}).
+    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/?state=all'}).
     then(function(response){
       $scope.editor.url = response.data.url;
       $scope.editor.source = response.data.source;
@@ -16,20 +42,14 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
     $scope.mode = 'new';
   } else if ($stateParams.id != 'undefined' && $stateParams.id != ''  && $stateParams.action != 'edit') {
     $scope.mode = 'read';
-    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/'}).
+    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/' +'?state=all'}).
     then(function(response){
       $scope.articleInView = response.data;
     })
   } else {
     $scope.mode = 'list';
-    $http({method : 'GET' , url : '/api/PIM/blog/'}).
-    then(function(response){
-      $scope.blogs = response.data;
-    } , function(response){
-
-    })
+    $scope.filter.state = 'published';
   }
-  $scope.filter = {text : '' , tags :[] , month : new Date()};
 
   $scope.$watch(function(){
     return $scope.filter.tags.length;
@@ -37,25 +57,28 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
     $scope.search()
   })
 
-  $scope.search = function(mode){
-    tags = '';
-    if ($scope.filter.tags.length !=0) {
-      for (var i = 0; i < $scope.filter.tags.length; i++) {
-        tags += $scope.filter.tags[i].pk;
-        if (i != $scope.filter.tags.length-1) {
-          tags += ',';
-        }
-      }
+  $scope.toggleState = function(){
+    if ($scope.filter.state == 'published') {
+      $scope.filter.state = 'saved';
+      $scope.filter.user = $scope.me.username;
+    } else if ($scope.filter.state == 'saved') {
+      $scope.filter.state = 'published';
     }
-    url = '/api/PIM/blog/?title__contains='+$scope.filter.text;
-    if (tags !=''){
-      url += '&tags=' + tags;
-    }
-    $http({method : 'GET' , url : url , data : {month : $scope.filter.month}}).
-    then(function(response){
-      $scope.blogs = response.data;
-    })
+    $scope.search();
   }
+
+  $scope.toggleUser = function(){
+    if ($scope.filter.user == 'all') {
+      $scope.filter.user = $scope.me.username;
+    } else if ($scope.filter.user == $scope.me.username) {
+      $scope.filter.user = 'all';
+      $scope.filter.state = 'published';
+    }
+    $scope.search();
+
+  }
+
+
 
   $scope.edit = function(){
     $state.go('home.blog' , { id : getPK($scope.articleInView.url) , action : 'edit'});
@@ -81,6 +104,7 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
 
   $scope.goBack = function(){
     $scope.mode = 'list';
+    $state.go('home.blog' , { id : '', action : 'list'});
   }
 
   $scope.viewArticle = function(index){

@@ -81,8 +81,8 @@
       <div class="col-md-3" >
         <div class="row">
           <a ui-sref="home.blog({id : '' , action:'new'})" class="btn btn-default"> New <i class="fa fa-file-o"></i></a>
-          <button class="btn btn-default"> My articles <i class="fa fa-bars"></i></button>
-          <button class="btn btn-default"> Drafts <i class="fa fa-floppy-o"></i></button>
+          <button class="btn btn-default" ng-click="toggleUser()"> {{filter.user == 'all' ? 'All articles' : 'My articles'}} <i class="fa fa-bars"></i></button>
+          <button class="btn btn-default" ng-click="toggleState()"> {{filter.state == 'published' ? 'Published' : 'Drafts'}} <i ng-if="filter.state == 'saved'" class="fa fa-floppy-o"></i></button>
           <input type="text" value="" class="form-control" style="width:100%;margin-top:10px;" placeholder="Search title .." ng-model = "filter.text" ng-enter = "search()">
           <hr>
           <div class="form-group">
