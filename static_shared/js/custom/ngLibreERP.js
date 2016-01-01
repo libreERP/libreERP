@@ -27,7 +27,7 @@ app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state
 ]);
 
 // Main controller is mainly for the Navbar and also contains some common components such as clipboad etc
-app.controller('main' , function($scope , $state , userProfileService , $aside , $http , $timeout){
+app.controller('main' , function($scope , $state , userProfileService , $aside , $http , $timeout , $uibModal){
   $scope.me = userProfileService.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
@@ -49,6 +49,16 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   })
 
   $scope.terminal = {command : '' , show : false};
+
+  $scope.about = function () {
+    var modalInstance = $uibModal.open({
+      templateUrl: '/static/ngTemplates/about.html',
+      size: 'lg',
+      controller: function($scope){
+      },
+    });
+  };
+
 
   $scope.parseCommand = function(){
     if ($scope.command == '') {

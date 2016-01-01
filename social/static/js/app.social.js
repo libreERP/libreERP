@@ -117,7 +117,10 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
   }
   postUrl = $scope.data.url
   if ($scope.onDelete.length != 0){ // if the post aside is initiated by the notification system then the refreshed data is already fetched by it
-    // and passed into input as data
+    // and passed into input as data but if we are opening it from the feeds list then getting the latest post object
+    if (postUrl.indexOf('?')== -1) {
+      postUrl += '?';
+    }
     postUrl += '&user='+userProfileService.get($scope.data.user).username;
     $http({method: 'GET' , url : postUrl}).
     then(function(requests){

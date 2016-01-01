@@ -15,8 +15,10 @@ class postViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = postSerializer
     def get_queryset(self):
+        print 'hey'
         if 'user' in self.request.GET:
             u = User.objects.get(username = self.request.GET['user'] )
+            print u
             return post.objects.filter(user = u).order_by('-created')
         else :
             return post.objects.filter(user = self.request.user)

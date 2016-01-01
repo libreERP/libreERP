@@ -134,6 +134,7 @@ class blogPost(models.Model):
 class blogLike(models.Model):
     parent = models.ForeignKey(blogPost , related_name = 'likes')
     user = models.ForeignKey(User , related_name = 'blogLikes')
+    created = models.DateTimeField(auto_now_add=True)
 
 class blogComment(models.Model):
     user = models.ForeignKey(User , related_name = 'blogComments')

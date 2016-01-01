@@ -71,8 +71,8 @@
         <div class="row">
           <nav>
             <ul class="pager">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">Next</a></li>
+              <li class="{{pageNo == 0? 'disabled' : ''}}"><a href="" ng-click="prevPage()" >Previous</a></li>
+              <li class="{{disableNext? 'disabled' : ''}}"><a href="" ng-click="nextPage()" >Next</a></li>
             </ul>
           </nav>
         </div>
@@ -113,20 +113,21 @@
       <div class="col-md-9">
         <div class="row">
           <div class="col-md-9">
-            <div class="col-md-4">
+            <div class="col-md-{{articleInView.users.indexOf(me.url) !=-1 ? '5' : '4'}}">
               <div class="btn-group">
                 <a type="button" class="btn btn-default pull-left" ng-click="goBack()"><i class="fa fa-arrow-left"></i>  Go back </a>
                 <a type="button" ng-if="articleInView.users.indexOf(me.url) !=-1" class="btn btn-default pull-left" ng-click="edit()"><i class="fa fa-pencil"></i>  edit </a>
+                <a type="button" ng-if="articleInView.users.indexOf(me.url) !=-1" class="btn btn-default pull-left" ng-click="delete()"><i class="fa fa-trash"></i> </a>
               </div>
               <img class="img-circle" ng-src="{{ articleInView.users[0] | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; right:-30px;"/>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-{{articleInView.users.indexOf(me.url) !=-1 ? '7' : '8'}}">
               <div class="row">
                 <span ng-repeat="u in articleInView.users" >{{ u | getName}}</span>
               </div>
               <div class="row">
                 <span class="badge">{{articleInView.created | date:'dd MMM yyyy, hh:mm a'}}</span>
-                <span style="color:#666666;"> {{articleInView.likes.length}} Likes <i class="fa fa-thumbs-o-up"></i></span>
+                <span style="color:#666666;"> {{articleInView.likes.length}} Likes <i class="fa {{liked ?'fa-thumbs-up':'fa-thumbs-o-up'}} fa-lg noselect" ng-click="like()"></i></span>
                 <span style="color:#666666;"> {{articleInView.comments.length}} Comments <i class="fa fa-comments-o"></i></span>
               </div>
             </div>

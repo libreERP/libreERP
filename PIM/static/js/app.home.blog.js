@@ -2,6 +2,10 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
   $scope.me = userProfileService.get('mySelf');
   $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
   $scope.filter = {text : '' , tags :[] , month : new Date() , state : 'published' , user : 'all'};
+  $scope.itemsPerPage = 5;
+  $scope.pageNo = 0;
+  $scope.disableNext = false;
+  $scope.liked = false;
 
   $scope.search = function(){
     tags = '';
@@ -13,7 +17,7 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
         }
       }
     }
-    url = '/api/PIM/blog/?title__contains='+$scope.filter.text + '&state=' + $scope.filter.state;
+    url = '/api/PIM/blog/?title__contains='+$scope.filter.text + '&state=' + $scope.filter.state + '&limit=' + $scope.itemsPerPage + '&offset=' + $scope.pageNo*$scope.itemsPerPage;
     if (tags !=''){
       url += '&tags=' + tags;
     }
@@ -22,7 +26,16 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
     }
     $http({method : 'GET' , url : url , data : {month : $scope.filter.month}}).
     then(function(response){
-      $scope.blogs = response.data;
+      $scope.blogs = response.data.results;
+      if ($scope.pageNo > 0 && response.data.results.length == 0) {
+        $scope.pageNo -= 1;
+        $scope.search();
+      }
+      if ($scope.pageNo*($scope.itemsPerPage+1) > response.data.count) {
+        $scope.disableNext = true;
+      } else {
+        $scope.disableNext = false;
+      }
     })
   }
 
@@ -45,6 +58,11 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
     $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/' +'?state=all'}).
     then(function(response){
       $scope.articleInView = response.data;
+      for (var i = 0; i < $scope.articleInView.likes.length; i++) {
+        if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
+          $scope.liked = true;
+        }
+      }
     })
   } else {
     $scope.mode = 'list';
@@ -75,9 +93,53 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
       $scope.filter.state = 'published';
     }
     $scope.search();
-
   }
 
+  $scope.delete = function(){
+    $http({method : 'DELETE' , url : $scope.articleInView.url}).
+    then(function(response){
+      $scope.blogs.splice($scope.blogs.indexOf($scope.articleInView),1);
+      $scope.mode = 'list';
+    });
+  }
+
+  $scope.like = function(){
+    if ($scope.liked) {
+      for (var i = 0; i < $scope.articleInView.likes.length; i++) {
+        if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
+          $scope.articleInView.likes.splice(i,1);
+          $scope.liked = false;
+          $http({method : 'DELETE' , url : $scope.articleInView.likes[i].url});
+        }
+      }
+    } else{
+      dataToSend = {
+        user : $scope.me.url,
+        parent : $scope.articleInView.url,
+      }
+      $http({method : 'POST' , url : '/api/PIM/blogLike/' , data : dataToSend}).
+      then(function(response){
+        $scope.liked = true;
+        $scope.articleInView.likes.push(response.data);
+      })
+    }
+  }
+
+  $scope.nextPage = function(){
+    if ($scope.disableNext) {
+      return;
+    }
+    $scope.pageNo += 1;
+    $scope.search();
+  }
+
+  $scope.prevPage = function(){
+    $scope.pageNo -= 1;
+    if ($scope.pageNo <0) {
+      $scope.pageNo = 0;
+    }
+    $scope.search();
+  }
 
 
   $scope.edit = function(){
@@ -110,6 +172,11 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
   $scope.viewArticle = function(index){
     $scope.mode = 'read'
     $scope.articleInView = $scope.blogs[index];
+    for (var i = 0; i < $scope.articleInView.likes.length; i++) {
+      if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
+        $scope.liked = true;
+      }
+    }
   }
 
   $scope.modeToggle = false;
