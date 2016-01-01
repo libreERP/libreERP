@@ -1,12 +1,19 @@
 app.controller("home.blog", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
   $scope.me = userProfileService.get('mySelf');
-  console.log($stateParams);
+  $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
   if (typeof $stateParams.id != 'undefined' && $stateParams.action == 'edit') {
     $scope.mode = 'edit';
-    $scope.article = $stateParams.id;
+    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/'}).
+    then(function(response){
+      $scope.editor.url = response.data.url;
+      $scope.editor.source = response.data.source;
+      $scope.editor.title = response.data.title;
+      $scope.editor.header = response.data.header;
+      $scope.editor.tags = response.data.tags;
+      $scope.editor.mode = 'header';
+    })
   } else if ($stateParams.action == 'new') {
     $scope.mode = 'new';
-    $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
   } else if ($stateParams.id != 'undefined' && $stateParams.id != ''  && $stateParams.action != 'edit') {
     $scope.mode = 'read';
     $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/'}).
@@ -22,6 +29,38 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
 
     })
   }
+  $scope.filter = {text : '' , tags :[] , month : new Date()};
+
+  $scope.$watch(function(){
+    return $scope.filter.tags.length;
+  }, function(newValue, oldValue){
+    $scope.search()
+  })
+
+  $scope.search = function(mode){
+    tags = '';
+    if ($scope.filter.tags.length !=0) {
+      for (var i = 0; i < $scope.filter.tags.length; i++) {
+        tags += $scope.filter.tags[i].pk;
+        if (i != $scope.filter.tags.length-1) {
+          tags += ',';
+        }
+      }
+    }
+    url = '/api/PIM/blog/?title__contains='+$scope.filter.text;
+    if (tags !=''){
+      url += '&tags=' + tags;
+    }
+    $http({method : 'GET' , url : url , data : {month : $scope.filter.month}}).
+    then(function(response){
+      $scope.blogs = response.data;
+    })
+  }
+
+  $scope.edit = function(){
+    $state.go('home.blog' , { id : getPK($scope.articleInView.url) , action : 'edit'});
+  }
+
   $scope.comment = {text :''};
   $scope.comment = function(){
     dataToSend = {
@@ -85,7 +124,16 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
             state : 'published',
             tags : tags,
           };
-          $http({method : 'POST' , url : '/api/PIM/blog/', data : dataToSend}).
+
+          if ($scope.mode == 'edit') {
+            method = 'PATCH';
+            url = $scope.editor.url;
+          } else if ($scope.mode == 'new') {
+            method = 'POST';
+            url = '/api/PIM/blog/';
+          }
+
+          $http({method : method , url : url, data : dataToSend}).
           then(function(response){
             Flash.create('success' , response.status + ' : ' + response.statusText);
             $scope.editor.source = '';
@@ -102,14 +150,54 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
         text: 'Save',
         icon: false,
         onclick: function() {
-            editor.insertContent('Hello World!');
+          tags = '';
+          for (var i = 0; i < $scope.editor.tags.length; i++) {
+            tags += $scope.editor.tags[i].title;
+            if (i != $scope.editor.tags.length-1) {
+              tags += ',';
+            }
+          }
+          dataToSend = {
+            source : $scope.editor.source,
+            header : $scope.editor.header,
+            title : $scope.editor.title,
+            users : [$scope.me.url],
+            sourceFormat : 'html',
+            state : 'saved',
+            tags : tags,
+          };
+
+          if ($scope.mode == 'edit') {
+            method = 'PATCH';
+            url = $scope.editor.url;
+          } else if ($scope.mode == 'new') {
+            method = 'POST';
+            url = '/api/PIM/blog/';
+          }
+
+          $http({method : method , url : url, data : dataToSend}).
+          then(function(response){
+            Flash.create('success' , response.status + ' : ' + response.statusText);
+            $scope.editor.source = '';
+            $scope.editor.header = '';
+            $scope.editor.title = '';
+            $scope.editor.tags = [];
+            $scope.editor.mode = 'hedaer';
+          }, function(response){
+            Flash.create('danger' , response.status + ' : ' + response.statusText);
+          });
         }
       });
       editor.addButton( 'cancelBtn', {
         text: 'Cancel',
         icon: false,
         onclick: function() {
-          $state.go('home.blog' , {action:'list'} )
+          if ($scope.mode == 'edit') {
+            $state.go('home.blog' , { action:'list'} )
+          } else {
+            $state.go('home.blog' , {id : '' , action:'list'} )
+          }
+
         }
       });
     },

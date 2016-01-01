@@ -117,7 +117,7 @@ class blogSerializer(serializers.HyperlinkedModelSerializer):
     tags = blogCategorySerializer(many = True , read_only = True)
     class Meta:
         model = blogPost
-        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'users' , 'tags' , 'title' , 'header')
+        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'users' , 'tags' , 'title' , 'header' , 'state')
         read_only_fields = ('tags',)
     def create(self , validated_data):
         b = blogPost()

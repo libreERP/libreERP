@@ -63,7 +63,17 @@ class chatMessageBetweenViewSet(viewsets.ModelViewSet):
 class blogViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = blogSerializer
-    queryset = blogPost.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+    def get_queryset(self):
+        if 'tags' in self.request.GET:
+            tags = []
+            for t in self.request.GET['tags'].split(','):
+                tags.append(blogCategory.objects.get(pk = int(t)))
+            qs = blogPost.objects.filter(tags__in=tags , state = 'published')
+        else:
+            qs = blogPost.objects.filter(state = 'published')
+        return qs
 
 class blogCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
@@ -71,6 +81,7 @@ class blogCategoryViewSet(viewsets.ModelViewSet):
     queryset = blogCategory.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+
 
 class blogCommentsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

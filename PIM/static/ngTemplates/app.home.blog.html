@@ -80,23 +80,23 @@
 
       <div class="col-md-3" >
         <div class="row">
-          <a ui-sref="home.blog({action:'new'})" class="btn btn-default"> New <i class="fa fa-file-o"></i></a>
+          <a ui-sref="home.blog({id : '' , action:'new'})" class="btn btn-default"> New <i class="fa fa-file-o"></i></a>
           <button class="btn btn-default"> My articles <i class="fa fa-bars"></i></button>
           <button class="btn btn-default"> Drafts <i class="fa fa-floppy-o"></i></button>
-          <input type="text" value="" class="form-control" style="width:100%;margin-top:10px;" placeholder="Search title ..">
+          <input type="text" value="" class="form-control" style="width:100%;margin-top:10px;" placeholder="Search title .." ng-model = "filter.text" ng-enter = "search()">
           <hr>
           <div class="form-group">
             <label> Filter by categories :</label>
-            <tags-input ng-model="data.with" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+            <tags-input ng-model="filter.tags" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="title">
               <auto-complete source="loadTags($query)" load-on-down-arrow="true"></auto-complete>
             </tags-input>
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label> Filter by Month :</label>
             <div class="fullWidthDatePicker">
-              <uib-datepicker ng-model="date" min-mode="month" datepicker-mode="'month'" ></uib-datepicker>
+              <uib-datepicker ng-model="filter.month" min-mode="month" datepicker-mode="'month'" ></uib-datepicker>
             </div>
-          </div>
+          </div> -->
         </div>
         <hr>
         <div class="row ">
@@ -112,9 +112,12 @@
     <div ng-if="mode == 'read'">
       <div class="col-md-9">
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-9">
             <div class="col-md-4">
-              <a type="button" class="btn btn-default pull-left" ng-click="goBack()"><i class="fa fa-arrow-left"></i>  Go back </a>
+              <div class="btn-group">
+                <a type="button" class="btn btn-default pull-left" ng-click="goBack()"><i class="fa fa-arrow-left"></i>  Go back </a>
+                <a type="button" ng-if="articleInView.users.indexOf(me.url) !=-1" class="btn btn-default pull-left" ng-click="edit()"><i class="fa fa-pencil"></i>  edit </a>
+              </div>
               <img class="img-circle" ng-src="{{ articleInView.users[0] | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; right:-30px;"/>
             </div>
             <div class="col-md-8">
@@ -128,7 +131,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-5">
+          <div class="col-md-3">
             <div class="pull-right">
               <span class="label label-default {{$index | rainbow}}" ng-repeat="tag in articleInView.tags" style="margin-left:5px;">{{tag.title}}</span>
             </div>

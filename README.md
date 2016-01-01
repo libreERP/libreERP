@@ -9,11 +9,13 @@ The current state of the project is as follows :
 1. The basic authentication with admin interface to manage users and their master data is almost complete.
 2. A realtime notification system based on Autobahn and Crossbar.io project is also incorporated which also made it possible to build a realtime chat system.
 3. In terms of collaboration and people's profile system I have implemented almost 50 % of Facebook can do. Posting a post, album, photos with comments and like system is also working fine.
+4. Calendar with meeting , todo and reminders is working fine
+5. blogging is ready
+6. An API backed IMAP-SMTP web email client is looking great, I am facing issue in authenticating the Dovecot IMAP server with the Django's user data. The workaround I am using is that for each user the system will use proxy login to retrieve the mails and return the JSON response.
 
 Ongoing work
 ------------
-
-An API backed IMAP-SMTP web client is being developed, I am facing issue in authenticating the Dovecot IMAP server with the Django's user data. The workaround I am using is that for each user the system will use proxy login to retrieve the mails and return the JSON response.
+Currently working on the role permission and resource planning modules
 
 
 > The best part of the project is that the architecture I designed for this project is absolutely state of the art. Its uses RESTful API interaction, Angular JS bases interactive and responsive frontend makes it fun to work on and more importantly enjoyable to the users.
