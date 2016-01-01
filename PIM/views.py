@@ -80,3 +80,7 @@ class blogLikesViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = blogLikeSerializer
     queryset = blogLike.objects.all()
+class blogCommentLikesViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    serializer_class = blogCommentLikeSerializer
+    queryset = blogCommentLike.objects.all()

@@ -7,11 +7,11 @@ app.filter('rainbow' , function(){
     } else if (input%10 == 2){
       return "bg-yellow";
     } else if (input%10 == 3) {
-      return "bg-green";
+      return "bg-orange";
     }else if (input%10 == 4) {
       return "bg-blue";
     }else if (input%10 == 5) {
-      return "bg-orange";
+      return "bg-green";
     } else if (input%10 == 6){
       return "bg-purple";
     } else if (input%10 == 7) {

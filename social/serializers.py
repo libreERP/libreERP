@@ -180,9 +180,10 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         instance.title = validated_data.pop('title')
         instance.tagged.clear()
         instance.save()
-        tagged = self.context['request'].data['tagged']
-        for tag in tagged.split(','):
-            instance.tagged.add( User.objects.get(username = tag))
+        if 'tagged' in self.context['request'].data:
+            tagged = self.context['request'].data['tagged']
+            for tag in tagged.split(','):
+                instance.tagged.add( User.objects.get(username = tag))
         existing = picture.objects.filter(album = instance)
         for p in existing:
             p.album = None
@@ -222,4 +223,5 @@ class socialSerializer(serializers.HyperlinkedModelSerializer):
                 instance.coverPic = validated_data.pop('coverPic')
             except:
                 pass
+            instance.save()
         return instance

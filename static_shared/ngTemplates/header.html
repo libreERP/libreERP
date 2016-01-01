@@ -24,7 +24,7 @@
   			<li class="dropdown">
   			  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{me.url | getName}}  <span class="glyphicon glyphicon-chevron-down"></span></a>
   			  <ul class="dropdown-menu">
-    				<li><img class="img-responsive" width="200px" alt="profile-pic" ng-src="{{me.profile.displayPicture}}" style="top:-5px; position:relative; width:200px"></li>
+    				<li><img class="img-responsive" width="200px" alt="profile-pic" ng-src="{{me.url | getDP}}" style="top:-5px; position:relative; width:200px"></li>
     				<li><div style="text-align:center; -moz-user-select: none;">{{me.email}}</br><small>(HR Associate)</small></div></li>
     				<li role="separator" class="divider"></li>
     				<li><a href="" ng-click="openSettings('right' , false , settings )"><i class="fa fa-gears fa-fw"></i> Settings</a></li>

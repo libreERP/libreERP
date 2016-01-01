@@ -124,12 +124,24 @@ class blogPost(models.Model):
     state = models.CharField(max_length = 20 , choices = STATE_CHOICES , default = 'saved')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    user = models.ManyToManyField(User , related_name='articles' , blank = False)
+    header = models.TextField(max_length = 1000 , null = True)
+    users = models.ManyToManyField(User , related_name='articles' , blank = False)
     sourceFormat = models.CharField(choices = FORMAT_CHOICES , default = 'md' , max_length = 10)
     source = models.TextField(max_length = 20000 , null = True)
     tags = models.ManyToManyField(blogCategory , related_name = 'articles' , blank = True)
 
-class blogLike(like):
+
+class blogLike(models.Model):
     parent = models.ForeignKey(blogPost , related_name = 'likes')
-class blogComment(comment):
-    parent = models.ForeignKey(blogPost , related_name ='comments')
+    user = models.ForeignKey(User , related_name = 'blogLikes')
+
+class blogComment(models.Model):
+    user = models.ForeignKey(User , related_name = 'blogComments')
+    created = models.DateTimeField(auto_now_add = True)
+    text = models.CharField(max_length = 200 , null = False)
+    parent = models.ForeignKey(blogPost , related_name= 'comments')
+
+class blogCommentLike(models.Model):
+    user = models.ForeignKey(User , related_name = 'blogCommentlikes')
+    created = models.DateTimeField(auto_now_add = True)
+    parent = models.ForeignKey(blogComment , related_name= 'likes')

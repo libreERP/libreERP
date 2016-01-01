@@ -77,16 +77,26 @@ class blogLikeSerializer(serializers.HyperlinkedModelSerializer):
         l, new = blogLike.objects.get_or_create(parent = parent , user = user)
         return l
 
+class blogCommentLikeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = blogCommentLike
+        fields = ('url' , 'user' , 'created' , 'parent')
+    def create(self , validated_data):
+        parent = validated_data.pop('parent')
+        user =  self.context['request'].user
+        l, new = blogLike.objects.get_or_create(parent = parent , user = user)
+        return l
+
 class blogCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = blogCategory
         fields = ('pk', 'title' )
 
 class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
-    likes = commentLikeSerializer(many = True , read_only = True)
+    likes = blogCommentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = blogComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'likes')
         read_only_fields = ('tagged', 'likes',)
     def create(self , validated_data):
         text = validated_data.pop('text')
@@ -97,7 +107,8 @@ class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
         return comment
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
-        l , new = commentLike.objects.get_or_create(user = user , parent = instance)
+        print commentLike.parent.__class__
+        l , new = blogCommentLike.objects.get_or_create(user = user , parent = instance)
         return instance
 
 class blogSerializer(serializers.HyperlinkedModelSerializer):
@@ -106,20 +117,20 @@ class blogSerializer(serializers.HyperlinkedModelSerializer):
     tags = blogCategorySerializer(many = True , read_only = True)
     class Meta:
         model = blogPost
-        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'user' , 'tags' , 'title')
+        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'users' , 'tags' , 'title' , 'header')
         read_only_fields = ('tags',)
     def create(self , validated_data):
         b = blogPost()
-        for key in ['source', 'sourceFormat', 'title']:
+        for key in ['source', 'sourceFormat', 'title' , 'header']:
             try:
                 setattr(b , key , validated_data[key])
             except:
                 pass
         b.save()
-        b.user.add (self.context['request'].user)
+        b.users.add (self.context['request'].user)
         if 'tags' in self.context['request'].data:
             tags = self.context['request'].data['tags']
             for tag in tags.split(','):
-                b.tags.add( blogCategory.objects.get(title = tag))
+                b.tags.add( blogCategory.objects.get(title = tag.replace('-' , ' ')))
         b.save()
         return b

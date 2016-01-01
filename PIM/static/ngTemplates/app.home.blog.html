@@ -6,8 +6,11 @@
       <div class="row">
 
         <div class="form-group col-md-6">
+          <div class="col-md-1">
+            <input type="checkbox" ng-model = "modeToggle">
+          </div>
           <label class="control-label col-sm-2" >Title:</label>
-          <div class="col-md-10">
+          <div class="col-md-9">
             <input type="text" rows="3"  value="" class="form-control " required ng-model="editor.title"></input>
           </div>
         </div>
@@ -22,7 +25,8 @@
         </div>
       </div>
       <div class="row">
-        <textarea ui-tinymce="tinymceOptions" ng-model="editor.source"></textarea>
+        <textarea ng-if="modeToggle" ui-tinymce="tinymceOptions" ng-model="editor.source"></textarea>
+        <textarea ng-if="!modeToggle" ui-tinymce="tinymceOptions" ng-model="editor.header"></textarea>
       </div>
 
     </div>
@@ -30,15 +34,12 @@
       <div class="col-md-9">
         <div class="row">
           <!-- Each article bubble starts from here  -->
-          <div class="container-fluid" style="padding-left:30px;padding-right:30px;">
+          <div class="container-fluid" style="padding-left:30px;padding-right:30px;" ng-repeat="blog in blogs">
             <div class="row">
-              <h3 class="text-muted">Alice in Wonderland, part dos</h3>
+              <h3 ng-click="viewArticle($index)" style="cursor:pointer;" class="text-muted">{{blog.title}}</h3>
             </div>
             <div class="row">
-              <p style="text-align: justify;">'You ought to be ashamed of yourself for asking such a simple question,' added the Gryphon; and then they both sat silent and looked at poor Alice, who felt ready to sink into the earth. At last the Gryphon said to the Mock Turtle, 'Drive on, old fellow! Don't be all day about it!' and he went on in these words:
-                'Yes, we went to school in the sea, though you mayn't believe it—'
-                'I never said I didn't!' interrupted Alice.
-                'You did,' said the Mock Turtle.
+              <p style="text-align: justify;" ng-bind-html="blogs[$index].header">
               </p>
             </div>
             <div class="row">
@@ -46,81 +47,26 @@
                 <div class="col-md-1">
                   <img class="img-circle" ng-src="{{ me.url | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; left:-30px;"/>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-11">
                   <div class="row">
-                    <span >{{'http://localhost:8000/api/HR/users/1/' | getName}}</span>
+                    <span ng-repeat="u in blog.users" >{{ u | getName}}</span>
                   </div>
                   <div class="row">
-                    <span class="badge">Posted 2012-08-02 20:47:04</span>
-                    <span style="color:#666666;"> 2 Likes <i class="fa fa-thumbs-o-up"></i></span>
-                    <span style="color:#666666;"> 5 Comments <i class="fa fa-comments-o"></i></span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="pull-right">
-                  <span class="label label-default">alice</span>
-                  <span class="label label-primary">story</span>
-                  <span class="label label-success">blog</span>
-                  <span class="label label-info">personal</span>
-                  <span class="label label-warning">Warning</span>
-                  <span class="label label-danger">Danger</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr>
-          <!-- article listing bubble ends here  -->
-          <!-- Each article bubble starts from here  -->
-          <div class="container-fluid" style="padding-left:30px;padding-right:30px;">
-            <div class="row">
-              <h3 class="text-muted">Provide up-to-date feedback on the progress</h3>
-            </div>
-            <div class="row">
-              <div class=" col-md-3" style="padding:10px;">
-                <img alt="Image" src="http://i.imgur.com/tAHVmXi.jpg" width="100%">
-              </div>
-              <div class="col-md-9">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                quis nostrud exercitation 'You ought to be ashamed of yourself for asking such a simple question,' added the Gryphon; and then they both sat silent and looked at poor Alice, who felt ready to sink into the earth. At last the Gryphon said to the Mock Turtle, 'Drive on, old fellow! Don't be all day about it!' and he went on in these words:
-                'Yes, we went to school in the sea, though you mayn't believe it—'
-                'I never said I didn't!' interrupted Alice.
-                'Yes, we went to school in the sea, though you mayn't believe it—'
-                'I never said I didn't!' interrupted Alice.
-                'You did,' said the Mock Turtle.... <a href="#">Read more</a>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="col-md-1">
-                  <img class="img-circle" ng-src="{{ me.url | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; left:-30px;"/>
-                </div>
-                <div class="col-md-10">
-                  <div class="row">
-                    <span >{{'http://localhost:8000/api/HR/users/1/' | getName}}</span>
-                  </div>
-                  <div class="row">
-                    <span class="badge">Posted 2012-08-02 20:47:04</span>
-                    <span style="color:#666666;"> 2 Likes <i class="fa fa-thumbs-o-up"></i></span>
-                    <span style="color:#666666;"> 5 Comments <i class="fa fa-comments-o"></i></span>
+                    <span class="badge">{{blog.created | date:'dd MMM yyyy, hh:mm a'}}</span>
+                    <span style="color:#666666;"> {{blog.likes.length}} Likes <i class="fa fa-thumbs-o-up"></i></span>
+                    <span style="color:#666666;"> {{blog.comments.length}} Comments <i class="fa fa-comments-o"></i></span>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="pull-right">
-                  <span class="label label-default">alice</span>
-                  <span class="label label-primary">story</span>
-                  <span class="label label-success">blog</span>
-                  <span class="label label-info">personal</span>
-                  <span class="label label-warning">Warning</span>
-                  <span class="label label-danger">Danger</span>
+                  <span class="label label-default {{$index | rainbow}}" ng-repeat="tag in blogs[$index].tags" style="margin-left:5px;">{{tag.title}}</span>
                 </div>
               </div>
             </div>
+            <hr>
           </div>
           <!-- article listing bubble ends here  -->
-          <hr>
         </div>
         <div class="row">
           <nav>
@@ -160,6 +106,43 @@
             <li><a data-toggle="tab" href="#"><span class="label label-primary">Tutorial</span> : How to control the threads in Python</a></li>
             <li><a data-toggle="tab" href="#"><span class="label label-info">Product</span> : A valve to optimally control the flow in the cumbuston engine</a></li>
           </ul>
+        </div>
+      </div>
+    </div>
+    <div ng-if="mode == 'read'">
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-7">
+            <div class="col-md-4">
+              <a type="button" class="btn btn-default pull-left" ng-click="goBack()"><i class="fa fa-arrow-left"></i>  Go back </a>
+              <img class="img-circle" ng-src="{{ articleInView.users[0] | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; right:-30px;"/>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <span ng-repeat="u in articleInView.users" >{{ u | getName}}</span>
+              </div>
+              <div class="row">
+                <span class="badge">{{articleInView.created | date:'dd MMM yyyy, hh:mm a'}}</span>
+                <span style="color:#666666;"> {{articleInView.likes.length}} Likes <i class="fa fa-thumbs-o-up"></i></span>
+                <span style="color:#666666;"> {{articleInView.comments.length}} Comments <i class="fa fa-comments-o"></i></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="pull-right">
+              <span class="label label-default {{$index | rainbow}}" ng-repeat="tag in articleInView.tags" style="margin-left:5px;">{{tag.title}}</span>
+            </div>
+          </div>
+        </div>
+        <h3> {{articleInView.title}}</h3>
+        <hr>
+        <div class="container-fluid" ng-bind-html = "articleInView.source">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <input type="text" class="form-control" style="width:100%" ng-enter = "comment()" placeholder="Comment... " ng-model = "comment.text">
+        <div ng-repeat="comment in articleInView.comments">
+          <comment-bubble data = "comment" on-Delete = "onCommentDelete($index)"></comment-bubble>
         </div>
       </div>
     </div>

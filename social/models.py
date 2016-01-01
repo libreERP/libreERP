@@ -71,14 +71,14 @@ class albumFollower(follow):
     parent = models.ForeignKey(album , related_name = 'followers')
 
 class comment(models.Model):
-    user = models.ForeignKey(User , related_name = 'comments')
+    user = models.ForeignKey(User , related_name = 'socialComments')
     created = models.DateTimeField(auto_now_add = True)
     attachment = models.FileField(upload_to = getCommentAttachmentPath , null = True)
     text = models.CharField(max_length = 200 , null = False)
     tagged = models.ManyToManyField(User , related_name = 'taggedComments' , blank = True)
 
 class like(models.Model):
-    user = models.ForeignKey(User , related_name = 'likes')
+    user = models.ForeignKey(User , related_name = 'socialLikes')
     created = models.DateTimeField(auto_now_add = True)
 
 class postLike(like):
@@ -93,7 +93,8 @@ class pictureComment(comment):
     parent = models.ForeignKey(picture , related_name = 'comments')
 
 def getSocialCoverPictureUploadPath(instance , filename ):
-    return 'social/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
+    return 'social/coverPic/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
+
 class social(models.Model):
     user = models.OneToOneField(User)
     aboutMe = models.TextField(max_length = 1000 , null = True)
