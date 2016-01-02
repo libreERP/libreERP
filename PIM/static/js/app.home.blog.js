@@ -6,6 +6,7 @@ app.controller("controller.home.blog", function($scope , $state , userProfileSer
   $scope.pageNo = 0;
   $scope.disableNext = false;
   $scope.liked = false;
+  $scope.recommended = [];
 
   $scope.search = function(){
     tags = '';
@@ -39,6 +40,27 @@ app.controller("controller.home.blog", function($scope , $state , userProfileSer
     })
   }
 
+  $http({method : 'GET' , url : '/api/PIM/blog/?state=published&offset=0&limit=5'}).
+  then(function(response){
+    $scope.recommended = response.data.results;
+  });
+
+  $scope.readRecommended = function(url){
+    $scope.getAndRead(getPK(url))
+  }
+
+  $scope.getAndRead = function(id){
+    $scope.mode = 'read';
+    $http({method : 'GET' , url : '/api/PIM/blog/' + id + '/' +'?state=published'}).
+    then(function(response){
+      $scope.articleInView = response.data;
+      for (var i = 0; i < $scope.articleInView.likes.length; i++) {
+        if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
+          $scope.liked = true;
+        }
+      }
+    })
+  }
 
   if (typeof $stateParams.id != 'undefined' && $stateParams.action == 'edit') {
     $scope.mode = 'edit';
@@ -54,16 +76,7 @@ app.controller("controller.home.blog", function($scope , $state , userProfileSer
   } else if ($stateParams.action == 'new') {
     $scope.mode = 'new';
   } else if ($stateParams.id != 'undefined' && $stateParams.id != ''  && $stateParams.action != 'edit') {
-    $scope.mode = 'read';
-    $http({method : 'GET' , url : '/api/PIM/blog/' + $stateParams.id + '/' +'?state=all'}).
-    then(function(response){
-      $scope.articleInView = response.data;
-      for (var i = 0; i < $scope.articleInView.likes.length; i++) {
-        if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
-          $scope.liked = true;
-        }
-      }
-    })
+    $scope.getAndRead($stateParams.id);
   } else {
     $scope.mode = 'list';
     $scope.filter.state = 'published';
@@ -169,7 +182,7 @@ app.controller("controller.home.blog", function($scope , $state , userProfileSer
     $state.go('home.blog' , { id : '', action : 'list'});
   }
 
-  $scope.viewArticle = function(index){
+  $scope.viewArticle = function(index){ // if we have the data in the scope and just want to read the artile
     $scope.mode = 'read'
     $scope.articleInView = $scope.blogs[index];
     for (var i = 0; i < $scope.articleInView.likes.length; i++) {

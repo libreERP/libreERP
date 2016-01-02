@@ -120,6 +120,13 @@ class blogPost(models.Model):
         ('hidden' , 'hidden'),
     )
 
+    CONTENT_TYPE_CHOICE = (
+        ('article' , 'article'),
+        ('tutorial' , 'tutorial'),
+        ('whitepaper' , 'whitepaper'),
+        ('product' , 'product'),
+    )
+
     title = models.CharField(max_length = 500 , null=True)
     state = models.CharField(max_length = 20 , choices = STATE_CHOICES , default = 'saved')
     created = models.DateTimeField(auto_now_add=True)
@@ -129,7 +136,7 @@ class blogPost(models.Model):
     sourceFormat = models.CharField(choices = FORMAT_CHOICES , default = 'md' , max_length = 10)
     source = models.TextField(max_length = 40000 , null = True)
     tags = models.ManyToManyField(blogCategory , related_name = 'articles' , blank = True)
-
+    contentType = models.CharField(max_length = 15 , choices = CONTENT_TYPE_CHOICE , default = 'article')
 
 class blogLike(models.Model):
     parent = models.ForeignKey(blogPost , related_name = 'likes')

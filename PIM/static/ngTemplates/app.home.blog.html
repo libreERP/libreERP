@@ -102,9 +102,7 @@
         <div class="row ">
           <h4>Recommended:</h4>
           <ul class="nav nav-sidebar sidebarList" style="width: 100%;position: relative;">
-            <li><a data-toggle="tab" href="#"><span class="label label-warning">Blog</span> : Thought : New government policies to effect the service sector efficiency</a></li>
-            <li><a data-toggle="tab" href="#"><span class="label label-primary">Tutorial</span> : How to control the threads in Python</a></li>
-            <li><a data-toggle="tab" href="#"><span class="label label-info">Product</span> : A valve to optimally control the flow in the cumbuston engine</a></li>
+            <li ng-repeat="b in recommended"><a ng-click="readRecommended(b.url)" href=""><span class="label label-success">{{b.contentType}}</span> : {{b.title}}</a></li>
           </ul>
         </div>
       </div>

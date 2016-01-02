@@ -737,7 +737,7 @@ app.directive('socialProfile', function () {
   };
 });
 
-app.controller('controller.social.profile', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
+app.controller('controller.social.profile', function($scope, $state , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
   emptyFile = new File([""], "");
   $scope.me = userProfileService.get('mySelf')
   $scope.user = userProfileService.get($scope.userUrl, true);
@@ -797,6 +797,17 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
     }
   )
 
+  $http({method:'GET' , url : '/api/PIM/blog/?user='+$scope.user.username}).then(
+    function(response){
+      $scope.socialResource.whatsNew = response.data;
+    }
+  )
+
+  $scope.readWhatsNew = function(index){
+    $state.go('home.blog' , {id : getPK($scope.socialResource.whatsNew[index].url)  , action : 'read'})
+  }
+
+
   $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ]; // to be used in the album editor
   $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
   $scope.tempAlbum = {title : '' , photos : [] , tagged : ''};
@@ -832,6 +843,7 @@ app.controller('controller.social.profile', function($scope , $http , $timeout ,
   };
 
   $scope.getFive = function(mode){
+    // mode is the content type, like posts, albums etc
     $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username+'&offset=' + $scope.offset[mode] + '&limit='+$scope.limit}).
     then(function(response){
       $scope.max['post'] = response.data.count;

@@ -1,182 +1,190 @@
-<div class="col-md-3">
-  <div ng-include = "'/static/ngTemplates/app.social.profile.infoCol.html'"></div>
-</div>
-<div class="col-md-9">
-    <!-- Custom Tabs -->
-  <uib-tabset>
-    <uib-tab heading="Activity" >
-      <div style="margin-top:15px;">
-        <ul class="timeline timeline-inverse">
-          <div ng-repeat="feed in sortedFeeds">
-            <post ng-if ="feed.type=='post'" data = "socialResource.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
-            <album ng-if = "feed.type == 'album'" data = "socialResource.albums[feed.index]" photo-Delete = "removePhoto(feed.index )" album-Delete = "removeAlbum(feed.index)"></album>
-          </div>
-        </ul>
-        <nav>
-          <ul class="pager">
-            <li class="previous"><a href="" ng-click="prev()"><span aria-hidden="true">&larr;</span> Prev</a></li>
-            <li class="next"><a href="" ng-click="next()">Next <span aria-hidden="true">&rarr;</span></a></li>
+<div class="col-md-10">
+  <div class="col-md-3">
+    <div ng-include = "'/static/ngTemplates/app.social.profile.infoCol.html'"></div>
+  </div>
+  <div class="col-md-9">
+      <!-- Custom Tabs -->
+    <uib-tabset>
+      <uib-tab heading="Activity" >
+        <div style="margin-top:15px;">
+          <ul class="timeline timeline-inverse">
+            <div ng-repeat="feed in sortedFeeds">
+              <post ng-if ="feed.type=='post'" data = "socialResource.posts[feed.index]" on-delete = "removePost(feed.index)"></post>
+              <album ng-if = "feed.type == 'album'" data = "socialResource.albums[feed.index]" photo-Delete = "removePhoto(feed.index )" album-Delete = "removeAlbum(feed.index)"></album>
+            </div>
           </ul>
-        </nav>
-      </div>
-    </uib-tab>
-    <uib-tab class="pull-right" ng-if="myProfile">
-      <uib-tab-heading>
-        <i class="fa fa-plus"></i>
-      </uib-tab-heading>
-      <div style="margin-top:15px;">
-        <uib-tabset justified="true">
-          <uib-tab heading="Post" >
-            <uib-tab-heading>
-              <i class="fa fa-comment-o"></i>  Post
-            </uib-tab-heading>
-            <div style="margin-top:15px;">
-              <div ng-include="'/static/ngTemplates/app.social.form.post.html'"></div>
-            </div>
-          </uib-tab>
-          <uib-tab >
-            <uib-tab-heading>
-              <i class="fa fa-picture-o"></i>  Picture
-            </uib-tab-heading>
-            <div style="margin-top:15px;">
-              <div ng-include="'/static/ngTemplates/app.social.form.picture.html'"></div>
-            </div>
-          </uib-tab>
-          <uib-tab heading="Album" >
-            <uib-tab-heading>
-              <i class="fa fa-th-large"></i>  Album
-            </uib-tab-heading>
-            <div ng-include="'/static/ngTemplates/app.social.form.album.html'"></div>
-          </uib-tab>
-          <uib-tab >
-            <uib-tab-heading>
-              <i class="fa fa-black-tie"></i>  Profile
-            </uib-tab-heading>
-            <div style="margin-top:15px;">
-              <div ng-include="'/static/ngTemplates/app.social.form.profile.html'"></div>
-            </div>
-          </uib-tab>
-        </uib-tabset>
-      </div>
-    </uib-tab>
-    <uib-tab>
-      <uib-tab-heading>
-        <i class="fa fa-picture-o"></i>  Photos
-      </uib-tab-heading>
-      <div class="container-fluid" style="padding-top:15px;">
-        <div class="row">
-          <div class="col-md-3 col-sm-4 col-xs-6" style="padding:10px;" ng-repeat= "picture in user.pictures"><img class="shaddowed" ng-src="{{picture.photo}}"  height="100" width="180"/></div>
+          <nav>
+            <ul class="pager">
+              <li class="previous"><a href="" ng-click="prev()"><span aria-hidden="true">&larr;</span> Prev</a></li>
+              <li class="next"><a href="" ng-click="next()">Next <span aria-hidden="true">&rarr;</span></a></li>
+            </ul>
+          </nav>
         </div>
-      </div>
-
-    </uib-tab>
-    <uib-tab>
-      <uib-tab-heading>
-        <i class="fa fa-book"></i>  Publications
-      </uib-tab-heading>
-      <div class="container-fluid" style="padding-top:15px;">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="text-center">
-              <h3 class="text-muted">Publications</h3>
-            </div>
-            <div class="row">
-              <ul>
-                <li> Patil MD, Nataraj PSV, Vyawahare VA. Automated design of fractional PI QFT controller using interval constraint satisfaction technique (ICST), Nonlinear Dynamics, DOI 10.1007/s11071-012-0357-7</li>
-                <li> Patil MD, Nataraj PSV, Automated synthesis of multivariable QFT controller using interval constraint satisfaction technique, Journal of Process Control, 2012; 22(4) </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class=" text-center">
-              <h3 class="text-muted">Projects</h3>
-            </div>
-            <div class="row">
-              <ul>
-                <li><h4>HeadCopter</h4></li>
-                Guide: Prof. K P Karunakaran, IITB
-                </br>
-                Discription: Some discription of the project.Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
-
-                <li><h4>HeadCopter</h4></li>
-                Guide: Prof. K P Karunakaran, IITB
-                </br>
-                Discription: Some discription of the project B. Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
-              </ul>
-            </div>
+      </uib-tab>
+      <uib-tab class="pull-right" ng-if="myProfile">
+        <uib-tab-heading>
+          <i class="fa fa-plus"></i>
+        </uib-tab-heading>
+        <div style="margin-top:15px;">
+          <uib-tabset justified="true">
+            <uib-tab heading="Post" >
+              <uib-tab-heading>
+                <i class="fa fa-comment-o"></i>  Post
+              </uib-tab-heading>
+              <div style="margin-top:15px;">
+                <div ng-include="'/static/ngTemplates/app.social.form.post.html'"></div>
+              </div>
+            </uib-tab>
+            <uib-tab >
+              <uib-tab-heading>
+                <i class="fa fa-picture-o"></i>  Picture
+              </uib-tab-heading>
+              <div style="margin-top:15px;">
+                <div ng-include="'/static/ngTemplates/app.social.form.picture.html'"></div>
+              </div>
+            </uib-tab>
+            <uib-tab heading="Album" >
+              <uib-tab-heading>
+                <i class="fa fa-th-large"></i>  Album
+              </uib-tab-heading>
+              <div ng-include="'/static/ngTemplates/app.social.form.album.html'"></div>
+            </uib-tab>
+            <uib-tab >
+              <uib-tab-heading>
+                <i class="fa fa-black-tie"></i>  Profile
+              </uib-tab-heading>
+              <div style="margin-top:15px;">
+                <div ng-include="'/static/ngTemplates/app.social.form.profile.html'"></div>
+              </div>
+            </uib-tab>
+          </uib-tabset>
+        </div>
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-picture-o"></i>  Photos
+        </uib-tab-heading>
+        <div class="container-fluid" style="padding-top:15px;">
+          <div class="row">
+            <div class="col-md-3 col-sm-4 col-xs-6" style="padding:10px;" ng-repeat= "picture in user.pictures"><img class="shaddowed" ng-src="{{picture.photo}}"  height="100" width="180"/></div>
           </div>
         </div>
-      </div>
 
-    </uib-tab>
-    <uib-tab>
-      <uib-tab-heading>
-        <i class="fa fa-wrench"></i>  Competencies
-      </uib-tab-heading>
-      <div class="container-fluid" style="padding-top:15px;">
-        <div class="row">
-          <div class="col-sm-12 text-center">
-            <h3 class="text-muted">Skills</h3>
-          </div>
-          <div class="col-md-2 col-md-offset-1">
-            <div class="row">
-              <div fs-radial-graph
-                  data-class = "radial1 fs-radial-graph"
-                  data-value="79"
-                  data-size="120"
-                  data-strokewidth="15">
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-book"></i>  Publications
+        </uib-tab-heading>
+        <div class="container-fluid" style="padding-top:15px;">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="text-center">
+                <h3 class="text-muted">Publications</h3>
+              </div>
+              <div class="row">
+                <ul>
+                  <li> Patil MD, Nataraj PSV, Vyawahare VA. Automated design of fractional PI QFT controller using interval constraint satisfaction technique (ICST), Nonlinear Dynamics, DOI 10.1007/s11071-012-0357-7</li>
+                  <li> Patil MD, Nataraj PSV, Automated synthesis of multivariable QFT controller using interval constraint satisfaction technique, Journal of Process Control, 2012; 22(4) </li>
+                </ul>
               </div>
             </div>
-            <h5 class="text-muted" align="center">CSS</h5>
-          </div>
-          <div class="col-md-2">
-            <div class="row">
-              <div fs-radial-graph
-                  data-class = "radial2 fs-radial-graph"
-                  data-value="79"
-                  data-size="120"
-                  data-strokewidth="15">
+
+            <div class="col-md-6">
+              <div class=" text-center">
+                <h3 class="text-muted">Projects</h3>
+              </div>
+              <div class="row">
+                <ul>
+                  <li><h4>HeadCopter</h4></li>
+                  Guide: Prof. K P Karunakaran, IITB
+                  </br>
+                  Discription: Some discription of the project.Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
+
+                  <li><h4>HeadCopter</h4></li>
+                  Guide: Prof. K P Karunakaran, IITB
+                  </br>
+                  Discription: Some discription of the project B. Whether you're a student looking to showcase your work, a professional looking to attract clients, or a graphic artist looking to share your projects, this template is the perfect starting point!</p>
+                </ul>
               </div>
             </div>
-            <h5 class="text-muted" align="center">PHP</h5>
-          </div>
-          <div class="col-md-2">
-            <div class="row">
-              <div fs-radial-graph
-                  data-class = "radial3 fs-radial-graph"
-                  data-value="79"
-                  data-size="120"
-                  data-strokewidth="15">
-              </div>
-            </div>
-            <h5 class="text-muted" align="center">Python</h5>
-          </div>
-          <div class="col-md-2">
-            <div class="row">
-              <div fs-radial-graph
-                  data-class = "radial4 fs-radial-graph"
-                  data-value="79"
-                  data-size="120"
-                  data-strokewidth="15">
-              </div>
-            </div>
-            <h5 class="text-muted" align="center">FreeCAD</h5>
-          </div>
-          <div class="col-md-2">
-            <div class="row">
-              <div fs-radial-graph
-                  data-class = "radial5 fs-radial-graph"
-                  data-value="79"
-                  data-size="120"
-                  data-strokewidth="15">
-              </div>
-            </div>
-            <h5 class="text-muted" align="center">C++</h5>
           </div>
         </div>
-      </div>
 
-    </uib-tab>
-  </uib-tabset>
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-wrench"></i>  Competencies
+        </uib-tab-heading>
+        <div class="container-fluid" style="padding-top:15px;">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <h3 class="text-muted">Skills</h3>
+            </div>
+            <div class="col-md-2 col-md-offset-1">
+              <div class="row">
+                <div fs-radial-graph
+                    data-class = "radial1 fs-radial-graph"
+                    data-value="79"
+                    data-size="120"
+                    data-strokewidth="15">
+                </div>
+              </div>
+              <h5 class="text-muted" align="center">CSS</h5>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <div fs-radial-graph
+                    data-class = "radial2 fs-radial-graph"
+                    data-value="79"
+                    data-size="120"
+                    data-strokewidth="15">
+                </div>
+              </div>
+              <h5 class="text-muted" align="center">PHP</h5>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <div fs-radial-graph
+                    data-class = "radial3 fs-radial-graph"
+                    data-value="79"
+                    data-size="120"
+                    data-strokewidth="15">
+                </div>
+              </div>
+              <h5 class="text-muted" align="center">Python</h5>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <div fs-radial-graph
+                    data-class = "radial4 fs-radial-graph"
+                    data-value="79"
+                    data-size="120"
+                    data-strokewidth="15">
+                </div>
+              </div>
+              <h5 class="text-muted" align="center">FreeCAD</h5>
+            </div>
+            <div class="col-md-2">
+              <div class="row">
+                <div fs-radial-graph
+                    data-class = "radial5 fs-radial-graph"
+                    data-value="79"
+                    data-size="120"
+                    data-strokewidth="15">
+                </div>
+              </div>
+              <h5 class="text-muted" align="center">C++</h5>
+            </div>
+          </div>
+        </div>
+
+      </uib-tab>
+    </uib-tabset>
+  </div>
+</div>
+<div class="col-md-2 col-md-offset-0 col-xs-9 col-xs-offset-1">
+  <ul class="nav nav-sidebar sidebarList" style="width: 130%;left: -40px;position: relative;">
+    <li><div class="profile-username text-center" style="padding : 10px;display: block; border-bottom: solid 1px #dbdbdb;">Whats New</div></li>
+    <li ng-repeat="b in socialResource.whatsNew"><a ng-click="readWhatsNew($index)" href=""><span class="label label-success">{{b.contentType}}</span> : {{b.title}}</a></li>
+  </ul>
 </div>

@@ -6,17 +6,13 @@ app.controller("controller.home.notes", function($scope , $state , userProfileSe
 
   $scope.bookInView = -1;
   $scope.pageInView = -1;
-
-  $http({ method : 'GET' , url : '/api/PIM/notebook/'}).
-  then(function(response){
-    $scope.notebooks = response.data;
-    if (response.data.length != 0) {
-      $scope.bookInView = 0;
-    }
-  })
+  $scope.notebooks = [];
 
   $scope.$watch('bookInView' , function(newValue , oldValue){
     if (newValue != -1) {
+      console.log(newValue);
+      console.log($scope);
+      console.log($scope.notebooks[newValue]);
       if ($scope.notebooks[newValue].pages.length == 0) {
         dataToSend =  {
           source : 'blank',
@@ -36,6 +32,24 @@ app.controller("controller.home.notes", function($scope , $state , userProfileSe
     }
   });
 
+  $http({ method : 'GET' , url : '/api/PIM/notebook/'}).
+  then(function(response){
+    $scope.notebooks = response.data;
+    if (response.data.length != 0) {
+      $scope.bookInView = 0;
+    } else{
+      dataToSend = {
+        user : $scope.me.url,
+        title : 'untitled',
+      }
+      $http({ method : 'POST' , url : '/api/PIM/notebook/' , data : dataToSend }).
+      then(function(response){
+        $scope.notebooks.push(response.data);
+        $scope.bookInView = 0;
+      })
+    }
+  })
+
   $scope.getPage = function(){
     $http({ method : 'GET' , url : $scope.notebooks[$scope.bookInView].pages[$scope.pageInView] }).
     then(function(response){
@@ -54,6 +68,7 @@ app.controller("controller.home.notes", function($scope , $state , userProfileSe
   }
 
   $scope.save = function(){
+    console.log($scope);
     dataToSend = {
       source : JSON.stringify($scope.canvas),
       parent : $scope.notebooks[$scope.bookInView].url,
@@ -95,20 +110,6 @@ app.controller("controller.home.notes", function($scope , $state , userProfileSe
       $scope.addText(options.e);
     }
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   window.addEventListener('resize', resizeCanvas, false);
