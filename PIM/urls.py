@@ -6,6 +6,8 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 
+router.register(r'notebook' , notebookViewSet , base_name ='notebook')
+router.register(r'page' , pageViewSet , base_name ='page')
 router.register(r'blog' , blogViewSet , base_name ='blogpost')
 router.register(r'blogComment' , blogCommentsViewSet , base_name ='blogcomment')
 router.register(r'blogCommentLike' , blogCommentLikesViewSet , base_name ='blogcommentlike')

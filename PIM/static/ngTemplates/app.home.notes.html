@@ -1,0 +1,14 @@
+<div class="shaddowed card bg-white" style="min-height:700px;position:relative;">
+
+  <breadcrumb></breadcrumb>
+  <div class="container-fluid" style="width:100%;position:relative;">
+    <button type="button"class="btn btn-default" ng-click="pencil()"> {{editor.pencil ? 'Pencil' : 'Text'}}</button>
+    <div class="btn-group">
+      <button type="button" class="btn btn-success" ng-click="save()"> <i class="fa fa-floppy-o"></i></button>
+      <button type="button" class="btn btn-default" ng-click="clearAll()"> <i class="fa fa-eraser"></i></button>
+    </div>
+    <canvas id="canvas" ></canvas>
+
+
+  </div>
+</div>

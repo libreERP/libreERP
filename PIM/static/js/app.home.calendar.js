@@ -1,4 +1,4 @@
-app.controller("home.calendar", function($scope , $http ,$aside, $state , $timeout) {
+app.controller("controller.home.calendar", function($scope , $http ,$aside, $state , $timeout) {
 
   $scope.data = {items : []};
   $http({url : '/api/PIM/calendar/' , method : 'GET'}).

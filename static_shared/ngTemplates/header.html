@@ -71,7 +71,7 @@
         </li>
       </ul> <!-- /. notification icons group -->
       <form  class="navbar-form navbar-right" role="search">
-        <i style="margin:10px;" ng-click="terminal.show = !terminal.show;" class="fa fa-usd noselect"></i>
+        <i style="margin:10px;" ng-click="terminal.show = !terminal.show;" class="fa fa-terminal noselect"></i>
         <input ng-if="terminal.show" focus-me="terminal.show" type="text" class="form-control animated fadeIn" placeholder="Enter command" ng-enter="parseCommand()"
         ng-model="selected" uib-typeahead="state as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-template-url="customTemplate.html"  ng-blur="closeTerminal()" ng-model = "terminal.command" style="width:500px;">
       </form>

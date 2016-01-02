@@ -25,7 +25,6 @@
     <style media="screen" ng-bind-html="theme"></style>
   </head>
   <body>
-    <div ng-include="'/static/ngTemplates/ngTemplateSnippets.html'"></div>
 
     <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
 
@@ -39,11 +38,11 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/angular.min.js' %}"></script>
     <script src="{% static 'js/angular-ui-router.js' %}"></script>
-    <script src="{% static 'js/angular-messages.min.js' %}"></script>
     <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
     <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
     <script src="{% static 'js/angular-aside.min.js' %}"></script>
     <script src="{% static 'js/angular-chart.min.js' %}"></script>
+    <script src="{% static 'js/fabric.min.js' %}"></script>
     <script src="{% static 'js/autobahn.min.js' %}"></script>
     <script src="{% static 'js/ngDraggable.js' %}"></script>
     <script src="{% static 'js/angular-flash.js' %}"></script>
@@ -67,6 +66,7 @@
     <script src="{% static 'js/module.home.js' %}"></script>
     <script src="{% static 'js/app.home.calendar.js' %}"></script>
     <script src="{% static 'js/app.home.blog.js' %}"></script>
+    <script src="{% static 'js/app.home.notes.js' %}"></script>
     <script src="{% static 'js/app.social.js' %}"></script>
     <script src="{% static 'js/app.mail.js' %}"></script>
     <script src="{% static 'js/module.admin.js' %}"></script>

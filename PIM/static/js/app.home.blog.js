@@ -1,4 +1,4 @@
-app.controller("home.blog", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
+app.controller("controller.home.blog", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
   $scope.me = userProfileService.get('mySelf');
   $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
   $scope.filter = {text : '' , tags :[] , month : new Date() , state : 'published' , user : 'all'};
@@ -31,7 +31,7 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
         $scope.pageNo -= 1;
         $scope.search();
       }
-      if ($scope.pageNo*($scope.itemsPerPage+1) > response.data.count) {
+      if ($scope.pageNo*($scope.itemsPerPage+1) >= response.data.count) {
         $scope.disableNext = true;
       } else {
         $scope.disableNext = false;
@@ -189,7 +189,7 @@ app.controller("home.blog", function($scope , $state , userProfileService ,  $st
     selector: 'textarea',
     content_css : '/static/css/bootstrap.min.css',
     inline: false,
-    plugins : 'advlist autolink link image lists charmap print preview imagetools paste table insertdatetime code searchreplace ',
+    plugins : 'advlist autolink link image lists charmap preview imagetools paste table insertdatetime code searchreplace ',
     skin: 'lightgray',
     theme : 'modern',
     height : 640,

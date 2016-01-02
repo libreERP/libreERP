@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <form ng-submit="submitFn()">
+    <h3>{{formTitle}} </h3>
+
+    </hr>
+    <nav ng-if="wizard">
+      <ul class="pager">
+        <li class="previous {{page==1? 'disabled' : ''}}" ><a href="" ng-click="prev()"><span aria-hidden="true">&larr;</span> Prev</a></li>
+        <li class="next {{page==maxPage? 'disabled' : ''}}" ><a href="" ng-click="next()">Next <span aria-hidden="true">&rarr;</span></a></li>
+      </ul>
+    </nav>
+    <div class="row" ng-include="template"></div>
+    <div class="row">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  <form>
+</div>

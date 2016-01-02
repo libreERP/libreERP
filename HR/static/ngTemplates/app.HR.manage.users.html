@@ -9,7 +9,7 @@
           New  <i class="fa fa-plus"></i>
         </uib-tab-heading>
         <div class="col-md-6">
-          <generic-Form template="'/newUserForm.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
+          <generic-Form template="'/static/ngTemplates/app.HR.form.newUser.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
         </div>
       </uib-tab>
       <uib-tab heading="Search" active="searchTabActive">
@@ -17,8 +17,8 @@
             primary-Search-Field="'username'" views='views' multiselect-Options = 'multiselectOptions' get-Params = "getParams"></generic-Table>
       </uib-tab>
       <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
-        <uib-tab-heading ng-click="$event.stopPropagation();">
-          {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);$event.stopPropagation();"></i>
+        <uib-tab-heading >
+          {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
         </uib-tab-heading>
         <div ng-if="tab.app == 'profileEditor'">
           <profile-Editor obj-Url="tab.objUrl"></profile-Editor>

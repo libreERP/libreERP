@@ -166,7 +166,7 @@ app.directive('focusMe', function($timeout) {
 
 app.directive('breadcrumb', function () {
   return {
-    templateUrl: '/breadcrumb.html',
+    templateUrl: '/static/ngTemplates/breadcrumb.html',
     restrict: 'E',
     replace: true,
     scope: false,
@@ -218,7 +218,7 @@ app.directive('ngEnter', function () {
 
 app.directive('genericForm', function () {
   return {
-    templateUrl: '/genericForm.html',
+    templateUrl: '/static/ngTemplates/genericForm.html',
     restrict: 'E',
     replace: true,
     scope: {

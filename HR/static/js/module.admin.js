@@ -19,7 +19,7 @@ app.config(function($stateProvider){
 
   .state('admin.manageUsers', {
     url: "/manageUsers",
-    templateUrl: '/static/ngTemplates/admin.manage.users.html',
+    templateUrl: '/static/ngTemplates/app.HR.manage.users.html',
     controller: 'admin.manageUsers'
   })
 
@@ -68,7 +68,6 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
     {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
     {icon : 'fa fa-envelope-o' , text : 'message' },
-    {icon : 'fa fa-file' , text : 'somethign'}
   ];
 
   $scope.tableAction = function(target , action , mode){
@@ -105,13 +104,13 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
 
 app.directive('profileEditor', function () {
   return {
-    templateUrl: '/profileEditor.html',
+    templateUrl: '/static/ngTemplates/app.HR.profileEditor.html',
     restrict: 'E',
     replace: true,
     scope: {
       objUrl :'=',
     },
-    controller : function($scope , $http , userProfileService , Flash){
+    controller : function($scope , $http , userProfileService , Flash , $filter){
       $scope.userUrl = angular.copy($scope.objUrl);
       user = userProfileService.get($scope.userUrl);
       $scope.userUrl = $scope.userUrl.replace('users' , 'profileAdminMode');
@@ -135,8 +134,6 @@ app.directive('profileEditor', function () {
       }, function(response){});
 
       $scope.updateProfile = function(){
-        console.log("Going to submit the profile data");
-        console.log($scope.profile);
         var fd = new FormData();
         for(key in $scope.profile){
           if (key!='url' && $scope.profile[key] != null) {
@@ -146,7 +143,7 @@ app.directive('profileEditor', function () {
               }
             }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
               if ($scope.profile[key]!= null) {
-                fd.append( key , $scope.profile[key]);
+                fd.append( key , $filter('date')($scope.profile[key] , "yyyy-MM-dd"));
               }
             }else if ($scope.profileFormStructure[key].type.indexOf('url')!=-1 && ($scope.profile[key]==null || $scope.profile[key]=='')) {
               // fd.append( key , 'http://localhost');

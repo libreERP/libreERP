@@ -1,0 +1,208 @@
+<div ng-show="page==1">
+  <div class="form-group">
+    <label for="empID">Employee ID</label>
+    <input type="number" class="form-control" ng-model="data.empID" id="empID" placeholder="Employee ID">
+  </div>
+
+  <div class="form-group">
+    <label>Date of Birth</label>
+    <div class="input-group" >
+      <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.dateOfBirth" is-open="status.DOBOpened"  />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="status.DOBOpened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+      </span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Anivarsary</label>
+    <div class="input-group" >
+      <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.anivarsary" is-open="status.aniversaryOpened"  />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="status.aniversaryOpened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+      </span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>permanentAddressStreet</label>
+    <input type="text" class="form-control" ng-model="data.permanentAddressStreet"  placeholder="permanentAddressStreet">
+  </div>
+
+  <div class="form-group">
+    <label>permanentAddressCity</label>
+    <input type="text" class="form-control" ng-model="data.permanentAddressCity" placeholder="permanentAddressCity">
+  </div>
+  <div class="form-group">
+    <label>permanentAddressPin</label>
+    <input type="number" class="form-control" ng-model="data.permanentAddressPin"  placeholder="permanentAddressPin">
+  </div>
+  <div class="form-group">
+    <label>permanentAddressState</label>
+    <input type="text" class="form-control" ng-model="data.permanentAddressState"  placeholder="permanentAddressState">
+  </div>
+  <div class="form-group">
+    <label>permanentAddressCountry</label>
+    <input type="text" class="form-control" ng-model="data.permanentAddressCountry" placeholder="permanentAddressCountry">
+  </div>
+</div>
+<div ng-show="page==2">
+
+  <div class="form-group">
+    <label>localAddressStreet</label>
+    <input type="text" class="form-control" ng-model="data.localAddressStreet"  placeholder="localAddressStreet">
+  </div>
+
+  <div class="form-group">
+    <label>localAddressCity</label>
+    <input type="text" class="form-control" ng-model="data.localAddressCity" placeholder="localAddressCity">
+  </div>
+  <div class="form-group">
+    <label>localAddressPin</label>
+    <input type="number" class="form-control" ng-model="data.localAddressPin" placeholder="localAddressPin">
+  </div>
+  <div class="form-group">
+    <label>localAddressState</label>
+    <input type="text" class="form-control" ng-model="data.localAddressState" placeholder="localAddressState">
+  </div>
+  <div class="form-group">
+    <label>localAddressCountry</label>
+    <input type="text" class="form-control" ng-model="data.localAddressCountry" placeholder="localAddressCountry">
+  </div>
+
+  <div class="form-group">
+    <label>prefix</label>
+    <select class="form-control"  ng-model = "data.prefix">
+      <option value="NA"  >NA</option>
+      <option value="Mr" selected >Mr</option>
+      <option value="Mrs"  >Mrs</option>
+      <option value="Smt"  >Smt</option>
+      <option value="Shri"  >Shri</option>
+      </select>
+  </div>
+
+  <div class="form-group">
+    <label>gender</label>
+    <select class="form-control" ng-model = "data.gender">
+       <option value="M" selected >Male</option>
+       <option value="F"  >Female</option>
+       <option value="O"  >Other</option>
+     </select>
+  </div>
+</div>
+<div ng-show="page==3">
+  <div class="form-group">
+    <label>email</label>
+    <input class="form-control" type="email" ng-model = "data.email">
+  </div>
+  <div class="form-group">
+    <label>email2</label>
+    <input class="form-control" type="email" ng-model = "data.email2">
+  </div>
+
+  <div class="form-group">
+    <label>mobile</label>
+    <input type="number" class="form-control" ng-model="data.mobile" placeholder="mobile">
+  </div>
+
+
+  <div class="form-group">
+    <label>emergency</label>
+    <input type="number" class="form-control" ng-model="data.emergency" placeholder="emergency">
+  </div>
+
+  <div class="form-group">
+    <label>tele</label>
+    <input type="number" class="form-control" ng-model="data.tele" placeholder="tele">
+  </div>
+  <div class="form-group">
+    <label>website</label>
+    <input type="url" class="form-control" ng-model="data.website" placeholder="website">
+  </div>
+  <div class="form-group">
+    <label>sign:</label>
+    <input type="file" name="sign" file-model="data.sign">
+  </div>
+  <div class="form-group">
+    <label>IDPhoto:</label>
+    <input type="file" name="IDPhoto" file-model="data.IDPhoto">
+  </div>
+
+</div>
+
+<div ng-show="page==4">
+  <div class="form-group">
+    <label>TNCandBond:</label>
+    <input type="file" name="TNCandBond" file-model="data.TNCandBond">
+  </div>
+
+  <div class="form-group">
+    <label>resume:</label>
+    <input type="file" name="resume" file-model="data.resume">
+  </div>
+
+  <div class="form-group">
+    <label>certificates:</label>
+    <input type="file" name="certificates" file-model="data.certificates">
+  </div>
+
+  <div class="form-group">
+    <label>transcripts:</label>
+    <input type="file" name="transcripts" file-model="data.transcripts">
+  </div>
+
+  <div class="form-group">
+    <label>OtherDocs:</label>
+    <input type="file" name="OtherDocs" file-model="data.OtherDocs">
+  </div>
+
+  <div class="form-group">
+    <label>almaMater</label>
+    <input type="text" class="form-control" ng-model="data.almaMater" placeholder="almaMater">
+  </div>
+  <div class="form-group">
+    <label>pgUniversity</label>
+    <input type="text" class="form-control" ng-model="data.pgUniversity" placeholder="pgUniversity">
+  </div>
+  <div class="form-group">
+    <label>docUniversity</label>
+    <input type="text" class="form-control" ng-model="data.docUniversity" placeholder="docUniversity">
+  </div>
+</div>
+
+<div ng-show="page==5">
+  <div class="form-group">
+    <label>fathersName</label>
+    <input type="text" class="form-control" ng-model="data.fathersName" placeholder="fathersName">
+  </div>
+
+  <div class="form-group">
+    <label>mothersName</label>
+    <input type="text" class="form-control" ng-model="data.mothersName" placeholder="mothersName">
+  </div>
+
+
+  <div class="form-group">
+    <label>WifesName</label>
+    <input type="text" class="form-control" ng-model="data.WifesName" placeholder="WifesName">
+  </div>
+
+  <div class="form-group">
+    <label>childCSV</label>
+    <input type="text" class="form-control" ng-model="data.childCSV" placeholder="Enter child name seperated by a comma">
+  </div>
+
+  <div class="form-group">
+    <label>note1</label>
+    <textarea type="text" rows="4" class="form-control" ng-model="data.note1" placeholder="note1"> </textarea>
+  </div>
+  <div class="form-group">
+    <label>note1</label>
+    <textarea type="text" rows="4" class="form-control" ng-model="data.note2" placeholder="note2"> </textarea>
+  </div>
+
+  <div class="form-group">
+    <label>note1</label>
+    <textarea type="text" rows="4" class="form-control" ng-model="data.note3" placeholder="note3"> </textarea>
+  </div>
+</div>

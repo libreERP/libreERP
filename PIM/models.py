@@ -127,7 +127,7 @@ class blogPost(models.Model):
     header = models.TextField(max_length = 1000 , null = True)
     users = models.ManyToManyField(User , related_name='articles' , blank = False)
     sourceFormat = models.CharField(choices = FORMAT_CHOICES , default = 'md' , max_length = 10)
-    source = models.TextField(max_length = 20000 , null = True)
+    source = models.TextField(max_length = 40000 , null = True)
     tags = models.ManyToManyField(blogCategory , related_name = 'articles' , blank = True)
 
 
@@ -139,10 +139,22 @@ class blogLike(models.Model):
 class blogComment(models.Model):
     user = models.ForeignKey(User , related_name = 'blogComments')
     created = models.DateTimeField(auto_now_add = True)
-    text = models.CharField(max_length = 200 , null = False)
+    text = models.CharField(max_length = 300 , null = False)
     parent = models.ForeignKey(blogPost , related_name= 'comments')
 
 class blogCommentLike(models.Model):
     user = models.ForeignKey(User , related_name = 'blogCommentlikes')
     created = models.DateTimeField(auto_now_add = True)
     parent = models.ForeignKey(blogComment , related_name= 'likes')
+
+class notebook(models.Model):
+    user = models.ForeignKey(User , related_name = 'notebooks')
+    created = models.DateTimeField(auto_now_add = True)
+    title =  models.CharField(max_length = 500 , null=True)
+
+class page(models.Model):
+    user = models.ForeignKey(User , related_name = 'notebookPages')
+    created = models.DateTimeField(auto_now_add = True)
+    source = models.TextField(max_length = 1000000 , null = True)
+    parent = models.ForeignKey(notebook , related_name= 'pages')
+    title = models.CharField(max_length = 500 , null=True)

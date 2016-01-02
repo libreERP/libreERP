@@ -12,7 +12,7 @@ app.config(function($stateProvider ){
       },
       "@home": {
         templateUrl: '/static/ngTemplates/app.home.dashboard.html',
-        controller : 'home.dash'
+        controller : 'controller.home.dash'
       }
     }
   })
@@ -29,22 +29,22 @@ app.config(function($stateProvider ){
   .state('home.blog', {
     url: "/blog/:id?action",
     templateUrl: '/static/ngTemplates/app.home.blog.html',
-    controller: 'home.blog'
+    controller: 'controller.home.blog'
   })
   .state('home.calendar', {
     url: "/calendar",
     templateUrl: '/static/ngTemplates/app.home.calendar.html',
-    controller: 'home.calendar'
+    controller: 'controller.home.calendar'
   })
   .state('home.notes', {
     url: "/notes",
-    template: '<breadcrumb></breadcrumb><div> Loren Ipsum Text in the dash board</div>',
-    controller: 'home.notes'
+    templateUrl: '/static/ngTemplates/app.home.notes.html',
+    controller: 'controller.home.notes'
   })
 
 });
 
-app.controller("home.dash", function($scope , $state) {
+app.controller("controller.home.dash", function($scope , $state) {
 
   $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
   $scope.series = ['Series A', 'Series B'];
@@ -59,16 +59,4 @@ app.controller("home.dash", function($scope , $state) {
   $scope.labels2 = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data2 = [300, 500, 100];
 
-})
-app.controller("home.mail", function($scope , $state) {
-
-})
-app.controller("home.social", function($scope , $state) {
-
-})
-app.controller("home.news", function($scope , $state) {
-
-})
-
-app.controller("home.notes", function($scope , $state) {
 })
