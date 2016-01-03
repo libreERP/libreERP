@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" >
   <thead>
     <tr>
       <th ng-repeat = "heading in tableHeading" ng-click="sort($index)" style="cursor:pointer;">{{heading | humanize}}
@@ -9,7 +9,8 @@
   </thead>
   <tbody>
     <div >
-      <tr table-row ng-repeat = "row in tableData" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" selectable = "isSelectable"></tr>
+      <tr table-row ng-repeat = "row in tableData" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]"
+      selectable = "isSelectable" editor-Template="{{editorTemplate}}" deletable="{{deletable}}" others = "others"></tr>
     </div>
   </tbody>
 </table>

@@ -41,7 +41,7 @@ app.config(function($stateProvider){
 
   .state('admin.globalSettings.modulesAndApplications', {
     url: "/modulesAndApplications",
-    templateUrl: '/static/ngTemplates/app.HR.globalSettings.form.modulesAndApps.html',
+    templateUrl: '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.html',
     controller: 'admin.globalSettings.modulesAndApps'
   })
 
@@ -56,22 +56,20 @@ app.controller('admin.globalSettings' , function($scope , $http , $aside , $stat
 });
 app.controller('admin.globalSettings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
 
-  $http({method : 'GET' , url : '/api/HR/applicationAdminMode/'}).
-  then(function(response){
-    $scope.apps = response.data;
-    console.log($scope.apps);
-  })
-
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
-  $scope.options = {
-    main : {icon : 'fa-pencil', text: 'edit'}
-  };
+  $scope.rowInput = {
+    ownersSearch : function(query) {
+      return $http.get('/api/HR/users/?username__contains=' + query)
+    },
+    template : '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.form.apps.html',
+  }
 
-  $scope.tableAction = function(target , action , mode){
+  $scope.tableAction = function(target , action , data){
     console.log('clicked');
     console.log(target);
+    console.log(data);
   }
 
 });

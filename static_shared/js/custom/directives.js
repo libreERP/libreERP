@@ -265,6 +265,8 @@ app.directive('genericTable', function () {
       multiselectOptions : '=',
       search : '=',
       getParams :'=',
+      deletable : '@',
+      others : '=',
     },
     controller : function($scope , $http, $templateCache, $timeout , userProfileService , $aside) {
       $scope.tableData = [];
@@ -359,6 +361,9 @@ app.directive('genericTable', function () {
       }
       $scope.fetchData = function(){
         // getting the data from the server based on the state of the filter params
+        if (typeof $scope.getStr == 'undefined') {
+          return;
+        }
         fetch.method = 'GET';
         if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField =='') {
           fetch.url = $scope.resourceUrl +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
@@ -406,6 +411,7 @@ app.directive('genericTable', function () {
 
         });
       }
+
 
       $scope.$watch('getStr' , function(){ // getStr is the search query sent to the server
         $scope.fetchData();
@@ -523,26 +529,61 @@ app.directive('tableRow', function () {
       options : '=',
       checkbox : '=',
       selectable : '=',
+      deletable : '@',
+      others : '=',
     },
-    controller : function($scope){
+    controller : function($scope , $uibModal){
+      if (typeof $scope.data.url == 'undefined') {
+        $scope.target = $scope.data.pk;
+      } else {
+        $scope.target = $scope.data.url;
+      }
 
       $scope.rowActionClicked = function(option){
-        if (typeof $scope.data.url == 'undefined') {
-          $scope.rowAction( $scope.data.pk ,  option)
-        } else {
-          $scope.rowAction( $scope.data.url ,  option)
-        }
+        $scope.rowAction( $scope.target ,  option)
       }
+
+      if (typeof $scope.others != 'undefined') {
+        $scope.others = angular.copy($scope.others) // i noticed that it was binding this to the root others outside the table directive
+        // basically when we want to edit the data and pass some functions or variables from outside of the generic table directive down to the modal controller
+        $scope.others.submitForm = function(){
+          $scope.rowAction( $scope.target , 'submitForm' , $scope.data);
+        }
+        if (typeof $scope.others.template != 'undefined' && $scope.others.template != '') {
+          $scope.editable = true;
+        } else{
+          $scope.editable = false;
+        }
+        $scope.others.data = $scope.data;
+      }
+
+      $scope.edit = function(){
+        $uibModal.open({
+          templateUrl: $scope.others.template,
+          size: 'lg',
+          resolve: {
+           others: function () {
+             return $scope.others;
+            }
+          },
+          controller: function($scope , others){
+            for (key in others){
+              $scope[key] = others[key];
+            }
+          },
+        });
+      }
+
 
       if (typeof $scope.options == 'undefined') {
         $scope.optionsShow = false;
       }else{
         $scope.optionsShow = true;
-      }
-      if (typeof $scope.options.others == 'undefined') {
-        $scope.otherOptions = false;
-      }else{
-        $scope.otherOptions = true;
+        if (typeof $scope.options.others == 'undefined') {
+          $scope.otherOptions = false;
+        }else{
+          $scope.otherOptions = true;
+        }
       }
     },
     // attrs is the attrs passed from the main scope
