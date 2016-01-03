@@ -112,7 +112,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
       placement: position,
       size: 'md',
       backdrop: backdrop,
-      controller: function($scope, $uibModalInstance  , userProfileService , $http , Flash) {
+      controller: function($scope, $uibModalInstance  , userProfileService , $http , Flash ) {
         emptyFile = new File([""], "");
         $scope.settings = settings;
         $scope.settings.displayPicture = emptyFile;
@@ -124,6 +124,17 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
           // e.stopPropagation();
         };
 
+        $scope.changePassword = function(){
+          if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {
+            $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).
+            then(function(response){
+              Flash.create('success', response.status + ' : ' + response.statusText );
+            }, function(response){
+              Flash.create('danger', response.status + ' : ' + response.statusText);
+            });
+          }
+        }
+
         $scope.saveSettings = function(){
           var fdProfile = new FormData();
           if ($scope.settings.displayPicture != emptyFile) {
@@ -132,25 +143,19 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
           if (isNumber($scope.settings.mobile)) {
             fdProfile.append('mobile' , $scope.settings.mobile);
           }
-          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).then(function(){
-
+          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+          then(function(){
             $http({method : 'PATCH' , url : $scope.me.settings, data : {presence : "Busy"  , user : $scope.me.url}}).
             then(function(response){
               $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).
               then(function(response){
+                $scope.changePassword();
                 Flash.create('success', response.status + ' : ' + response.statusText );
               }, function(response){
+                $scope.changePassword();
                 Flash.create('danger', response.status + ' : ' + response.statusText );
               });
             });
-            if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {
-              $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).
-              then(function(response){
-                Flash.create('success', response.status + ' : ' + response.statusText);
-              }, function(response){
-                Flash.create('danger', response.status + ' : ' + response.statusText);
-              });
-            }
           });
 
         }

@@ -4,35 +4,35 @@
   </div>
 </div>
 <div class="modal-body">
-  
+
   <form ng-submit="saveSettings()">
     <div class="form-group">
-      <label class="control-label"  for="displayPicture">Display Picture :</label>
-      <input type="file" name="displayPicture" file-model="settings.displayPicture">
+      <label>Display Picture :</label>
+      <input type="file" file-model="settings.displayPicture">
     </div>
     <div class="form-group">
-      <label class="control-label"  for="theme">Theme Main :</label>
-      <input type="color" name="favcolor" ng-model="settings.theme.main">
-      <label class="control-label"  for="theme">highlight :</label>
-      <input type="color" name="favcolor" ng-model="settings.theme.highlight">
+      <label >Theme Main :</label>
+      <input type="color" ng-model="settings.theme.main">
+      <label >highlight :</label>
+      <input type="color" ng-model="settings.theme.highlight">
     </div>
     <div class="form-group">
-      <label class="control-label"  for="theme">Mobile :</label>
-      <input class="form-control"  type="number" name="mobile" ng-model="settings.mobile">
+      <label>Mobile :</label>
+      <input class="form-control"  type="number" ng-model="settings.mobile">
     </div>
     <hr>
-    <h3>Change password</h3>
+    <h4>Change password</h4>
     <div class="form-group">
-      <label for="oldPassword">Old Password</label>
-      <input type="password" class="form-control" ng-model="settings.oldPassword" id="oldPassword" placeholder="Old Password">
+      <label >Old Password</label>
+      <input type="password" class="form-control" ng-model="settings.oldPassword" placeholder="Old Password">
     </div>
     <div class="form-group">
-      <label for="password">New Password</label>
-      <input type="password" class="form-control" ng-model="settings.password" id="password" placeholder="Password">
+      <label >New Password</label>
+      <input type="password" class="form-control" ng-model="settings.password" placeholder="Password">
     </div>
     <div class="form-group" ng-class="{'has-error' : settings.password!=settings.password2 && settings.password!=''}">
-      <label class="control-label" for="password2">Confirm Password</label>
-      <input type="password" class="form-control" ng-model="settings.password2" id="password2" placeholder="Confirm Password">
+      <label class="control-label">Confirm Password</label>
+      <input type="password" class="form-control" ng-model="settings.password2" placeholder="Confirm Password">
     </div>
 
     <button type="submit" name="button" class="btn btn-success">Save</button>

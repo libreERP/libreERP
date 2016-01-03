@@ -20,8 +20,11 @@
         <uib-tab-heading >
           {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
         </uib-tab-heading>
-        <div ng-if="tab.app == 'profileEditor'">
-          <profile-Editor obj-Url="tab.objUrl"></profile-Editor>
+        <div ng-if="tab.app == 'editProfile'">
+          <generic-Form template="'/static/ngTemplates/app.HR.form.userProfile.html'" data="tab.data" submit-Fn="updateProfile()" form-title="tab.title" wizard="true" max-page="5"></generic-Form>
+        </div>
+        <div ng-if="tab.app == 'editMaster'">
+          <generic-Form template="'/static/ngTemplates/app.HR.form.editMaster.html'" data="tab.data" submit-Fn="updateUserMasterDetails()" form-title="tab.title"></generic-Form>
         </div>
       </uib-tab>
     </uib-tabset>

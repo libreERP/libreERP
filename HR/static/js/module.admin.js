@@ -28,12 +28,11 @@ app.config(function($stateProvider){
 app.controller('admin' , function($scope , userProfileService , Flash){
 });
 
-app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash){
+app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
 
   $scope.statusMessage = '';
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
   $scope.createUser = function(){
-    console.log("going to create a new User");
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
     $http({method : 'POST' , url : '/api/HR/users/', data : dataToSend }).
     then(function(response){
@@ -62,7 +61,8 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
       {icon : '' , text : 'learning' },
       {icon : '' , text : 'leaveManagement' },
       {icon : '' , text : 'editProfile' },
-      {icon : '' , text : 'editDesignation' }]
+      {icon : '' , text : 'editDesignation' },
+      {icon : '' , text : 'editMaster' },]
     };
 
   $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
@@ -71,25 +71,35 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   ];
 
   $scope.tableAction = function(target , action , mode){
+    // target is the url of the object
     if (typeof mode == 'undefined') {
       if (action == 'im') {
         $scope.$parent.$parent.addIMWindow(target);
       } else if (action == 'editProfile') {
-        $scope.searchTabActive = false;
-        alreadyOpen = false;
-        for (var i = 0; i < $scope.tabs.length; i++) {
-          if ($scope.tabs[i].objUrl == target) {
-            $scope.tabs[i].active = true;
-            alreadyOpen = true;
-          }else{
-            $scope.tabs[i].active = false;
-          }
-        }
-        if (!alreadyOpen) {
-          $scope.tabs.push({title : 'Edit Profile' , cancel : true , app : 'profileEditor' , objUrl : target , active : true})
-        }
+
+        $http({method :'options' , url : '/api/HR/profileAdminMode'}).
+        then(function(response){
+          $scope.profileFormStructure = response.data.actions.POST;
+          $http({method :'GET' , url : target.replace('users' , 'profileAdminMode')}).
+          then(function(response){
+            $scope.profile = response.data;
+            for(key in $scope.profileFormStructure){
+              if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
+                $scope.profile[key] = emptyFile;
+              }
+            }
+            u = userProfileService.get(response.config.url.replace('profileAdminMode' , 'users'))
+            $scope.addTab({title : 'Edit profile of ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editProfile' , data : $scope.profile , active : true})
+          });
+        });
+
       } else if (action == 'social') {
-        $state.go('home.social' , {id : target.split('users/')[1].split('/')[0]})
+        $state.go('home.social' , {id : getPK(target)})
+      } else if (action == 'editMaster') {
+        $http({method : 'GET' , url : target.replace('users' , 'usersAdminMode')}).
+        then(function(response){
+          $scope.addTab({title : 'Edit master data  for ' + response.data.first_name + ' ' + response.data.last_name , cancel : true , app : 'editMaster' , data : response.data , active : true})
+        })
       }
       // for the single select actions
     } else {
@@ -100,65 +110,77 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     }
   }
 
-});
-
-app.directive('profileEditor', function () {
-  return {
-    templateUrl: '/static/ngTemplates/app.HR.profileEditor.html',
-    restrict: 'E',
-    replace: true,
-    scope: {
-      objUrl :'=',
-    },
-    controller : function($scope , $http , userProfileService , Flash , $filter){
-      $scope.userUrl = angular.copy($scope.objUrl);
-      user = userProfileService.get($scope.userUrl);
-      $scope.userUrl = $scope.userUrl.replace('users' , 'profileAdminMode');
-      $scope.resourceUrl = '/api/HR/profileAdminMode';
-      $scope.formTitle = 'Edit Profile for ' + user.first_name + ' ' + user.last_name;
-      emptyFile = new File([""], "");
-      method = 'options';
-      $http({method :method , url : $scope.resourceUrl}).
-      then(function(response){
-        $scope.profileFormStructure = response.data.actions.POST;
-        $http({method :'GET' , url : $scope.userUrl}).
-        then(function(response){
-          $scope.profile = response.data;
-          for(key in $scope.profileFormStructure){
-            if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
-              $scope.profile[key] = emptyFile;
-            }
-          }
-          $scope.profileUrl = $scope.profile.url.replace('profile' , 'profileAdminMode')
-        } , function(response){});
-      }, function(response){});
-
-      $scope.updateProfile = function(){
-        var fd = new FormData();
-        for(key in $scope.profile){
-          if (key!='url' && $scope.profile[key] != null) {
-            if ($scope.profileFormStructure[key].type.indexOf('integer')!=-1 ) {
-              if ($scope.profile[key]!= null) {
-                fd.append( key , parseInt($scope.profile[key]));
-              }
-            }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
-              if ($scope.profile[key]!= null) {
-                fd.append( key , $filter('date')($scope.profile[key] , "yyyy-MM-dd"));
-              }
-            }else if ($scope.profileFormStructure[key].type.indexOf('url')!=-1 && ($scope.profile[key]==null || $scope.profile[key]=='')) {
-              // fd.append( key , 'http://localhost');
-            }else{
-              fd.append( key , $scope.profile[key]);
-            }
-          }
-        }
-        $http({method : 'PATCH' , url : $scope.profileUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
-        then(function(response){
-           Flash.create('success', response.status + ' : ' + response.statusText);
-        }, function(response){
-           Flash.create('danger', response.status + ' : ' + response.statusText);
-        });
+  $scope.updateProfile = function(){
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].active){
+        userData = $scope.tabs[i].data;
       }
-    },
+    }
+    var fd = new FormData();
+    for(key in userData){
+      if (key!='url' && userData[key] != null) {
+        if ($scope.profileFormStructure[key].type.indexOf('integer')!=-1 ) {
+          if (userData[key]!= null) {
+            fd.append( key , parseInt(userData[key]));
+          }
+        }else if ($scope.profileFormStructure[key].type.indexOf('date')!=-1 ) {
+          if (userData[key]!= null) {
+            fd.append( key , $filter('date')(userData[key] , "yyyy-MM-dd"));
+          }
+        }else if ($scope.profileFormStructure[key].type.indexOf('url')!=-1 && (userData[key]==null || userData[key]=='')) {
+          // fd.append( key , 'http://localhost');
+        }else{
+          fd.append( key , userData[key]);
+        }
+      }
+    }
+    $http({method : 'PATCH' , url : userData.url.replace('profile' , 'profileAdminMode'), data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+       Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+       Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
   };
+
+  $scope.updateUserMasterDetails = function(){
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].active){
+        userData = $scope.tabs[i].data;
+      }
+    }
+    dataToSend = {
+      username : userData.username,
+      last_name : userData.last_name,
+      first_name : userData.first_name,
+      is_staff : userData.is_staff,
+      is_active : userData.is_active,
+    }
+    if (userData.password != '') {
+      dataToSend.password = userData.password
+    }
+    $http({method : 'PATCH' , url : userData.url.replace('users' , 'usersAdminMode') , data : dataToSend }).
+    then(function(response){
+       Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+       Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+  }
+
+  $scope.addTab = function( input ){
+    $scope.searchTabActive = false;
+    alreadyOpen = false;
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].data.url == input.data.url && $scope.tabs[i].app == input.app) {
+        $scope.tabs[i].active = true;
+        alreadyOpen = true;
+      }else{
+        $scope.tabs[i].active = false;
+      }
+    }
+    if (!alreadyOpen) {
+      $scope.tabs.push(input)
+    }
+  }
+
+
 });

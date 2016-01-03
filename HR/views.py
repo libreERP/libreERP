@@ -12,20 +12,26 @@ from .serializers import *
 from API.permissions import *
 
 def loginView(request):
+    authStatus = {'status' : 'default' , 'message' : '' }
     if request.user.is_authenticated():
         return redirect(reverse('ERP'))
     if request.method == 'POST':
     	username = request.POST['username']
     	password = request.POST['password']
     	user = authenticate(username = username , password = password)
-        # print user
+
     	if user is not None:
-    	    login(request , user)
-    	    if request.GET:
-    		    return redirect(request.GET['next'])
-    	    else:
-    		    return redirect(reverse('ERP'))
-    return render(request , 'login.html' , {})
+            if user.is_active:
+                login(request , user)
+                if request.GET:
+                    return redirect(request.GET['next'])
+                else:
+                    return redirect(reverse('ERP'))
+            else:
+                authStatus = {'status' : 'warning' , 'message' : 'Your account is not active.' }
+        else:
+            authStatus = {'status' : 'danger' , 'message' : 'Incorrect username or password.' }
+    return render(request , 'login.html' , {'authStatus' : authStatus})
 
 def logoutView(request):
     logout(request)
@@ -37,23 +43,27 @@ def home(request):
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 class userProfileViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     serializer_class = userProfileSerializer
     queryset = profile.objects.all()
 
 class userProfileAdminModeViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, isAdmin ,)
+    permission_classes = (isAdmin ,)
     serializer_class = userProfileAdminModeSerializer
     queryset = profile.objects.all()
 
 class userDesignationViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrReadOnly ,)
+    permission_classes = (permissions.IsAuthenticated,isAdminOrReadOnly ,)
     queryset = designation.objects.all()
     serializer_class = userDesignationSerializer
 
+class userAdminViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdmin ,)
+    queryset = User.objects.all()
+    serializer_class = userAdminSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly ,)
+    permission_classes = (permissions.IsAuthenticated ,)
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']
     serializer_class = userSerializer
@@ -67,13 +77,13 @@ class UserViewSet(viewsets.ModelViewSet):
             return User.objects.all().order_by('-date_joined')
 
 class UserSearchViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly ,)
+    permission_classes = (permissions.IsAuthenticated ,)
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']
     serializer_class = userSearchSerializer
     queryset = User.objects.all()
 
 class GroupViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = Group.objects.all()
     serializer_class = groupSerializer

@@ -225,7 +225,6 @@ app.directive('genericForm', function () {
       template : '=',
       submitFn : '&',
       data :'=',
-      objUrl : '=',
       formTitle : '=',
       wizard : '=',
       maxPage : '=',

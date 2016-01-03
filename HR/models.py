@@ -84,79 +84,64 @@ class profile(models.Model):
 
 User.profile = property(lambda u : profile.objects.get_or_create(user = u)[0])
 
-MANAGEMENT_RANK_CHOICE = (
-    ('NOTS' , 'Not Selected..'),
-    ('DIRE' , 'Director'),
-    ('DEPD' , 'Deputy Director'),
-    ('MANA' , 'Manager'),
-    ('DMAN' , 'Deputy Manager'),
-    ('EXEC' , 'Executive'),
-    ('ASSO' , 'Associate'),
-    ('GENS' , 'General Staff'),
-)
-UNIT_TYPE_CHOICE = (
-    ('NOT' , 'Not selected..'),
-    ('RND' , 'Research and Development'),
-    ('OPE' , 'Operational'),
-    ('MAN' , 'Management'),
-)
+class rank(models.Model):
+    CATEGORY_CHOICES = (
+        ('management' , 'management'),
+        ('rnd' , 'rnd'),
+        ('operations' , 'operations'),
+    )
 
-RND_RANK_CHOICE = (
-    ('Not Selected..' , 'Not Selected..'),
-    ('Director' , 'Director'),
-    ('Deputy Director' , 'Deputy Director'),
-    ('Department Head' , 'Department Head'),
-    ('Prof. InCharge' , 'Prof. InCharge'),
-    ('Group Leader' , 'Group Leader'),
-    ('Senior Scientist' , 'Senior Scientist'),
-    ('Scientist' , 'Scientist'),
-    ('Undergraduate Student' , 'Undergraduate Student'),
-    ('Master Student' , 'Master Student'),
-    ('PhD Candidate' , 'PhD Candidate'),
-    ('Post Doctoral Candidate' , 'Post Doctoral Candidate'),
-    ('Senior Engineer' , 'Senior Engineer'),
-    ('Engineer' , 'Engineer'),
-    ('Technician' , 'Technician'),
-    ('General Staff' , 'General Staff'),
-)
-
-OPERATIONAL_RANK_CHOICE = (
-    ('NOTS' , 'Not Selected..'),
-    ('DIRE' , 'Director'),
-    ('DEPD' , 'Deputy Director'),
-    ('MANA' , 'Manager'),
-    ('LEAD' , 'lead'),
-    ('SENG' , 'Senior Engineer'),
-    ('ENGI' , 'Engineer'),
-    ('TECH' , 'Technician'),
-    ('GENS' , 'General Staff'),
-)
+    title = models.CharField(max_length = 100 , null = False , unique=True)
+    category = models.CharField(choices = CATEGORY_CHOICES , max_length = 100 , null = False)
 
 
-DOMAIN_CHOICES = (
-    ('NA' , 'Not Assigned'),
-    ('AUTO' , 'Automotive'),
-    ('SERVICE' , 'Service'),
-    ('RND' , 'University'),
-    ('FMCG' , 'FMCG'),
-    ('POWER' , 'Power'),
-    ('PHARMA' , 'Pharmaceuticals'),
-    ('MANUFAC' , 'Manufacturing'),
-    ('TELE' , 'Tele Communications'),
-)
 class designation(models.Model):
-
+    DOMAIN_CHOICES = (
+        ('Not selected..' , 'Not selected..'),
+        ('Automotive' , 'Automotive'),
+        ('Service' , 'Service'),
+        ('University' , 'University'),
+        ('FMCG' , 'FMCG'),
+        ('Power' , 'Power'),
+        ('Pharmaceuticals' , 'Pharmaceuticals'),
+        ('Manufacturing' , 'Manufacturing'),
+        ('Tele Communications' , 'Tele Communications'),
+    )
+    UNIT_TYPE_CHOICE = (
+        ('Not selected..' , 'Not selected..'),
+        ('Research and Development' , 'Research and Development'),
+        ('Operational' , 'Operational'),
+        ('Management' , 'Management'),
+    )
 
     """ One more field can be user here
     """
     user = models.OneToOneField(User)
-    domainType = models.CharField(choices = UNIT_TYPE_CHOICE , default = 'NOT' , max_length = 3)
-    domain = models.CharField(max_length = 15 , choices = DOMAIN_CHOICES , default = 'NA')
+    unitType = models.CharField(choices = UNIT_TYPE_CHOICE , default = 'Not selected..' , max_length = 3)
+    domain = models.CharField(max_length = 15 , choices = DOMAIN_CHOICES , default = 'Not selected..')
     unit = models.CharField(max_length = 30 , null = True) # this should be unique for a given facilty
     department = models.CharField(max_length = 30 , null = True)
-    rank = models.CharField( null = True , max_length = 8)
+    rank = models.ForeignKey( rank , null = True , max_length = 8)
     reportingTo = models.ForeignKey(User , related_name = "managing" , null=True)
     primaryApprover = models.ForeignKey(User, related_name = "approving" , null=True)
     secondaryApprover = models.ForeignKey(User , related_name = "alsoApproving" , null=True)
 
 User.designation = property(lambda u : designation.objects.get_or_create(user = u)[0])
+
+class module(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    name = models.CharField(max_length = 50 , null = True)
+
+class application(models.Model):
+    # each application in a module will have an instance of this model
+    created = models.DateTimeField(auto_now_add = True)
+    name = models.CharField(max_length = 50 , null = True)
+    owners = models.ManyToManyField(User , related_name = 'appsManaging' , blank = True)
+    # only selected users can assign access to the application to other user
+    module = models.ForeignKey(module , related_name = "apps" , null=False)
+
+class access(models.Model):
+    app = models.ForeignKey(application , null=False)
+    user = models.ForeignKey(User , related_name = "accessibleApps" , null=False)
+    givenBy = models.ForeignKey(User , related_name = "approvedAccess" , null=False)
+    created = models.DateTimeField(auto_now_add = True)

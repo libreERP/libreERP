@@ -8,8 +8,7 @@ from PIM.serializers import *
 class userDesignationSerializer(serializers.ModelSerializer):
     class Meta:
         model = designation
-        fields = ('url' , 'domainType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
-
+        fields = ('url' , 'unitType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
 class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:
@@ -26,7 +25,8 @@ class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
         'sign', 'IDPhoto' , 'TNCandBond' , 'resume' ,  'certificates', 'transcripts' , 'otherDocs' , 'almaMater' , 'pgUniversity' , 'docUniversity' , 'fathersName' , 'mothersName' , 'wifesName' , 'childCSV',
         'note1' , 'note2' , 'note3')
 
-class userSearchSerializer(serializers.ModelSerializer):  # to be used in the typehead tag search input, only a small set of fields is responded to reduce the bandwidth requirements
+class userSearchSerializer(serializers.ModelSerializer):
+    # to be used in the typehead tag search input, only a small set of fields is responded to reduce the bandwidth requirements
     class Meta:
         model = User
         fields = ( 'pk', 'username' , 'first_name' , 'last_name' )
@@ -38,7 +38,20 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' , 'social')
         read_only_fields = ('designation' , 'profile' , 'settings' ,'social' )
         extra_kwargs = {'password': {'write_only': True} }
+    def update (self, instance, validated_data):
+        user = self.context['request'].user
+        if authenticate(username = user.username , password = self.context['request'].data['oldPassword']) is not None:
+            user = User.objects.get(username = user.username)
+            user.set_password(validated_data['password'])
+            user.save()
+        else :
+            raise PermissionDenied(detail=None)
+        return user
 
+class userAdminSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'is_staff' ,'is_active' )
     def create(self , validated_data):
         if not self.context['request'].user.is_superuser:
             raise PermissionDenied(detail=None)
@@ -50,13 +63,22 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         return user
     def update (self, instance, validated_data):
         user = self.context['request'].user
-        u = authenticate(username = user.username , password = self.context['request'].data['oldPassword'])
-    	if u is not None:
-            user.set_password(validated_data['password'])
-            user.save()
-        else :
+        if user.is_staff or user.is_superuser:
+            u = User.objects.get(username = self.context['request'].data['username'])
+            if (u.is_staff and user.is_superuser ) or user.is_superuser: # superuser can change password for everyone , staff can change for everyone but not fellow staffs
+                if 'password' in self.context['request'].data:
+                    u.set_password(self.context['request'].data['password'])
+                u.first_name = validated_data['first_name']
+                u.last_name = validated_data['last_name']
+                u.is_active = validated_data['is_active']
+                u.is_staff = validated_data['is_staff']
+                u.save()
+            else:
+                raise PermissionDenied(detail=None)
+        try:
+            return u
+        except:
             raise PermissionDenied(detail=None)
-        return user
 
 class groupSerializer(serializers.ModelSerializer):
     class Meta:
