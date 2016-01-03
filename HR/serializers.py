@@ -5,13 +5,36 @@ from rest_framework.exceptions import *
 from .models import *
 from PIM.serializers import *
 
-class userSearchSerializer(serializers.ModelSerializer):
+class moduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = module
+        fields = ( 'pk', 'name' , 'discription' )
+
+class applicationSerializer(serializers.ModelSerializer):
+    module = moduleSerializer(read_only = True, many = False)
+    class Meta:
+        model = application
+        fields = ( 'pk', 'name', 'module' , 'discription' , 'owners')
+
+class rankSerializer(serializers.ModelSerializer):
     class Meta:
         model = rank
-        fields = ( 'pk', 'name' , 'first_name' , 'last_name' )
+        fields = ( 'title' , 'category' )
 
+class accessSerializer(serializers.ModelSerializer):
+    app = applicationSerializer(read_only = True, many = False)
+    class Meta:
+        model = access
+        fields = ( 'pk' , 'app' , 'user' )
+
+class groupAccessSerializer(serializers.ModelSerializer):
+    app = applicationSerializer(read_only = True, many = False)
+    class Meta:
+        model = groupAccess
+        fields = ( 'pk' , 'app' , 'group' )
 
 class userDesignationSerializer(serializers.ModelSerializer):
+    rank = moduleSerializer(read_only = True, many = False)
     class Meta:
         model = designation
         fields = ('url' , 'unitType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')

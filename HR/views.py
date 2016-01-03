@@ -87,3 +87,28 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Group.objects.all()
     serializer_class = groupSerializer
+
+class moduleViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = module.objects.all()
+    serializer_class = moduleSerializer
+
+class applicationViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = application.objects.all()
+    serializer_class = applicationSerializer
+
+class rankViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = rank.objects.all()
+    serializer_class = rankSerializer
+
+class groupAccessViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = groupAccess.objects.all()
+    serializer_class = groupAccessSerializer
+
+class accessViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = access.objects.all()
+    serializer_class = accessSerializer

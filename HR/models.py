@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from time import time
 
 
@@ -90,11 +90,11 @@ class rank(models.Model):
         ('rnd' , 'rnd'),
         ('operations' , 'operations'),
     )
-
     title = models.CharField(max_length = 100 , null = False , unique=True)
     category = models.CharField(choices = CATEGORY_CHOICES , max_length = 100 , null = False)
     user = models.ForeignKey(User , related_name = "ranksAuthored" , null=False)
     created = models.DateTimeField(auto_now_add = True)
+
 
 class designation(models.Model):
     DOMAIN_CHOICES = (
@@ -122,29 +122,36 @@ class designation(models.Model):
     domain = models.CharField(max_length = 15 , choices = DOMAIN_CHOICES , default = 'Not selected..')
     unit = models.CharField(max_length = 30 , null = True) # this should be unique for a given facilty
     department = models.CharField(max_length = 30 , null = True)
-    rank = models.ForeignKey( rank , null = True , max_length = 8)
+    rank = models.ForeignKey( rank , null = True )
     reportingTo = models.ForeignKey(User , related_name = "managing" , null=True)
     primaryApprover = models.ForeignKey(User, related_name = "approving" , null=True)
     secondaryApprover = models.ForeignKey(User , related_name = "alsoApproving" , null=True)
 
 User.designation = property(lambda u : designation.objects.get_or_create(user = u)[0])
 
+
 class module(models.Model):
     created = models.DateTimeField(auto_now_add = True)
-    name = models.CharField(max_length = 50 , null = True)
-    discription = models.CharField(max_length = 500 , null = True)
+    name = models.CharField(max_length = 50 , null = False , unique = True)
+    discription = models.CharField(max_length = 500 , null = False)
 
 class application(models.Model):
     # each application in a module will have an instance of this model
     created = models.DateTimeField(auto_now_add = True)
-    name = models.CharField(max_length = 50 , null = True)
+    name = models.CharField(max_length = 50 , null = False , unique = True)
     owners = models.ManyToManyField(User , related_name = 'appsManaging' , blank = True)
     # only selected users can assign access to the application to other user
     module = models.ForeignKey(module , related_name = "apps" , null=False)
-    discription = models.CharField(max_length = 500 , null = True)
-    
+    discription = models.CharField(max_length = 500 , null = False)
+
 class access(models.Model):
     app = models.ForeignKey(application , null=False)
     user = models.ForeignKey(User , related_name = "accessibleApps" , null=False)
     givenBy = models.ForeignKey(User , related_name = "approvedAccess" , null=False)
+    created = models.DateTimeField(auto_now_add = True)
+
+class groupAccess(models.Model):
+    app = models.ForeignKey(application , null=False)
+    group = models.ForeignKey(Group , related_name = "accessibleApps" , null=False)
+    givenBy = models.ForeignKey(User , related_name = "approvedGroupAccess" , null=False)
     created = models.DateTimeField(auto_now_add = True)
