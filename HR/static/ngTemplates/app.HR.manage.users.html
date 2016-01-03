@@ -26,6 +26,9 @@
         <div ng-if="tab.app == 'editMaster'">
           <generic-Form template="'/static/ngTemplates/app.HR.form.editMaster.html'" data="tab.data" submit-Fn="updateUserMasterDetails()" form-title="tab.title"></generic-Form>
         </div>
+        <div ng-if="tab.app == 'editPermissions'">
+          <generic-Form template="'/static/ngTemplates/app.HR.form.editPermissions.html'" data="tab.data" submit-Fn="updateUserPermissions()" form-title="tab.title"></generic-Form>
+        </div>
       </uib-tab>
     </uib-tabset>
   </div>

@@ -1,0 +1,82 @@
+[
+  {
+    "model" : "HR.application",
+    "pk" : 1,
+    "fields" : {
+      "name" : "dashboard",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "Dashboard shows the whats next for each employee. It fetches the important notification from all the other application the user have access to."
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 2,
+    "fields" : {
+      "name" : "mail",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "e-mail application"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 3,
+    "fields" : {
+      "name" : "social",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "Social networking application"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 4,
+    "fields" : {
+      "name" : "blog",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "Blogging application"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 5,
+    "fields" : {
+      "name" : "calendar",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "Calendar"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 6,
+    "fields" : {
+      "name" : "notes",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 1,
+      "discription" : "note taking application"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 7,
+    "fields" : {
+      "name" : "manage.users",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "discription" : "Search users, initiate IM and access social their social profile"
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 8,
+    "fields" : {
+      "name" : "manage.users.sudo",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "discription" : "creat user, update master data including password resetting, profile editor, designation editor"
+    }
+  }
+]

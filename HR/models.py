@@ -93,7 +93,8 @@ class rank(models.Model):
 
     title = models.CharField(max_length = 100 , null = False , unique=True)
     category = models.CharField(choices = CATEGORY_CHOICES , max_length = 100 , null = False)
-
+    user = models.ForeignKey(User , related_name = "ranksAuthored" , null=False)
+    created = models.DateTimeField(auto_now_add = True)
 
 class designation(models.Model):
     DOMAIN_CHOICES = (
@@ -131,6 +132,7 @@ User.designation = property(lambda u : designation.objects.get_or_create(user = 
 class module(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     name = models.CharField(max_length = 50 , null = True)
+    discription = models.CharField(max_length = 500 , null = True)
 
 class application(models.Model):
     # each application in a module will have an instance of this model
@@ -139,7 +141,8 @@ class application(models.Model):
     owners = models.ManyToManyField(User , related_name = 'appsManaging' , blank = True)
     # only selected users can assign access to the application to other user
     module = models.ForeignKey(module , related_name = "apps" , null=False)
-
+    discription = models.CharField(max_length = 500 , null = True)
+    
 class access(models.Model):
     app = models.ForeignKey(application , null=False)
     user = models.ForeignKey(User , related_name = "accessibleApps" , null=False)

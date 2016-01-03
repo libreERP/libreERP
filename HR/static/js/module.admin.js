@@ -34,7 +34,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
   $scope.createUser = function(){
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
-    $http({method : 'POST' , url : '/api/HR/users/', data : dataToSend }).
+    $http({method : 'POST' , url : '/api/HR/usersAdminMode/', data : dataToSend }).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
@@ -62,6 +62,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
       {icon : '' , text : 'leaveManagement' },
       {icon : '' , text : 'editProfile' },
       {icon : '' , text : 'editDesignation' },
+      {icon : '' , text : 'editPermissions' },
       {icon : '' , text : 'editMaster' },]
     };
 
@@ -100,6 +101,9 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         then(function(response){
           $scope.addTab({title : 'Edit master data  for ' + response.data.first_name + ' ' + response.data.last_name , cancel : true , app : 'editMaster' , data : response.data , active : true})
         })
+      } else if (action == 'editPermissions') {
+        u = userProfileService.get(target)
+        $scope.addTab({title : 'Edit Permissions for ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editPermissions' , data : '' , active : true})
       }
       // for the single select actions
     } else {

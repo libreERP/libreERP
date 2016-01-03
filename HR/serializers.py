@@ -5,6 +5,12 @@ from rest_framework.exceptions import *
 from .models import *
 from PIM.serializers import *
 
+class userSearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = rank
+        fields = ( 'pk', 'name' , 'first_name' , 'last_name' )
+
+
 class userDesignationSerializer(serializers.ModelSerializer):
     class Meta:
         model = designation
@@ -38,6 +44,8 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' , 'social')
         read_only_fields = ('designation' , 'profile' , 'settings' ,'social' )
         extra_kwargs = {'password': {'write_only': True} }
+    def create(self , validated_data):
+        raise PermissionDenied(detail=None)
     def update (self, instance, validated_data):
         user = self.context['request'].user
         if authenticate(username = user.username , password = self.context['request'].data['oldPassword']) is not None:
