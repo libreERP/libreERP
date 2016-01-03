@@ -144,13 +144,13 @@ class application(models.Model):
     module = models.ForeignKey(module , related_name = "apps" , null=False)
     discription = models.CharField(max_length = 500 , null = False)
 
-class access(models.Model):
+class permission(models.Model):
     app = models.ForeignKey(application , null=False)
     user = models.ForeignKey(User , related_name = "accessibleApps" , null=False)
     givenBy = models.ForeignKey(User , related_name = "approvedAccess" , null=False)
     created = models.DateTimeField(auto_now_add = True)
 
-class groupAccess(models.Model):
+class groupPermission(models.Model):
     app = models.ForeignKey(application , null=False)
     group = models.ForeignKey(Group , related_name = "accessibleApps" , null=False)
     givenBy = models.ForeignKey(User , related_name = "approvedGroupAccess" , null=False)

@@ -23,14 +23,62 @@ app.config(function($stateProvider){
     controller: 'admin.manageUsers'
   })
 
+  .state('admin.globalSettings', {
+    url: "/globalSettings",
+    views: {
+       "": {
+          templateUrl: '/static/ngTemplates/app.HR.globalSettings.html',
+       },
+       "menu@admin.globalSettings": {
+          templateUrl: '/static/ngTemplates/app.HR.globalSettings.menu.html',
+        },
+        "@admin.globalSettings": {
+          templateUrl: '/static/ngTemplates/app.HR.globalSettings.default.html',
+          controller : 'admin.globalSettings'
+        }
+    }
+  })
+
+  .state('admin.globalSettings.modulesAndApplications', {
+    url: "/modulesAndApplications",
+    templateUrl: '/static/ngTemplates/app.HR.globalSettings.form.modulesAndApps.html',
+    controller: 'admin.globalSettings.modulesAndApps'
+  })
+
 });
 
 app.controller('admin' , function($scope , userProfileService , Flash){
 });
 
+app.controller('admin.globalSettings' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+
+
+});
+app.controller('admin.globalSettings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+
+  $http({method : 'GET' , url : '/api/HR/applicationAdminMode/'}).
+  then(function(response){
+    $scope.apps = response.data;
+    console.log($scope.apps);
+  })
+
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
+
+  $scope.options = {
+    main : {icon : 'fa-pencil', text: 'edit'}
+  };
+
+  $scope.tableAction = function(target , action , mode){
+    console.log('clicked');
+    console.log(target);
+  }
+
+});
+
+
 app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
 
-  $scope.statusMessage = '';
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
   $scope.createUser = function(){
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
@@ -103,7 +151,11 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         })
       } else if (action == 'editPermissions') {
         u = userProfileService.get(target)
-        $scope.addTab({title : 'Edit Permissions for ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editPermissions' , data : '' , active : true})
+        permissionsFormData = {
+          permissionsToAdd : [],
+          url : target,
+        }
+        $scope.addTab({title : 'Edit permissions for ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editPermissions' , data : permissionsFormData , active : true})
       }
       // for the single select actions
     } else {
@@ -114,12 +166,33 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     }
   }
 
-  $scope.updateProfile = function(){
-    for (var i = 0; i < $scope.tabs.length; i++) {
-      if ($scope.tabs[i].active){
-        userData = $scope.tabs[i].data;
-      }
+  $scope.updateUserPermissions = function(index){
+    userData = $scope.tabs[index].data;
+    if (userData.appsToAdd.length == 0) {
+      Flash.create('warning' , 'No new permission to add')
+      return;
     }
+    for (var i = 0; i < userData.appsToAdd.length; i++) {
+      dataToSend = {
+        user : getPK(userData.url),
+        app : userData.appsToAdd[i].pk,
+      }
+      $http({method : 'POST' , url : '/api/HR/permission/' , data : dataToSend}).
+      then(function(response){
+        Flash.create('success', response.status + ' : ' + response.statusText);
+     }, function(response){
+        Flash.create('danger', response.status + ' : ' + response.statusText);
+      })
+    }
+
+  }
+
+  $scope.getPermissionSuggestions = function(query) {
+    return $http.get('/api/HR/application/?name__contains=' + query)
+  }
+
+  $scope.updateProfile = function(index){
+    userData = $scope.tabs[index].data;
     var fd = new FormData();
     for(key in userData){
       if (key!='url' && userData[key] != null) {
@@ -146,12 +219,8 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     });
   };
 
-  $scope.updateUserMasterDetails = function(){
-    for (var i = 0; i < $scope.tabs.length; i++) {
-      if ($scope.tabs[i].active){
-        userData = $scope.tabs[i].data;
-      }
-    }
+  $scope.updateUserMasterDetails = function(index){
+    userData = $scope.tabs[index].data;
     dataToSend = {
       username : userData.username,
       last_name : userData.last_name,

@@ -1,7 +1,18 @@
-<div class="col-md-6">
-  <div class="form-group" >
-    <label>Username</label>
-    <input type="text" class="form-control" ng-model="data.username" required  placeholder="username">
+<div class="container-fluid">
+  <h3>{{tab.title}} </h3>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group" >
+        <label>Grant application access :</label>
+        <tags-input ng-model="tab.data.appsToAdd" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="name">
+          <auto-complete source="getPermissionSuggestions($query)" load-on-down-arrow="true"></auto-complete>
+        </tags-input>
+      </div>
+    </div>
+  </div>
+
+  <div class="row container-fluid">
+    <button type="button" class="btn btn-primary"  ng-click="updateUserPermissions($index)" > Save</button>
   </div>
 
 </div>

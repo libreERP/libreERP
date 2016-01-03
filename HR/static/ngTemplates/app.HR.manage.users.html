@@ -1,8 +1,6 @@
 <div class="shaddowed card bg-white" style="min-height:700px;">
   <breadcrumb></breadcrumb>
   <div class="container-fluid">
-
-    <div ng-hide="statusMessage==''" class="alert alert-{{httpStatus}} fade in">{{statusMessage}}</div>
     <uib-tabset>
       <uib-tab >
         <uib-tab-heading>
@@ -10,7 +8,10 @@
         </uib-tab-heading>
         <generic-Form template="'/static/ngTemplates/app.HR.form.newUser.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
       </uib-tab>
-      <uib-tab heading="Search" active="searchTabActive">
+      <uib-tab active="searchTabActive">
+        <uib-tab-heading >
+          Search  <i ng-if="tab.cancel" class="fa fa-search"></i>
+        </uib-tab-heading>
         <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "'/api/HR/users/'" search="true"
             primary-Search-Field="'username'" views='views' multiselect-Options = 'multiselectOptions' get-Params = "getParams"></generic-Table>
       </uib-tab>
@@ -19,13 +20,13 @@
           {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
         </uib-tab-heading>
         <div ng-if="tab.app == 'editProfile'">
-          <generic-Form template="'/static/ngTemplates/app.HR.form.userProfile.html'" data="tab.data" submit-Fn="updateProfile()" form-title="tab.title" wizard="true" max-page="5"></generic-Form>
+          <generic-Form template="'/static/ngTemplates/app.HR.form.userProfile.html'" data="tab.data" submit-Fn="updateProfile($index)" form-title="tab.title" wizard="true" max-page="5"></generic-Form>
         </div>
         <div ng-if="tab.app == 'editMaster'">
-          <generic-Form template="'/static/ngTemplates/app.HR.form.editMaster.html'" data="tab.data" submit-Fn="updateUserMasterDetails()" form-title="tab.title"></generic-Form>
+          <generic-Form template="'/static/ngTemplates/app.HR.form.editMaster.html'" data="tab.data" submit-Fn="updateUserMasterDetails($index)" form-title="tab.title"></generic-Form>
         </div>
         <div ng-if="tab.app == 'editPermissions'">
-          <generic-Form template="'/static/ngTemplates/app.HR.form.editPermissions.html'" data="tab.data" submit-Fn="updateUserPermissions()" form-title="tab.title"></generic-Form>
+          <div ng-include="'/static/ngTemplates/app.HR.form.editPermissions.html'"></div>
         </div>
       </uib-tab>
     </uib-tabset>

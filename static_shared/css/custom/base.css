@@ -3,25 +3,21 @@ body {
   background-color: #eee;
   padding-top:70px;
 }
-.nav-sidebar{
-  background-color: var(--verticalNavbarBg);
-}
-.nav-sidebar> li > a {
-	color:var(--themeMain);
 
-}
 .padded > li > a {
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.nav-sidebar> .active > a {
-  color: #fff;
-  background-color: var(--themeMain);
+
+.nav-sidebar> li > a {
+  color:var(--themeMain);
 }
-.nav-sidebar> li > a:hover, .nav-sidebar > li >a:focus , .sidebarList> li > a:focus , .sidebarList> li > a:active{
+
+.nav-sidebar> li > a:hover, .nav-sidebar > li >a:focus , .nav-sidebar> .active > a , .sidebarList> li > a:focus , .sidebarList> li > a:active{
 	background-color: var(--themeMain);
 	color: #fff;
 }
+
 .sidebarList> li > a {
 	color:#337AB7;
 }

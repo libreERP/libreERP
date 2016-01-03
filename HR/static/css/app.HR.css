@@ -1,0 +1,10 @@
+.nav-sidebar-inverse> li > a {
+  color:white;
+  border-right: solid 6px var(--themeMain);
+}
+
+.nav-sidebar-inverse> li > a:hover, .nav-sidebar-inverse > li >a:focus , .nav-sidebar-inverse> .active > a{
+	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+  border-right: solid 6px white;
+	color: #fff;
+}

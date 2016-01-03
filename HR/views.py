@@ -97,18 +97,27 @@ class applicationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = application.objects.all()
     serializer_class = applicationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
+
+class applicationAdminViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdmin,)
+    queryset = application.objects.all()
+    serializer_class = applicationAdminSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class rankViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = rank.objects.all()
     serializer_class = rankSerializer
 
-class groupAccessViewSet(viewsets.ModelViewSet):
+class groupPermissionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = groupAccess.objects.all()
-    serializer_class = groupAccessSerializer
+    queryset = groupPermission.objects.all()
+    serializer_class = groupPermissionSerializer
 
-class accessViewSet(viewsets.ModelViewSet):
+class permissionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = access.objects.all()
-    serializer_class = accessSerializer
+    queryset = permission.objects.all()
+    serializer_class = permissionSerializer

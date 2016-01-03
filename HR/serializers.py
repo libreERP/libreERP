@@ -11,26 +11,37 @@ class moduleSerializer(serializers.ModelSerializer):
         fields = ( 'pk', 'name' , 'discription' )
 
 class applicationSerializer(serializers.ModelSerializer):
-    module = moduleSerializer(read_only = True, many = False)
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'discription' , 'owners')
+        fields = ( 'pk', 'name', 'module' , 'discription')
+
+class applicationAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = application
+        fields = ( 'pk', 'name', 'module' , 'owners' , 'discription' , 'created')
 
 class rankSerializer(serializers.ModelSerializer):
     class Meta:
         model = rank
         fields = ( 'title' , 'category' )
 
-class accessSerializer(serializers.ModelSerializer):
+class permissionSerializer(serializers.ModelSerializer):
     app = applicationSerializer(read_only = True, many = False)
     class Meta:
-        model = access
+        model = permission
         fields = ( 'pk' , 'app' , 'user' )
+    def create(self , validated_data):
+        user = self.context['request'].user
+        app =application.objects.get(pk = self.context['request'].data['app'])
+        if not user.is_superuser and user not in app.owners.all():
+            raise PermissionDenied(detail=None)
+        perm , created = permission.objects.get_or_create(app =  app, user = validated_data['user'] , givenBy = user)
+        return perm
 
-class groupAccessSerializer(serializers.ModelSerializer):
+class groupPermissionSerializer(serializers.ModelSerializer):
     app = applicationSerializer(read_only = True, many = False)
     class Meta:
-        model = groupAccess
+        model = groupPermission
         fields = ( 'pk' , 'app' , 'group' )
 
 class userDesignationSerializer(serializers.ModelSerializer):

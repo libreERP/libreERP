@@ -1,0 +1,69 @@
+[{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$D9p0VhwPruUB$Qhive+4W4BcsJYF/7u69d1API7Hd1QC96A0hBPzrvFE=",
+    "last_login": "2016-01-03T03:46:10.983Z",
+    "is_superuser": true,
+    "username": "cioc",
+    "first_name": "Admin",
+    "last_name": "CIOC",
+    "email": "admin@cioc.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2016-01-03T02:34:03.407Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}, {
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$zjgSOybkK4C4$hgPcartsK8/Q+qCklTgdtgfNH1bjajFX6nRGhjYOcpQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pradeep",
+    "first_name": "Pradeep",
+    "last_name": "Yadav",
+    "email": "pradeep@cioc.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-01-03T13:05:13.180Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}, {
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$Vh3ECTa5BIZe$/FZijgymn/VIksTAe/mav6CquJtK3lDvsxVULN9fT0g=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "sandeep",
+    "first_name": "Sandeep",
+    "last_name": "Yadav",
+    "email": "sandeep@cioc.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-01-03T13:05:23.946Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}, {
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$nUBnsYpnBzzV$lqp5TBVoDxPex7h64GcjZCTxZmqHjwni5A7ZF//LN20=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "divyam",
+    "first_name": "Divyam",
+    "last_name": "Rastogi",
+    "email": "divyam@cioc.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-01-03T13:32:57.540Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}]

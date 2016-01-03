@@ -107,7 +107,7 @@ class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
         return comment
     def update(self, instance, validated_data): # like the comment
         user =  self.context['request'].user
-        print commentLike.parent.__class__
+        # print commentLike.parent.__class__
         l , new = blogCommentLike.objects.get_or_create(user = user , parent = instance)
         return instance
 

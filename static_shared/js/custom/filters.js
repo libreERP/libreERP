@@ -80,22 +80,22 @@ app.filter('explodeObj' , function(){
         val = input[key];
         if (val != null && typeof val !='object'){
           // console.log('The key is ' + key + ' and the value is ' + val);
-          urlTest = isUrl(val);
+          type = getType(val);
           // console.log(urlTest);
-          if ( urlTest.type == 'hyperLink') {
+          if ( type == 'hyperLink') {
             toReturn += '<a href=' + val + '> <i class="fa fa-link"></i> </a>';
-          } else if (urlTest.type == 'image') {
+          } else if (type == 'image') {
             toReturn += ' <i class="fa fa-picture-o"></i> ';
-          } else if (urlTest.type == 'pdf') {
+          } else if (type == 'pdf') {
             toReturn += ' <i class="fa fa-file-pdf-o"></i> ';
-          } else if (urlTest.type == 'odt') {
+          } else if (type == 'odt') {
             toReturn += ' <i class="fa fa-file-text-o"></i> ';
-          } else if(urlTest.type == 'string') {
+          } else if(type == 'string') {
             toReturn += val + ' , ';
-          } else if(urlTest.type == 'number') {
+          } else if(type == 'number') {
             toReturn += val + ' , ';
           } else{
-            toReturn += urlTest.type + ' , ';
+            toReturn += type + ' , ';
           }
         } else{
           // console.log('The value is null for the key' + key);
@@ -104,17 +104,17 @@ app.filter('explodeObj' , function(){
       }
       return toReturn;
     }else {
-      urlTest = isUrl(input);
+      type = getType(input);
       // console.log(urlTest);
-      if ( urlTest.type == 'hyperLink') {
+      if ( type == 'hyperLink') {
         return '<a href=' + input + '> <i class="fa fa-link"></i> </a>';
-      } else if (urlTest.type == 'image') {
+      } else if (type == 'image') {
         return ' <i class="fa fa-picture-o"></i> ';
-      } else if (urlTest.type == 'pdf') {
+      } else if (type == 'pdf') {
         return ' <i class="fa fa-file-pdf-o"></i> ';
-      } else if (urlTest.type == 'odt') {
+      } else if (type == 'odt') {
         return ' <i class="fa fa-file-text-o"></i> ';
-      } else if(urlTest.type == 'string' || urlTest.type == 'number') {
+      } else if(type == 'string' || type == 'number') {
         return input ;
       } else{
         return input ;

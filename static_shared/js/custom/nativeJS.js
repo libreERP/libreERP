@@ -101,41 +101,45 @@ function isNumber(num){
   }
 }
 
-isUrl = function(str){
-  // checks if the input is a url
-  if (isNumber(str)) {
-    return {flag : false , type : 'number'};
+getType = function(input){
+  // returns the type if the input
+  if (typeof input == 'function') {
+    return 'function';
   }
-  if (typeof str =='boolean' || str == null) {
-    return {flag : false , type : 'string'};
+
+  if (isNumber(input)) {
+    return  'number';
+  }
+  if (typeof input =='boolean' || input == null) {
+    return 'string';
   }
   // console.log(str);
-  if ( str.indexOf(' ') !=-1) {
-    return {flag : false , type : 'string'};
+  if ( input.indexOf(' ') !=-1) {
+    return 'string';
   }
-  if (  str.length > 7) {
+  if (  input.length > 7) {
 
-    str = str.toLowerCase()
-    containesHTTP = (str.indexOf('http://') !=-1 || str.indexOf('https://') !=-1 );
+    input = input.toLowerCase()
+    containesHTTP = (input.indexOf('http://') !=-1 || input.indexOf('https://') !=-1 );
     if ( containesHTTP ){
-      flag = true;
-      if (str.endsWith('.jpg') || str.endsWith('png')) {
+      if (input.endsWith('.jpg') || input.endsWith('png')) {
         type = 'image';
-      }else if (str.endsWith('.pdf')) {
+      }else if (input.endsWith('.pdf')) {
         type = 'pdf';
-      }else if (str.endsWith('.py')) {
+      }else if (input.endsWith('.py')) {
         type = 'python';
-      }else if (str.endsWith('.odt')) {
+      }else if (input.endsWith('.odt')) {
         type = 'openDoc';
       }else{
         type = 'hyperLink';
       }
+    } else{
+      type = 'string'
     }
   } else {
-    flag = false;
     type = 'string';
   }
-  return {flag : flag , type : type};
+  return type;
 }
 
 String.prototype.endsWith = function(str){

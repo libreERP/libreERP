@@ -312,7 +312,11 @@ app.directive('genericTable', function () {
         items = [];
         for (var i = 0; i < $scope.selectStates.length; i++) {
           if ($scope.selectStates[i].value == true) {
-            items.push($scope.tableData[i].url);
+            if (typeof $scope.tableData[i].url == 'undefined') {
+              items.push($scope.tableData[i].pk);
+            } else{
+              items.push($scope.tableData[i].url);
+            }
           }
         }
         $scope.callbackFn(items , action , 'multi')
@@ -353,15 +357,13 @@ app.directive('genericTable', function () {
           $scope.tableData.push($scope.originalTable[rowsContaining[i]]);
         }
       }
-      $scope.fetchData = function(searchStr){
-        if (typeof searchStr=='undefined') {
-          searchStr = '';
-        }
+      $scope.fetchData = function(){
+        // getting the data from the server based on the state of the filter params
         fetch.method = 'GET';
         if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField =='') {
           fetch.url = $scope.resourceUrl +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
         } else {
-          fetch.url = $scope.resourceUrl +'?&'+ $scope.primarySearchField +'__contains=' + searchStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+          fetch.url = $scope.resourceUrl +'?&'+ $scope.primarySearchField +'__contains=' + $scope.getStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
         }
         if (typeof $scope.getParams != 'undefined') {
           for (var i = 0; i < $scope.getParams.length; i++) {
@@ -405,14 +407,18 @@ app.directive('genericTable', function () {
         });
       }
 
-      $scope.$watch('getStr' , function(newValue , oldValue){
-        $scope.fetchData(newValue);
+      $scope.$watch('getStr' , function(){ // getStr is the search query sent to the server
+        $scope.fetchData();
       });
 
-      $scope.$watch('searchText', function(newValue , oldValue){
-        parts = newValue.split('>');
+      $scope.$watch('searchText',function(){
+        $scope.updateData()
+      });
+
+      $scope.updateData = function(){ // at any point of time forcing to refresh data
+        parts = $scope.searchText.split('>');
         if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField == '') {
-          searchStr = newValue;
+          searchStr = $scope.searchText;
         } else {
           $scope.getStr = parts[0].trim();
           if (typeof parts[1] == 'undefined'){
@@ -423,7 +429,7 @@ app.directive('genericTable', function () {
         }
         // console.log(searchStr);
         $scope.fullTextSearch(searchStr);
-      });
+      }
 
       $scope.changePage = function(toPage){
         // change page number ot the seleted page
@@ -502,10 +508,6 @@ app.directive('genericTable', function () {
         }
       };
     },
-    // attrs is the attrs passed from the main scope
-    link: function postLink(scope, element, attrs) {
-
-    }
   };
 });
 
@@ -523,6 +525,14 @@ app.directive('tableRow', function () {
       selectable : '=',
     },
     controller : function($scope){
+
+      $scope.rowActionClicked = function(option){
+        if (typeof $scope.data.url == 'undefined') {
+          $scope.rowAction( $scope.data.pk ,  option)
+        } else {
+          $scope.rowAction( $scope.data.url ,  option)
+        }
+      }
 
       if (typeof $scope.options == 'undefined') {
         $scope.optionsShow = false;
