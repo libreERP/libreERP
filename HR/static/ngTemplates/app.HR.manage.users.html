@@ -8,9 +8,7 @@
         <uib-tab-heading>
           New  <i class="fa fa-plus"></i>
         </uib-tab-heading>
-        <div class="col-md-6">
-          <generic-Form template="'/static/ngTemplates/app.HR.form.newUser.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
-        </div>
+        <generic-Form template="'/static/ngTemplates/app.HR.form.newUser.html'" data="newUser" submit-Fn="createUser()" form-title="'Create New User'"></generic-Form>
       </uib-tab>
       <uib-tab heading="Search" active="searchTabActive">
         <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "'/api/HR/users/'" search="true"
