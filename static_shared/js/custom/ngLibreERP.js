@@ -95,6 +95,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
   }
 
 
+
   settings = {theme : $scope.themeObj , mobile : $scope.me.profile.mobile };
   $scope.openSettings = function(position, backdrop , data ) {
     $scope.asideState = {
@@ -105,6 +106,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
     function postClose() {
       $scope.asideState.open = false;
       $scope.me = userProfileService.get('mySelf' , true)
+      console.log($scope);
     }
 
     $aside.open({
@@ -144,7 +146,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
             fdProfile.append('mobile' , $scope.settings.mobile);
           }
           $http({method : 'PATCH' , url : $scope.me.profile.url , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
-          then(function(){
+          then(function(response){
             $http({method : 'PATCH' , url : $scope.me.settings, data : {presence : "Busy"  , user : $scope.me.url}}).
             then(function(response){
               $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).

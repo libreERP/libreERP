@@ -3,18 +3,20 @@
     "model" : "HR.module",
     "pk" : 1,
     "fields" : {
+      "icon" : "fa-home",
       "name" : "home",
       "created" : "2016-01-03 00:44:00.737000",
-      "discription" : "Home module can be considered as the lending page of the platform consisting dashboard , PIM and social apps"
+      "description" : "Home module can be considered as the lending page of the platform consisting dashboard , PIM and social apps"
     }
   },
   {
     "model" : "HR.module",
     "pk" : 2,
     "fields" : {
+      "icon" : "fa-user",
       "name" : "admin",
       "created" : "2016-01-03 00:44:00.737000",
-      "discription" : "Administration can be performed from the apps of this module."
+      "description" : "Administration can be performed from the apps of this module."
     }
   }
 ]

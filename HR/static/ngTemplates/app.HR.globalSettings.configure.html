@@ -1,0 +1,25 @@
+<breadcrumb></breadcrumb>
+<div class="container-fluid">
+  <h1>{{$stateParams.app | humanize}} settings</h1>
+
+  <div ng-repeat="field in settings">
+    <div ng-if="field.fieldType=='flag'">
+
+      <div class="checkbox">
+        <label ><input type="checkbox" ng-model="field.data" >  <span style="margin-left:10px;">  {{field.name}} ? </span></label>
+      </div>
+      <p class="help-block">{{field.description}}</p>
+    </div>
+    <div ng-if="field.fieldType == 'value'">
+      <div class="form-group">
+        <label>{{field.name}}</label>
+        <input type="text" class="form-control" ng-model="data[field.name]" placeholder="Last Name">
+      </div>
+
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" ng-if="settings.length >0"> Save </button>
+  <p class="text-muted" ng-if="!settings.length >0">
+    No configurable field found for this application
+  </p>
+</div>

@@ -14,30 +14,32 @@ class userSearchSerializer(serializers.ModelSerializer):
 class moduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = module
-        fields = ( 'pk', 'name' , 'discription' )
+        fields = ( 'pk', 'name' , 'description' , 'icon' )
+
+class applicationSettingsSerializer(serializers.ModelSerializer):
+    # non admin mode
+    class Meta:
+        model = appSettingsField
+        fields = ( 'pk', 'name', 'flag' , 'value' , 'fieldType')
+
+class applicationSettingsAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = appSettingsField
+        fields = ( 'pk', 'name', 'flag' , 'value' , 'description' , 'app' , 'created' ,  'fieldType')
 
 class applicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'discription')
-
-class applicationSettingsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = appSettingField
-        fields = ( 'pk', 'name', 'flag' , 'value')
-
-class applicationSettingsAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = appSettingField
-        fields = ( 'pk', 'name', 'flag' , 'value' , 'discription' , 'app' , 'security' , 'created')
+        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure')
 
 class applicationAdminSerializer(serializers.ModelSerializer):
     module = moduleSerializer(read_only = True , many = False)
     owners = userSearchSerializer(read_only = True , many = True)
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'owners' , 'discription' , 'created')
+        fields = ( 'pk', 'name', 'module' , 'owners' , 'description' , 'created' , 'icon', 'canConfigure')
     def update (self, instance, validated_data):
+        instance.owners.clear()
         for pk in self.context['request'].data['owners']:
             instance.owners.add(User.objects.get(pk = pk))
         instance.save()

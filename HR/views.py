@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.conf import settings as globalSettings
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
+from rest_framework.exceptions import *
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
@@ -94,28 +95,38 @@ class moduleViewSet(viewsets.ModelViewSet):
     serializer_class = moduleSerializer
 
 class applicationViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = application.objects.all()
+    permission_classes = (readOnly,)
     serializer_class = applicationSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
+    def get_queryset(self):
+        return application.objects.filter(owners__in = [self.request.user])
 
 class applicationAdminViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin,)
-    queryset = application.objects.all()
     serializer_class = applicationAdminSerializer
+    # queryset = application.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
+    def get_queryset(self):
+        if not self.request.user.is_superuser:
+            raise PermissionDenied(detail=None)
+        return application.objects.all()
+
 
 class applicationSettingsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, readOnly , )
-    queryset = appSettingField.objects.all()
+    queryset = appSettingsField.objects.all()
     serializer_class = applicationSettingsSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['app']
 
 class applicationSettingsAdminViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = appSettingField.objects.all()
+    queryset = appSettingsField.objects.all()
     serializer_class = applicationSettingsAdminSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['app']
 
 class rankViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

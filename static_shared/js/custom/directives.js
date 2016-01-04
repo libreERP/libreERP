@@ -174,7 +174,7 @@ app.directive('breadcrumb', function () {
       var stateName = $state.current.name;
       $scope.stateParts = stateName.split('.');
       for(key in $stateParams){
-        if (typeof $stateParams[key] != 'undefined' && $stateParams[key] != '') {
+        if (typeof $stateParams[key] != 'undefined' && $stateParams[key] != '' && typeof parseInt($stateParams[key]) != 'number') {
           $scope.stateParts.push($stateParams[key]);
         };
       };
@@ -268,7 +268,7 @@ app.directive('genericTable', function () {
       deletable : '@',
       others : '=',
     },
-    controller : function($scope , $http, $templateCache, $timeout , userProfileService , $aside) {
+    controller : function($scope , $http, $templateCache, $timeout , userProfileService , $aside , Flash) {
       $scope.tableData = [];
       $scope.searchText = '';
       $scope.originalTable = [];
@@ -306,6 +306,15 @@ app.directive('genericTable', function () {
         }
       });
 
+      $scope.delete = function(pk , index){
+        $http({method : 'DELETE' , url : $scope.resourceUrl + pk + '/' }).
+        then(function(response){
+          $scope.tableData.splice(index, 1);
+          Flash.create('success', response.status + ' : ' + response.statusText );
+        }, function(response){
+          Flash.create('danger', response.status + ' : ' + response.statusText );
+        })
+      }
 
       $scope.changeView = function(mode){
         $scope.viewMode = mode;
@@ -531,6 +540,8 @@ app.directive('tableRow', function () {
       selectable : '=',
       deletable : '@',
       others : '=',
+      index : '@',
+      delete :'=',
     },
     controller : 'genericTableItem',
   };
@@ -538,9 +549,9 @@ app.directive('tableRow', function () {
 
 app.directive('tableItem', function () {
   return {
-    template:  '<div ng-include="template"></div>',
-    restrict: 'A',
-    transclude: true,
+    template:  '<div ng-include="template"> </div>',
+    restrict: 'E',
+    transclude: false,
     replace: true,
     scope:{
       template : '@',
@@ -551,6 +562,8 @@ app.directive('tableItem', function () {
       selectable : '=',
       deletable : '@',
       others : '=',
+      index: '@',
+      delete: '=',
     },
     controller : 'genericTableItem',
   };
@@ -575,6 +588,7 @@ app.controller('genericTableItem' , function($scope , $uibModal){
       $scope.rowAction( $scope.target , 'submitForm' , $scope.data);
       // $scope.target is the pk or the url of the object
     }
+
     if (typeof $scope.others.template != 'undefined' && $scope.others.template != '') {
       $scope.editable = true;
     } else{
@@ -590,6 +604,7 @@ app.controller('genericTableItem' , function($scope , $uibModal){
       }
     }
   });
+
   // anything passed in the others variable in the generic-table directive is available (without binding) to the modal's controller (in the $scope variable)
   // as well as the table row scope (in $scope.others variable)
   $scope.edit = function(){

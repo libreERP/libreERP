@@ -3,80 +3,195 @@
     "model" : "HR.application",
     "pk" : 1,
     "fields" : {
-      "name" : "dashboard",
+      "icon" : "fa-home",
+      "name" : "app.home",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "Dashboard shows the whats next for each employee. It fetches the important notification from all the other application the user have access to."
+      "description" : "Dashboard shows the whats next for each employee. It fetches the important notification from all the other application the user have access to.",
+      "owners": [2],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 2,
     "fields" : {
-      "name" : "mail",
+      "icon" : "fa-envelope-o",
+      "name" : "app.home.mail",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "e-mail application"
+      "description" : "e-mail application",
+      "owners": [],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 3,
     "fields" : {
-      "name" : "social",
+      "icon" : "fa-facebook",
+      "name" : "app.home.social",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "Social networking application"
+      "description" : "Social networking application",
+      "owners": [2,4],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 4,
     "fields" : {
-      "name" : "blog",
+      "name" : "app.home.blog",
+      "icon" : "fa-newspaper-o",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "Blogging application"
+      "description" : "Blogging application",
+      "owners": [],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 5,
     "fields" : {
-      "name" : "calendar",
+      "icon" : "fa-calendar",
+      "name" : "app.home.calendar",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "Calendar"
+      "description" : "Calendar",
+      "owners": [],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 6,
     "fields" : {
-      "name" : "notes",
+      "icon" : "fa-sticky-note-o",
+      "name" : "app.home.notes",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
-      "discription" : "note taking application"
+      "description" : "note taking application",
+      "owners": [],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 7,
     "fields" : {
-      "name" : "manage.users",
+      "icon" : "fa-search",
+      "name" : "app.home.users",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
-      "discription" : "Search users, initiate IM and access their social profile"
+      "description" : "Search users, initiate IM and access their social profile",
+      "owners": [3],
+      "canConfigure": null
     }
   },
   {
     "model" : "HR.application",
     "pk" : 8,
     "fields" : {
-      "name" : "manage.users.sudo",
+      "icon" : "fa-cogs",
+      "name" : "state.admin.manageUsers",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
-      "discription" : "creat user, update master data including password resetting, profile editor, designation editor"
+      "description" : "creat user, update master data including password resetting, profile editor, designation editor",
+      "owners": [2],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 9,
+    "fields" : {
+      "icon" : "fa-puzzle-piece",
+      "name" : "state.admin.globalSettings.modulesAndApplications",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "admin only application, Create and update applications",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 10,
+    "fields" : {
+      "icon" : "fa-home",
+      "name" : "configure.admin.globalSettings.dashboard",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for dashboard",
+      "owners": [2],
+      "canConfigure": 1
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 11,
+    "fields" : {
+      "icon" : "fa-envelope-o",
+      "name" : "configure.admin.globalSettings.mail",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for mail",
+      "owners": [2],
+      "canConfigure": 2
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 12,
+    "fields" : {
+      "icon" : "fa-facebook",
+      "name" : "configure.admin.globalSettings.social",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for social",
+      "owners": [2],
+      "canConfigure": 3
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 13,
+    "fields" : {
+      "icon" : "fa-newspaper-o",
+      "name" : "configure.admin.globalSettings.blog",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for blogging app",
+      "owners": [],
+      "canConfigure": 4
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 14,
+    "fields" : {
+      "icon" : "fa-calendar",
+      "name" : "configure.admin.globalSettings.calendar",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for calendar",
+      "owners": [2],
+      "canConfigure": 5
+    }
+  },
+  {
+    "model" : "HR.application",
+    "pk" : 15,
+    "fields" : {
+      "icon" : "fa-sticky-note-o",
+      "name" : "configure.admin.globalSettings.notes",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "configure settings for notes",
+      "owners": [],
+      "canConfigure": 6
     }
   }
 ]

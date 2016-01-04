@@ -6,17 +6,14 @@
 
       <strong>Parent module : </strong> {{data.module.name}}
       <br>
-      <strong>Owners :</strong>
-      <br>
       <div class="form-group" >
-        <label>Add owners :</label>
-        <tags-input ng-model="data.formData.ownersToAdd" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+        <label>Owners :</label>
+        <tags-input ng-model="data.owners" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
           <auto-complete source="ownersSearch($query)" load-on-down-arrow="true"></auto-complete>
         </tags-input>
-        <p class="help-block">Owners of an application are those users who have access to the application level which will effect the behaviour of the application as experienced by the username.
+        <p class="help-block">Owners of an application are those users who have access to the application level settings which will effect the behaviour of the application as experienced by the ordinary user.
         Owners can grant and revoke access to the application to a perticular user or group of users.</p>
       </div>
-
       <button type="submit" class="btn btn-primary"> Save </button>
     </form>
 </div>

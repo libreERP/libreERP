@@ -5,18 +5,26 @@ app.factory('userProfileService', function(){
   var userSocialPictures = [];
 
   return {
-    get : function(userUrl , refetch){
-      if (typeof userProfiles[userUrl]=="undefined" || refetch) {
-        if (userUrl=='mySelf') {
-          me = myProfile();
-          userProfiles["mySelf"] = me;
-          userProfiles[me.url] = me;
-        } else {
-          var user = getUser(userUrl);
-          userProfiles[userUrl]= user
+    get : function(input , refetch){
+      if (typeof input == 'number') {
+        input = input.toString(); // if the PK is passed then get the string form of it
+      } else{
+        if (input != 'mySelf') { // url is passed and it will not get converted to int
+          input = getPK(input).toString()
         }
       }
-      return userProfiles[userUrl];
+      if (typeof userProfiles[input]=="undefined" || refetch) {
+        if (input=='mySelf') {
+          me = myProfile();
+          userProfiles["mySelf"] = me;
+          userProfiles[getPK(me.url).toString()] = me;
+        } else {
+          url = '/api/HR/users/' + input + '/'
+          var user = getUser(url);
+          userProfiles[input]= user
+        }
+      }
+      return userProfiles[input];
     },
   }
 });
@@ -36,13 +44,13 @@ function myProfile(){
 
 function getUser(urlGet , mode){
   // console.log(urlGet);
-  var httpRequest = new XMLHttpRequest()
   if (urlGet.indexOf('api/HR')==-1) {
     urlGet = '/api/HR/users/'+ urlGet + '/'
   }
   if (urlGet.indexOf('json')==-1) {
     urlGet += '?format=json';
   }
+  var httpRequest = new XMLHttpRequest()
   httpRequest.open('GET', urlGet , false);
   httpRequest.send(null);
   if (httpRequest.status === 200) { // successfully

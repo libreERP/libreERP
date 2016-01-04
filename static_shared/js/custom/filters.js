@@ -153,11 +153,11 @@ app.filter('decorateCount' , function(){
 })
 
 app.filter('getDP' , function(userProfileService){
-  return function(userUrl){
-    if (typeof userUrl == 'undefined' ) {
+  return function(input){
+    if (typeof input == 'undefined' ) {
       return '/static/images/userIcon.png';
     }
-    user = userProfileService.get(userUrl);
+    user = userProfileService.get(input);
     if (user.profile.displayPicture == null) {
       return '/static/images/userIcon.png';
     }else{
@@ -168,14 +168,15 @@ app.filter('getDP' , function(userProfileService){
 
 
 app.filter('getName' , function(userProfileService){
+  
   return function(userUrl , mode){
     if (typeof userUrl == 'undefined') {
       return '';
     }
-    profile = userProfileService.get(userUrl);
+    user = userProfileService.get(userUrl);
     if (mode == 'short') {
-      return profile.first_name;
+      return user.first_name;
     }
-    return profile.first_name + ' ' + profile.last_name;
+    return user.first_name + ' ' + user.last_name;
   }
 })

@@ -1,5 +1,4 @@
-<div ng-repeat="item in tableData">
-  <!-- <table-Item template="views"> </table-Item> -->
-  {{item}}
-
+<div ng-repeat="item in tableData" class="panel-group" id="accordion">
+  <table-Item data="item" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" index="{{$index}}" delete="delete"
+  selectable = "isSelectable" editor-Template="{{editorTemplate}}" others = "others" template="{{views[0].itemTemplate}}"></table-Item>
 </div>
