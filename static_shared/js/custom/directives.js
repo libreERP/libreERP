@@ -256,8 +256,8 @@ app.directive('genericTable', function () {
     replace: false,
     scope: {
       tableData :'=',
-      resourceUrl : '=',
-      primarySearchField : '=',
+      resourceUrl : '@',
+      primarySearchField : '@',
       callbackFn : '=',
       views : '=',
       graphTemplate : '=',
@@ -532,68 +532,96 @@ app.directive('tableRow', function () {
       deletable : '@',
       others : '=',
     },
-    controller : function($scope , $uibModal){
-      if (typeof $scope.data.url == 'undefined') {
-        $scope.target = $scope.data.pk;
-      } else {
-        $scope.target = $scope.data.url;
-      }
-
-      $scope.rowActionClicked = function(option){
-        $scope.rowAction( $scope.target ,  option)
-      }
-
-      if (typeof $scope.others != 'undefined') {
-        $scope.others = angular.copy($scope.others) // i noticed that it was binding this to the root others outside the table directive
-        // basically when we want to edit the data and pass some functions or variables from outside of the generic table directive down to the modal controller
-        $scope.others.submitForm = function(){
-          $scope.rowAction( $scope.target , 'submitForm' , $scope.data);
-        }
-        if (typeof $scope.others.template != 'undefined' && $scope.others.template != '') {
-          $scope.editable = true;
-        } else{
-          $scope.editable = false;
-        }
-        $scope.others.data = $scope.data;
-      }
-
-      $scope.edit = function(){
-        $uibModal.open({
-          templateUrl: $scope.others.template,
-          size: 'lg',
-          resolve: {
-           others: function () {
-             return $scope.others;
-            }
-          },
-          controller: function($scope , others){
-            for (key in others){
-              $scope[key] = others[key];
-            }
-          },
-        });
-      }
-
-
-      if (typeof $scope.options == 'undefined') {
-        $scope.optionsShow = false;
-      }else{
-        $scope.optionsShow = true;
-        if (typeof $scope.options.others == 'undefined') {
-          $scope.otherOptions = false;
-        }else{
-          $scope.otherOptions = true;
-        }
-      }
-    },
-    // attrs is the attrs passed from the main scope
-    link: function postLink(scope, element, attrs) {
-
-    }
+    controller : 'genericTableItem',
   };
 });
-// alert("Came in the ngSeachEmp js file");
 
+app.directive('tableItem', function () {
+  return {
+    template:  '<div ng-include="template"></div>',
+    restrict: 'A',
+    transclude: true,
+    replace: true,
+    scope:{
+      template : '@',
+      data : '=',
+      rowAction : '=',
+      options : '=',
+      checkbox : '=',
+      selectable : '=',
+      deletable : '@',
+      others : '=',
+    },
+    controller : 'genericTableItem',
+  };
+});
+
+app.controller('genericTableItem' , function($scope , $uibModal){
+  if (typeof $scope.data.url == 'undefined') {
+    $scope.target = $scope.data.pk;
+  } else {
+    $scope.target = $scope.data.url;
+    $scope.data.pk = getPK($scope.data.url);
+  }
+
+  $scope.rowActionClicked = function(option){
+    $scope.rowAction( $scope.target ,  option)
+  }
+
+  if (typeof $scope.others != 'undefined') {
+    $scope.others = angular.copy($scope.others) // i noticed that it was binding this to the root others outside the table directive
+    // basically when we want to edit the data and pass some functions or variables from outside of the generic table directive down to the modal controller
+    $scope.others.submitForm = function(){
+      $scope.rowAction( $scope.target , 'submitForm' , $scope.data);
+      // $scope.target is the pk or the url of the object
+    }
+    if (typeof $scope.others.template != 'undefined' && $scope.others.template != '') {
+      $scope.editable = true;
+    } else{
+      $scope.editable = false;
+    }
+    $scope.others.data = $scope.data;
+  }
+  // the parent scope on successful posting the data sends this signal with a input
+  $scope.$on('forceGenericTableRowRefresh', function(event, input) {
+    if ($scope.data.pk == input.pk || input.pk == -1) { // -1 when we want all of them to update certain property but i dont think there is a use case for this
+      for (key in input){
+        $scope.data[key] = input[key];
+      }
+    }
+  });
+  // anything passed in the others variable in the generic-table directive is available (without binding) to the modal's controller (in the $scope variable)
+  // as well as the table row scope (in $scope.others variable)
+  $scope.edit = function(){
+    $uibModal.open({
+      templateUrl: $scope.others.template,
+      size: 'lg',
+      resolve: {
+       others: function () {
+         return $scope.others;
+        }
+      },
+      controller: function($scope , others){
+        for (key in others){
+          $scope[key] = others[key];
+        }
+        $scope.data.formData = [];
+      },
+    });
+  }
+
+
+  if (typeof $scope.options == 'undefined') {
+    $scope.optionsShow = false;
+  }else{
+    $scope.optionsShow = true;
+    if (typeof $scope.options.others == 'undefined') {
+      $scope.otherOptions = false;
+    }else{
+      $scope.otherOptions = true;
+    }
+  }
+});
 
 app.directive('messageStrip', function () {
   return {

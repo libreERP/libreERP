@@ -1,17 +1,20 @@
 <div class="modal-header">
-  <h3 class="modal-title">Edit</h3>
+  <h3 class="modal-title">Edit owners for : <strong>{{data.name}}</strong></h3>
 </div>
 <div class="modal-body">
     <form ng-submit="submitForm()">
 
-      Name : {{data.name}}
-      module : {{data.module}}
-
+      <strong>Parent module : </strong> {{data.module.name}}
+      <br>
+      <strong>Owners :</strong>
+      <br>
       <div class="form-group" >
-        <label>Grant application access :</label>
-        <tags-input ng-model="data.owners" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+        <label>Add owners :</label>
+        <tags-input ng-model="data.formData.ownersToAdd" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
           <auto-complete source="ownersSearch($query)" load-on-down-arrow="true"></auto-complete>
         </tags-input>
+        <p class="help-block">Owners of an application are those users who have access to the application level which will effect the behaviour of the application as experienced by the username.
+        Owners can grant and revoke access to the application to a perticular user or group of users.</p>
       </div>
 
       <button type="submit" class="btn btn-primary"> Save </button>

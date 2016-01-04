@@ -56,20 +56,51 @@ app.controller('admin.globalSettings' , function($scope , $http , $aside , $stat
 });
 app.controller('admin.globalSettings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
 
+  $scope.resourceUrl = '/api/HR/applicationAdminMode/';
+
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
   $scope.rowInput = {
     ownersSearch : function(query) {
-      return $http.get('/api/HR/users/?username__contains=' + query)
+      return $http.get('/api/HR/userSearch/?username__contains=' + query)
     },
     template : '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.form.apps.html',
   }
 
+  $scope.forceRowRefresh = function(){
+
+  }
+
   $scope.tableAction = function(target , action , data){
-    console.log('clicked');
-    console.log(target);
     console.log(data);
+    if (action == 'submitForm') {
+      owners = [];
+      if (typeof data.formData.owners == 'undefined') {
+        return;
+      }
+      for (var i = 0; i < data.formData.ownersToAdd.length; i++) {
+        owners.push(data.formData.ownersToAdd[i].pk)
+      }
+      dataToSend = {
+        owners : owners,
+      }
+      if (owners == '') {
+        return;
+      }
+      $http({method : 'PATCH' , url : $scope.resourceUrl + data.pk + '/' , data : dataToSend}).
+      then(function(response){
+        owners = '';
+        for (var i = 0; i < response.data.owners.length; i++) {
+          owners += response.data.owners[i].username + ',';
+        }
+        $scope.$broadcast('forceGenericTableRowRefresh', { owners : owners , pk : response.data.pk});
+        Flash.create('success', response.status + ' : ' + response.statusText );
+      }, function(response){
+        Flash.create('danger', response.status + ' : ' + response.statusText );
+      })
+    }
+
   }
 
 });

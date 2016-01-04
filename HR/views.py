@@ -107,6 +107,16 @@ class applicationAdminViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
 
+class applicationSettingsViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, readOnly , )
+    queryset = appSettingField.objects.all()
+    serializer_class = applicationSettingsSerializer
+
+class applicationSettingsAdminViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = appSettingField.objects.all()
+    serializer_class = applicationSettingsAdminSerializer
+
 class rankViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = rank.objects.all()

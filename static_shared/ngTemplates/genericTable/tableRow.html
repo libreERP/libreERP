@@ -2,11 +2,11 @@
 <tr>
 
   <td ng-if = "selectable" ><input type="checkbox" name="name" ng-model="checkbox.value" ng-disabled = "checkbox.disabled"></td>
-  <td ng-repeat = "(key , val) in data" ><span ng-bind-html="val | explodeObj"></span></td>
+  <td ng-repeat = "(key , val) in data" ng-if="key != 'formData'" ><span ng-bind-html="val | explodeObj"></span></td>
   <td >
     <div class="input-group-btn">
       <a class="btn btn-default btn-sm" ng-click = "edit()" ng-if="editable"> <i class="fa fa-pencil"></i> Edit</a>
-      <a class="btn btn-danger btn-sm" ng-click = "delete()" ng-if="deletable"> <i class="fa fa-trash"></i> Delete</a>
+      <a class="btn btn-danger btn-sm" ng-click = "delete()" ng-if="deletable"> <i class="fa fa-trash"></i></a>
       <a ng-if = "optionsShow" class="btn btn-default btn-sm" ng-click = "rowActionClicked(options.main.text)"> <i class="fa {{options.main.icon}}"></i> {{options.main.text | uppercase}}</a>
       <a ng-if="otherOptions" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
       <ul ng-if="otherOptions" class="dropdown-menu pull-right">
