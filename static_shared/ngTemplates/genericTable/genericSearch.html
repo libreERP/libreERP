@@ -23,13 +23,13 @@
     <li ng-repeat = "option in multiselectOptions" ng-click = "multiSelectAction(option.text)"><a href="" style="color: #6f6f6f;"><i class = "{{option.icon}}">  {{option.text | humanize}}</i></a></li>
   </ul>
   <ul class="pagination">
-    <li ng-click="loadPrevSetPages()">
+    <li ng-click="loadPrevSetPages()" class="{{pageList.indexOf(1) != -1 ? 'disabled' : ''}}">
       <a href="" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     <li ng-repeat="page in pageList" ng-class="{'active':pageList[$index]==pageNo}" ng-click="changePage(pageList[$index])"><a href="">{{page}}</a></li>
-    <li ng-click="loadNextSetPages()">
+    <li ng-click="loadNextSetPages()"  class="{{pageList.indexOf(pageCount) != -1 ? 'disabled' : ''}}">
       <a href="" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>

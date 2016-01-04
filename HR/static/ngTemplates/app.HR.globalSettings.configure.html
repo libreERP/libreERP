@@ -18,7 +18,7 @@
 
     </div>
   </div>
-  <button type="button" class="btn btn-primary" ng-if="settings.length >0"> Save </button>
+  <button type="button" class="btn btn-primary" ng-if="settings.length >0" ng-click="save()"> Save </button>
   <p class="text-muted" ng-if="!settings.length >0">
     No configurable field found for this application
   </p>

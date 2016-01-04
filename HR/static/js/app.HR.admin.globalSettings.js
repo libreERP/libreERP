@@ -12,6 +12,23 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
     }
   })
 
+  $scope.save = function(){
+    console.log("came");
+    for (var i = 0; i < $scope.settings.length; i++) {
+      if ($scope.settings[i].fieldType == 'flag') {
+        dataToSend = {
+          flag : $scope.settings[i].data
+        }
+
+      }else {
+        dataToSend = {
+          value : $scope.settings[i].data
+        }
+      }
+      $http({method : 'PATCH' , url : '/api/HR/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } )
+    }
+  }
+
 
 });
 

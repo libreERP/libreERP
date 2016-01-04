@@ -387,7 +387,7 @@ app.directive('genericTable', function () {
         $http({method: fetch.method, url: fetch.url}).
           then(function(response) {
             // console.log(response);
-            $scope.pageCount = Math.floor(response.data.count/$scope.itemsPerView)+1;
+            $scope.pageCount = Math.floor(response.data.count/$scope.itemsPerView)+(response.data.count%$scope.itemsPerView == 0 ? 0 : 1);
             if ($scope.pageCount<$scope.pageList[0]) {
               $scope.pageList = [1];
             } else {
