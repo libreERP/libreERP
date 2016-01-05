@@ -34,6 +34,12 @@ class applicationAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = application
         fields = ( 'pk', 'name', 'module' , 'owners' , 'description' , 'created' , 'icon', 'canConfigure')
+    def create(self , validated_data):
+        app =  application(**validated_data)
+        app.module = module.objects.get(pk = self.context['request'].data['module']);
+        app.save()
+        return app
+
     def update (self, instance, validated_data):
         instance.owners.clear()
         for pk in self.context['request'].data['owners']:

@@ -1,6 +1,6 @@
 <div class="row container-fluid">
   <div class="input-group" style="padding-top:15px;width:100%;" >
-    <input ng-show="searchShow" type="text" class="form-control" placeholder="Search" ng-model = "searchText" ng-enter="fetchData()" style="{{views.length==1 ? 'width:100%;' : ''}}">
+    <input ng-show="{{searchShow}}" type="text" class="form-control" placeholder="Search" ng-model = "searchText" ng-enter="fetchData()" style="{{views.length==1 ? 'width:100%;' : ''}}">
     <div class="input-group-btn"  ng-if="views.length > 1">
       <a ng-repeat = "view in views" class='btn btn-default ' ng-click = "changeView($index)"><i class="fa {{view.icon}}"></i></a>
       <!-- <a class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
@@ -21,6 +21,9 @@
   </ul>
   <ul class="pagination pull-right" style="margin-right: 10px;">
     <li ng-repeat = "option in multiselectOptions" ng-click = "multiSelectAction(option.text)"><a href="" style="color: #6f6f6f;"><i class = "{{option.icon}}">  {{option.text | humanize}}</i></a></li>
+  </ul>
+  <ul class="pagination pull-right" style="margin-right: 10px;">
+    <li ng-click = "create()" ng-if="canCreate"><a href="" style="color: #6f6f6f;">New  <i class = "fa fa-plus"></i></a></li>
   </ul>
   <ul class="pagination">
     <li ng-click="loadPrevSetPages()" class="{{pageList.indexOf(1) != -1 ? 'disabled' : ''}}">

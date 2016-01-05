@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h3 class="modal-title" ng-if="mode == 'edit'">Edit owners for : <strong>{{data.name}}</strong></h3>
+  <h3 class="modal-title" ng-if="mode == 'new'">Create a new app/module</h3>
+</div>
+
+<div class="modal-body" ng-if="mode == 'edit'">
+    <strong>Parent module : </strong> {{data.module.name}}
+    <br>
+    <div class="form-group" >
+      <label>Owners :</label>
+      <tags-input ng-model="data.owners" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="username">
+        <auto-complete source="ownersSearch($query)" load-on-down-arrow="true"></auto-complete>
+      </tags-input>
+      <p class="help-block">Owners of an application are those users who have access to the application level settings which will effect the behaviour of the application as experienced by the ordinary user.
+      Owners can grant and revoke access to the application to a perticular user or group of users.</p>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="submitForm()"> Save </button>
+</div>
+
+<div class="modal-body" ng-if="mode == 'new'">
+  <div class="container-fluid">
+    <div class="col-md-6">
+
+      <div class="form-group">
+        <label>Type</label>
+        <select class="form-control" ng-model="type" ng-init="type='module'">
+          <option value="module">[module]</option>
+          <option value="app">app.[app]</option>
+          <option value="configure">configure.[module].[state].[app]</option>
+          <option value="sudo">sudo.[module].[state].[app]</option>
+        </select>
+        <p class="help-block">
+          <ul>
+            <li><code>app.[app]</code> is used to control the access to the application, the owners of this app can grant / revoke access of users to this app while the users related to this app/module can only use it.</li>
+            <li><code>configure.[module].[state].[app]</code> is used for the settings for the app/module. Owners can assign / revoke the users access to this app. The owners can also access this app to configure the behaviour of the application as experienced by the users. </li>
+            <li><code>sudo.[module].[state].[app]</code> is used for the super user access to the master settings of the app/module. The owner can assign owners of the <code>configure.[module].[state].[app]</code> object.</li> The owners can not transfer/assign ownership to any user.
+          </ul>
+          The last two permissions will enable the <strong>[module]</strong> tab on the user's poral. <code>sudo.admin.settings.modulesAndApplications</code> is the superuser only app and can only assign other <code>sudo.[module].[state].[app]</code> applications to users as owners.
+          <br>
+          This field is unique in the column.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group"  ng-show="type!='configure' || type!='sudo'">
+        <label>{{type}}'s name</label>
+        <input type="text" class="form-control" ng-model="data.name"  placeholder="Enter {{type}}'s state name">
+      </div>
+
+      <div ng-if="type=='app' || type=='configure' || type=='sudo'">
+        <label>Module</label>
+        <input type="text" class="form-control" ng-model = "data.module" uib-typeahead="module as module.name for module in moduleSearch($viewValue)" placeholder="Search and select the module this {{type}} belongs to..">
+      </div>
+
+      <div ng-if="type=='configure' || type=='sudo'">
+        <div class="form-group">
+          <label>Can configure App:</label>
+          <input type="text" class="form-control" ng-model = "data.app" uib-typeahead="app as app.name for app in appSearch($viewValue)" placeholder="Search and select the app which can be configured by this {{type}} state..">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Icon</label>
+        <input type="text" class="form-control" ng-model="data.icon"  placeholder="Enter font awesome class..">
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea type="text" class="form-control" ng-model="data.description"  placeholder="Describe ths {{type}} object a little."></textarea>
+      </div>
+
+      <button type="button" class="btn btn-primary" ng-click="submitForm('new' , type , data )"> Create </button>
+
+    </div>
+  </div>
+
+
+
+
+</div>

@@ -17,6 +17,8 @@ class moduleViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = module.objects.all()
     serializer_class = moduleSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class applicationViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly,)

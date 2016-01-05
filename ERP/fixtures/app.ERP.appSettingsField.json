@@ -7,8 +7,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 1,
-    "security": "admin"
+    "app": 1
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -19,8 +18,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 2,
-    "security": "admin"
+    "app": 2
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -31,8 +29,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 3,
-    "security": "admin"
+    "app": 3
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -43,8 +40,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 4,
-    "security": "admin"
+    "app": 4
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -55,8 +51,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 5,
-    "security": "admin"
+    "app": 5
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -67,8 +62,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 6,
-    "security": "admin"
+    "app": 6
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -79,8 +73,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 7,
-    "security": "admin"
+    "app": 7
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -91,8 +84,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 8,
-    "security": "admin"
+    "app": 8
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -103,8 +95,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 9,
-    "security": "admin"
+    "app": 9
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -115,8 +106,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 10,
-    "security": "admin"
+    "app": 10
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -127,8 +117,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 11,
-    "security": "admin"
+    "app": 11
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -139,8 +128,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 12,
-    "security": "admin"
+    "app": 12
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -151,8 +139,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 13,
-    "security": "admin"
+    "app": 13
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -163,8 +150,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 14,
-    "security": "admin"
+    "app": 14
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -175,8 +161,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 15,
-    "security": "admin"
+    "app": 15
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -187,8 +172,7 @@
     "flag": true,
     "value": null,
     "description": "boolean value to show a sample chart on everyones dashboard",
-    "app": 1,
-    "security": "staff"
+    "app": 1
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -199,7 +183,6 @@
     "flag": false,
     "value": null,
     "description": "boolean value to show whats new pane on a social profile",
-    "app": 3,
-    "security": "staff"
+    "app": 3
   }
 }]

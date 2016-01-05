@@ -2,7 +2,7 @@
   <breadcrumb></breadcrumb>
 
   <div class="container-fluid">
-    <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "{{resourceUrl}}" search="true"
-    primary-Search-Field="{{'name'}}" views='views' get-Params = "getParams" deletable="true" others = "rowInput"></generic-Table>
+    <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "{{resourceUrl}}" search="true" can-Create="true" editor-Template = "{{editorTemplate}}"
+    primary-Search-Field="{{'name'}}" views='views' get-Params = "getParams" row-Scope = "rowInput"></generic-Table>
   </div>
 </div>

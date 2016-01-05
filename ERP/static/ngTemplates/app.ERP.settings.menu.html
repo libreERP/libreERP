@@ -7,7 +7,7 @@
 <hr>
 <div style="position:absolute;left:0px;width:100%;">
   <ul class="nav nav-sidebar-inverse padded" style="width:100%;">
-    <li ng-repeat="app in applications" ng-class="{active: $stateParams.app == app.name.split('.')[3] || $state.is(app.name.replace('state.' , ''))}">
+    <li ng-repeat="app in applications" ng-class="{active: $stateParams.app == app.name.split('.')[3] || $state.is(app.name.replace('sudo.' , ''))}">
       <a ui-sref="{{getState($index)}}" >
         <div align="center">
           <i class="fa {{app.icon}} fa-2x pull-left"></i>
