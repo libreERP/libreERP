@@ -39,12 +39,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'API',
-    'HR',
-    'PIM',
-    'social',
-    'homepage',
-    'mail',
+    'API', # uncategorised REST points
+    'ERP', # permission, overall management of platform
+    'HR', # people aspect of the platform
+    'PIM', # personal information manager
+    'social', # social networking client
+    'homepage', # landing page
+    'mail', # mail application
 
 )
 

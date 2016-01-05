@@ -13,7 +13,6 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
   })
 
   $scope.save = function(){
-    console.log("came");
     for (var i = 0; i < $scope.settings.length; i++) {
       if ($scope.settings[i].fieldType == 'flag') {
         dataToSend = {
@@ -25,7 +24,12 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
           value : $scope.settings[i].data
         }
       }
-      $http({method : 'PATCH' , url : '/api/HR/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } )
+      $http({method : 'PATCH' , url : '/api/HR/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } ).
+      then(function(response){
+        Flash.create('success', response.status + ' : ' + response.statusText );
+      }, function(response){
+        Flash.create('danger', response.status + ' : ' + response.statusText );
+      })
     }
   }
 
