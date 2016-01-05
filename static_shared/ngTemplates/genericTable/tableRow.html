@@ -1,9 +1,8 @@
 
 <tr>
-
   <td ng-if = "selectable" ><input type="checkbox" name="name" ng-model="checkbox.value" ng-disabled = "checkbox.disabled"></td>
-  <td ng-repeat = "(key , val) in data" ng-if="key != 'formData'" ><span ng-bind-html="val | explodeObj"></span></td>
-  <td >
+  <td ng-repeat = "(key , val) in data" ng-if="key != 'formData'" ><span ng-bind-html="val | explodeObj "></span></td>
+  <td>
     <div class="input-group-btn">
       <a class="btn btn-default btn-sm" ng-click = "edit()" ng-if="editable"> <i class="fa fa-pencil"></i> Edit</a>
       <a class="btn btn-danger btn-sm" ng-click = "delete()" ng-if="deletable"> <i class="fa fa-trash"></i></a>

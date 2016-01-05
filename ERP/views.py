@@ -52,7 +52,7 @@ class applicationSettingsAdminViewSet(viewsets.ModelViewSet):
     queryset = appSettingsField.objects.all()
     serializer_class = applicationSettingsAdminSerializer
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['app']
+    filter_fields = ['app' , 'name']
 
 
 class groupPermissionViewSet(viewsets.ModelViewSet):

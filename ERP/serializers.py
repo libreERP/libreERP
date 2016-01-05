@@ -12,6 +12,11 @@ class moduleSerializer(serializers.ModelSerializer):
         model = module
         fields = ( 'pk', 'name' , 'description' , 'icon' )
 
+class applicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = application
+        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure')
+
 class applicationSettingsSerializer(serializers.ModelSerializer):
     # non admin mode
     class Meta:
@@ -19,14 +24,10 @@ class applicationSettingsSerializer(serializers.ModelSerializer):
         fields = ( 'pk', 'name', 'flag' , 'value' , 'fieldType')
 
 class applicationSettingsAdminSerializer(serializers.ModelSerializer):
+    app =applicationSerializer(many = False , read_only = True)
     class Meta:
         model = appSettingsField
         fields = ( 'pk', 'name', 'flag' , 'value' , 'description' , 'app' , 'created' ,  'fieldType')
-
-class applicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = application
-        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure')
 
 class applicationAdminSerializer(serializers.ModelSerializer):
     module = moduleSerializer(read_only = True , many = False)

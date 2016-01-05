@@ -64,6 +64,10 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
         return response.data;
       })
     },
+    views : [{name : 'list' , icon : 'fa-bars' ,
+      template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.html' ,
+    },],
+    rowInput : { rowTemplate : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.row.html' , }
   }
 
   $scope.tableAction = function(target , type , data ){

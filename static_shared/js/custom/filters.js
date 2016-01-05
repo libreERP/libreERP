@@ -71,8 +71,9 @@ app.filter('getIcon' , function(){
   }
 })
 
-app.filter('explodeObj' , function(){
+app.filter('explodeObj' , function($filter){
   return function(input){
+
     if (typeof input =='object' && input!=null){
       toReturn = '';
       // console.log(input);
@@ -81,7 +82,7 @@ app.filter('explodeObj' , function(){
         if (val != null && typeof val !='object'){
           // console.log('The key is ' + key + ' and the value is ' + val);
           type = getType(val);
-          // console.log(urlTest);
+          // console.log(type);
           if ( type == 'hyperLink') {
             toReturn += '<a href=' + val + '> <i class="fa fa-link"></i> </a>';
           } else if (type == 'image') {
@@ -91,7 +92,11 @@ app.filter('explodeObj' , function(){
           } else if (type == 'odt') {
             toReturn += ' <i class="fa fa-file-text-o"></i> ';
           } else if(type == 'string') {
-            toReturn += val + ' , ';
+            if (angular.isDate(new Date(val))) {
+              toReturn += $filter('date')(val , 'short');
+            } else {
+              toReturn += val + ' , ';
+            }
           } else if(type == 'number') {
             toReturn += val + ' , ';
           } else{
@@ -102,23 +107,31 @@ app.filter('explodeObj' , function(){
           toReturn += '';
         }
       }
+      // console.log(type);
+      // console.log(toReturn);
       return toReturn;
     }else {
       type = getType(input);
       // console.log(urlTest);
+
       if ( type == 'hyperLink') {
-        return '<a href=' + input + '> <i class="fa fa-link"></i> </a>';
+        toReturn = '<a href=' + input + '> <i class="fa fa-link"></i> </a>';
       } else if (type == 'image') {
-        return ' <i class="fa fa-picture-o"></i> ';
+        toReturn =  ' <i class="fa fa-picture-o"></i> ';
       } else if (type == 'pdf') {
-        return ' <i class="fa fa-file-pdf-o"></i> ';
+        toReturn =  ' <i class="fa fa-file-pdf-o"></i> ';
       } else if (type == 'odt') {
-        return ' <i class="fa fa-file-text-o"></i> ';
-      } else if(type == 'string' || type == 'number') {
-        return input ;
-      } else{
-        return input ;
+        toReturn =  ' <i class="fa fa-file-text-o"></i> ';
+      } else if(type == 'string' ) {
+        toReturn =  input ;
+      } else if (!angular.isNumber(input) && angular.isDate(new Date(input))) {
+        toReturn =  $filter('date')(input , 'short');
+      } else { // generally a number 
+        toReturn = input;
       }
+      // console.log(type);
+      // console.log(toReturn);
+      return toReturn ;
     }
   }
 })
@@ -168,7 +181,7 @@ app.filter('getDP' , function(userProfileService){
 
 
 app.filter('getName' , function(userProfileService){
-  
+
   return function(userUrl , mode){
     if (typeof userUrl == 'undefined') {
       return '';

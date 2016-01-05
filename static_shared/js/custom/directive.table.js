@@ -48,6 +48,8 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     }
   });
 
+
+
   $scope.$on('forceInsetTableData', function(event, input) {
     $scope.tableData.push(input);
   });
@@ -312,18 +314,18 @@ app.directive('tableRow', function () {
     transclude: true,
     replace: true,
     scope:{
-      data : '=',
-      rowAction : '=',
+      data : '=', // individual row data
+      rowAction : '=', // originally the callbackFn function
       options : '=', // dropdown menu options passed as options in the main directive
       checkbox : '=', // boolean flag for the value of the checkbox binded to the table
       // directive scope where it will collect the state of the checkboxes and passed to
       //the main controller upon selecting the multi select option
-      selectable : '=',
+      selectable : '=', // if true there will be a checkbox
       rowScope : '=', // contains row specific function which can be called in the template {editorTemplate , fun1 , fun2 , .. and so on }
       // passed as rowInput in the main table directive
-      index : '@',
-      delete :'=',
-      editorTemplate : '@',
+      index : '@', // the index of the item in the repeat
+      delete :'=', // delete callback function
+      editorTemplate : '@', // the template to be used in the modal popup
     },
     controller : 'genericTableItem',
   };
@@ -332,7 +334,7 @@ app.directive('tableRow', function () {
 app.directive('tableItem', function () {
   return {
     template:  '<div ng-include="template"> </div>',
-    restrict: 'E',
+    restrict: 'EA',
     transclude: false,
     replace: true,
     scope:{
@@ -353,10 +355,10 @@ app.directive('tableItem', function () {
 
 app.controller('genericTableItem' , function($scope , $uibModal){
   if (typeof $scope.data.url == 'undefined') {
-    $scope.target = $scope.data.pk;
+    $scope.target = $scope.pk;
   } else {
     $scope.target = $scope.data.url;
-    $scope.data.pk = getPK($scope.data.url);
+    $scope.pk = getPK($scope.data.url);
   }
 
   $scope.rowActionClicked = function(option){
@@ -366,7 +368,6 @@ app.controller('genericTableItem' , function($scope , $uibModal){
   if (angular.isDefined($scope.rowScope)) {
     $scope.rowScope = angular.copy($scope.rowScope) // i noticed that it was binding this to the root rowScope outside the table directive
     // basically when we want to edit the data and pass some functions or variables from outside of the generic table directive down to the modal controller
-
   }
 
   $scope.submitForm = function(){
@@ -374,11 +375,10 @@ app.controller('genericTableItem' , function($scope , $uibModal){
     // $scope.target is the pk or the url of the object
   }
 
-  $scope.editable = angular.isDefined($scope.editorTemplate)? $scope.editorTemplate : false;
-
+  $scope.editable = angular.isDefined($scope.editorTemplate) && $scope.editorTemplate.length!=0? true : false;
   // the parent scope on successful posting the data sends this signal with a input
   $scope.$on('forceGenericTableRowRefresh', function(event, input) {
-    if ($scope.data.pk == input.pk || input.pk == -1) { // -1 when we want all of them to update certain property but i dont think there is a use case for this
+    if ($scope.pk == input.pk || input.pk == -1) { // -1 when we want all of them to update certain property but i dont think there is a use case for this
       for (key in input){
         $scope.data[key] = input[key];
       }
