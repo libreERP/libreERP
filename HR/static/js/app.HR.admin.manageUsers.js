@@ -99,7 +99,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         user : getPK(userData.url),
         app : userData.appsToAdd[i].pk,
       }
-      $http({method : 'POST' , url : '/api/HR/permission/' , data : dataToSend}).
+      $http({method : 'POST' , url : '/api/ERP/permission/' , data : dataToSend}).
       then(function(response){
         Flash.create('success', response.status + ' : ' + response.statusText);
      }, function(response){
@@ -110,7 +110,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   }
 
   $scope.getPermissionSuggestions = function(query) {
-    return $http.get('/api/HR/application/?name__contains=' + query)
+    return $http.get('/api/ERP/application/?name__contains=' + query)
   }
 
   $scope.updateProfile = function(index){

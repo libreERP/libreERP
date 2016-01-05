@@ -11,66 +11,13 @@ class userSearchSerializer(serializers.ModelSerializer):
         model = User
         fields = ( 'pk', 'username' , 'first_name' , 'last_name' )
 
-class moduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = module
-        fields = ( 'pk', 'name' , 'description' , 'icon' )
-
-class applicationSettingsSerializer(serializers.ModelSerializer):
-    # non admin mode
-    class Meta:
-        model = appSettingsField
-        fields = ( 'pk', 'name', 'flag' , 'value' , 'fieldType')
-
-class applicationSettingsAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = appSettingsField
-        fields = ( 'pk', 'name', 'flag' , 'value' , 'description' , 'app' , 'created' ,  'fieldType')
-
-class applicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = application
-        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure')
-
-class applicationAdminSerializer(serializers.ModelSerializer):
-    module = moduleSerializer(read_only = True , many = False)
-    owners = userSearchSerializer(read_only = True , many = True)
-    class Meta:
-        model = application
-        fields = ( 'pk', 'name', 'module' , 'owners' , 'description' , 'created' , 'icon', 'canConfigure')
-    def update (self, instance, validated_data):
-        instance.owners.clear()
-        for pk in self.context['request'].data['owners']:
-            instance.owners.add(User.objects.get(pk = pk))
-        instance.save()
-        return instance
-
 class rankSerializer(serializers.ModelSerializer):
     class Meta:
         model = rank
         fields = ( 'title' , 'category' )
 
-class permissionSerializer(serializers.ModelSerializer):
-    app = applicationSerializer(read_only = True, many = False)
-    class Meta:
-        model = permission
-        fields = ( 'pk' , 'app' , 'user' )
-    def create(self , validated_data):
-        user = self.context['request'].user
-        app =application.objects.get(pk = self.context['request'].data['app'])
-        if not user.is_superuser and user not in app.owners.all():
-            raise PermissionDenied(detail=None)
-        perm , created = permission.objects.get_or_create(app =  app, user = validated_data['user'] , givenBy = user)
-        return perm
-
-class groupPermissionSerializer(serializers.ModelSerializer):
-    app = applicationSerializer(read_only = True, many = False)
-    class Meta:
-        model = groupPermission
-        fields = ( 'pk' , 'app' , 'group' )
-
 class userDesignationSerializer(serializers.ModelSerializer):
-    rank = moduleSerializer(read_only = True, many = False)
+    rank = rankSerializer(read_only = True, many = False)
     class Meta:
         model = designation
         fields = ('url' , 'unitType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
@@ -89,7 +36,6 @@ class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
         'localAddressStreet' , 'localAddressCity' , 'localAddressPin' , 'localAddressState' , 'localAddressCountry' , 'prefix', 'gender' , 'email', 'email2', 'mobile' , 'emergency' , 'tele' , 'website',
         'sign', 'IDPhoto' , 'TNCandBond' , 'resume' ,  'certificates', 'transcripts' , 'otherDocs' , 'almaMater' , 'pgUniversity' , 'docUniversity' , 'fathersName' , 'mothersName' , 'wifesName' , 'childCSV',
         'note1' , 'note2' , 'note3')
-
 
 
 class userSerializer(serializers.HyperlinkedModelSerializer):

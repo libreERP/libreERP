@@ -27,26 +27,26 @@ app.config(function($stateProvider){
     url: "/globalSettings",
     views: {
        "": {
-          templateUrl: '/static/ngTemplates/app.HR.globalSettings.html',
+          templateUrl: '/static/ngTemplates/app.ERP.settings.html',
        },
        "menu@admin.globalSettings": {
-          templateUrl: '/static/ngTemplates/app.HR.globalSettings.menu.html',
+          templateUrl: '/static/ngTemplates/app.ERP.settings.menu.html',
           controller : 'admin.globalSettings'
         },
         "@admin.globalSettings": {
-          templateUrl: '/static/ngTemplates/app.HR.globalSettings.default.html',
+          templateUrl: '/static/ngTemplates/app.ERP.settings.default.html',
         }
     }
   })
 
   .state('admin.globalSettings.modulesAndApplications', {
     url: "/modulesAndApplications",
-    templateUrl: '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.html',
+    templateUrl: '/static/ngTemplates/app.ERP.settings.modulesAndApps.html',
     controller: 'admin.globalSettings.modulesAndApps'
   })
   .state('admin.globalSettings.configure', {
     url: "/configure?app&canConfigure",
-    templateUrl: '/static/ngTemplates/app.HR.globalSettings.configure.html',
+    templateUrl: '/static/ngTemplates/app.ERP.settings.configure.html',
     controller: 'admin.globalSettings.configure'
   })
 

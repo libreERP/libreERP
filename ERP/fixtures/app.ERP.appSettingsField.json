@@ -1,5 +1,5 @@
 [{
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 1,
   "fields": {
     "created": "2016-01-04T17:13:29.131Z",
@@ -11,7 +11,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 2,
   "fields": {
     "created": "2016-01-04T17:17:54.318Z",
@@ -23,7 +23,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 3,
   "fields": {
     "created": "2016-01-04T17:17:59.946Z",
@@ -35,7 +35,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 4,
   "fields": {
     "created": "2016-01-04T17:18:09.367Z",
@@ -47,7 +47,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 5,
   "fields": {
     "created": "2016-01-04T17:18:16.134Z",
@@ -59,7 +59,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 6,
   "fields": {
     "created": "2016-01-04T17:18:20.494Z",
@@ -71,7 +71,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 7,
   "fields": {
     "created": "2016-01-04T17:18:43.617Z",
@@ -83,7 +83,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 8,
   "fields": {
     "created": "2016-01-04T17:18:47.687Z",
@@ -95,7 +95,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 9,
   "fields": {
     "created": "2016-01-04T17:18:53.389Z",
@@ -107,7 +107,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 10,
   "fields": {
     "created": "2016-01-04T17:18:58.070Z",
@@ -119,7 +119,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 11,
   "fields": {
     "created": "2016-01-04T17:19:02.959Z",
@@ -131,7 +131,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 12,
   "fields": {
     "created": "2016-01-04T17:19:11.384Z",
@@ -143,7 +143,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 13,
   "fields": {
     "created": "2016-01-04T17:19:15.064Z",
@@ -155,7 +155,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 14,
   "fields": {
     "created": "2016-01-04T17:19:18.700Z",
@@ -167,7 +167,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 15,
   "fields": {
     "created": "2016-01-04T17:19:22.163Z",
@@ -179,7 +179,7 @@
     "security": "admin"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 16,
   "fields": {
     "created": "2016-01-04T17:20:53.348Z",
@@ -191,7 +191,7 @@
     "security": "staff"
   }
 }, {
-  "model": "HR.appsettingsfield",
+  "model": "ERP.appsettingsfield",
   "pk": 17,
   "fields": {
     "created": "2016-01-04T17:21:23.434Z",

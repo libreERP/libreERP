@@ -89,56 +89,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = groupSerializer
 
-class moduleViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = module.objects.all()
-    serializer_class = moduleSerializer
-
-class applicationViewSet(viewsets.ModelViewSet):
-    permission_classes = (readOnly,)
-    serializer_class = applicationSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
-    def get_queryset(self):
-        return application.objects.filter(owners__in = [self.request.user])
-
-class applicationAdminViewSet(viewsets.ModelViewSet):
-    permission_classes = (isAdmin,)
-    serializer_class = applicationAdminSerializer
-    # queryset = application.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
-    def get_queryset(self):
-        if not self.request.user.is_superuser:
-            raise PermissionDenied(detail=None)
-        return application.objects.all()
-
-
-class applicationSettingsViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, readOnly , )
-    queryset = appSettingsField.objects.all()
-    serializer_class = applicationSettingsSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['app']
-
-class applicationSettingsAdminViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = appSettingsField.objects.all()
-    serializer_class = applicationSettingsAdminSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['app']
-
 class rankViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = rank.objects.all()
     serializer_class = rankSerializer
-
-class groupPermissionViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = groupPermission.objects.all()
-    serializer_class = groupPermissionSerializer
-
-class permissionViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = permission.objects.all()
-    serializer_class = permissionSerializer

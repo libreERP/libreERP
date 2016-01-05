@@ -4,7 +4,7 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
     return;
   }
 
-  $http({method:'GET' , url : '/api/HR/appSettingsAdminMode/?app=' + $stateParams.canConfigure}).
+  $http({method:'GET' , url : '/api/ERP/appSettingsAdminMode/?app=' + $stateParams.canConfigure}).
   then(function(response){
     $scope.settings = response.data;
     for (var i = 0; i < $scope.settings.length; i++) {
@@ -24,7 +24,7 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
           value : $scope.settings[i].data
         }
       }
-      $http({method : 'PATCH' , url : '/api/HR/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } ).
+      $http({method : 'PATCH' , url : '/api/ERP/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } ).
       then(function(response){
         Flash.create('success', response.status + ' : ' + response.statusText );
       }, function(response){
@@ -38,16 +38,16 @@ app.controller('admin.globalSettings.configure' , function($scope , $stateParams
 
 app.controller('admin.globalSettings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
 
-  $scope.resourceUrl = '/api/HR/applicationAdminMode/';
+  $scope.resourceUrl = '/api/ERP/applicationAdminMode/';
 
-  $scope.views = [{name : 'list' , icon : 'fa-bars' , template : '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.list.html' , itemTemplate : '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.item.html'},
+  $scope.views = [{name : 'list' , icon : 'fa-bars' , template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.list.html' , itemTemplate : '/static/ngTemplates/app.ERP.settings.modulesAndApps.item.html'},
     ];
 
   $scope.rowInput = {
     ownersSearch : function(query) {
       return $http.get('/api/HR/userSearch/?username__contains=' + query)
     },
-    template : '/static/ngTemplates/app.HR.globalSettings.modulesAndApps.form.apps.html',
+    template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.form.apps.html',
   }
 
   $scope.tableAction = function(target , action , data){
@@ -84,7 +84,7 @@ app.controller('admin.globalSettings' , function($scope , $http , $aside , $stat
     }
   }
 
-  $http({method : 'GET' , url : '/api/HR/application/?name__contains=admin.globalSettings'}).
+  $http({method : 'GET' , url : '/api/ERP/application/?name__contains=admin.globalSettings'}).
   then(function(response){
     $scope.applications = response.data;
   }, function(response){

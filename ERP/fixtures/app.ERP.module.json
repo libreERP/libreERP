@@ -1,6 +1,6 @@
 [
   {
-    "model" : "HR.module",
+    "model" : "ERP.module",
     "pk" : 1,
     "fields" : {
       "icon" : "fa-home",
@@ -10,7 +10,7 @@
     }
   },
   {
-    "model" : "HR.module",
+    "model" : "ERP.module",
     "pk" : 2,
     "fields" : {
       "icon" : "fa-user",

@@ -1,6 +1,6 @@
 [
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 1,
     "fields" : {
       "icon" : "fa-home",
@@ -13,7 +13,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 2,
     "fields" : {
       "icon" : "fa-envelope-o",
@@ -26,7 +26,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 3,
     "fields" : {
       "icon" : "fa-facebook",
@@ -39,7 +39,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 4,
     "fields" : {
       "name" : "app.home.blog",
@@ -52,7 +52,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 5,
     "fields" : {
       "icon" : "fa-calendar",
@@ -65,7 +65,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 6,
     "fields" : {
       "icon" : "fa-sticky-note-o",
@@ -78,7 +78,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 7,
     "fields" : {
       "icon" : "fa-search",
@@ -91,7 +91,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 8,
     "fields" : {
       "icon" : "fa-cogs",
@@ -104,7 +104,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 9,
     "fields" : {
       "icon" : "fa-puzzle-piece",
@@ -117,7 +117,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 10,
     "fields" : {
       "icon" : "fa-home",
@@ -130,7 +130,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 11,
     "fields" : {
       "icon" : "fa-envelope-o",
@@ -143,7 +143,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 12,
     "fields" : {
       "icon" : "fa-facebook",
@@ -156,7 +156,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 13,
     "fields" : {
       "icon" : "fa-newspaper-o",
@@ -169,7 +169,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 14,
     "fields" : {
       "icon" : "fa-calendar",
@@ -182,7 +182,7 @@
     }
   },
   {
-    "model" : "HR.application",
+    "model" : "ERP.application",
     "pk" : 15,
     "fields" : {
       "icon" : "fa-sticky-note-o",
