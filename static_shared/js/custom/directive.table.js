@@ -51,6 +51,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
 
   $scope.$on('forceInsetTableData', function(event, input) {
+    // console.log($scope.tableData);
     $scope.tableData.push(input);
   });
 
@@ -87,6 +88,10 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.delete = function(pk , index){
+    if (pk == -1) {
+      $scope.tableData.splice(index, 1);
+      return;
+    }
     $http({method : 'DELETE' , url : $scope.resourceUrl + pk + '/' }).
     then(function(response){
       $scope.tableData.splice(index, 1);

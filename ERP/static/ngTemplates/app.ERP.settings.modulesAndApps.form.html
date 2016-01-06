@@ -16,7 +16,7 @@
     </div>
 
     <div class="container-fluid">
-      <generic-Table callback-Fn = "submitForm"  resource-Url = "/api/ERP/appSettingsAdminMode/" get-Params="[{key : 'app' , value :data.pk}]" search="true"
+      <generic-Table callback-Fn = "tableAction"  resource-Url = "/api/ERP/appSettingsAdminMode/" get-Params="[{key : 'app' , value :data.pk}]" search="true"
       primary-Search-Field="{{'name'}}" views='views' inline-Editor="false" row-Scope="rowInput" ></generic-Table>
     </div>
 

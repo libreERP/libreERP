@@ -1,50 +1,102 @@
-<table class="table" ng-init="editor=-1;editorData = {}" >
+<table class="table" ng-init="editor=-1;editor = {index : -1};" ng-controller="sudo.admin.settings.modulesAndApplications.appSettings">
   <thead>
     <tr>
-      <th ng-repeat = "heading in tableHeading" ng-if="['pk' , 'name' , 'flag' , 'value' , 'description' , 'fieldType'].indexOf(heading) !=-1" ng-click="sort($index)" style="cursor:pointer;">{{heading | humanize}}
+      <th ng-repeat = "heading in [ 'name' , 'flag' , 'value' , 'description' , 'fieldType']" ng-click="sort($index)" style="cursor:pointer;">{{heading | humanize}}
       </th>
       <th style="width: 80px;">
         Options
       </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody >
       <tr ng-repeat = "row in tableData  ">
-        <td ng-repeat="(key, value) in row track by $index" ng-if="['pk' , 'name' , 'flag' , 'value' , 'description' , 'fieldType'].indexOf(key) !=-1">
 
-          <div ng-if="key == 'app' && row.pk != editor">
-            {{value.name}}
+        <td>
+          <div ng-if="editor.index == $index">
+            <input type="text" class="form-control" ng-model = "row.name" ng-disabled="row.pk != ''">
           </div>
-          <div ng-if="(key != 'app' && row.pk != editor) || key == 'pk'" >
-            {{value}}
+          <div ng-if="editor.index != $index">
+            {{row.name}}
+          </div>
+        </td>
+        <td >
+          <input type="checkbox" class="form-control" ng-model = "row.flag" ng-disabled="editor.index != $index" ng-if="row.fieldType == 'flag'">
+        </td>
+        <td>
+
+          <div ng-if="editor.index == $index && row.fieldType == 'value'" >
+            <input type="text" class="form-control" ng-model = "row.value" >
+          </div>
+          <div ng-if="editor.index != $index && row.fieldType == 'value'">
+            {{row.value}}
           </div>
 
-          <div ng-if="row.pk == editor && key == 'name'">
-            <input type="text" class="form-control" ng-model = "row.name">
+        </td>
+        <td>
+
+          <div ng-if="editor.index == $index">
+            <textarea type="text" class="form-control" ng-model = "row.description" ></textarea>
           </div>
-          <div ng-if="row.pk == editor && key == 'flag' && row.fieldType == 'flag'">
-            <input type="checkbox" class="form-control" ng-model = "row.flag">
+          <div ng-if="editor.index != $index">
+            {{row.description}}
           </div>
-          <div ng-if="row.pk == editor && key == 'value' && row.fieldType == 'value'" >
-            <input type="text" class="form-control" ng-model = "row.value">
-          </div>
-          <div ng-if="row.pk == editor && key == 'description'">
-            <textarea type="checkbox" class="form-control" ng-model = "row.description"></textarea>
-          </div>
-          <div ng-if="row.pk == editor && key == 'fieldType'">
-            <select class="form-control" ng-model="row.fieldType">
+
+        </td>
+        <td>
+
+          <div ng-if="editor.index == $index">
+            <select class="form-control" ng-model = "row.fieldType">
               <option value="flag">flag</option>
               <option value="value">value</option>
             </select>
           </div>
+          <div ng-if="editor.index != $index">
+            {{row.fieldType}}
+          </div>
+
         </td>
+
         <td style="width: 80px;">
           <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-default" ng-click="editor = row.pk" ng-show="editor == -1"><i class="fa fa-pencil"></i></button>
-            <button type="button" class="btn btn-danger" ng-click="editor = row.pk" ng-show="editor == -1"><i class="fa fa-trash-o"></i></button>
-            <button type="button" class="btn btn-success" ng-click="editor = -1" ng-show="editor == row.pk"><i class="fa fa-floppy-o"></i></button>
-            <button type="button" class="btn btn-default" ng-click="editor = -1" ng-show="editor == row.pk"><i class="fa fa-times"></i></button>
+            <button type="button" class="btn btn-default" ng-show="editor.index== -1"
+              ng-click="editor.index = $index; editor.flag=row.flag;editor.description = row.description;editor.value=row.value;">
+              <i class="fa fa-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-danger" ng-click="delete(row.pk , $index)" ng-show="row.pk != 0 && editor.index == -1">
+              <i class="fa fa-trash-o"></i>
+            </button>
+            <button type="button" class="btn btn-danger" ng-click="delete(-1 , $index)" ng-show="row.pk == 0 && editor.index == -1">
+              <i class="fa fa-trash-o"></i>
+            </button>
+            <button type="button" class="btn btn-success" ng-click="update(row ); row.pk=(row.pk=='')? 0: row.pk ;"
+              ng-show="editor.index == $index && row.pk !=0"><i class="fa fa-floppy-o"></i></button>
+
+            <button type="button" class="btn btn-success" ng-click="editor.index = -1;save(row , getParams[0].value);delete(-1,$index); row.pk=(row.pk=='')? 0: row.pk ; row.new=false;"
+              ng-show="editor.index == $index && row.pk == 0"><i class="fa fa-floppy-o"></i></button>
+
+            <button type="button" class="btn btn-default" ng-show="$index == editor.index && !row.new"
+              ng-click="row.flag=editor.flag;row.description = editor.description;row.value=editor.value;editor.index =-1">
+              <i class="fa fa-times"></i>
+            </button>
+            <button type="button" class="btn btn-default" ng-show="$index == editor.index && row.pk==0 && row.new"
+              ng-click="row.flag=editor.flag;row.description = editor.description;row.value=editor.value;delete(-1,$index);editor.index =-1">
+              <i class="fa fa-times"></i>
+            </button>
           </div>
+        </td>
+
+      </tr>
+      <tr ng-if="editor.index == -1">
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <button type="button"  class="btn btn-sm btn-primary"
+            ng-click="tableData.push({pk : 0 ,name:'', flag: false ,value:'',description:'' , fieldType:'flag' , new : true});editor.index = tableData.length-1;">
+            New <i class="fa fa-plus"></i>
+          </button>
         </td>
       </tr>
   </tbody>

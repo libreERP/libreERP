@@ -35,7 +35,7 @@ class appSettingsField(models.Model):
     flag = models.BooleanField(default = False)
     value = models.CharField(max_length = 50 , null = True)
     description = models.CharField(max_length = 500 , null = False)
-    app = models.ForeignKey(application , related_name='settings' , null = False)
+    app = models.ForeignKey(application , related_name='settings' , null = True)
     fieldType = models.CharField(choices = FIELD_TYPE_CHOICES , default = 'flag' , null = False , max_length = 5)
     def __unicode__(self):
         return self.name

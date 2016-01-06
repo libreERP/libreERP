@@ -48,7 +48,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
 
   $scope.editorTemplate ='/static/ngTemplates/app.ERP.settings.modulesAndApps.form.html',
 
-  $scope.rowInput = {
+  $scope.rowInput = { // row input is available as rowScope in the main table scope and later fused with the rowScopes
     ownersSearch : function(query) {
       return $http.get('/api/HR/userSearch/?username__contains=' + query)
     },
@@ -67,11 +67,10 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
     views : [{name : 'list' , icon : 'fa-bars' ,
       template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.html' ,
     },],
-    rowInput : { rowTemplate : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.row.html' , }
+
   }
 
   $scope.tableAction = function(target , type , data ){
-
     if (target !='new') {
       owners = [];
       for (var i = 0; i < data.owners.length; i++) {
@@ -123,6 +122,49 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
 
 
 });
+
+
+app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+  $scope.save = function(data , app) { // callback function for the inner table directive
+    dataToSend = {
+      name : data.name,
+      description : data.description,
+      fieldType : data.fieldType,
+      app: app,
+      flag : data.flag
+    }
+    if (data.fieldType != 'flag') {
+      dataToSend.value = data.value;
+    }
+    $http({method: 'POST' , url : '/api/ERP/appSettingsAdminMode/' , data : dataToSend}).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.tableData.push(response.data)
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText );
+    })
+  };
+
+  $scope.update = function(data ){
+    dataToSend = {
+      flag : data.flag,
+      description : data.description,
+      fieldType : data.fieldType,
+    }
+    if (data.value != null && data.value.length!=0) {
+      dataToSend.value = data.value;
+    }
+
+    $http({method : 'PATCH' , url : '/api/ERP/appSettingsAdminMode/' + data.pk + '/' , data : dataToSend}).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText );
+      $scope.editor.index = -1;
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText );
+    })
+  }
+
+})
 
 app.controller('admin.settings' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
   // settings main page controller

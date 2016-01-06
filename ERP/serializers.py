@@ -23,11 +23,8 @@ class applicationSettingsSerializer(serializers.ModelSerializer):
         model = appSettingsField
         fields = ( 'pk', 'name', 'flag' , 'value' , 'fieldType')
 
-class applicationSettingsAdminSerializer(serializers.ModelSerializer):
-    app =applicationSerializer(many = False , read_only = True)
-    class Meta:
-        model = appSettingsField
-        fields = ( 'pk', 'name', 'flag' , 'value' , 'description' , 'app' , 'created' ,  'fieldType')
+
+
 
 class applicationAdminSerializer(serializers.ModelSerializer):
     module = moduleSerializer(read_only = True , many = False)
@@ -47,6 +44,24 @@ class applicationAdminSerializer(serializers.ModelSerializer):
             instance.owners.add(User.objects.get(pk = pk))
         instance.save()
         return instance
+
+class applicationSettingsAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = appSettingsField
+        fields = ( 'pk', 'name', 'flag' , 'value' , 'description' , 'created' , 'app', 'fieldType')
+    def create(self , validated_data):
+        s = appSettingsField()
+        s.name = validated_data.pop('name')
+        s.flag = validated_data.pop('flag')
+        if 'value' in self.context['request'].data:
+            s.value = self.context['request'].data['value']
+        s.description = validated_data.pop('description')
+        s.fieldType = validated_data.pop('fieldType')
+        if s.fieldType == 'flag':
+            s.value = ""
+        s.app = validated_data.pop('app')
+        s.save()
+        return s
 
 class permissionSerializer(serializers.ModelSerializer):
     app = applicationSerializer(read_only = True, many = False)
