@@ -6,11 +6,11 @@
       <div class="row">
 
         <div class="form-group col-md-6">
-          <div class="col-md-1">
-            <input type="checkbox" ng-model = "modeToggle">
+          <div class="col-md-2">
+            <input type="checkbox" ng-model = "modeToggle"> {{modeToggle ? 'Body':'Header'}}
           </div>
           <label class="control-label col-sm-2" >Title:</label>
-          <div class="col-md-9">
+          <div class="col-md-8">
             <input type="text" rows="3"  value="" class="form-control " required ng-model="editor.title"></input>
           </div>
         </div>

@@ -88,7 +88,7 @@ app.controller("controller.home.calendar", function($scope , $http ,$aside, $sta
   $scope.templates = '/static/ngTemplates/app.home.calendar.items.html';
 
 })
-app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, userProfileService , input , Flash ,$filter) {
+app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, $users , input , Flash ,$filter) {
   $scope.baseUrl = '/api/PIM/calendar/';
 
   $scope.loadTags = function(query) {
@@ -97,7 +97,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
 
 
   var emptyFile = new File([""], "");
-  $scope.me = userProfileService.get("mySelf");
+  $scope.me = $users.get("mySelf");
   $scope.data = input;
 
   $scope.saveMeeting = function(){
@@ -242,7 +242,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
       } else if (key == 'followers') {
         $scope.data.with = [];
         for (var i = 0; i < calObj[key].length; i++) {
-          $scope.data.with.push({username : userProfileService.get(calObj.followers[i]).username })
+          $scope.data.with.push({username : $users.get(calObj.followers[i]).username })
         }
       } else if (key == 'duration') {
         $scope.data[key] = calObj[key]/60;

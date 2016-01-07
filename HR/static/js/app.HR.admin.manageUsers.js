@@ -1,5 +1,5 @@
 
-app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
   $scope.createUser = function(){
@@ -59,7 +59,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
                 $scope.profile[key] = emptyFile;
               }
             }
-            u = userProfileService.get(response.config.url.replace('profileAdminMode' , 'users'))
+            u = $users.get(response.config.url.replace('profileAdminMode' , 'users'))
             $scope.addTab({title : 'Edit profile of ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editProfile' , data : $scope.profile , active : true})
           });
         });
@@ -72,7 +72,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
           $scope.addTab({title : 'Edit master data  for ' + response.data.first_name + ' ' + response.data.last_name , cancel : true , app : 'editMaster' , data : response.data , active : true})
         })
       } else if (action == 'editPermissions') {
-        u = userProfileService.get(target)
+        u = $users.get(target)
         permissionsFormData = {
           permissionsToAdd : [],
           url : target,

@@ -4,7 +4,7 @@
     "pk" : 1,
     "fields" : {
       "icon" : "fa-home",
-      "name" : "app.home",
+      "name" : "app.dashboard",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "Dashboard shows the whats next for each employee. It fetches the important notification from all the other application the user have access to.",
@@ -17,7 +17,7 @@
     "pk" : 2,
     "fields" : {
       "icon" : "fa-envelope-o",
-      "name" : "app.home.mail",
+      "name" : "app.mail",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "e-mail application",
@@ -30,7 +30,7 @@
     "pk" : 3,
     "fields" : {
       "icon" : "fa-facebook",
-      "name" : "app.home.social",
+      "name" : "app.social",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "Social networking application",
@@ -42,7 +42,7 @@
     "model" : "ERP.application",
     "pk" : 4,
     "fields" : {
-      "name" : "app.home.blog",
+      "name" : "app.blog",
       "icon" : "fa-newspaper-o",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
@@ -56,7 +56,7 @@
     "pk" : 5,
     "fields" : {
       "icon" : "fa-calendar",
-      "name" : "app.home.calendar",
+      "name" : "app.calendar",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "Calendar",
@@ -69,7 +69,7 @@
     "pk" : 6,
     "fields" : {
       "icon" : "fa-sticky-note-o",
-      "name" : "app.home.notes",
+      "name" : "app.notes",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "note taking application",
@@ -82,7 +82,7 @@
     "pk" : 7,
     "fields" : {
       "icon" : "fa-search",
-      "name" : "app.home.users",
+      "name" : "app.users",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "Search users, initiate IM and access their social profile",
@@ -95,7 +95,7 @@
     "pk" : 8,
     "fields" : {
       "icon" : "fa-cogs",
-      "name" : "sudo.admin.manageUsers",
+      "name" : "sudo.manageUsers",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "creat user, update master data including password resetting, profile editor, designation editor",
@@ -108,7 +108,7 @@
     "pk" : 9,
     "fields" : {
       "icon" : "fa-puzzle-piece",
-      "name" : "sudo.admin.settings.modulesAndApplications",
+      "name" : "sudo.settings.modulesAndApplications",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "admin only application, Create and update applications",
@@ -121,7 +121,7 @@
     "pk" : 10,
     "fields" : {
       "icon" : "fa-home",
-      "name" : "configure.admin.settings.dashboard",
+      "name" : "configure.settings.dashboard",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for dashboard",
@@ -134,7 +134,7 @@
     "pk" : 11,
     "fields" : {
       "icon" : "fa-envelope-o",
-      "name" : "configure.admin.settings.mail",
+      "name" : "configure.settings.mail",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for mail",
@@ -147,7 +147,7 @@
     "pk" : 12,
     "fields" : {
       "icon" : "fa-facebook",
-      "name" : "configure.admin.settings.social",
+      "name" : "configure.settings.social",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for social",
@@ -160,7 +160,7 @@
     "pk" : 13,
     "fields" : {
       "icon" : "fa-newspaper-o",
-      "name" : "configure.admin.settings.blog",
+      "name" : "configure.settings.blog",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for blogging app",
@@ -173,7 +173,7 @@
     "pk" : 14,
     "fields" : {
       "icon" : "fa-calendar",
-      "name" : "configure.admin.settings.calendar",
+      "name" : "configure.settings.calendar",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for calendar",
@@ -186,12 +186,38 @@
     "pk" : 15,
     "fields" : {
       "icon" : "fa-sticky-note-o",
-      "name" : "configure.admin.settings.notes",
+      "name" : "configure.settings.notes",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for notes",
       "owners": [],
       "canConfigure": 6
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 16,
+    "fields" : {
+      "icon" : "fa-shopping-cart",
+      "name" : "app.ecommerce",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 3,
+      "description" : "Application to manage ecommerce business ",
+      "owners": [],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 17,
+    "fields" : {
+      "icon" : "fa-shopping-cart",
+      "name" : "configure.settings.ecommerce",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 2,
+      "description" : "Configure ecommerce settings ",
+      "owners": [],
+      "canConfigure": 16
     }
   }
 ]

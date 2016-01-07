@@ -7,7 +7,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 1
+    "app": 1,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -18,7 +19,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 2
+    "app": 2,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -29,7 +31,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 3
+    "app": 3,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -40,7 +43,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 4
+    "app": 4,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -51,7 +55,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 5
+    "app": 5,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -62,7 +67,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 6
+    "app": 6,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -73,7 +79,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 7
+    "app": 7,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -84,7 +91,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 8
+    "app": 8,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -95,7 +103,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 9
+    "app": 9,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -106,7 +115,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 10
+    "app": 10,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -117,7 +127,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 11
+    "app": 11,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -128,7 +139,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 12
+    "app": 12,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -139,7 +151,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 13
+    "app": 13,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -150,7 +163,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 14
+    "app": 14,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -161,7 +175,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value if this app is in service or not",
-    "app": 15
+    "app": 15,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -172,7 +187,8 @@
     "flag": true,
     "value": null,
     "description": "boolean value to show a sample chart on everyones dashboard",
-    "app": 1
+    "app": 1,
+    "fieldType": "flag"
   }
 }, {
   "model": "ERP.appsettingsfield",
@@ -183,6 +199,43 @@
     "flag": false,
     "value": null,
     "description": "boolean value to show whats new pane on a social profile",
-    "app": 3
+    "app": 3,
+    "fieldType": "flag"
+  }
+}, {
+  "model": "ERP.appsettingsfield",
+  "pk": 18,
+  "fields": {
+    "created": "2016-01-07T09:39:11.764Z",
+    "name": "isActive",
+    "flag": true,
+    "value": "",
+    "description": "Flag to enable and disable access to all the users to this app",
+    "app": 16,
+    "fieldType": "flag"
+  }
+}, {
+  "model": "ERP.appsettingsfield",
+  "pk": 19,
+  "fields": {
+    "created": "2016-01-07T09:41:18.850Z",
+    "name": "serviceName",
+    "flag": false,
+    "value": "RideON",
+    "description": "The name of the service as seen by the users and vendors",
+    "app": 16,
+    "fieldType": "value"
+  }
+}, {
+  "model": "ERP.appsettingsfield",
+  "pk": 20,
+  "fields": {
+    "created": "2016-01-07T09:49:12.535Z",
+    "name": "logo",
+    "flag": false,
+    "value": "fa-motorcycle",
+    "description": "URL or font awesome class of the logo",
+    "app": 16,
+    "fieldType": "value"
   }
 }]

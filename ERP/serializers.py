@@ -10,7 +10,7 @@ from HR.serializers import userSearchSerializer
 class moduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = module
-        fields = ( 'pk', 'name' , 'description' , 'icon' )
+        fields = ( 'pk', 'name' , 'icon' )
 
 class applicationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,9 +22,6 @@ class applicationSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = appSettingsField
         fields = ( 'pk', 'name', 'flag' , 'value' , 'fieldType')
-
-
-
 
 class applicationAdminSerializer(serializers.ModelSerializer):
     module = moduleSerializer(read_only = True , many = False)

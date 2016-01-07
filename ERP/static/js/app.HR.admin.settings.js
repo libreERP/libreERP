@@ -1,4 +1,4 @@
-app.controller('admin.settings.configure' , function($scope , $stateParams , $http , $aside , $state , Flash , userProfileService , $filter){
+app.controller('admin.settings.configure' , function($scope , $stateParams , $http , $aside , $state , Flash , $users , $filter){
   // settings for dashboard controller
   if (typeof $stateParams.canConfigure == 'undefined') {
     return;
@@ -16,12 +16,12 @@ app.controller('admin.settings.configure' , function($scope , $stateParams , $ht
     for (var i = 0; i < $scope.settings.length; i++) {
       if ($scope.settings[i].fieldType == 'flag') {
         dataToSend = {
-          flag : $scope.settings[i].data
+          flag : $scope.settings[i].flag
         }
 
       }else {
         dataToSend = {
-          value : $scope.settings[i].data
+          value : $scope.settings[i].value
         }
       }
       $http({method : 'PATCH' , url : '/api/ERP/appSettingsAdminMode/'+ $scope.settings[i].pk + '/' , data : dataToSend } ).
@@ -29,14 +29,14 @@ app.controller('admin.settings.configure' , function($scope , $stateParams , $ht
         Flash.create('success', response.status + ' : ' + response.statusText );
       }, function(response){
         Flash.create('danger', response.status + ' : ' + response.statusText );
-      })
+      });
     }
   }
 
 
 });
 
-app.controller('admin.settings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+app.controller('admin.settings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
   $scope.resourceUrl = '/api/ERP/applicationAdminMode/';
 
@@ -123,8 +123,8 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
 
 });
 
-
-app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+// controller for the inline form in the modal window of the application edit form
+app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , function($scope , $http , $aside , $state , Flash , $users , $filter){
   $scope.save = function(data , app) { // callback function for the inner table directive
     dataToSend = {
       name : data.name,
@@ -140,6 +140,8 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.tableData.push(response.data)
+      $scope.delete(-1,$scope.editor.index);
+      $scope.editor.index = -1;
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     })
@@ -166,23 +168,33 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
 
 })
 
-app.controller('admin.settings' , function($scope , $http , $aside , $state , Flash , userProfileService , $filter){
+app.controller('admin.settings' , function($scope , $http , $aside , $state, Flash , $users , $filter){
   // settings main page controller
 
   $scope.getState = function(index){
     parts = $scope.applications[index].name.split('.');
+    // console.log(parts);
     if (parts[0] == 'configure') {
-      return  'admin.settings.configure ({canConfigure :' + $scope.applications[index].canConfigure + ', app :"' + parts[3] + '"})'; ;
+      return  'admin.settings.configure ({canConfigure :' + $scope.applications[index].canConfigure + ', app :"' + parts[2] + '"})'; ;
     } else {
-      return $scope.applications[index].name.replace('sudo.' , '')
+      return $scope.applications[index].name.replace('sudo' , 'admin')
     }
   }
 
-  $http({method : 'GET' , url : '/api/ERP/application/?name__contains=admin.settings'}).
+  $http({method : 'GET' , url : '/api/ERP/application/?name__contains=settings&module=2'}).
   then(function(response){
     $scope.applications = response.data;
   }, function(response){
 
   })
+
+  $scope.isActive = function(index){
+    app = $scope.applications[index]
+    if (angular.isDefined($state.params.app)) {
+      return $state.params.app == app.name.split('.')[2]
+    } else {
+      return  $state.is(app.name.replace('sudo' , 'admin'))
+    }
+  }
 
 });

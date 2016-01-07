@@ -1,5 +1,5 @@
-app.controller("controller.home.notes", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
-  $scope.me = userProfileService.get('mySelf');
+app.controller("controller.home.notes", function($scope , $state , $users ,  $stateParams , $http , Flash) {
+  $scope.me = $users.get('mySelf');
   $scope.editor = {pencil : false}
   $scope.canvas = new fabric.Canvas('canvas');
   $scope.canvas.isDrawingMode = false;

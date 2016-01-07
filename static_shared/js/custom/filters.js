@@ -165,12 +165,12 @@ app.filter('decorateCount' , function(){
   }
 })
 
-app.filter('getDP' , function(userProfileService){
+app.filter('getDP' , function($users){
   return function(input){
     if (typeof input == 'undefined' ) {
       return '/static/images/userIcon.png';
     }
-    user = userProfileService.get(input);
+    user = $users.get(input);
     if (user.profile.displayPicture == null) {
       return '/static/images/userIcon.png';
     }else{
@@ -180,13 +180,13 @@ app.filter('getDP' , function(userProfileService){
 })
 
 
-app.filter('getName' , function(userProfileService){
+app.filter('getName' , function($users){
 
   return function(userUrl , mode){
     if (typeof userUrl == 'undefined') {
       return '';
     }
-    user = userProfileService.get(userUrl);
+    user = $users.get(userUrl);
     if (mode == 'short') {
       return user.first_name;
     }

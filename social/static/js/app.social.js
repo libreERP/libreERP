@@ -8,8 +8,8 @@ app.directive('commentBubble', function () {
       data : '=',
       onDelete : '&',
     },
-    controller : function($scope, $http , userProfileService){
-      $scope.me = userProfileService.get("mySelf");
+    controller : function($scope, $http , $users){
+      $scope.me = $users.get("mySelf");
       $scope.liked = false;
       for (var i = 0; i < $scope.data.likes.length; i++) {
         if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
@@ -77,7 +77,7 @@ app.directive('post', function () {
       data : '=',
       onDelete :'&',
     },
-    controller : function($scope, $http , $timeout , userProfileService , $aside , $interval , $window) {
+    controller : function($scope, $http , $timeout , $users , $aside , $interval , $window) {
       $scope.openPost = function(position, backdrop , input) {
         $scope.asideState = {
           open: true,
@@ -105,10 +105,10 @@ app.directive('post', function () {
   };
 });
 
-app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, userProfileService , input) {
+app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, $users , input) {
   $scope.content = 'post';
 
-  $scope.me = userProfileService.get("mySelf");
+  $scope.me = $users.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
 
@@ -121,7 +121,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
     if (postUrl.indexOf('?')== -1) {
       postUrl += '?';
     }
-    postUrl += '&user='+userProfileService.get($scope.data.user).username;
+    postUrl += '&user='+$users.get($scope.data.user).username;
     $http({method: 'GET' , url : postUrl}).
     then(function(requests){
       for(key in requests.data){
@@ -137,7 +137,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
 
   tagged = [];
   for (var i = 0; i < $scope.data.tagged.length; i++) {
-    tagged.push({username : userProfileService.get($scope.data.tagged[i]).username })
+    tagged.push({username : $users.get($scope.data.tagged[i]).username })
   }
   $scope.postEditor = {attachment : emptyFile , tagged : tagged}
   $scope.viewMode = 'comments';
@@ -390,7 +390,7 @@ app.directive('album', function () {
       data : '=',
       albumDelete :'&',
     },
-    controller : function($scope, $http , $timeout , userProfileService , $aside , $interval , $window) {
+    controller : function($scope, $http , $timeout , $users , $aside , $interval , $window) {
       $scope.openAlbum = function(position, backdrop , input) {
         $scope.asideState = {
           open: true,
@@ -418,17 +418,17 @@ app.directive('album', function () {
   };
 });
 
-app.controller('controller.social.aside.picture' , function($scope, $uibModalInstance , Flash , $http , userProfileService , input) {
+app.controller('controller.social.aside.picture' , function($scope, $uibModalInstance , Flash , $http , $users , input) {
 
   $scope.content = 'picture';
-  $scope.me = userProfileService.get("mySelf");
+  $scope.me = $users.get("mySelf");
   $scope.data = input.data;
   $scope.parent = input.parent;
   $scope.albumDelete = input.onDelete;
   if ($scope.data.url.indexOf('?')==-1) {
     $scope.data.url += '?';
   }
-  $http({method: 'GET' , url : $scope.data.url + '&user=' + userProfileService.get($scope.data.user).username}).
+  $http({method: 'GET' , url : $scope.data.url + '&user=' + $users.get($scope.data.user).username}).
   then(function(requests){
     for(key in requests.data){
       $scope.data[key] = requests.data[key];
@@ -437,7 +437,7 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
       scroll("#commentsArea");
     }, 100);
   });
-  $http({method: 'GET' , url : $scope.parent.url + '&user=' + userProfileService.get($scope.data.user).username}).
+  $http({method: 'GET' , url : $scope.parent.url + '&user=' + $users.get($scope.data.user).username}).
   then(function(requests){
     for(key in requests.data){
       $scope.parent[key] = requests.data[key];
@@ -448,7 +448,7 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
   $scope.droppedObjects = angular.copy($scope.parent.photos);
   tagged = [];
   for (var i = 0; i < $scope.parent.tagged.length; i++) {
-    tagged.push({username : userProfileService.get($scope.parent.tagged[i]).username })
+    tagged.push({username : $users.get($scope.parent.tagged[i]).username })
   }
   $scope.tempAlbum = {title :  $scope.parent.title , photos : [] , tagged : tagged};
   $scope.editorData = {draggableObjects : []};
@@ -737,10 +737,10 @@ app.directive('socialProfile', function () {
   };
 });
 
-app.controller('controller.social.profile', function($scope, $state , $http , $timeout , userProfileService , $aside , $interval , $window , Flash) {
+app.controller('controller.social.profile', function($scope, $state , $http , $timeout , $users , $aside , $interval , $window , Flash) {
   emptyFile = new File([""], "");
-  $scope.me = userProfileService.get('mySelf')
-  $scope.user = userProfileService.get($scope.userUrl, true);
+  $scope.me = $users.get('mySelf')
+  $scope.user = $users.get($scope.userUrl, true);
   // console.log($scope.me);
   var feedsItems = ['picture'];
   for (var i = 0; i < feedsItems.length; i++){
@@ -1064,9 +1064,9 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
   };
 });
 
-app.controller('controller.social', function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , $state) {
-  $scope.user = userProfileService.get('mySelf').url.split('users/')[0]+'users/'+$state.params.id+'/';
+app.controller('controller.social', function($scope , $http , $timeout , $users , $aside , $interval , $window , $state) {
+  $scope.user = $users.get('mySelf').url.split('users/')[0]+'users/'+$state.params.id+'/';
   if ($state.params.id == '') {
-    $scope.user = userProfileService.get('mySelf').url;
+    $scope.user = $users.get('mySelf').url;
   }
 });

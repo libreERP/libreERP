@@ -22,7 +22,7 @@ app.directive('genericTable', function () {
   };
 });
 
-app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , userProfileService , $aside , Flash , $uibModal) {
+app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
   $scope.tableData = [];
   $scope.searchText = '';
   $scope.originalTable = [];

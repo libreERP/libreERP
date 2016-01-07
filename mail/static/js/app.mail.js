@@ -15,14 +15,14 @@ parseEmailFlags = function(raw){
   // replacing non alphabetical chars with space , then multiple spaces with one , then removing the trailing spaces , then split
 }
 
-app.controller('controller.mail' , function($scope , $http , $timeout , userProfileService , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags , $stateParams , $state){
+app.controller('controller.mail' , function($scope , $http , $timeout , $users , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags , $stateParams , $state){
   console.log($stateParams);
 
   if ($stateParams.folder == '') {
     $state.transitionTo('home.mail' , {folder:'inbox'})
   }
 
-  $scope.me = userProfileService.get('mySelf');
+  $scope.me = $users.get('mySelf');
   $scope.viewerMail = -1;
   $scope.folders = [];
   $scope.folderSelected = 'INBOX'; // name of the folder on the server, for mail its something like [GMAIL]/Sent Items
@@ -417,8 +417,8 @@ app.directive('emailStrip', function () {
       gotoMail:'=',
       flagMail:'=',
     },
-    controller : function($scope , userProfileService){
-      $scope.me = userProfileService.get('mySelf');
+    controller : function($scope , $users){
+      $scope.me = $users.get('mySelf');
       if ($scope.me.url.split('?')[0]==$scope.data.originator) {
         $scope.friend = $scope.data.user;
       }else{

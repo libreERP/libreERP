@@ -19,12 +19,23 @@ class moduleViewSet(viewsets.ModelViewSet):
     serializer_class = moduleSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
+    def get_queryset(self):
+        u = self.request.user
+        ma = []
+        for m in application.objects.filter(owners__in = [u,]).values('module').distinct():
+            ma.append(m['module'])
+        aa = []
+        for a in u.accessibleApps.all().values('app'):
+            aa.append(a['app'])
+        for m in application.objects.filter(pk__in = aa).values('module').distinct():
+            ma.append(m['module'])
+        return module.objects.filter(pk__in = ma)
 
 class applicationViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly,)
     serializer_class = applicationSerializer
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
+    filter_fields = ['name' , 'module']
     def get_queryset(self):
         return application.objects.filter(owners__in = [self.request.user])
 

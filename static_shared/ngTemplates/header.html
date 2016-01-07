@@ -16,8 +16,7 @@
     <div class="collapse navbar-collapse" id="navBar">
 
   		<ul class="nav navbar-nav">
-  			<li ng-class="{active: $state.includes('home')}"><a ui-sref="home"><i class="fa fa-home"></i> Home</a></li>
-  			<li ng-class="{active: $state.includes('admin')}"><a ui-sref="admin"><i class="fa fa-user"></i> Admin</a></li>
+  			<li ng-class="{active: $state.includes(m.name)}" ng-repeat="m in modules"><a ui-sref="{{m.name}}" ><i class="fa {{m.icon}}"></i> {{m.name}}</a></li>
   		</ul>
 
   		<ul class="nav navbar-nav navbar-right" style="margin-right:20px;">

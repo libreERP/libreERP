@@ -1,4 +1,4 @@
-app.factory('userProfileService', function(){
+app.factory('$users', function(){
   var userProfiles = [];
   var userSocialPosts = [];
   var userSocialAlbums = [];
@@ -28,6 +28,50 @@ app.factory('userProfileService', function(){
     },
   }
 });
+
+app.factory('$permissions', function($http){
+
+  modules = [];
+
+  $http({method : 'GET' , url : '/api/ERP/module/'}).
+  then(function(response){
+    modules = response.data;
+    console.log(modules);
+  })
+
+  return {
+    module : function(input){
+      // if input is a string the function returns true or false based on the user's permission to use this module
+      // otherwise it will return the list all the modules accessibel to this user
+      if (angular.isDefined(input)) {
+        for (var i = 0; i < modules.length; i++) {
+          if (modules[i].name == input){
+            return true;
+          }else {
+            return false;
+          }
+        }
+      }else {
+        if (modules.length == 0) {
+          return $http.get('/api/ERP/module/')
+        }
+        return modules;
+      }
+    },
+    apps : function(input){
+      // similar to above
+
+
+    },
+    action : function(input){
+      // similar to above
+
+
+    }
+
+  }
+
+})
 
 
 function myProfile(){

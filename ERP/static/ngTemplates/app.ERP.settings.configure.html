@@ -10,14 +10,14 @@
         <div ng-if="field.fieldType=='flag'">
 
           <div class="checkbox">
-            <label ><input type="checkbox" ng-model="field.data" >  <span style="margin-left:10px;">  {{field.name}} ? </span></label>
+            <label ><input type="checkbox" ng-model="field.flag" >  <span style="margin-left:10px;">  {{field.name}} ? </span></label>
           </div>
           <p class="help-block">{{field.description}}</p>
         </div>
         <div ng-if="field.fieldType == 'value'">
           <div class="form-group">
             <label>{{field.name}}</label>
-            <input type="text" class="form-control" ng-model="data[field.name]" placeholder="Enter the value of the field {{field.name}}">
+            <input type="text" class="form-control" ng-model="field.value" placeholder="Enter the value of the field {{field.name}}">
             <p class="help-block">
               {{field.description}}
             </p>

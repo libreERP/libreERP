@@ -62,8 +62,8 @@ app.directive('messageStrip', function () {
       data : '=',
       openChat :'=',
     },
-    controller : function($scope , userProfileService){
-      $scope.me = userProfileService.get('mySelf');
+    controller : function($scope , $users){
+      $scope.me = $users.get('mySelf');
       if ($scope.me.url.split('?')[0]==$scope.data.originator) {
         $scope.friend = $scope.data.user;
       }else{
@@ -82,7 +82,7 @@ app.directive('notificationStrip', function () {
     scope:{
       data : '=',
     },
-    controller : function($scope , $http , userProfileService , $aside ){
+    controller : function($scope , $http , $users , $aside ){
       parts = $scope.data.shortInfo.split(':');
       // console.log(parts);
       if(typeof parts[1] == 'undefined'){
@@ -102,7 +102,7 @@ app.directive('notificationStrip', function () {
             $scope.notificationData = response.data;
             // console.log($scope.notificationData);
             if ($scope.notificationType == 'pictureComment') {
-              $http({method : 'GET' , url : '/api/social/album/' +  $scope.data.shortInfo.split(':')[3] + '/?user=' + userProfileService.get($scope.notificationData.user).username}).
+              $http({method : 'GET' , url : '/api/social/album/' +  $scope.data.shortInfo.split(':')[3] + '/?user=' + $users.get($scope.notificationData.user).username}).
               then(function(response){
                 $scope.objParent = response.data;
               });
@@ -177,7 +177,7 @@ app.directive('notificationStrip', function () {
 });
 
 
-app.directive('chatWindow', function (userProfileService) {
+app.directive('chatWindow', function ($users) {
   return {
     templateUrl: '/static/ngTemplates/chatWindow.html',
     restrict: 'E',
@@ -190,8 +190,8 @@ app.directive('chatWindow', function (userProfileService) {
     },
     controller : function($scope ,$location,  $anchorScroll, $http, $templateCache, $timeout){
       // console.log($scope.pos);
-      $scope.me = userProfileService.get("mySelf");
-      $scope.friend = userProfileService.get($scope.friendUrl);
+      $scope.me = $users.get("mySelf");
+      $scope.friend = $users.get($scope.friendUrl);
       // console.log($scope.friend);
       $scope.isTyping = false;
       $scope.toggle = true;
@@ -230,7 +230,7 @@ app.directive('chatWindow', function (userProfileService) {
           $scope.imsCount = response.data.length;
           for (var i = 0; i < response.data.length; i++) {
             var im = response.data[i];
-            sender = userProfileService.get(im.originator)
+            sender = $users.get(im.originator)
             if (sender.username == $scope.me.username) {
               $scope.senderIsMe.push(true);
             }else {

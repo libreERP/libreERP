@@ -18,5 +18,15 @@
       "created" : "2016-01-03 00:44:00.737000",
       "description" : "Administration can be performed from the apps of this module."
     }
+  },
+  {
+    "model" : "ERP.module",
+    "pk" : 3,
+    "fields" : {
+      "icon" : "fa-industry",
+      "name" : "businessManagement",
+      "created" : "2016-01-07 00:44:00.737000",
+      "description" : "Access business management modules. Manage processes, process orders and track expanses and earnings"
+    }
   }
 ]

@@ -11,6 +11,7 @@ class module(models.Model):
     name = models.CharField(max_length = 50 , null = False , unique = True)
     description = models.CharField(max_length = 500 , null = False)
     icon = models.CharField(max_length = 20 , null = True )
+    
 
 class application(models.Model):
     # each application in a module will have an instance of this model
@@ -33,7 +34,7 @@ class appSettingsField(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     name = models.CharField(max_length = 50 , null = False )
     flag = models.BooleanField(default = False)
-    value = models.CharField(max_length = 50 , null = True)
+    value = models.CharField(max_length = 200 , null = True)
     description = models.CharField(max_length = 500 , null = False)
     app = models.ForeignKey(application , related_name='settings' , null = True)
     fieldType = models.CharField(choices = FIELD_TYPE_CHOICES , default = 'flag' , null = False , max_length = 5)
@@ -48,7 +49,7 @@ class permission(models.Model):
     givenBy = models.ForeignKey(User , related_name = "approvedAccess" , null=False)
     created = models.DateTimeField(auto_now_add = True)
     def __unicode__(self):
-        return self.app
+        return self.app.name
 
 class groupPermission(models.Model):
     app = models.ForeignKey(application , null=False)

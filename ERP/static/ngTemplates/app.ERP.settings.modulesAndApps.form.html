@@ -4,6 +4,7 @@
 </div>
 
 <div class="modal-body" ng-if="mode == 'edit'">
+  <div class="container-fluid">
     <strong>Parent module : </strong> {{data.module.name}}
     <br>
     <div class="form-group" >
@@ -12,15 +13,16 @@
         <auto-complete source="ownersSearch($query)" load-on-down-arrow="true"></auto-complete>
       </tags-input>
       <p class="help-block">Owners of an application are those users who have access to the application level settings which will effect the behaviour of the application as experienced by the ordinary user.
-      Owners can grant and revoke access to the application to a perticular user or group of users.</p>
-    </div>
+        Owners can grant and revoke access to the application to a perticular user or group of users.</p>
+      </div>
+  </div>
 
-    <div class="container-fluid">
-      <generic-Table callback-Fn = "tableAction"  resource-Url = "/api/ERP/appSettingsAdminMode/" get-Params="[{key : 'app' , value :data.pk}]" search="true"
-      primary-Search-Field="{{'name'}}" views='views' inline-Editor="false" row-Scope="rowInput" ></generic-Table>
-    </div>
+  <div class="container-fluid">
+    <generic-Table callback-Fn = "tableAction"  resource-Url = "/api/ERP/appSettingsAdminMode/" get-Params="[{key : 'app' , value :data.pk}]" search="true"
+    primary-Search-Field="{{'name'}}" views='views' inline-Editor="false" row-Scope="rowInput" ></generic-Table>
+  </div>
 
-    <button type="submit" class="btn btn-primary" ng-click="submitForm()"> Save </button>
+  <button type="submit" class="btn btn-primary" ng-click="submitForm()"> Save </button>
 </div>
 
 <div class="modal-body" ng-if="mode == 'new'">

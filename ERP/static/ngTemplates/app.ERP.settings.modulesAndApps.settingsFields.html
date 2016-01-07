@@ -71,7 +71,7 @@
             <button type="button" class="btn btn-success" ng-click="update(row ); row.pk=(row.pk=='')? 0: row.pk ;"
               ng-show="editor.index == $index && row.pk !=0"><i class="fa fa-floppy-o"></i></button>
 
-            <button type="button" class="btn btn-success" ng-click="editor.index = -1;save(row , getParams[0].value);delete(-1,$index); row.pk=(row.pk=='')? 0: row.pk ; row.new=false;"
+            <button type="button" class="btn btn-success" ng-click="save(row , getParams[0].value);"
               ng-show="editor.index == $index && row.pk == 0"><i class="fa fa-floppy-o"></i></button>
 
             <button type="button" class="btn btn-default" ng-show="$index == editor.index && !row.new"

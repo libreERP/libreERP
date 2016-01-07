@@ -1,5 +1,5 @@
-app.controller("controller.home.blog", function($scope , $state , userProfileService ,  $stateParams , $http , Flash) {
-  $scope.me = userProfileService.get('mySelf');
+app.controller("controller.home.blog", function($scope , $state , $users ,  $stateParams , $http , Flash) {
+  $scope.me = $users.get('mySelf');
   $scope.editor = {source : '' , tags : [] , title : '' , header : '' , mode : 'header'};
   $scope.filter = {text : '' , tags :[] , month : new Date() , state : 'published' , user : 'all'};
   $scope.itemsPerPage = 5;

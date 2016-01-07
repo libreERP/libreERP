@@ -52,6 +52,6 @@ app.config(function($stateProvider){
 
 });
 
-app.controller('admin' , function($scope , userProfileService , Flash){
+app.controller('admin' , function($scope , $users , Flash){
   // main admin tab default page controller
 });

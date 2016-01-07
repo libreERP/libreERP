@@ -27,10 +27,16 @@ app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state
 ]);
 
 // Main controller is mainly for the Navbar and also contains some common components such as clipboad etc
-app.controller('main' , function($scope , $state , userProfileService , $aside , $http , $timeout , $uibModal){
-  $scope.me = userProfileService.get('mySelf');
+app.controller('main' , function($scope , $state , $users , $aside , $http , $timeout , $uibModal , $permissions){
+  $scope.me = $users.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
+
+  $permissions.module().
+  success(function(response){
+    console.log(response);
+    $scope.modules = response;
+  });
 
   $http({method : 'GET' , url : $scope.me.settings}).
   then(function(response){
@@ -105,7 +111,7 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
 
     function postClose() {
       $scope.asideState.open = false;
-      $scope.me = userProfileService.get('mySelf' , true)
+      $scope.me = $users.get('mySelf' , true)
       console.log($scope);
     }
 
@@ -114,11 +120,11 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
       placement: position,
       size: 'md',
       backdrop: backdrop,
-      controller: function($scope, $uibModalInstance  , userProfileService , $http , Flash ) {
+      controller: function($scope, $uibModalInstance  , $users , $http , Flash ) {
         emptyFile = new File([""], "");
         $scope.settings = settings;
         $scope.settings.displayPicture = emptyFile;
-        $scope.me = userProfileService.get('mySelf');
+        $scope.me = $users.get('mySelf');
         $scope.statusMessage = '';
         $scope.settings.password='';
         $scope.cancel = function(e) {
@@ -324,9 +330,9 @@ app.controller('main' , function($scope , $state , userProfileService , $aside ,
           return;
         }
       }
-      me = userProfileService.get("mySelf");
+      me = $users.get("mySelf");
       if (url != me.url.split('?')[0]) {
-        friend = userProfileService.get(url)
+        friend = $users.get(url)
         $scope.imWindows.push({url:url , username : friend.username});
       }
     }
