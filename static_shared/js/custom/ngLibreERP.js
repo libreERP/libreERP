@@ -19,10 +19,22 @@ app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $prov
 
 });
 
-app.run([ '$rootScope', '$state', '$stateParams', function ($rootScope,   $state,   $stateParams) {
+app.run([ '$rootScope', '$state', '$stateParams' , '$permissions', function ($rootScope,   $state,   $stateParams , $permissions) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     $rootScope.$on("$stateChangeError", console.log.bind(console));
+    $rootScope.$on("$stateChangeStart" , function(event , toState , toParams , fromState , fromParams){
+      // console.log(event);
+      // console.log($permissions);
+      // console.log($rootScope);
+      // console.log($permissions.app(toState));
+      // console.log($permissions.app(toState));
+      if (event.name != 'home' && !$permissions.app(toState)) {
+        $state.go('home');
+      }
+    })
+
+
   }
 ]);
 
@@ -34,9 +46,10 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
 
   $permissions.module().
   success(function(response){
-    console.log(response);
+    // console.log(response);
     $scope.modules = response;
   });
+
 
   $http({method : 'GET' , url : $scope.me.settings}).
   then(function(response){

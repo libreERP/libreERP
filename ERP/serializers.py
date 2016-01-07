@@ -5,7 +5,7 @@ from rest_framework.exceptions import *
 from .models import *
 from PIM.serializers import *
 from HR.serializers import userSearchSerializer
-
+from rest_framework.response import Response
 
 class moduleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -67,11 +67,14 @@ class permissionSerializer(serializers.ModelSerializer):
         fields = ( 'pk' , 'app' , 'user' )
     def create(self , validated_data):
         user = self.context['request'].user
-        app =application.objects.get(pk = self.context['request'].data['app'])
         if not user.is_superuser and user not in app.owners.all():
             raise PermissionDenied(detail=None)
-        perm , created = permission.objects.get_or_create(app =  app, user = validated_data['user'] , givenBy = user)
-        return perm
+        u = validated_data['user']
+        u.accessibleApps.all().delete()
+        for a in self.context['request'].data['apps']:
+            app = application.objects.get(pk = a)
+            p = permission.objects.create(app =  app, user = u , givenBy = user)
+        return p
 
 class groupPermissionSerializer(serializers.ModelSerializer):
     app = applicationSerializer(read_only = True, many = False)

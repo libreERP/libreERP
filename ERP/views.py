@@ -31,13 +31,26 @@ class moduleViewSet(viewsets.ModelViewSet):
             ma.append(m['module'])
         return module.objects.filter(pk__in = ma)
 
+def getApps(user):
+    aa = []
+    for a in user.accessibleApps.all().values('app'):
+        aa.append(a['app'])
+    if user.appsManaging.all().count()>0:
+        return application.objects.filter(pk__in = aa) | user.appsManaging.all()
+    return application.objects.filter(pk__in = aa)
+
 class applicationViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly,)
     serializer_class = applicationSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name' , 'module']
     def get_queryset(self):
-        return application.objects.filter(owners__in = [self.request.user])
+        if not self.request.user.is_superuser:
+            return getApps(self.request.user)
+        else:
+            if 'user' in self.request.GET:
+                return getApps(User.objects.get(username = self.request.GET['user']))
+            return application.objects.all()
 
 class applicationAdminViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin,)

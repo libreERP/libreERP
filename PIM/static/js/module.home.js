@@ -9,10 +9,11 @@ app.config(function($stateProvider ){
       },
       "menu@home": {
         templateUrl: '/static/ngTemplates/home.menu.html',
+        controller: 'controller.home.menu',
       },
       "@home": {
         templateUrl: '/static/ngTemplates/app.home.dashboard.html',
-        controller : 'controller.home.dash'
+        controller : 'controller.home'
       }
     }
   })
@@ -44,7 +45,7 @@ app.config(function($stateProvider ){
 
 });
 
-app.controller("controller.home.dash", function($scope , $state) {
+app.controller("controller.home", function($scope , $state) {
 
   $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
   $scope.series = ['Series A', 'Series B'];
@@ -58,5 +59,29 @@ app.controller("controller.home.dash", function($scope , $state) {
 
   $scope.labels2 = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data2 = [300, 500, 100];
+
+})
+
+app.controller('controller.home.menu' , function($scope ,$state, $http, $permissions){
+  $scope.apps = [];
+
+  $permissions.app().
+  success(function(response){
+    console.log(response);
+    for (var i = 0; i < response.length; i++) {
+      a = response[i];
+
+      parts = a.name.split('.');
+      a.dispName = parts[parts.length-1];
+
+      if (a.name == 'app.dashboard') {
+        a.state = 'home';
+      }else {
+        a.state = a.name.replace('app' , 'home');
+      }
+
+      $scope.apps.push(a);
+    }
+  });
 
 })

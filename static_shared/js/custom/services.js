@@ -32,6 +32,7 @@ app.factory('$users', function(){
 app.factory('$permissions', function($http){
 
   modules = [];
+  apps = []
 
   $http({method : 'GET' , url : '/api/ERP/module/'}).
   then(function(response){
@@ -43,25 +44,17 @@ app.factory('$permissions', function($http){
     module : function(input){
       // if input is a string the function returns true or false based on the user's permission to use this module
       // otherwise it will return the list all the modules accessibel to this user
-      if (angular.isDefined(input)) {
-        for (var i = 0; i < modules.length; i++) {
-          if (modules[i].name == input){
-            return true;
-          }else {
-            return false;
-          }
-        }
-      }else {
-        if (modules.length == 0) {
-          return $http.get('/api/ERP/module/')
-        }
-        return modules;
+      if (modules.length == 0) {
+        return $http.get('/api/ERP/module/')
       }
+      return modules;
     },
-    apps : function(input){
+    app : function(input){
       // similar to above
-
-
+      if (apps.length == 0) {
+        return $http.get('/api/ERP/application/')
+      }
+      return apps;
     },
     action : function(input){
       // similar to above

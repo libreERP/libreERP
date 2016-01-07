@@ -73,11 +73,17 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         })
       } else if (action == 'editPermissions') {
         u = $users.get(target)
-        permissionsFormData = {
-          permissionsToAdd : [],
-          url : target,
-        }
-        $scope.addTab({title : 'Edit permissions for ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editPermissions' , data : permissionsFormData , active : true})
+        $http.get('/api/ERP/application/?user='+ u.username ).
+        success((function(target){
+          return function(data){
+            u = $users.get(target)
+            permissionsFormData = {
+              appsToAdd : data,
+              url : target,
+            }
+            $scope.addTab({title : 'Edit permissions for ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editPermissions' , data : permissionsFormData , active : true})
+          }
+        })(target));
       }
       // for the single select actions
     } else {
@@ -94,18 +100,20 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
       Flash.create('warning' , 'No new permission to add')
       return;
     }
+    apps = [];
     for (var i = 0; i < userData.appsToAdd.length; i++) {
-      dataToSend = {
-        user : getPK(userData.url),
-        app : userData.appsToAdd[i].pk,
-      }
-      $http({method : 'POST' , url : '/api/ERP/permission/' , data : dataToSend}).
-      then(function(response){
-        Flash.create('success', response.status + ' : ' + response.statusText);
-     }, function(response){
-        Flash.create('danger', response.status + ' : ' + response.statusText);
-      })
+      apps.push(userData.appsToAdd[i].pk)
     }
+    dataToSend = {
+      user : getPK(userData.url),
+      apps : apps,
+    }
+    $http({method : 'POST' , url : '/api/ERP/permission/' , data : dataToSend}).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    })
 
   }
 
