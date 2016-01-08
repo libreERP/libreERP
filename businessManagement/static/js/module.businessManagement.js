@@ -18,22 +18,6 @@ app.config(function($stateProvider){
     }
   })
 
-  .state('businessManagement.ecommerce', {
-    url: "/ecommerce",
-    views: {
-       "": {
-          templateUrl: '/static/ngTemplates/app.businessManagement.ecommerce.html',
-       },
-       "menu@businessManagement.ecommerce": {
-          templateUrl: '/static/ngTemplates/app.businessManagement.ecommerce.menu.html',
-          controller : 'businessManagement.ecommerce.menu'
-        },
-        "@businessManagement.ecommerce": {
-          templateUrl: '/static/ngTemplates/app.businessManagement.ecommerce.default.html',
-        }
-    }
-  })
-
 });
 
 app.controller('businessManagement' , function($scope , $users , Flash){

@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'homepage', # landing page
     'mail', # mail application
     'businessManagement', # BM application
+    'ecommerce', # ecommerce
 
 )
 
