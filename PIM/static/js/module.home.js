@@ -62,14 +62,17 @@ app.controller("controller.home", function($scope , $state) {
 
 })
 
+
+
 app.controller('controller.home.menu' , function($scope ,$state, $http, $permissions){
   $scope.apps = [];
 
-  $permissions.app().
-  success(function(response){
-    console.log(response);
-    for (var i = 0; i < response.length; i++) {
-      a = response[i];
+  $scope.buildMenu = function(apps){
+    for (var i = 0; i < apps.length; i++) {
+      a = apps[i];
+      if (a.module != 1) {
+        continue;
+      }
 
       parts = a.name.split('.');
       a.dispName = parts[parts.length-1];
@@ -79,9 +82,22 @@ app.controller('controller.home.menu' , function($scope ,$state, $http, $permiss
       }else {
         a.state = a.name.replace('app' , 'home');
       }
-
       $scope.apps.push(a);
     }
-  });
+  }
+
+
+
+  as = $permissions.app();
+  if(typeof as.success == 'undefined'){
+    $scope.buildMenu(as);
+  } else {
+    as.success(function(response){
+      $scope.buildMenu(response);
+    });
+  };
+
+
+
 
 })

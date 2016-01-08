@@ -23,18 +23,6 @@ app.run([ '$rootScope', '$state', '$stateParams' , '$permissions', function ($ro
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     $rootScope.$on("$stateChangeError", console.log.bind(console));
-    $rootScope.$on("$stateChangeStart" , function(event , toState , toParams , fromState , fromParams){
-      // console.log(event);
-      // console.log($permissions);
-      // console.log($rootScope);
-      // console.log($permissions.app(toState));
-      // console.log($permissions.app(toState));
-      if (event.name != 'home' && !$permissions.app(toState)) {
-        $state.go('home');
-      }
-    })
-
-
   }
 ]);
 

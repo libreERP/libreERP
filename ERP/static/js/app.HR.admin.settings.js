@@ -168,28 +168,45 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
 
 })
 
-app.controller('admin.settings' , function($scope , $http , $aside , $state, Flash , $users , $filter){
+app.controller('admin.settings.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
   // settings main page controller
 
-  $scope.getState = function(index){
-    parts = $scope.applications[index].name.split('.');
+  var getState = function(input){
+    parts = input.name.split('.');
     // console.log(parts);
     if (parts[0] == 'configure') {
-      return  'admin.settings.configure ({canConfigure :' + $scope.applications[index].canConfigure + ', app :"' + parts[2] + '"})'; ;
+      return  'admin.settings.configure ({canConfigure :' + input.canConfigure + ', app :"' + parts[2] + '"})'; ;
     } else {
-      return $scope.applications[index].name.replace('sudo' , 'admin')
+      return input.name.replace('sudo' , 'admin')
     }
   }
 
-  $http({method : 'GET' , url : '/api/ERP/application/?name__contains=settings&module=2'}).
-  then(function(response){
-    $scope.applications = response.data;
-  }, function(response){
+  $scope.apps = [];
 
-  })
+  $scope.buildMenu = function(apps){
+    for (var i = 0; i < apps.length; i++) {
+      a = apps[i];
+      parts = a.name.split('.');
+      if (a.module != 2 || parts.length != 3) {
+        continue;
+      }
+      a.state = getState(a)
+      a.dispName = parts[parts.length -1];
+      $scope.apps.push(a);
+    }
+  }
+
+  as = $permissions.app();
+  if(typeof as.success == 'undefined'){
+    $scope.buildMenu(as);
+  } else {
+    as.success(function(response){
+      $scope.buildMenu(response);
+    });
+  };
 
   $scope.isActive = function(index){
-    app = $scope.applications[index]
+    app = $scope.apps[index]
     if (angular.isDefined($state.params.app)) {
       return $state.params.app == app.name.split('.')[2]
     } else {

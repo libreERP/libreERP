@@ -1,13 +1,11 @@
 <div class="panel panel-default">
   <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
-    <div class="panel-title" align="left"><i class="fa fa-users"></i>  Employees</div>
+    <div class="panel-title" align="left"><i class="fa fa-cogs"></i>  Manage </div>
   </div>
   <div id="collapseFive" class="panel-collapse collapse {% ifequal 'employees' navContext %} in {% endifequal %}">
     <div class="panel-body">
       <ul class="nav" >
-        <!-- <li ><a ui-sref="admin.leaveManagement"><i class="fa fa-calendar"></i> Leave management</a></li> -->
-        <li ><a ui-sref="admin.manageUsers"><i class="fa fa-user-plus"></i> Manage Users</a></li>
-        <li><a ui-sref="admin.settings"><i class="fa fa-wrench"></i> Global Settings</a></li>
+        <li ng-repeat="a in apps"><a ui-sref="{{a.state}}"><i class="fa {{a.icon}}"></i> {{a.dispName | humanize}}</a></li>
       </ul>
     </div>
   </div>

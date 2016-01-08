@@ -94,7 +94,7 @@
     "model" : "ERP.application",
     "pk" : 8,
     "fields" : {
-      "icon" : "fa-cogs",
+      "icon" : "fa-user",
       "name" : "sudo.manageUsers",
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
@@ -198,6 +198,19 @@
     "model" : "ERP.application",
     "pk" : 16,
     "fields" : {
+      "icon" : "fa-wrench",
+      "name" : "sudo.settings",
+      "created" : "2016-01-03 00:44:00.737000",
+      "module" : 2,
+      "description" : "settings tab in the admin panel, if any of the configure.settings.[app] is assigned to this user this app is accesible to this user",
+      "owners": [],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 17,
+    "fields" : {
       "icon" : "fa-shopping-cart",
       "name" : "app.ecommerce",
       "created" : "2016-01-03 00:44:00.737000",
@@ -209,7 +222,7 @@
   },
   {
     "model" : "ERP.application",
-    "pk" : 17,
+    "pk" : 18,
     "fields" : {
       "icon" : "fa-shopping-cart",
       "name" : "configure.settings.ecommerce",

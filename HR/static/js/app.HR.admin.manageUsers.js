@@ -28,18 +28,18 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
 
   $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
     others : [{icon : '' , text : 'social' },
-      {icon : '' , text : 'learning' },
-      {icon : '' , text : 'leaveManagement' },
+      // {icon : '' , text : 'learning' },
+      // {icon : '' , text : 'leaveManagement' },
       {icon : '' , text : 'editProfile' },
       {icon : '' , text : 'editDesignation' },
       {icon : '' , text : 'editPermissions' },
       {icon : '' , text : 'editMaster' },]
     };
 
-  $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
-    {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
-    {icon : 'fa fa-envelope-o' , text : 'message' },
-  ];
+  // $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
+  //   {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
+  //   {icon : 'fa fa-envelope-o' , text : 'message' },
+  // ];
 
   $scope.tableAction = function(target , action , mode){
     // target is the url of the object

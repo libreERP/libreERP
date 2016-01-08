@@ -21,6 +21,8 @@ class moduleViewSet(viewsets.ModelViewSet):
     filter_fields = ['name']
     def get_queryset(self):
         u = self.request.user
+        if u.is_superuser:
+            return module.objects.all()
         ma = []
         for m in application.objects.filter(owners__in = [u,]).values('module').distinct():
             ma.append(m['module'])

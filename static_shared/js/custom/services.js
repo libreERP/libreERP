@@ -37,7 +37,12 @@ app.factory('$permissions', function($http){
   $http({method : 'GET' , url : '/api/ERP/module/'}).
   then(function(response){
     modules = response.data;
-    console.log(modules);
+    // console.log(modules);
+  })
+
+  $http({method : 'GET' , url : '/api/ERP/application/'}).
+  then(function(response){
+    apps = response.data;
   })
 
   return {
@@ -50,13 +55,23 @@ app.factory('$permissions', function($http){
       return modules;
     },
     app : function(input){
+
       // similar to above
+      if (typeof input != 'undefined') {
+        for (var i = 0; i < apps.length; i++) {
+          if (apps[i].name == input){
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
       if (apps.length == 0) {
         return $http.get('/api/ERP/application/')
       }
       return apps;
     },
-    action : function(input){
+    action : function(){
       // similar to above
 
 
