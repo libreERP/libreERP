@@ -1,0 +1,12 @@
+<div class="panel panel-default">
+  <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+    <div class="panel-title" align="left"><i class="fa fa-puzzle-piece"></i>  Apps </div>
+  </div>
+  <div id="collapseFive" class="panel-collapse collapse {% ifequal 'employees' navContext %} in {% endifequal %}">
+    <div class="panel-body">
+      <ul class="nav" >
+        <li ng-repeat="a in apps"><a ui-sref="{{a.state}}"><i class="fa {{a.icon}}"></i> {{a.dispName | humanize}}</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -8,7 +8,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "Dashboard shows the whats next for each employee. It fetches the important notification from all the other application the user have access to.",
-      "owners": [2],
+      "owners": [],
       "canConfigure": null
     }
   },
@@ -34,7 +34,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 1,
       "description" : "Social networking application",
-      "owners": [2,4],
+      "owners": [],
       "canConfigure": null
     }
   },
@@ -86,7 +86,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "Search users, initiate IM and access their social profile",
-      "owners": [3],
+      "owners": [],
       "canConfigure": null
     }
   },
@@ -99,7 +99,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "creat user, update master data including password resetting, profile editor, designation editor",
-      "owners": [2],
+      "owners": [],
       "canConfigure": null
     }
   },
@@ -125,7 +125,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for dashboard",
-      "owners": [2],
+      "owners": [],
       "canConfigure": 1
     }
   },
@@ -138,7 +138,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for mail",
-      "owners": [2],
+      "owners": [],
       "canConfigure": 2
     }
   },
@@ -151,7 +151,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for social",
-      "owners": [2],
+      "owners": [],
       "canConfigure": 3
     }
   },
@@ -177,7 +177,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "configure settings for calendar",
-      "owners": [2],
+      "owners": [],
       "canConfigure": 5
     }
   },
@@ -203,7 +203,7 @@
       "created" : "2016-01-03 00:44:00.737000",
       "module" : 2,
       "description" : "settings tab in the admin panel, if any of the configure.settings.[app] is assigned to this user this app is accesible to this user",
-      "owners": [],
+      "owners": [1],
       "canConfigure": null
     }
   },

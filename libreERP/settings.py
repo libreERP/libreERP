@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'social', # social networking client
     'homepage', # landing page
     'mail', # mail application
+    'businessManagement', # BM application
 
 )
 
