@@ -32,12 +32,14 @@ MEDIA_TYPE_CHOICES = (
     ('onlineVideo' , 'onlineVideo'),
     ('video' , 'video'),
     ('image' , 'image'),
+    ('onlineImage' , 'onlineImage'),
+    ('doc' , 'doc'),
 )
 
 class media(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceMediaUploads' , null = False)
     created = models.DateTimeField(auto_now_add = True)
-    link = models.TextField(null = False , max_length = 300) # can be youtube link or an image link
+    link = models.TextField(null = True , max_length = 300) # can be youtube link or an image link
     attachment = models.FileField(upload_to = getEcommercePictureUploadPath , null = True ) # can be image , video or document
     mediaType = models.CharField(choices = MEDIA_TYPE_CHOICES , max_length = 10 , default = 'image')
 
@@ -109,5 +111,5 @@ class listing(models.Model):
     approved = models.BooleanField(default = False)
     category = models.CharField(choices = CATEGORY_CHOICES , default = 'service' , max_length = 15)
     specifications = models.TextField(max_length = 2000 , null = False) # JSON data with key from one of the spec and value as the value for this perticular item
-    files = models.ForeignKey(media , related_name='listings' , null = True)
+    files = models.ManyToManyField(media , related_name='listings')
     parentType = models.ForeignKey(genericProduct , related_name='products' , null = True)

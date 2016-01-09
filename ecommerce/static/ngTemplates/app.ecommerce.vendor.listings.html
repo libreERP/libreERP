@@ -2,4 +2,146 @@
 <div class="container-fluid">
 
 
+  <uib-tabset>
+    <uib-tab >
+      <uib-tab-heading>
+        New  <i class="fa fa-plus"></i>
+      </uib-tab-heading>
+      <div ng-if="data.mode == 'select'">
+        <div class="container-fluid" style="margin-top:100px;">
+          <h3 class="text-center" style="margin-bottom:40px;">
+            <i class="fa fa-search-plus fa-4x" style="color:#c13900;"></i>
+          </h3>
+          <div class="input-group input-group-lg col-md-6 col-md-offset-3">
+            <input uib-typeahead="type as type.name for type in genericProductSearch($viewValue)" ng-model="data.genericProduct" type="text" class="form-control" placeholder="Search and create a listing">
+            <span class="input-group-addon btn btn-primary" ng-click="buildForm()"> Create <i class="fa fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+      <div ng-if="data.mode == 'create'">
+        <h3>
+          Create a {{data.genericProduct.name}} listing
+        </h3>
+        <div class="row">
+          <div  class="col-md-6">
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" ng-model = "data.form.description" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>Enable COD</label>
+              <input type="checkbox" ng-model = "data.form.cod" >
+            </div>
+
+            <div class="form-group">
+              <label>Availability</label>
+              <select class="form-control" ng-model = "data.form.availability">
+                <option value = "local">local</option>
+                <option value = "state">state</option>
+                <option value = "national">National</option>
+                <option value = "international">International</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Price Model</label>
+              <select class="form-control" ng-model = "data.form.priceModel">
+                <option value = "quantity">Quantity</option>
+                <option value = "weight">Weight</option>
+                <option value = "time">Time</option>
+                <option value = "custom">Custom</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Free returns available</label>
+              <input type="checkbox" ng-model = "data.form.freeReturns" >
+            </div>
+
+            <div class="form-group">
+              <label>Replacement Period</label>
+              <input type="text" ng-model = "data.form.replacementPeriod" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label>Shipping Options</label>
+              <select class="form-control" ng-model = "data.form.shippingOptions">
+                <option value = "pickup">Pickup</option>
+                <option value = "homeDelivary">Home Delivary</option>
+                <option value = "time">time</option>
+                <option value = "custom">custom</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Category</label>
+              <select class="form-control" ng-model = "data.form.category">
+                <option value = "product">Product</option>
+                <option value = "service">Service</option>
+              </select>
+            </div>
+
+            <div ng-repeat="f in data.genericProduct.fields">
+              <div class="form-group">
+                <label>{{f.name}}</label>
+                <input ng-if="f.fieldType == 'char'" type="text" class="form-control" placeholder="{{f.helpText}}" ng-model="f.default">
+                <p class="help-block">{{f.helpText}}.</p>
+              </div>
+
+            </div>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Go back</button>
+              <button type="button" class="btn btn-default" ng-click="preview()">Preview </button>
+              <button type="button" class="btn btn-primary" ng-click="submitListing()">Submit </button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add a media file <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a ng-click="switchMediaMode('image')" href="">Image</a></li>
+                <li><a ng-click="switchMediaMode('doc')" href="">Document</a></li>
+                <li><a ng-click="switchMediaMode('video')" href="">Upload a video</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a ng-click="switchMediaMode('onlineVideo')" href="">Link a youtube video</a></li>
+                <li><a ng-click="switchMediaMode('onlineImage')" href="">Link an image</a></li>
+              </ul>
+            </div>
+            <div ng-if="data.form.mediaType != ''" style="padding-top:20px;">
+              <div class="form-group" ng-if="['image' , 'doc' , 'video'].indexOf(data.form.mediaType) != -1">
+                <label> Upload {{data.form.mediaType | humanize}}</label>
+                <input type="file" file-model="data.form.file">
+                <p class="help-block">Select the file.</p>
+              </div>
+              <div ng-if="['image' , 'doc' , 'video'].indexOf(data.form.mediaType) == -1">
+                <div class="form-group">
+                  <label>Provide the link for {{data.form.mediaType | humanize}}</label>
+                  <input type="text" ng-model = "data.form.url" class="form-control" placeholder="Enter the link including http://">
+                </div>
+              </div>
+              <button type="button" ng-click="postMedia()" class="btn btn-primary">Attach</button>
+
+              <hr>
+
+              <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-6" style="padding:10px;" ng-repeat= "f in data.form.files">
+                  <img ng-if="f.mediaType == 'image'" class="shaddowed" ng-src="{{f.attachment}}"  height="50" width="90"/>
+                  <img ng-if="f.mediaType == 'onlineImage'" class="shaddowed" ng-src="{{f.link}}"  height="50" width="90"/>
+                  <div ng-if="['video' , 'doc' , 'onlineVideo'].indexOf(f.mediaType) ! = -1">
+                    <a href="{{f.link}}">{{f.link}}</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </uib-tab>
+  </uib-tabset>
+
 </div>
