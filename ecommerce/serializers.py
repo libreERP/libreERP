@@ -11,12 +11,12 @@ from rest_framework.response import Response
 class fieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = field
-        fields = ( 'pk', 'fieldType' , 'unit' ,'name' , 'created' , 'helpText')
+        fields = ( 'pk', 'fieldType' , 'unit' ,'name' , 'created' , 'helpText' , 'default')
 
 class genericTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = genericType
-        fields = ('pk' , 'name' )
+        fields = ('pk' , 'name' , 'icon')
 
 class genericProductSerializer(serializers.ModelSerializer):
     fields = fieldSerializer(many = True, read_only = True)
@@ -24,7 +24,15 @@ class genericProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = genericProduct
         fields = ('pk' , 'fields' , 'name' , 'created' , 'productType')
-
+    def create(self , validated_data):
+        gp = genericProduct()
+        gp.productType = genericType.objects.get(pk = self.context['request'].data['productType'])
+        gp.name = validated_data.pop('name')
+        gp.save()
+        for f in self.context['request'].data['fields']:
+            gp.fields.add(field.objects.get(pk = f))
+        gp.save()
+        return gp
 
 class addressSerializer(serializers.ModelSerializer):
     class Meta:

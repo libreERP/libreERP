@@ -17,7 +17,8 @@ class fieldViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
     queryset = field.objects.all()
     serializer_class = fieldSerializer
-
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class genericTypeViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin, )

@@ -35,12 +35,12 @@ app.config(function($stateProvider){
     controller: 'businessManagement.ecommerce.earnings'
   })
   .state('businessManagement.ecommerce.support', {
-    url: "/earnings",
+    url: "/support",
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.support.html',
     controller: 'businessManagement.ecommerce.support'
   })
   .state('businessManagement.ecommerce.admin', {
-    url: "/earnings",
+    url: "/admin",
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.admin.html',
     controller: 'businessManagement.ecommerce.admin'
   })
@@ -64,6 +64,67 @@ app.controller('businessManagement.ecommerce.earnings' , function($scope , $http
 });
 
 app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+  $scope.typeSearch = function(query) {
+    return $http.get('/api/ecommerce/genericType/?name__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  },
+
+  $scope.getFieldsSuggestions = function(query){
+    return $http.get('/api/ecommerce/field/?name__contains='+ query)
+  }
+
+
+  $scope.data = {mode : 'field'};
+  $scope.submit = function(){
+    console.log($scope.data);
+    console.log($scope.data.mode);
+    d = $scope.data;
+    if ($scope.data.mode == 'field') {
+      dataToSend = {
+        type : d.type,
+        name : d.name,
+        unit : d.unit,
+        helpText : d.helpText,
+        default : d.default,
+      };
+
+      url = '/api/ecommerce/field/';
+    } else if($scope.data.mode == 'genericType'){
+      dataToSend = {
+        name : d.name,
+        icon : d.icon,
+      };
+      url = '/api/ecommerce/genericType/';
+    } else if ($scope.data.mode == 'genericProduct') {
+      fs = [];
+      for (var i = 0; i < d.fields.length; i++) {
+        fs.push(d.fields[i].pk);
+      }
+      console.log(fs);
+      if (fs.length == 0) {
+        Flash.create('danger' , 'No fields selected')
+        return;
+      }
+      dataToSend = {
+        name : d.name,
+        productType : d.productType.pk,
+        fields : fs,
+      }
+      url = '/api/ecommerce/genericProduct/';
+    }
+
+    $http({method : 'POST' , url : url , data : dataToSend}).
+    then(function(response){
+      $scope.data = {mode : $scope.data.mode}
+      Flash.create('success', response.status + ' : ' + response.statusText );
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText );
+    })
+  }
+
 
 });
 

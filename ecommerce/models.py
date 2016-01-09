@@ -46,20 +46,23 @@ FIELD_TYPE_CHOCIE = (
     ('boolean' , 'boolean'),
     ('float' , 'float'),
     ('date' , 'date'),
+    ('choice' , 'choice'),
 )
 
-class field(models.Model):
+class field(models.Model): # this will be used to build the form to be used to post a listing
     fieldType = models.CharField(choices = FIELD_TYPE_CHOCIE , default = 'char' , max_length = 15)
-    unit = models.CharField( null = False , max_length = 15)
-    name = models.CharField( null = False , max_length = 15)
+    unit = models.CharField( null = True , max_length = 15)
+    name = models.CharField( null = False , max_length = 15 , unique = True)
     created = models.DateTimeField(auto_now_add = True)
     helpText = models.CharField(max_length = 100 , blank = True)
+    default = models.CharField(max_length = 100 , blank = True)
 
-class genericType(models.Model):
+class genericType(models.Model): # such as bike , modile , electronics etc
     name = models.CharField( null = False , max_length = 15)
+    icon = models.CharField( null = True , max_length = 15) # on the category selection pane this icon will be shown along with the name
     created = models.DateTimeField(auto_now_add = True)
 
-class genericProduct(models.Model):
+class genericProduct(models.Model): # such as MI5, Nokia N8 etc
     fields = models.ManyToManyField(field , related_name = 'products' , blank = True)
     name = models.CharField( null = False , max_length = 15)
     created = models.DateTimeField(auto_now_add = True)
@@ -76,6 +79,7 @@ AVAILABILITY_CHOICES = (
 
 PRICE_MODEL_CHOICES = (
     ('quantity' , 'quantity'),
+    ('weight' , 'weight'),
     ('time' , 'time'),
     ('custom' , 'custom'),
 )

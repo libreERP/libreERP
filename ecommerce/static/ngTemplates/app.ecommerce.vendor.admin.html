@@ -1,5 +1,101 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
 
+  <uib-tabset>
+    <uib-tab >
+      <uib-tab-heading>
+        New  <i class="fa fa-plus"></i>
+      </uib-tab-heading>
+      <div class="col-md-6" style="margin-top:10px;">
+        <div class="form-group">
+          <label> Type {{mode}}</label>
+          <select class="form-control" ng-model="data.mode">
+            <option value = "field">Field</option>
+            <option value = "genericType">Generic Type</option>
+            <option value = "genericProduct">Generic Product</option>
+            <!-- actual form building as seen by the vendor is in generic product-->
+          </select>
+
+          <p class="help-block">Field is to create a property of a genric product. An example can be weight , screen size , power and so on.</p>
+          <p class="help-block">After creating the property field we need to create a genericType , you can think of this as a category of the product like Washing machine , electronics</p>
+          <p class="help-block">Now you have fields and a product type, now we can create a product. This is nothing but linking the properties to the category.
+          So that any vendor posting this product will have to provide all the fields. Here you can select by searching the field name</p>
+        </div>
+      </div>
+      <div class="col-md-6" style="margin-top:10px;">
+        <div ng-if="data.mode == 'field'" >
+          <div class="form-group" ng-init="data.type = 'char'">
+            <label>Type</label>
+            <select class="form-control" ng-model="data.type" >
+              <option value="char">char</option>
+              <option value="boolean">boolean</option>
+              <option value="float">float</option>
+              <option value="date">date</option>
+              <option value="choice">choice</option>
+            </select>
+            <p class="help-block">Select the type of this field.</p>
+          </div>
+
+          <div class="form-group">
+            <label > Name</label>
+            <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this field , For eg. Length">
+          </div>
+
+          <div class="form-group">
+            <label > Unit</label>
+            <input type="text" class="form-control" ng-model="data.unit" placeholder="Unit of this field , For eg. mm">
+          </div>
+
+          <div class="form-group">
+            <label > Help text</label>
+            <textarea rows="8" cols="40" class="form-control" ng-model="data.helpText"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label > Default</label>
+            <input type="text" class="form-control" ng-model="data.default" placeholder="Default value for this field of this field , For eg. mm">
+          </div>
+        </div>
+        <div ng-if="data.mode == 'genericType'">
+          <div class="form-group">
+            <label > Name</label>
+            <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this type of product ">
+          </div>
+          <div class="form-group">
+            <label > Icon</label>
+            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this type of the product , For eg. fa-mobile-phone">
+          </div>
+        </div>
+
+        <div ng-if="data.mode == 'genericProduct'">
+          <div class="form-group">
+            <label > Name</label>
+            <input ng-model="data.name" type="text" class="form-control" placeholder="Name of this product ">
+          </div>
+          <div class="form-group">
+            <label > Product Type</label>
+            <input uib-typeahead="type as type.name for type in typeSearch($viewValue)" ng-model="data.productType" type="text" class="form-control" placeholder="Select the product type">
+          </div>
+          <div class="form-group">
+            <label > Property Fields</label>
+            <tags-input ng-model="data.fields" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="name">
+              <auto-complete source="getFieldsSuggestions($query)" load-on-down-arrow="true"></auto-complete>
+            </tags-input>
+          </div>
+
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="submit()">Submit</button>
+      </div>
+
+    </uib-tab>
+    <uib-tab >
+      <uib-tab-heading>
+        Search  <i class="fa fa-search"></i>
+      </uib-tab-heading>
+
+
+    </uib-tab>
+  </uib-tabset>
+
 
 </div>
