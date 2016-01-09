@@ -8,3 +8,8 @@
   border-right: solid 6px white;
 	color: #fff;
 }
+
+.register {
+    background-image: url("/static/images/register.jpg");
+    background-color: #cccccc;
+}

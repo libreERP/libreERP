@@ -88,12 +88,26 @@
       </div>
 
     </uib-tab>
-    <uib-tab >
+    <uib-tab>
       <uib-tab-heading>
-        Search  <i class="fa fa-search"></i>
+        Fields  <i class="fa fa-list-ul"></i>
       </uib-tab-heading>
-
-
+      <generic-Table resource-Url = "{{'/api/ecommerce/field/'}}" search="true"
+          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        Generic Type  <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+      <generic-Table resource-Url = "{{'/api/ecommerce/genericType/'}}" search="true"
+          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        Generic Product  <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+      <generic-Table resource-Url = "{{'/api/ecommerce/genericProduct/'}}" search="true"
+          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
     </uib-tab>
   </uib-tabset>
 

@@ -12,6 +12,8 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 
+def ecommerceHome(request):
+    return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 class fieldViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
@@ -51,3 +53,5 @@ class listingViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
     queryset = listing.objects.all()
     serializer_class = listingSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['description']

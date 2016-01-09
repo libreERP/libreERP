@@ -58,6 +58,22 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
 
   $scope.data = {mode : 'select' , form : form };
 
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
+
+  // $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
+  //   others : [{icon : '' , text : 'social' },
+  //     // {icon : '' , text : 'learning' },
+  //     // {icon : '' , text : 'leaveManagement' },
+  //     {icon : '' , text : 'editProfile' },
+  //     {icon : '' , text : 'editDesignation' },
+  //     {icon : '' , text : 'editPermissions' },
+  //     {icon : '' , text : 'editMaster' },]
+  //   };
+
+
+
+
   $scope.genericProductSearch = function(query) {
     return $http.get('/api/ecommerce/genericProduct/?name__contains=' + query).
     then(function(response){
@@ -156,6 +172,9 @@ app.controller('businessManagement.ecommerce.earnings' , function($scope , $http
 });
 
 app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
 
   $scope.typeSearch = function(query) {
     return $http.get('/api/ecommerce/genericType/?name__contains=' + query).
