@@ -34,6 +34,16 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.earnings.html',
     controller: 'businessManagement.ecommerce.earnings'
   })
+  .state('businessManagement.ecommerce.support', {
+    url: "/earnings",
+    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.support.html',
+    controller: 'businessManagement.ecommerce.support'
+  })
+  .state('businessManagement.ecommerce.admin', {
+    url: "/earnings",
+    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.admin.html',
+    controller: 'businessManagement.ecommerce.admin'
+  })
 
 });
 
@@ -50,6 +60,14 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
 });
 
 app.controller('businessManagement.ecommerce.earnings' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+});
+
+app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+});
+
+app.controller('businessManagement.ecommerce.support' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
 });
 
@@ -84,6 +102,8 @@ app.controller('businessManagement.ecommerce.menu' , function($scope , $http , $
     {name : 'app.ecommerce.listings' , module : 3 , icon : 'fa-list-alt'},
     {name : 'app.ecommerce.orders' , module : 3, icon : 'fa-shopping-bag'},
     {name : 'app.ecommerce.earnings' , module : 3, icon : 'fa-credit-card'},
+    {name : 'app.ecommerce.admin' , module : 3, icon : 'fa-wrench'},
+    {name : 'app.ecommerce.support' , module : 3, icon : 'fa-phone'},
   ];
 
   if(typeof as.success == 'undefined'){

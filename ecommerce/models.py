@@ -41,6 +41,32 @@ class media(models.Model):
     attachment = models.FileField(upload_to = getEcommercePictureUploadPath , null = True ) # can be image , video or document
     mediaType = models.CharField(choices = MEDIA_TYPE_CHOICES , max_length = 10 , default = 'image')
 
+FIELD_TYPE_CHOCIE = (
+    ('char' , 'char'),
+    ('boolean' , 'boolean'),
+    ('float' , 'float'),
+    ('date' , 'date'),
+)
+
+class field(models.Model):
+    fieldType = models.CharField(choices = FIELD_TYPE_CHOCIE , default = 'char' , max_length = 15)
+    unit = models.CharField( null = False , max_length = 15)
+    name = models.CharField( null = False , max_length = 15)
+    created = models.DateTimeField(auto_now_add = True)
+    helpText = models.CharField(max_length = 100 , blank = True)
+
+class genericType(models.Model):
+    name = models.CharField( null = False , max_length = 15)
+    created = models.DateTimeField(auto_now_add = True)
+
+class genericProduct(models.Model):
+    fields = models.ManyToManyField(field , related_name = 'products' , blank = True)
+    name = models.CharField( null = False , max_length = 15)
+    created = models.DateTimeField(auto_now_add = True)
+    productType = models.ForeignKey(genericType , related_name='products' , null = False)
+
+
+
 AVAILABILITY_CHOICES = (
     ('local' , 'local'),
     ('state' , 'state'),
@@ -79,27 +105,5 @@ class listing(models.Model):
     approved = models.BooleanField(default = False)
     category = models.CharField(choices = CATEGORY_CHOICES , default = 'service' , max_length = 15)
     specifications = models.TextField(max_length = 2000 , null = False) # JSON data with key from one of the spec and value as the value for this perticular item
-
-FIELD_TYPE_CHOCIE = (
-    ('char' , 'char'),
-    ('boolean' , 'boolean'),
-    ('float' , 'float'),
-    ('date' , 'date'),
-)
-
-class spec(models.Model):
-    fieldType = models.CharField(choices = FIELD_TYPE_CHOCIE , default = 'char' , max_length = 15)
-    unit = models.CharField( null = False , max_length = 15)
-    name = models.CharField( null = False , max_length = 15)
-    created = models.DateTimeField(auto_now_add = True)
-    helpText = models.CharField(max_length = 100 , blank = True)
-
-class genericType(models.Model):
-    name = models.CharField( null = False , max_length = 15)
-    created = models.DateTimeField(auto_now_add = True)
-
-class genericProduct(models.Model):
-    fields = models.ManyToManyField(spec , related_name = 'products' , blank = True)
-    name = models.CharField( null = False , max_length = 15)
-    created = models.DateTimeField(auto_now_add = True)
-    productType = models.ForeignKey(genericType , related_name='products' , null = False)
+    files = models.ForeignKey(media , related_name='listings' , null = True)
+    parentType = models.ForeignKey(genericProduct , related_name='products' , null = True)
