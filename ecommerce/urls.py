@@ -10,6 +10,8 @@ router.register(r'address' , addressViewSet , base_name = 'address')
 router.register(r'service' , serviceViewSet , base_name = 'service')
 router.register(r'media' , mediaViewSet , base_name = 'media')
 router.register(r'listing' , listingViewSet , base_name = 'listing')
+router.register(r'order' , orderViewSet , base_name = 'order')
+router.register(r'saved' , savedViewSet , base_name = 'saved')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

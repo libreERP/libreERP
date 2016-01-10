@@ -55,3 +55,13 @@ class listingViewSet(viewsets.ModelViewSet):
     serializer_class = listingSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['description']
+
+class orderViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated , )
+    queryset = order.objects.all()
+    serializer_class = orderSerializer
+
+class savedViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated , )
+    queryset = saved.objects.all()
+    serializer_class = savedSerializer

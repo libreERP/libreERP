@@ -65,13 +65,25 @@ class listingSerializer(serializers.ModelSerializer):
     files = mediaSerializer(many = True , read_only = True)
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'description' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType')
+        fields = ('pk' , 'user' , 'description' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user
         l.save()
-        for m in self.context['request'].data['files']:
-            l.files.add(media.objects.get(pk = m))
+        if 'files' in self.context['request'].data:
+            for m in self.context['request'].data['files']:
+                l.files.add(media.objects.get(pk = m))
         l.parentType = genericProduct.objects.get(pk = self.context['request'].data['parentType'])
         l.save()
         return l
+
+class orderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = order
+        files = ('pk' , 'user' , 'created' , 'item' , 'paymentType' , 'paid')
+
+
+class savedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = saved
+        files = ('pk' , 'user' , 'created' , 'item' )

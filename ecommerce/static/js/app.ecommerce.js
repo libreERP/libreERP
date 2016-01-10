@@ -38,7 +38,9 @@ app.config(function($stateProvider ){
 
 });
 
-app.controller('main' , function($scope , $state , $aside , $http , $timeout , $uibModal ){
+app.controller('main' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users){
+  $scope.me = $users.get('mySelf')
+  $scope.inCart = [];
   console.log("main");
   $scope.headerUrl = '/static/ngTemplates/app.ecommerce.header.html';
   $scope.footerUrl = '/static/ngTemplates/app.ecommerce.footer.html';
@@ -55,11 +57,22 @@ app.controller('main' , function($scope , $state , $aside , $http , $timeout , $
 app.controller('controller.ecommerce.public' , function($scope , $state , $http){
   console.log("public");
   $scope.listings = [];
+
+  $scope.addToCart = function(input){
+    $scope.inCart.push(input);
+  }
+
+  $scope.changePicture = function(parent , pic){
+    $scope.listings[$scope.listings.indexOf(parent)].pictureInView = pic;
+  }
+
+
   $http({method : "GET" , url : '/api/ecommerce/listing/'}).
   then(function(response){
     for (var i = 0; i < response.data.length; i++) {
       l = response.data[i];
       l.specifications = JSON.parse(l.specifications);
+      l.pictureInView = 0;
       $scope.listings.push(l);
     }
   })

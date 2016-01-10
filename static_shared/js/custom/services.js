@@ -1,8 +1,5 @@
 app.factory('$users', function(){
   var userProfiles = [];
-  var userSocialPosts = [];
-  var userSocialAlbums = [];
-  var userSocialPictures = [];
 
   return {
     get : function(input , refetch){
@@ -16,8 +13,12 @@ app.factory('$users', function(){
       if (typeof userProfiles[input]=="undefined" || refetch) {
         if (input=='mySelf') {
           me = myProfile();
-          userProfiles["mySelf"] = me;
-          userProfiles[getPK(me.url).toString()] = me;
+          if (me != null){
+            userProfiles["mySelf"] = me;
+            userProfiles[getPK(me.url).toString()] = me;
+          }else {
+            userProfiles["mySelf"] = null;
+          }
         } else {
           url = '/api/HR/users/' + input + '/'
           var user = getUser(url);
@@ -86,11 +87,13 @@ function myProfile(){
   var httpRequest = new XMLHttpRequest()
   httpRequest.open('GET', "/api/HR/users/?mode=mySelf&format=json" , false);
   httpRequest.send(null);
-  if (httpRequest.status === 200) { // successfully
+  if (httpRequest.status == 200) { // successfully
     var temp = JSON.parse(httpRequest.responseText);
     me = temp[0];
     me.url = me.url.split('?')[0]
     return me;
+  } else if (httpRequest.status == 403) {
+    return null;
   }
 }
 
@@ -105,7 +108,7 @@ function getUser(urlGet , mode){
   var httpRequest = new XMLHttpRequest()
   httpRequest.open('GET', urlGet , false);
   httpRequest.send(null);
-  if (httpRequest.status === 200) { // successfully
+  if (httpRequest.status == 200) { // successfully
     user = JSON.parse(httpRequest.responseText);
     user.url = user.url.split('?')[0];
     return user

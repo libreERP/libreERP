@@ -113,3 +113,28 @@ class listing(models.Model):
     specifications = models.TextField(max_length = 2000 , null = False) # JSON data with key from one of the spec and value as the value for this perticular item
     files = models.ManyToManyField(media , related_name='listings')
     parentType = models.ForeignKey(genericProduct , related_name='products' , null = True)
+    rate = models.PositiveIntegerField(null = True)
+
+PAYMENT_TYPE_CHOICES = (
+    ('onlineBanking' , 'onlineBanking'),
+    ('COD' , 'COD'),
+    ('eMoney' , 'eMoney'),
+)
+
+class order(models.Model):
+    user = models.ForeignKey(User , related_name = 'ecommerceOrders' , null = False)
+    created = models.DateTimeField(auto_now_add = True)
+    item = models.ForeignKey(listing , related_name = 'orders' , null = False)
+    paymentType = models.CharField(choices = PAYMENT_TYPE_CHOICES , max_length = 15 , default = 'COD')
+    paid = models.BooleanField(default = False)
+
+SAVED_TYPE_CHOICES = (
+    ('cart' , 'cart'),
+    ('wishlist' , 'wishlist'),
+)
+
+class saved(models.Model):
+    user = models.ForeignKey(User , related_name = 'ecommerceCart' , null = False)
+    created = models.DateTimeField(auto_now_add = True)
+    item = models.ForeignKey(listing , related_name = 'inCarts' , null = False)
+    category = models.CharField(choices = SAVED_TYPE_CHOICES , max_length = 15 , default = 'cart')

@@ -121,7 +121,12 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
     specs = [];
     for (var i = 0; i < $scope.data.genericProduct.fields.length; i++) {
       f = $scope.data.genericProduct.fields[i];
-      specs.push(f);
+      toPush = {};
+      toPush['name'] = f.name;
+      toPush['value'] = f.default;
+      toPush['fieldType'] = f.default;
+      toPush['unit'] = f.unit;
+      specs.push(toPush);
     }
     dataToSend.specifications = JSON.stringify(specs)
     dataToSend.parentType = $scope.data.genericProduct.pk;
@@ -129,10 +134,11 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
     then(function(response){
       $scope.data.form.files = [];
       $scope.data.form.file = emptyFile;
-      for (key in $scope.data.form) {
-        if (key != 'files' && key !='file') {
-          $scope.data.form[key] = '';
-        }
+      $scope.data.form = {mediaType : '' , files : [] , file : emptyFile , url : '',
+        availability : 'local',
+        priceModel : 'quantity',
+        shippingOptions : 'pickup',
+        category : 'product',
       }
       for (var i = 0; i < $scope.data.genericProduct.fields.length; i++) {
         $scope.data.genericProduct.fields[i].default = '';
