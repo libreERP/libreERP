@@ -13,7 +13,7 @@ from .serializers import *
 from API.permissions import *
 
 def ecommerceHome(request):
-    return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
+    return render(request , 'ngEcommerce.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 class fieldViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )

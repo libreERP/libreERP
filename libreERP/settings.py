@@ -70,6 +70,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'HR', 'templates'),
             os.path.join(BASE_DIR, 'libreERP', 'templates'),
+            os.path.join(BASE_DIR, 'ecommerce', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_HEADERS = (
     'x-requested-with',

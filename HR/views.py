@@ -17,7 +17,10 @@ from API.permissions import *
 def loginView(request):
     authStatus = {'status' : 'default' , 'message' : '' }
     if request.user.is_authenticated():
-        return redirect(reverse('ERP'))
+        if request.GET:
+            return redirect(request.GET['next'])
+        else:
+            return redirect(reverse('ERP'))
     if request.method == 'POST':
     	username = request.POST['username']
     	password = request.POST['password']

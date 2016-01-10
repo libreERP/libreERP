@@ -118,18 +118,25 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
         dataToSend[key] = form[key];
       }
     }
-    specs = '{';
+    specs = [];
     for (var i = 0; i < $scope.data.genericProduct.fields.length; i++) {
       f = $scope.data.genericProduct.fields[i];
-      specs += f.name + ':' + f.default +',';
+      specs.push(f);
     }
-    specs += '}';
-    dataToSend.specifications = specs
+    dataToSend.specifications = JSON.stringify(specs)
     dataToSend.parentType = $scope.data.genericProduct.pk;
     $http({method : 'POST' , url : '/api/ecommerce/listing/' , data : dataToSend}).
     then(function(response){
-      console.log(response);
-
+      $scope.data.form.files = [];
+      $scope.data.form.file = emptyFile;
+      for (key in $scope.data.form) {
+        if (key != 'files' && key !='file') {
+          $scope.data.form[key] = '';
+        }
+      }
+      for (var i = 0; i < $scope.data.genericProduct.fields.length; i++) {
+        $scope.data.genericProduct.fields[i].default = '';
+      }
     })
 
 
@@ -190,12 +197,10 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
 
   $scope.data = {mode : 'field'};
   $scope.submit = function(){
-    console.log($scope.data);
-    console.log($scope.data.mode);
     d = $scope.data;
     if ($scope.data.mode == 'field') {
       dataToSend = {
-        type : d.type,
+        fieldType : d.type,
         name : d.name,
         unit : d.unit,
         helpText : d.helpText,
