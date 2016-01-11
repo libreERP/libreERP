@@ -1,0 +1,21 @@
+.sidebar-checkout> li > a {
+  color:white;
+}
+
+.sidebar-checkout> li > a:hover, .sidebar-checkout > li >a:focus , .sidebar-checkout> .active > a , .sidebarList> li > a:focus , .sidebarList> li > a:active , .activeTab{
+	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+	color: #fff;
+}
+
+.activeTab:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 15px;
+  right:-16px;
+  width: 30px;
+  height: 30px;
+  background: white;
+  -moz-transform:rotate(-45deg);
+  -webkit-transform:rotate(-45deg);
+}

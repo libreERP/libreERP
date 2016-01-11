@@ -63,5 +63,7 @@ class orderViewSet(viewsets.ModelViewSet):
 
 class savedViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )
-    queryset = saved.objects.all()
     serializer_class = savedSerializer
+    def get_queryset(self):
+        u = self.request.user
+        return saved.objects.filter(user = u)

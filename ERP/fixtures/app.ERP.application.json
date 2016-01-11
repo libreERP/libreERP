@@ -232,5 +232,70 @@
       "owners": [],
       "canConfigure": 16
     }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 19,
+    "fields" : {
+      "icon" : "fa-list-alt",
+      "name" : "app.ecommerce.listings",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Configure ecommerce settings ",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 20,
+    "fields" : {
+      "icon" : "fa-shopping-bag",
+      "name" : "app.ecommerce.orders",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Configure ecommerce settings ",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 21,
+    "fields" : {
+      "icon" : "fa-credit-card",
+      "name" : "app.ecommerce.earnings",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Configure ecommerce settings ",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 22,
+    "fields" : {
+      "icon" : "fa-wrench",
+      "name" : "app.ecommerce.admin",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Configure ecommerce settings ",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 23,
+    "fields" : {
+      "icon" : "fa-phone",
+      "name" : "app.ecommerce.support",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Configure ecommerce settings ",
+      "owners": [1],
+      "canConfigure": null
+    }
   }
 ]

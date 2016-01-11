@@ -272,7 +272,7 @@ app.controller('businessManagement.ecommerce.menu' , function($scope , $http , $
     for (var i = 0; i < apps.length; i++) {
       a = apps[i];
       parts = a.name.split('.');
-      if (a.module != 3 || parts.length != 3) {
+      if (a.module != 3 || parts.length != 3 || parts[1] != 'ecommerce') {
         continue;
       }
       a.state = getState(a)
@@ -281,14 +281,7 @@ app.controller('businessManagement.ecommerce.menu' , function($scope , $http , $
     }
   }
 
-  as = [
-    {name : 'app.ecommerce.listings' , module : 3 , icon : 'fa-list-alt'},
-    {name : 'app.ecommerce.orders' , module : 3, icon : 'fa-shopping-bag'},
-    {name : 'app.ecommerce.earnings' , module : 3, icon : 'fa-credit-card'},
-    {name : 'app.ecommerce.admin' , module : 3, icon : 'fa-wrench'},
-    {name : 'app.ecommerce.support' , module : 3, icon : 'fa-phone'},
-  ];
-
+  as = $permissions.app();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

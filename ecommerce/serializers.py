@@ -87,3 +87,6 @@ class savedSerializer(serializers.ModelSerializer):
     class Meta:
         model = saved
         files = ('pk' , 'user' , 'created' , 'item' )
+    def create(self ,  validated_data):
+        s , new = saved.objects.get_or_create(user = self.context['request'].user , item = validated_data.pop('item') , category = validated_data.pop('category'))
+        return s

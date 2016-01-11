@@ -1,0 +1,198 @@
+<div class="container-fluid" >
+  <div class="col-md-10 col-md-offset-1 card bg-white" style="display:block;position:relative;min-height:750px;padding-left:0px;">
+
+    <div class="col-md-2  bg-purple">
+      <div class="row" style="padding-left:40%; padding-top:20px;">
+        <i class="fa fa-shopping-cart fa-4x"></i>
+      </div>
+
+      <h4 style="text-align:center;text-transform:capitalize;">
+        Checkout
+      </h4>
+      <hr>
+      <div style="position:absolute;left:0px;width:100%;display:block;" class="bg-purple">
+        <ul class="nav padded sidebar-checkout" style="width:100%;padding:0px;margin:0px;display:block;height:603px;">
+          <li ng-class="{activeTab: data.stage == 'review'}">
+            <a >
+              <div align="center">
+                <i class="fa fa-check fa-2x pull-left"></i>
+                Review
+              </div>
+            </a>
+          </li>
+          <li ng-class="{activeTab: data.stage == 'shippingDetails'}">
+            <a >
+              <div align="center">
+                <i class="fa fa-truck fa-2x pull-left"></i>
+                Shipment details
+              </div>
+            </a>
+          </li>
+          <li ng-class="{activeTab: data.stage == 'payment'}">
+            <a  >
+              <div align="center">
+                <i class="fa fa-credit-card fa-2x pull-left"></i>
+                Pay
+              </div>
+            </a>
+          </li>
+          <li ng-if="data.stage=='confirmation'" ng-class="{activeTab: data.stage == 'confirmation'}">
+            <a  >
+              <div align="center">
+                <i class="fa fa-check-circle fa-2x pull-left"></i>
+                Confirmation
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-10">
+      <div class="container-fluid" style="margin-top:30px;">
+        <div ng-if="data.stage == 'review'">
+          <div class="row">
+            <div class="col-md-3">
+              <img style="width: 100%;" class="img" ng-src="{{item.files[0].attachment}}" >
+            </div>
+            <div class="col-md-3">
+              <div class="row">
+                <span style="font-size:25px;">{{item.description}}</span>
+              </div>
+              <div class="row">
+                <strong>Rate : </strong> {{item.rate}}
+                <span ng-if="item.priceModel=='time'">/ per Hour</span>
+                <span ng-if="item.priceModel=='quantity'">/ per Piece</span>
+                <span ng-if="item.priceModel=='weight'">/ per Kg</span>
+              </div>
+              <div class="row">
+                <strong>Seller : </strong> {{item.user.pk | getName}} <br>
+                <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
+                <br> Power Seller <i style="color:#db55e7;" class="fa fa-shield"></i>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="input-group">
+                <span class="input-group-addon">Quantity</span>
+                <input type="text" class="form-control" ng-model = "data.quantity">
+              </div>
+
+            </div>
+            <div class="col-md-3">
+              <span class="text-muted" style="font-size:20px;">Shipping method</span>
+              <br>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" ng-model="data.expresShipping">
+                  One day express
+                </label>
+                <p class="help-block">
+                  <i class="fa fa-inr"></i> 30 additional charge
+                </p>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" ng-model="data.normalShipping">
+                   7 Day
+                </label>
+                <p class="help-block">
+                  <i class="fa fa-inr"></i> No additional charge
+                </p>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row" style="margin-top:30px;padding:10px;">
+            <div class="col-md-6">
+              <div class="row">
+                <span class="text-muted" style="font-size:20px;">Subtotal</span>
+                <br>
+                <i class="fa fa-2x fa-inr"></i> {{item.rate}}
+              </div>
+              <hr>
+              <div class="row">
+                <div class="input-group pull-left" >
+                  <span class="input-group-addon">Coupon code</span>
+                  <input type="text" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-success pull-right" ng-click="next()">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- review page ends here  -->
+        <div ng-if="data.stage == 'shippingDetails'">
+          <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+              <h2>Address</h2>
+              <div class="form-group">
+                <label>Name : </label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Address : </label>
+                <textarea class="form-control"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Pincode : </label>
+                <input type="number" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>City : </label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>State : </label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Mobile no. : </label>
+                <input type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row" >
+            <button type="button" class="btn btn-default pull-left" ng-click="prev()">
+              Go back
+            </button>
+            <button type="button" class="btn btn-success pull-right" ng-click="next()">
+              Next
+            </button>
+          </div>
+        </div>
+        <!-- shippingDetails pane end here -->
+        <div ng-if="data.stage == 'payment'">
+
+          <div class="row">
+            <h1>COD</h1>
+          </div>
+
+          <div class="row" >
+            <button type="button" class="btn btn-default pull-left" ng-click="prev()">
+              Go back
+            </button>
+            <button type="button" class="btn btn-success btn-lg pull-right" ng-click="pay()">
+              Pay
+            </button>
+          </div>
+        </div>
+        <div ng-if="data.stage == 'confirmation'">
+          <h1>Thank you</h1>
+          <h2>Your order details are as follows</h2>
+          <strong> Order No. : </strong> {{data.order.id}}<br>
+          <strong> Order date and time : </strong> {{data.order.created | date : 'dd-mm-yyyy: hh:mm:ss'}}<br>
+          <strong> Item ID : </strong> {{data.order.item}}<br>
+          <strong> Payment mode. : </strong> {{data.order.paymentType}}<br>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+</div>
