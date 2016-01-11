@@ -98,7 +98,7 @@ CATEGORY_CHOICES = (
 )
 
 class listing(models.Model):
-    user = models.ForeignKey(User , related_name = 'ecommerceListingsUploads' , null = False)
+    user = models.ForeignKey(User , related_name = 'ecommerceListings' , null = False)
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now=True)
     description = models.TextField(max_length = 2000 , null = False) # image/svg link to the logo

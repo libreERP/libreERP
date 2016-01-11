@@ -1,10 +1,10 @@
 <div class="container-fluid "  >
   <div class="row">
     <div class="col-md-1" style="height:100%;position:fixed;">
-      <div ui-view="menu"></div>
+      <div ui-view="menu" ng-if="homeMenuAccess"></div>
     </div>
     <div class="col-md-11 col-md-offset-1">
-        <div ui-view></div>
+        <div ui-view ng-if="dashboardAccess"></div>
     </div>
   </div>
 </div>

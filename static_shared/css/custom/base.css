@@ -59,7 +59,7 @@ body {
   color: #666;
   min-width: 403px;
   padding : 20px 50px 20px 30px;
-  position: absolute;
+  position: fixed;
   right: 20px;
   top: 20px;
   z-index: 9999;
@@ -72,7 +72,7 @@ body {
   margin-bottom: 5px;
 }
 .customAlert .close {
-  position: absolute !important;
+  position: fixed !important;
   right: 15px !important;
   top: 5px !important;
 }

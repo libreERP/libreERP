@@ -184,7 +184,7 @@
           <h1>Thank you</h1>
           <h2>Your order details are as follows</h2>
           <strong> Order No. : </strong> {{data.order.id}}<br>
-          <strong> Order date and time : </strong> {{data.order.created | date : 'dd-mm-yyyy: hh:mm:ss'}}<br>
+          <strong> Order date and time : </strong> {{data.order.created | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>
           <strong> Item ID : </strong> {{data.order.item}}<br>
           <strong> Payment mode. : </strong> {{data.order.paymentType}}<br>
         </div>

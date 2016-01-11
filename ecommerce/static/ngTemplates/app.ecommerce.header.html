@@ -14,14 +14,14 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-              <li>
-                <a href="/login/?next=/ecommerce"><i class="fa fa-shopping-cart"></i>
+              <li ng-if="me != null">
+                <a ui-sref="account"><i class="fa fa-shopping-cart" ></i>
                   <div class="label label-warning" style="position:absolute;top:0px;right:-5px;">{{inCart.length==0? '':inCart.length}}</div>
                 </a>
               </li>
               <li>
                 <a ng-if="me == null" href="/login/?next=/ecommerce"><i class="fa fa-sign-in"></i></a>
-                <a style="text-transform: capitalize;" ng-if="me != null" href="/ecommerce/account"><i class="fa fa-user"></i> {{me.url | getName}}</a>
+                <a style="text-transform: capitalize;" ng-if="me != null" ui-sref="account"><i class="fa fa-user"></i> {{me.url | getName}}</a>
               </li>
             </ul>
             <form class="navbar-form navbar-right" role="search">

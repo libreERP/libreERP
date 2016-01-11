@@ -31,11 +31,13 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   $scope.me = $users.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
+  $scope.dashboardAccess = false;
 
   $permissions.module().
   success(function(response){
     // console.log(response);
     $scope.modules = response;
+    
   });
 
 

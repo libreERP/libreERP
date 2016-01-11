@@ -50,7 +50,7 @@ class mediaViewSet(viewsets.ModelViewSet):
     serializer_class = mediaSerializer
 
 class listingViewSet(viewsets.ModelViewSet):
-    permission_classes = (isAdmin , )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
     queryset = listing.objects.all()
     serializer_class = listingSerializer
     filter_backends = [DjangoFilterBackend]
@@ -58,8 +58,12 @@ class listingViewSet(viewsets.ModelViewSet):
 
 class orderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )
-    queryset = order.objects.all()
     serializer_class = orderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id']
+    def get_queryset(self):
+        u = self.request.user
+        return order.objects.filter(item__in = u.ecommerceListings.all())
 
 class savedViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )

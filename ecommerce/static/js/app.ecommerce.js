@@ -41,8 +41,18 @@ app.config(function($stateProvider ){
     templateUrl: '/static/ngTemplates/app.ecommerce.checkout.html',
     controller: 'controller.ecommerce.checkout'
   })
+  $stateProvider
+  .state('account', {
+    url: "/account",
+    templateUrl: '/static/ngTemplates/app.ecommerce.account.html',
+    controller: 'controller.ecommerce.account'
+  })
 });
 
+
+app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+});
 
 app.controller('controller.ecommerce.checkout' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
   $scope.me = $users.get('mySelf');
