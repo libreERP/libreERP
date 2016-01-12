@@ -9,10 +9,10 @@ def getEcommercePictureUploadPath(instance , filename ):
     return 'ecommerce/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
 class address(models.Model):
-    street = models.CharField(max_length=200)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=50)
-    zipcode = models.CharField(max_length=10)
+    street = models.CharField(max_length=300 , null = False)
+    city = models.CharField(max_length=100 , null = False)
+    state = models.CharField(max_length=50 , null = False)
+    pincode = models.CharField(max_length=10 , null = False)
     lat = models.CharField(max_length=15)
     lon = models.CharField(max_length=15)
 
@@ -26,7 +26,7 @@ class service(models.Model):
     mobile = models.PositiveIntegerField( null = False)
     telephone = models.CharField(max_length = 20 , null = False)
     logo = models.CharField(max_length = 200 , null = False) # image/svg link to the logo
-    description = models.TextField(max_length = 2000 , null = False) # image/svg link to the logo
+    about = models.TextField(max_length = 2000 , null = False) # image/svg link to the logo
 
 MEDIA_TYPE_CHOICES = (
     ('onlineVideo' , 'onlineVideo'),

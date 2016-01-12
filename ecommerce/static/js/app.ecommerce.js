@@ -7,15 +7,6 @@ app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $prov
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
   $httpProvider.defaults.withCredentials = true;
 
-  $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
-    taOptions.toolbar = [
-      ['h1', 'h2', 'h3', 'p', 'pre', 'quote'],
-      ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight'],[ 'indent', 'outdent', 'insertLink'],
-    ];
-    return taOptions;
-  }]);
-
 
 });
 

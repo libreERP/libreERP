@@ -15,4 +15,5 @@ router.register(r'saved' , savedViewSet , base_name = 'saved')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'providerRegistration/$' , serviceRegistrationApi.as_view() ),
 ]

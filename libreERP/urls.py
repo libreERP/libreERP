@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from homepage.views import index
 from HR.views import loginView , logoutView , home , registerView
-from ecommerce.views import ecommerceHome
+from ecommerce.views import ecommerceHome , serviceRegistration
 
 urlpatterns = [
     url(r"^$", index , name = 'index'),
@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', loginView , name ='login'),
     url(r'^register', registerView , name ='register'),
+    url(r'^service', serviceRegistration , name ='serviceRegistration'),
     url(r'^logout/', logoutView , name ='logout'),
     url(r'^ERP/', home , name ='ERP'),
     url(r'^ecommerce/', ecommerceHome , name ='ecommerce'),

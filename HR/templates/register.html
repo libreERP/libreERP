@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="{% static 'css/signin.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/app.HR.css' %}" charset="utf-8">
   </head>
-  <body class="register">
-    <div class="container col-md-3 col-md-offset-9" style="margin-top:200px;">
-
+  <body class="register" >
+    <div class="col-md-8" style="background-image: url('/static/images/register.jpg');height:100%;position:absolute;left:0px;">
+    </div>
+    <div class="col-md-4" style="background-color:#114c91;height:100%;position:absolute;right:0px;">
       <form method="post" class="form-signin" action="">{% csrf_token %}
-        <h2 class="form-signin-heading" style="color:white;">Register</h2>
+        <h2 class="form-signin-heading" style="color:white;margin-top:200px;">Register</h2>
         {% if msg.status != 'default' %}
           <div class="alert alert-{{msg.status}}">{{msg.message}}</div>
         {% endif %}
@@ -30,7 +31,7 @@
         </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
       </form>
-    </div> <!-- /container -->
+    </div>
 
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
