@@ -5,6 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.conf import settings as globalSettings
+from django.core.mail import send_mail
+import hashlib, datetime, random
+from django.utils import timezone
+from time import time
+
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from rest_framework.exceptions import *
@@ -13,6 +18,7 @@ from rest_framework.views import APIView
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+from HR.models import accountsKey
 from rest_framework.decorators import api_view
 
 def ecommerceHome(request):
@@ -59,6 +65,22 @@ class serviceRegistrationApi(APIView):
             ad.save()
             se = service(name = name , user = user , cin = cin , tin = tin , address = ad , mobile = mobile, telephone = telephone , about = about)
             se.save()
+
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+            activation_key = hashlib.sha1(salt+email).hexdigest()
+            key_expires = datetime.datetime.today() + datetime.timedelta(2)
+
+            ak = accountsKey(user=user, activation_key=activation_key,
+                key_expires=key_expires)
+            ak.save()
+
+            # Send email with activation key
+            email_subject = 'Account confirmation'
+            email_body = "Hey %s, thanks for signing up. To activate your account, click this link within 48hours http://127.0.0.1:8000/token/?key=%s" % (user.first_name, activation_key)
+
+            send_mail(email_subject, email_body, 'myemail@example.com',
+                [email], fail_silently=False)
+
             content = {'pk' : user.pk , 'username' : user.username , 'email' : user.email}
             return Response(content , status = status.HTTP_200_OK)
 

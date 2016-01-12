@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User , Group
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -13,6 +13,18 @@ from rest_framework.exceptions import *
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+
+def tokenAuthentication(request):
+    ak = get_object_or_404(accountsKey, activation_key=request.GET['key'])
+    #check if the activation key has expired, if it hase then render confirm_expired.html
+    if ak.key_expires < timezone.now():
+        return render_to_response('user_profile/confirm_expired.html')
+    #if the key hasn't expired save user and set him as active and render some template to confirm activation
+    user = ak.user
+    user.is_active = True
+    user.save()
+    return render(request , 'login.html' )
+
 
 def loginView(request):
     authStatus = {'status' : 'default' , 'message' : '' }

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from time import time
+from django.utils import timezone
+import datetime
 
 
 def getSignaturesPath(instance , filename):
@@ -19,6 +21,11 @@ def getTranscriptsPath(instance , filename ):
     return 'HR/doc/Transcripts/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 def getOtherDocsPath(instance , filename ):
     return 'HR/doc/Others/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
+
+class accountsKey(models.Model):
+    user = models.ForeignKey(User , related_name='accountKey')
+    activation_key = models.CharField(max_length=40, blank=True)
+    key_expires = models.DateTimeField(default=timezone.now)
 
 class profile(models.Model):
     user = models.OneToOneField(User)

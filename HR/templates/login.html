@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="{% static 'css/signin.css' %}" charset="utf-8">
   </head>
   <body>
-    <div class="container">
+    <div class="col-md-8" style="background-image: url('/static/images/login.jpg');height:100%;position:absolute;left:0px;">
+    </div>
+    <div class="col-md-4" style="background-color:#1f2225;height:100%;position:absolute;right:0px;">
       <form method="post" class="form-signin" action="">{% csrf_token %}
-        <h2 class="form-signin-heading">Login</h2>
+        <h2 class="form-signin-heading" style="color:white;margin-top:200px;">Login</h2>
         {% if authStatus.status != 'default' %}
           <div class="alert alert-{{authStatus.status}}">{{authStatus.message}}</div>
         {% endif %}
