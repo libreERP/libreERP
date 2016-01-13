@@ -97,6 +97,29 @@ app.controller('controller.ecommerce.account.orders' , function($scope , $state 
 });
 
 app.controller('controller.ecommerce.account.settings' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+  $scope.form = {address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }}
+
+  $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
+  then(function(response){
+    // for(key in response.data[0])
+    $scope.customerProfile = response.data[0];
+    $scope.form.address = response.data[0].address;
+    console.log($scope.customerProfile);
+  })
+
+
+  $scope.saveAddress = function(){
+    console.log($scope.form);
+    dataToSend = $scope.form.address;
+    dataToSend.sendUpdates  = $scope.customerProfile.sendUpdates;
+    dataToSend.mobile  = $scope.customerProfile.mobile;
+    $http({method : 'PATCH' , url : '/api/ecommerce/profile/' + $scope.customerProfile.pk + '/' , data : dataToSend }).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    })
+  }
 
 });
 

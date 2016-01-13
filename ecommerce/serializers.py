@@ -37,7 +37,7 @@ class genericProductSerializer(serializers.ModelSerializer):
 class addressSerializer(serializers.ModelSerializer):
     class Meta:
         model = address
-        fields = ('pk' , 'street' , 'city' , 'state' , 'zipcode', 'lat' , 'lon')
+        fields = ('pk' , 'street' , 'city' , 'state' , 'pincode', 'lat' , 'lon')
 
 class serviceSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)
@@ -62,10 +62,10 @@ class mediaSerializer(serializers.ModelSerializer):
 class listingSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)
     parentType = genericProductSerializer(many = False , read_only = True)
-    files = mediaSerializer(many = True , read_only = True)
+    fields = mediaSerializer(many = True , read_only = True)
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'description' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
+        fields = ('pk' , 'user' , 'description' , 'fields' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user
@@ -80,13 +80,58 @@ class listingSerializer(serializers.ModelSerializer):
 class orderSerializer(serializers.ModelSerializer):
     class Meta:
         model = order
-        files = ('pk' , 'user' , 'created' , 'item' , 'paymentType' , 'paid')
+        fields = ('id' , 'user' , 'created' , 'item' , 'paymentType' , 'paid')
 
 
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
         model = saved
-        files = ('pk' , 'user' , 'created' , 'item' )
+        fields = ('id' , 'user' , 'created' , 'item' )
     def create(self ,  validated_data):
         s , new = saved.objects.get_or_create(user = self.context['request'].user , item = validated_data.pop('item') , category = validated_data.pop('category'))
         return s
+
+class customerProfileSerializer(serializers.ModelSerializer):
+    address = addressSerializer(read_only = True , many = False)
+    class Meta:
+        model = customerProfile
+        fields = ('pk' , 'address' , 'sendUpdates' , 'user' , 'mobile')
+        read_only_fields = ('user',)
+    def create(self ,  validated_data):
+        u = self.context['request'].user
+        street = self.context['request'].data['street']
+        pincode = self.context['request'].data['pincode']
+        state = self.context['request'].data['state']
+        city = self.context['request'].data['city']
+        su = self.context['request'].data['sendUpdates']
+        cp , new = customerProfile.objects.get_or_create(user = user)
+        if new:
+            a = address(street = street , city = city , pincode = pincode , state = state)
+            a.save()
+            cp.address = a
+            cp.save()
+        return cp
+
+    def update (self, instance, validated_data):
+        u = self.context['request'].user
+        print "came"
+        cp = customerProfile.objects.get(user = u)
+        try:
+            street = self.context['request'].data['street']
+            pincode = self.context['request'].data['pincode']
+            state = self.context['request'].data['state']
+            city = self.context['request'].data['city']
+        except:
+            pass
+        su = self.context['request'].data['sendUpdates']
+        m = self.context['request'].data['mobile']
+        a = cp.address
+        a.street = street
+        a.city = city
+        a.pincode = pincode
+        a.state = state
+        a.save()
+        cp.sendUpdates = su
+        cp.mobile = m
+        cp.save()
+        return cp

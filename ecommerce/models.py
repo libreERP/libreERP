@@ -12,7 +12,7 @@ class address(models.Model):
     street = models.CharField(max_length=300 , null = False)
     city = models.CharField(max_length=100 , null = False)
     state = models.CharField(max_length=50 , null = False)
-    pincode = models.CharField(max_length=10 , null = False)
+    pincode = models.PositiveIntegerField(null = False)
     lat = models.CharField(max_length=15)
     lon = models.CharField(max_length=15)
 
@@ -138,3 +138,9 @@ class saved(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     item = models.ForeignKey(listing , related_name = 'inCarts' , null = False)
     category = models.CharField(choices = SAVED_TYPE_CHOICES , max_length = 15 , default = 'cart')
+
+class customerProfile(models.Model):
+    user = models.ForeignKey(User , related_name = 'ecommerceProfile' , null = False)
+    address = models.ForeignKey(address , null = False , related_name=None )
+    sendUpdates = models.BooleanField(default = True)
+    mobile = models.PositiveIntegerField( null = True)

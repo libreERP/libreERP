@@ -148,3 +148,10 @@ class savedViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         u = self.request.user
         return saved.objects.filter(user = u)
+
+class customerProfileViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated , )
+    serializer_class = customerProfileSerializer
+    def get_queryset(self):
+        u = self.request.user
+        return customerProfile.objects.filter(user = u)

@@ -12,6 +12,7 @@ router.register(r'media' , mediaViewSet , base_name = 'media')
 router.register(r'listing' , listingViewSet , base_name = 'listing')
 router.register(r'order' , orderViewSet , base_name = 'order')
 router.register(r'saved' , savedViewSet , base_name = 'saved')
+router.register(r'profile' , customerProfileViewSet , base_name = 'customerProfile')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
