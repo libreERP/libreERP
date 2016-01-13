@@ -32,18 +32,82 @@ app.config(function($stateProvider ){
     templateUrl: '/static/ngTemplates/app.ecommerce.checkout.html',
     controller: 'controller.ecommerce.checkout'
   })
+
   $stateProvider
   .state('account', {
     url: "/account",
-    templateUrl: '/static/ngTemplates/app.ecommerce.account.html',
-    controller: 'controller.ecommerce.account'
+    views: {
+       "": {
+          templateUrl: '/static/ngTemplates/app.ecommerce.account.html',
+       },
+       "menu@account": {
+          templateUrl: '/static/ngTemplates/app.ecommerce.account.menu.html',
+        },
+        "@account": {
+          templateUrl: '/static/ngTemplates/app.ecommerce.account.default.html',
+        }
+    }
   })
+
+  .state('account.cart', {
+    url: "/cart",
+    templateUrl: '/static/ngTemplates/app.ecommerce.account.cart.html',
+    controller: 'controller.ecommerce.account.cart'
+  })
+  .state('account.orders', {
+    url: "/orders",
+    templateUrl: '/static/ngTemplates/app.ecommerce.account.orders.html',
+    controller: 'controller.ecommerce.account.orders'
+  })
+  .state('account.settings', {
+    url: "/settings",
+    templateUrl: '/static/ngTemplates/app.ecommerce.account.settings.html',
+    controller: 'controller.ecommerce.account.settings'
+  })
+  .state('account.support', {
+    url: "/support",
+    templateUrl: '/static/ngTemplates/app.ecommerce.account.support.html',
+    controller: 'controller.ecommerce.account.support'
+  })
+
+
+
+
+
 });
 
 
 app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
 
 });
+app.controller('controller.ecommerce.account.cart' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
+
+
+});
+
+app.controller('controller.ecommerce.account.orders' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
+
+  $scope.getParams = [{key : 'mode', value : 'consumer'}];
+
+});
+
+app.controller('controller.ecommerce.account.settings' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+});
+
+app.controller('controller.ecommerce.account.support' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+});
+
+app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+});
+
 
 app.controller('controller.ecommerce.checkout' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
   $scope.me = $users.get('mySelf');

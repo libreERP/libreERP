@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.conf import settings as globalSettings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist , SuspiciousOperation
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from rest_framework.exceptions import *
@@ -18,7 +18,7 @@ def tokenAuthentication(request):
     ak = get_object_or_404(accountsKey, activation_key=request.GET['key'])
     #check if the activation key has expired, if it hase then render confirm_expired.html
     if ak.key_expires < timezone.now():
-        return render_to_response('user_profile/confirm_expired.html')
+        raise SuspiciousOperation('Expired')
     #if the key hasn't expired save user and set him as active and render some template to confirm activation
     user = ak.user
     user.is_active = True

@@ -129,12 +129,22 @@ class orderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
     def get_queryset(self):
-        u = self.request.user
-        return order.objects.filter(item__in = u.ecommerceListings.all())
+        if 'mode' in self.request.GET:
+            u = self.request.user
+            if self.request.GET['mode'] == 'provider':
+                return order.objects.filter(item__in = u.ecommerceListings.all())
+            elif self.request.GET['mode'] == 'consumer':
+                return u.ecommerceOrders.all()
+        else:
+            content = {'mode' : 'You mode specified , please specified either of mode = provider or consumer'}
+            raise PermissionDenied(detail=content)
+
 
 class savedViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )
     serializer_class = savedSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id']
     def get_queryset(self):
         u = self.request.user
         return saved.objects.filter(user = u)

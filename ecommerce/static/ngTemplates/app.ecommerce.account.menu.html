@@ -1,0 +1,44 @@
+<div class="row" style="padding-left:48%; padding-top:20px;">
+  <i class="fa fa-user fa-4x"></i>
+</div>
+
+<h4 style="text-align:center;text-transform:capitalize;">
+  Account
+</h4>
+<hr>
+<div style="position:absolute;left:0px;width:100%;display:block;" class="bg-red">
+  <ul class="nav padded sidebar-checkout" style="width:100%;padding:0px;margin:0px;display:block;height:603px;">
+    <li ng-class="{activeTab: $state.is('account.cart')}">
+      <a ui-sref="account.cart">
+        <div align="center">
+          <i class="fa fa-shopping-cart fa-2x pull-left"></i>
+          Cart
+        </div>
+      </a>
+    </li>
+    <li ng-class="{activeTab: $state.is('account.orders')}">
+      <a ui-sref="account.orders">
+        <div align="center">
+          <i class="fa fa-truck fa-2x pull-left"></i>
+          Orders
+        </div>
+      </a>
+    </li>
+    <li ng-class="{activeTab: $state.is('account.settings')}">
+      <a ui-sref="account.settings" >
+        <div align="center">
+          <i class="fa fa-wrench fa-2x pull-left"></i>
+          Settings
+        </div>
+      </a>
+    </li>
+    <li ng-class="{activeTab: $state.is('account.support')}">
+      <a  ui-sref="account.support">
+        <div align="center">
+          <i class="fa fa-phone fa-2x pull-left"></i>
+          Support
+        </div>
+      </a>
+    </li>
+  </ul>
+</div>
