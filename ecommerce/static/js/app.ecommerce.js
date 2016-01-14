@@ -146,7 +146,13 @@ app.controller('controller.ecommerce.account' , function($scope , $state , $asid
 
 app.controller('controller.ecommerce.checkout' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
   $scope.me = $users.get('mySelf');
-  $scope.data = {quantity : 1 , expresShipping : false , normalShipping : true , stage : 'review'};
+  $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
+
+  $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
+  then(function(response){
+    $scope.customerProfile = response.data[0];
+    $scope.data.address = response.data[0].address;
+  })
 
   $http({method : 'GET' , url : '/api/ecommerce/listing/' + $state.params.pk + '/'}).
   then(function(response){
@@ -172,7 +178,17 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
     dataToSend = {
       user : getPK($scope.me.url),
       item : $scope.item.pk,
-      parentType : 'COD',
+      paymentType : 'COD',
+      quantity : $scope.data.quantity,
+      mobile : $scope.customerProfile.mobile,
+      coupon : $scope.data.coupon,
+      shipping : $scope.data.shipping,
+    }
+    for (key in $scope.data.address) {
+      if (key == 'pk') {
+        continue;
+      }
+      dataToSend[key] = $scope.data.address[key];
     }
     $http({method : 'POST' , url : '/api/ecommerce/order/' , data : dataToSend}).
     then(function(response){
@@ -201,7 +217,6 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
     }
   })
 
-  console.log("main");
   $scope.headerUrl = '/static/ngTemplates/app.ecommerce.header.html';
   $scope.footerUrl = '/static/ngTemplates/app.ecommerce.footer.html';
 

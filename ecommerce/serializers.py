@@ -78,15 +78,30 @@ class listingSerializer(serializers.ModelSerializer):
         return l
 
 class orderSerializer(serializers.ModelSerializer):
+    address = addressSerializer(many = False , read_only = True)
     class Meta:
         model = order
-        fields = ('id' , 'user' , 'created' , 'item' , 'paymentType' , 'paid')
+        fields = ('id' , 'user' , 'created' , 'item' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping')
+    def create(self , validated_data):
+        u = self.context['request'].user
+        street = self.context['request'].data['street']
+        pincode = self.context['request'].data['pincode']
+        state = self.context['request'].data['state']
+        city = self.context['request'].data['city']
+        a = address(street = street , city = city , pincode = pincode , state = state)
+        a.save()
+        o = order(**validated_data)
+        o.user = u
+        o.address = a
+        o.save()
+        return o
+
 
 
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
         model = saved
-        fields = ('id' , 'user' , 'created' , 'item' )
+        fields = ('id' , 'user' , 'created' , 'item' , 'category' )
     def create(self ,  validated_data):
         s , new = saved.objects.get_or_create(user = self.context['request'].user , item = validated_data.pop('item') , category = validated_data.pop('category'))
         return s

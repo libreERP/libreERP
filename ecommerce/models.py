@@ -127,6 +127,11 @@ class order(models.Model):
     item = models.ForeignKey(listing , related_name = 'orders' , null = False)
     paymentType = models.CharField(choices = PAYMENT_TYPE_CHOICES , max_length = 15 , default = 'COD')
     paid = models.BooleanField(default = False)
+    address = models.ForeignKey(address , null = True)
+    mobile = models.PositiveIntegerField(null=True)
+    shipping = models.CharField(max_length = 20 , null = True)
+    coupon = models.CharField(max_length = 20 , null = True)
+    quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
 
 SAVED_TYPE_CHOICES = (
     ('cart' , 'cart'),

@@ -73,8 +73,16 @@
             </div>
             <div class="col-md-3">
               <div class="input-group">
-                <span class="input-group-addon">Quantity</span>
+                <span class="input-group-addon">#</span>
                 <input type="text" class="form-control" ng-model = "data.quantity">
+                <span class="input-group-addon" ng-if="item.priceModel=='time'">Hours</span>
+                <span class="input-group-addon" ng-if="item.priceModel=='quantity'">Pieces</span>
+                <span class="input-group-addon" ng-if="item.priceModel=='weight'">Kgs</span>
+              </div>
+              <hr>
+              <div class="input-group pull-left" >
+                <span class="input-group-addon">Coupon code</span>
+                <input ng-model="data.coupon" type="text" class="form-control">
               </div>
 
             </div>
@@ -83,8 +91,8 @@
               <br>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" ng-model="data.expresShipping">
-                  One day express
+                  <input type="radio" name="optionsRadios" value="express" ng-model="data.shipping">
+                  One day express {{data.expressShipping}}
                 </label>
                 <p class="help-block">
                   <i class="fa fa-inr"></i> 30 additional charge
@@ -92,7 +100,7 @@
               </div>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" ng-model="data.normalShipping">
+                  <input type="radio" name="optionsRadios" value="normal" ng-model="data.shipping">
                    7 Day
                 </label>
                 <p class="help-block">
@@ -107,14 +115,7 @@
               <div class="row">
                 <span class="text-muted" style="font-size:20px;">Subtotal</span>
                 <br>
-                <i class="fa fa-2x fa-inr"></i> {{item.rate}}
-              </div>
-              <hr>
-              <div class="row">
-                <div class="input-group pull-left" >
-                  <span class="input-group-addon">Coupon code</span>
-                  <input type="text" class="form-control">
-                </div>
+                <i class="fa fa-2x fa-inr"></i> {{item.rate * data.quantity}}
               </div>
             </div>
             <div class="col-md-6">
@@ -130,28 +131,24 @@
             <div class="col-md-6 col-md-offset-2">
               <h2>Address</h2>
               <div class="form-group">
-                <label>Name : </label>
-                <input type="text" class="form-control">
-              </div>
-              <div class="form-group">
                 <label>Address : </label>
-                <textarea class="form-control"></textarea>
+                <textarea ng-model="data.address.street" class="form-control"></textarea>
               </div>
               <div class="form-group">
                 <label>Pincode : </label>
-                <input type="number" class="form-control">
+                <input ng-model="data.address.pincode" type="number" class="form-control">
               </div>
               <div class="form-group">
                 <label>City : </label>
-                <input type="text" class="form-control">
+                <input ng-model="data.address.city" type="text" class="form-control">
               </div>
               <div class="form-group">
                 <label>State : </label>
-                <input type="text" class="form-control">
+                <input ng-model="data.address.state" type="text" class="form-control">
               </div>
               <div class="form-group">
                 <label>Mobile no. : </label>
-                <input type="text" class="form-control">
+                <input ng-model="customerProfile.mobile" type="text" class="form-control">
               </div>
             </div>
           </div>
