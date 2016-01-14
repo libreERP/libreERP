@@ -9,12 +9,14 @@ from django.core.mail import send_mail
 import hashlib, datetime, random
 from django.utils import timezone
 from time import time
+import requests
 
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from rest_framework.exceptions import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
@@ -27,7 +29,24 @@ def ecommerceHome(request):
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
 
-class supportApi(APIView):
+class locationAutoCompleteApi(APIView): # suggest places for a query
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        query = request.GET['query']
+        r = requests.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query)
+        return Response(r.json(),status = status.HTTP_200_OK)
+
+class locationDetailsApi(APIView): # returns location details such as lattitude and longitude for a given location id
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.AllowAny ,)
+    def get(self , request , format = None):
+        id = request.GET['id']
+        print id
+        r = requests.get('https://maps.googleapis.com/maps/api/place/details/json?key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&placeid=' + id)
+        return Response(r.json(),status = status.HTTP_200_OK)
+
+
+class supportApi(APIView): # on the support tab of the accounts page , the users have a form with subject and body input , they can use that to send a main to the support team
     def post(self , request , format = None):
         subject = request.data['subject']
         body = request.data['body']

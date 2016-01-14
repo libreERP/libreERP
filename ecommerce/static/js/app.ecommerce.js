@@ -207,6 +207,8 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
 app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users){
   $scope.me = $users.get('mySelf')
   $scope.inCart = [];
+  $scope.data = {location : null}
+  $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
   $http({method : 'GET' , url : '/api/ecommerce/saved/'}).
   then(function(response){
@@ -220,10 +222,21 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
   $scope.headerUrl = '/static/ngTemplates/app.ecommerce.header.html';
   $scope.footerUrl = '/static/ngTemplates/app.ecommerce.footer.html';
 
+  $scope.$watch('data.location' , function(newValue, oldValue){
+    if (newValue != null && typeof newValue =='object') {
+      $http({method : 'GET' , url : '/api/ecommerce/locationDetails/?id=' + newValue.place_id}).
+      then(function(response){
+        $scope.params.location = response.data.result;
+        console.log($scope.params.location.geometry.location);
+        // lat lon is available in location.geometry.location.lat or lng
+      })
+    }
+  }, true);
+
   $scope.getLocationSuggeation = function(query){
-    return $http.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query).
+    return $http.get('/api/ecommerce/suggestLocations/?query=' + query).
     then(function(response){
-      return response.data;
+      return response.data.predictions;
     })
   }
 

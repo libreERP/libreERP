@@ -18,4 +18,6 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'providerRegistration/$' , serviceRegistrationApi.as_view() ),
     url(r'support/$' , supportApi.as_view() ),
+    url(r'suggestLocations/$' , locationAutoCompleteApi.as_view() ),
+    url(r'locationDetails/$' , locationDetailsApi.as_view() ),
 ]

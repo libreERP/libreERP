@@ -25,8 +25,9 @@
               </li>
             </ul>
             <form class="navbar-form navbar-right" role="search">
-                <div class="input-group" style="width:300px;">
-                    <input uib-typeahead="location as location.description for location in getLocationSuggeation($viewValue)" ng-model="location" type="text" style="width:300px;" class="form-control" placeholder="Where are you ? .." >
+                <div class="input-group" style="width:600px;">
+                    <input uib-typeahead="location as location.description for location in getLocationSuggeation($viewValue)"
+                    ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
                 </div>
             </form>
         </div>
