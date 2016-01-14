@@ -27,6 +27,17 @@ def ecommerceHome(request):
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
 
+class supportApi(APIView):
+    def post(self , request , format = None):
+        subject = request.data['subject']
+        body = request.data['body']
+        user = self.request.user
+
+        send_mail(subject, body, 'ciocpky@gmail.com', # support email , it should be something line support@ecommerce.com
+        [user.email , 'help@ecommerce.com'], fail_silently=False) # here the email is an array of email address
+        return Response(status = status.HTTP_200_OK)
+
+
 class serviceRegistrationApi(APIView):
     permission_classes = (permissions.AllowAny ,)
 
@@ -78,7 +89,7 @@ class serviceRegistrationApi(APIView):
             email_subject = 'Account confirmation'
             email_body = "Hey %s, thanks for signing up. To activate your account, click this link within 48hours http://127.0.0.1:8000/token/?key=%s" % (user.first_name, activation_key)
 
-            send_mail(email_subject, email_body, 'myemail@example.com',
+            send_mail(email_subject, email_body, 'pkyisky@gmail.com',
                 [email], fail_silently=False)
 
             content = {'pk' : user.pk , 'username' : user.username , 'email' : user.email}

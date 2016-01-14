@@ -62,10 +62,10 @@ class mediaSerializer(serializers.ModelSerializer):
 class listingSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)
     parentType = genericProductSerializer(many = False , read_only = True)
-    fields = mediaSerializer(many = True , read_only = True)
+    files = mediaSerializer(many = True , read_only = True)
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'description' , 'fields' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
+        fields = ('pk' , 'user' , 'description' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user

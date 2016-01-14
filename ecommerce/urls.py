@@ -17,4 +17,5 @@ router.register(r'profile' , customerProfileViewSet , base_name = 'customerProfi
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'providerRegistration/$' , serviceRegistrationApi.as_view() ),
+    url(r'support/$' , supportApi.as_view() ),
 ]

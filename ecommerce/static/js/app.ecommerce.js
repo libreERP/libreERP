@@ -125,6 +125,18 @@ app.controller('controller.ecommerce.account.settings' , function($scope , $stat
 
 app.controller('controller.ecommerce.account.support' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
 
+  $scope.message = {subject : '' , body : ''};
+  $scope.sendMessage = function(){
+    $http({method : 'POST' , url : '/api/ecommerce/support/' , data : $scope.message}).
+    then(function(response){
+      $scope.message = {subject : '' , body : ''};
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    })
+  }
+
+
 });
 
 app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
