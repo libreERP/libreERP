@@ -13,6 +13,8 @@
             <option value = "field">Field</option>
             <option value = "genericType">Generic Type</option>
             <option value = "genericProduct">Generic Product</option>
+            <option value = "choiceLabel">Choice label</option>
+            <option value = "choiceOption">Choice option</option>
             <!-- actual form building as seen by the vendor is in generic product-->
           </select>
 
@@ -84,6 +86,32 @@
           </div>
 
         </div>
+        <div ng-if="data.mode == 'choiceLabel'">
+          <div class="form-group">
+            <label>label</label>
+            <input type="text" class="form-control" ng-model="data.name" placeholder="Label, for example mobileManufacturer">
+          </div>
+          <div class="form-group">
+            <label > Icon</label>
+            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this type of the label">
+          </div>
+        </div>
+        <div ng-if="data.mode == 'choiceOption'">
+          <div class="form-group">
+            <label > Parent label</label>
+            <input uib-typeahead="parent as parent.name for parent in parentLabelSearch($viewValue)" ng-model="data.parentLabel" type="text" class="form-control" placeholder="Select the parent label">
+          </div>
+          <div class="form-group">
+            <label>Option</label>
+            <input type="text" class="form-control" ng-model="data.name" placeholder="Option">
+          </div>
+          <div class="form-group">
+            <label > Icon</label>
+            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this option">
+          </div>
+        </div>
+
+
         <button type="button" class="btn btn-primary" ng-click="submit()">Submit</button>
       </div>
 
@@ -107,6 +135,20 @@
         Generic Product
       </uib-tab-heading>
       <generic-Table resource-Url = "{{'/api/ecommerce/genericProduct/'}}" search="true"
+          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        Chocie label
+      </uib-tab-heading>
+      <generic-Table resource-Url = "{{'/api/ecommerce/choiceLabel/'}}" search="true"
+          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        Chocie options
+      </uib-tab-heading>
+      <generic-Table resource-Url = "{{'/api/ecommerce/choiceOption/'}}" search="true"
           primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
     </uib-tab>
   </uib-tabset>

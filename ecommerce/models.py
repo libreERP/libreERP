@@ -43,6 +43,17 @@ class media(models.Model):
     attachment = models.FileField(upload_to = getEcommercePictureUploadPath , null = True ) # can be image , video or document
     mediaType = models.CharField(choices = MEDIA_TYPE_CHOICES , max_length = 10 , default = 'image')
 
+class choiceLabel(models.Model): # something like mobileCompany or automobileManufacturer etc and under this there will be choices
+    icon = models.CharField( null = True , max_length = 50)
+    name = models.CharField( null = False , max_length = 50 , unique = True)
+    created = models.DateTimeField(auto_now_add = True)
+
+class choiceOption(models.Model): # choices under a given parent label
+    parent = models.ForeignKey(choiceLabel , null = False , related_name='choices')
+    icon = models.CharField( null = True , max_length = 50) # icon of the company
+    name = models.CharField( null = False , max_length = 50 , unique = True)
+    created = models.DateTimeField(auto_now_add = True)
+
 FIELD_TYPE_CHOCIE = (
     ('char' , 'char'),
     ('boolean' , 'boolean'),
@@ -53,20 +64,20 @@ FIELD_TYPE_CHOCIE = (
 
 class field(models.Model): # this will be used to build the form to be used to post a listing
     fieldType = models.CharField(choices = FIELD_TYPE_CHOCIE , default = 'char' , max_length = 15)
-    unit = models.CharField( null = True , max_length = 15)
-    name = models.CharField( null = False , max_length = 15 , unique = True)
+    unit = models.CharField( null = True , max_length = 50)
+    name = models.CharField( null = False , max_length = 50 , unique = True)
     created = models.DateTimeField(auto_now_add = True)
     helpText = models.CharField(max_length = 100 , blank = True)
     default = models.CharField(max_length = 100 , blank = True)
 
 class genericType(models.Model): # such as bike , modile , electronics etc
-    name = models.CharField( null = False , max_length = 15)
-    icon = models.CharField( null = True , max_length = 15) # on the category selection pane this icon will be shown along with the name
+    name = models.CharField( null = False , max_length = 50)
+    icon = models.CharField( null = True , max_length = 50) # on the category selection pane this icon will be shown along with the name
     created = models.DateTimeField(auto_now_add = True)
 
 class genericProduct(models.Model): # such as MI5, Nokia N8 etc
     fields = models.ManyToManyField(field , related_name = 'products' , blank = True)
-    name = models.CharField( null = False , max_length = 15)
+    name = models.CharField( null = False , max_length = 50)
     created = models.DateTimeField(auto_now_add = True)
     productType = models.ForeignKey(genericType , related_name='products' , null = False)
 

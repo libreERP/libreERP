@@ -56,6 +56,14 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
     category : 'product',
   }
 
+  $scope.choiceSearch = function(query , field) {
+    console.log(field);
+    return $http.get('/api/ecommerce/choiceOption/?name__contains=' + query + '&parent=' + field.parentLabel).
+    then(function(response){
+      return response.data;
+    })
+  }
+
   $scope.data = {mode : 'select' , form : form };
 
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
@@ -83,6 +91,27 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
 
   $scope.buildForm = function(){
     $scope.data.mode = 'create'
+    fields = $scope.data.genericProduct.fields;
+    for (var i = 0; i < fields.length; i++) {
+      if (fields[i].fieldType == 'boolean'){
+        if (fields[i].default == 'true') {
+          $scope.data.genericProduct.fields[i].default = true;
+        } else {
+          $scope.data.genericProduct.fields[i].default = false;
+        }
+      } else if (fields[i].fieldType == 'float') {
+        $scope.data.genericProduct.fields[i].default = parseFloat(fields[i].default);
+      } else if (fields[i].fieldType == 'date') {
+        $scope.data.genericProduct.fields[i].default = new Date();
+      } else if (fields[i].fieldType == 'choice') {
+        $http({method : 'GET' , url : '/api/ecommerce/choiceLabel/?name=' + fields[i].unit}).
+        then((function(i){
+          return function(response){
+            $scope.data.genericProduct.fields[i].parentLabel = response.data[0].pk;
+          }
+        })(i))
+      }
+    }
     console.log($scope.data.genericProduct);
   }
 
@@ -124,7 +153,7 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
       toPush = {};
       toPush['name'] = f.name;
       toPush['value'] = f.default;
-      toPush['fieldType'] = f.default;
+      toPush['fieldType'] = f.fieldType;
       toPush['unit'] = f.unit;
       specs.push(toPush);
     }
@@ -202,9 +231,16 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     return $http.get('/api/ecommerce/field/?name__contains='+ query)
   }
 
+  $scope.parentLabelSearch = function(query) {
+    return $http.get('/api/ecommerce/choiceLabel/?name__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  }
 
   $scope.data = {mode : 'field'};
   $scope.submit = function(){
+    console.log($scope.data.mode);
     d = $scope.data;
     if ($scope.data.mode == 'field') {
       dataToSend = {
@@ -238,7 +274,21 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
         fields : fs,
       }
       url = '/api/ecommerce/genericProduct/';
+    } else if ($scope.data.mode == 'choiceLabel') {
+      dataToSend = {
+        name : $scope.data.name,
+        icon : $scope.data.icon,
+      }
+      url = '/api/ecommerce/choiceLabel/';
+    } else if ($scope.data.mode == 'choiceOption') {
+      dataToSend = {
+        name : $scope.data.name,
+        parent : $scope.data.parentLabel.pk,
+        icon : $scope.data.icon,
+      }
+      url = '/api/ecommerce/choiceOption/';
     }
+    console.log(url);
 
     $http({method : 'POST' , url : url , data : dataToSend}).
     then(function(response){

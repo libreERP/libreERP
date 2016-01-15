@@ -130,6 +130,8 @@ class genericProductViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
     queryset = genericProduct.objects.all()
     serializer_class = genericProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class addressViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
@@ -185,3 +187,17 @@ class customerProfileViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         u = self.request.user
         return customerProfile.objects.filter(user = u)
+
+class choiceLabelViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdmin,)
+    queryset = choiceLabel.objects.all()
+    serializer_class = choiceLabelSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
+
+class choiceOptionViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdmin,)
+    queryset = choiceOption.objects.all()
+    serializer_class = choiceOptionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name', 'parent']

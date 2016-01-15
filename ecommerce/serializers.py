@@ -13,6 +13,16 @@ class fieldSerializer(serializers.ModelSerializer):
         model = field
         fields = ( 'pk', 'fieldType' , 'unit' ,'name' , 'created' , 'helpText' , 'default')
 
+class choiceLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = choiceLabel
+        fields = ('pk' , 'icon' , 'name' , 'created')
+
+class choiceOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = choiceOption
+        fields = ('pk' , 'parent' , 'icon' , 'name' , 'created')
+
 class genericTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = genericType

@@ -68,8 +68,18 @@
 
     <div ng-repeat="f in data.genericProduct.fields">
       <div class="form-group">
-        <label>{{f.name}} in ({{f.unit}})</label>
+        <label ng-if="f.fieldType != 'choice'">{{f.name | humanize}} {{f.unit==null? '': 'in (' + f.unit + ')' }}</label>
+        <label ng-if="f.fieldType == 'choice'">{{f.name | humanize}} {{f.unit==null? '': '(choice parent label :  ' + f.unit + ')' }}</label>
         <input ng-if="f.fieldType == 'char'" type="text" class="form-control" ng-model="f.default">
+        <input ng-if="f.fieldType == 'boolean'" type="checkbox" ng-model="f.default">
+        <input ng-if="f.fieldType == 'float'" type="number" class="form-control" ng-model="f.default" step="0.01">
+        <div class="input-group" ng-if="f.fieldType == 'date'">
+          <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="f.default" is-open="f.opened"  />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="f.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+        <input ng-if="f.fieldType == 'choice'" uib-typeahead="choice as choice.name for choice in choiceSearch($viewValue , f)" ng-model="f.default" type="text" class="form-control" placeholder="Search and select a choice">
         <p class="help-block">{{f.helpText}}.</p>
       </div>
 

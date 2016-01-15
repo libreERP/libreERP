@@ -13,6 +13,8 @@ router.register(r'listing' , listingViewSet , base_name = 'listing')
 router.register(r'order' , orderViewSet , base_name = 'order')
 router.register(r'saved' , savedViewSet , base_name = 'saved')
 router.register(r'profile' , customerProfileViewSet , base_name = 'customerProfile')
+router.register(r'choiceLabel' , choiceLabelViewSet , base_name = 'choiceLabel')
+router.register(r'choiceOption' , choiceOptionViewSet , base_name = 'choiceOption')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
