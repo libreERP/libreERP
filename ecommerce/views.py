@@ -153,7 +153,7 @@ class listingViewSet(viewsets.ModelViewSet):
     queryset = listing.objects.all()
     serializer_class = listingSerializer
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['description']
+    filter_fields = ['title']
 
 class orderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )
@@ -164,7 +164,7 @@ class orderViewSet(viewsets.ModelViewSet):
         if 'mode' in self.request.GET:
             u = self.request.user
             if self.request.GET['mode'] == 'provider':
-                return order.objects.filter(item__in = u.ecommerceListings.all())
+                return order.objects.filter(offer__in = u.ecommerceOfferings.all())
             elif self.request.GET['mode'] == 'consumer':
                 return u.ecommerceOrders.all()
         else:
@@ -201,3 +201,10 @@ class choiceOptionViewSet(viewsets.ModelViewSet):
     serializer_class = choiceOptionSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name', 'parent']
+
+class offeringViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    queryset = offering.objects.all()
+    serializer_class = offeringSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['item']

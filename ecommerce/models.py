@@ -112,37 +112,20 @@ class listing(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceListings' , null = False)
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now=True)
+    title = models.CharField(max_length = 100 , null = True)
     description = models.TextField(max_length = 2000 , null = False) # image/svg link to the logo
-    cod = models.BooleanField(default = False)
-    availability = models.CharField(choices = AVAILABILITY_CHOICES , default = 'local' , max_length = 15)
     priceModel = models.CharField(choices = PRICE_MODEL_CHOICES , default = 'quantity' , max_length = 15)
-    freeReturns = models.BooleanField(default = False)
-    shippingOptions = models.CharField(choices = SHIPPING_CHOICES , default = 'pickup' , max_length = 15)
-    replacementPeriod = models.PositiveIntegerField(null = True)
     approved = models.BooleanField(default = False)
     category = models.CharField(choices = CATEGORY_CHOICES , default = 'service' , max_length = 15)
     specifications = models.TextField(max_length = 2000 , null = False) # JSON data with key from one of the spec and value as the value for this perticular item
     files = models.ManyToManyField(media , related_name='listings')
     parentType = models.ForeignKey(genericProduct , related_name='products' , null = True)
-    rate = models.PositiveIntegerField(null = True)
 
 PAYMENT_TYPE_CHOICES = (
     ('onlineBanking' , 'onlineBanking'),
     ('COD' , 'COD'),
     ('eMoney' , 'eMoney'),
 )
-
-class order(models.Model):
-    user = models.ForeignKey(User , related_name = 'ecommerceOrders' , null = False)
-    created = models.DateTimeField(auto_now_add = True)
-    item = models.ForeignKey(listing , related_name = 'orders' , null = False)
-    paymentType = models.CharField(choices = PAYMENT_TYPE_CHOICES , max_length = 15 , default = 'COD')
-    paid = models.BooleanField(default = False)
-    address = models.ForeignKey(address , null = True)
-    mobile = models.PositiveIntegerField(null=True)
-    shipping = models.CharField(max_length = 20 , null = True)
-    coupon = models.CharField(max_length = 20 , null = True)
-    quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
 
 SAVED_TYPE_CHOICES = (
     ('cart' , 'cart'),
@@ -160,3 +143,30 @@ class customerProfile(models.Model):
     address = models.ForeignKey(address , null = False , related_name=None )
     sendUpdates = models.BooleanField(default = True)
     mobile = models.PositiveIntegerField( null = True)
+
+class offering(models.Model):
+    user = models.ForeignKey(User , related_name = 'ecommerceOfferings' , null = False)
+    created = models.DateTimeField(auto_now_add = True)
+    updated = models.DateTimeField(auto_now=True)
+    service = models.ForeignKey(service , related_name='offerings')
+    item = models.ForeignKey(listing , related_name='providerOptions')
+    cod = models.BooleanField(default = False)
+    freeReturns = models.BooleanField(default = False)
+    replacementPeriod = models.PositiveIntegerField(null = True)
+    rate = models.PositiveIntegerField(null = True)
+    shippingOptions = models.CharField(choices = SHIPPING_CHOICES , default = 'pickup' , max_length = 15)
+    availability = models.CharField(choices = AVAILABILITY_CHOICES , default = 'local' , max_length = 15)
+    shippingFee = models.PositiveIntegerField(null = True)
+    inStock = models.PositiveIntegerField(null = True) # the number of items available with this provider
+
+class order(models.Model):
+    user = models.ForeignKey(User , related_name = 'ecommerceOrders' , null = False)
+    created = models.DateTimeField(auto_now_add = True)
+    offer = models.ForeignKey(offering , related_name = 'orders' , null = True)
+    paymentType = models.CharField(choices = PAYMENT_TYPE_CHOICES , max_length = 15 , default = 'COD')
+    paid = models.BooleanField(default = False)
+    address = models.ForeignKey(address , null = True)
+    mobile = models.PositiveIntegerField(null=True)
+    shipping = models.CharField(max_length = 20 , null = True)
+    coupon = models.CharField(max_length = 20 , null = True)
+    quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes

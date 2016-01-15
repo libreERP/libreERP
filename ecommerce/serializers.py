@@ -11,17 +11,17 @@ from rest_framework.response import Response
 class fieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = field
-        fields = ( 'pk', 'fieldType' , 'unit' ,'name' , 'created' , 'helpText' , 'default')
+        fields = ( 'pk', 'fieldType' , 'unit' ,'name' , 'helpText' , 'default')
 
 class choiceLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = choiceLabel
-        fields = ('pk' , 'icon' , 'name' , 'created')
+        fields = ('pk' , 'icon' , 'name')
 
 class choiceOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = choiceOption
-        fields = ('pk' , 'parent' , 'icon' , 'name' , 'created')
+        fields = ('pk' , 'parent' , 'icon' , 'name')
 
 class genericTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,7 +33,7 @@ class genericProductSerializer(serializers.ModelSerializer):
     productType = genericTypeSerializer(many = False , read_only = True)
     class Meta:
         model = genericProduct
-        fields = ('pk' , 'fields' , 'name' , 'created' , 'productType')
+        fields = ('pk' , 'fields' , 'name' , 'productType')
     def create(self , validated_data):
         gp = genericProduct()
         gp.productType = genericType.objects.get(pk = self.context['request'].data['productType'])
@@ -69,13 +69,29 @@ class mediaSerializer(serializers.ModelSerializer):
         m.save()
         return m
 
+class offeringSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = offering
+        fields = ('pk' , 'user' , 'created' ,'inStock', 'service' , 'item' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
+        read_only_fields = ('user' , 'service' )
+    def create(self ,  validated_data):
+        o = offering(**validated_data)
+        u = self.context['request'].user
+        o.user = u
+        o.service = service.objects.get(user = u)
+        o.save()
+        return o
+
+
 class listingSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)
     parentType = genericProductSerializer(many = False , read_only = True)
     files = mediaSerializer(many = True , read_only = True)
+    providerOptions = offeringSerializer(many = True , read_only = True)
+
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'description' , 'cod' , 'availability' , 'priceModel' , 'freeReturns' , 'shippingOptions' , 'replacementPeriod' , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'rate')
+        fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions')
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user
@@ -91,7 +107,7 @@ class orderSerializer(serializers.ModelSerializer):
     address = addressSerializer(many = False , read_only = True)
     class Meta:
         model = order
-        fields = ('id' , 'user' , 'created' , 'item' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping')
+        fields = ('id' , 'user' , 'created' , 'offer' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping')
     def create(self , validated_data):
         u = self.context['request'].user
         street = self.context['request'].data['street']
@@ -105,8 +121,6 @@ class orderSerializer(serializers.ModelSerializer):
         o.address = a
         o.save()
         return o
-
-
 
 class savedSerializer(serializers.ModelSerializer):
     class Meta:

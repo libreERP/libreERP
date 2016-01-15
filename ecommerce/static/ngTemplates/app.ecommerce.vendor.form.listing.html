@@ -1,28 +1,14 @@
 <div class="row">
   <div  class="col-md-6">
+
+    <div class="form-group">
+      <label>Title</label>
+      <input class="form-control" type="text" ng-model = "data.form.title" >
+    </div>
+
     <div class="form-group">
       <label>Description</label>
       <textarea ng-model = "data.form.description" class="form-control"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Enable COD</label>
-      <input type="checkbox" ng-model = "data.form.cod" >
-    </div>
-
-
-    <div class="form-group">
-      <label>Availability</label>
-      <select class="form-control" ng-model = "data.form.availability">
-        <option value = "local">local</option>
-        <option value = "state">state</option>
-        <option value = "national">National</option>
-        <option value = "international">International</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Rate</label>
-      <input type="number" class="form-control" ng-model = "data.form.rate" >
     </div>
 
     <div class="form-group">
@@ -32,29 +18,6 @@
         <option value = "weight">Weight</option>
         <option value = "time">Time</option>
         <option value = "custom">Custom</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Free returns available</label>
-      <input type="checkbox" ng-model = "data.form.freeReturns" >
-    </div>
-
-    <div class="form-group">
-      <label>Replacement Period</label>
-      <input type="number" ng-model = "data.form.replacementPeriod" class="form-control">
-      <p class="help-block">
-        Raplacement period in days
-      </p>
-    </div>
-
-    <div class="form-group">
-      <label>Shipping Options</label>
-      <select class="form-control" ng-model = "data.form.shippingOptions">
-        <option value = "pickup">Pickup</option>
-        <option value = "homeDelivary">Home Delivary</option>
-        <option value = "time">time</option>
-        <option value = "custom">custom</option>
       </select>
     </div>
 

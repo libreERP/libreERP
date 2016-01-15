@@ -44,20 +44,74 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.admin.html',
     controller: 'businessManagement.ecommerce.admin'
   })
+  .state('businessManagement.ecommerce.offerings', {
+    url: "/offerings",
+    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.offerings.html',
+    controller: 'businessManagement.ecommerce.offerings'
+  })
 
 });
+
+app.controller('businessManagement.ecommerce.offerings' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+  $scope.data = {mode : 'select' , form : {} };
+
+  $scope.resetForm = function(){
+    $scope.data.form = {
+      shippingOptions : 'pickup',
+      availability : 'local',
+      rate : null,
+      freeReturns : false,
+      replacementPeriod : null,
+      shippingFee : null,
+      inStock : null
+    }
+  }
+
+  $scope.resetForm()
+
+  $scope.listingSearch = function(query) {
+    return $http.get('/api/ecommerce/listing/?name__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  };
+
+  $scope.buildForm = function(){
+    $scope.data.mode = 'create'
+  }
+
+  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+    ];
+
+  $scope.submit = function() {
+    dataToSend = $scope.data.form;
+    dataToSend.item = $scope.data.listing.pk;
+    $http({method : 'POST' , url : '/api/ecommerce/offering/' , data : $scope.data.form}).
+    then(function(response){
+      $scope.resetForm();
+      Flash.create('success', response.status + ' : ' + response.statusText);
+      }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+  }
+
+  $scope.goBack = function(){
+    $scope.data.mode = 'select';
+  }
+
+
+})
+
 
 app.controller('businessManagement.ecommerce.listings' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
   form = {mediaType : '' , files : [] , file : emptyFile , url : '',
-    availability : 'local',
     priceModel : 'quantity',
-    shippingOptions : 'pickup',
     category : 'product',
   }
 
   $scope.choiceSearch = function(query , field) {
-    console.log(field);
     return $http.get('/api/ecommerce/choiceOption/?name__contains=' + query + '&parent=' + field.parentLabel).
     then(function(response){
       return response.data;

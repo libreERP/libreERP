@@ -15,6 +15,7 @@ router.register(r'saved' , savedViewSet , base_name = 'saved')
 router.register(r'profile' , customerProfileViewSet , base_name = 'customerProfile')
 router.register(r'choiceLabel' , choiceLabelViewSet , base_name = 'choiceLabel')
 router.register(r'choiceOption' , choiceOptionViewSet , base_name = 'choiceOption')
+router.register(r'offering' , offeringViewSet , base_name = 'offering')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

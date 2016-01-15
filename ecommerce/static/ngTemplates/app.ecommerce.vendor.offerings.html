@@ -1,0 +1,43 @@
+<breadcrumb></breadcrumb>
+<div class="container-fluid">
+
+
+  <uib-tabset>
+    <uib-tab >
+      <uib-tab-heading>
+        New  <i class="fa fa-plus"></i>
+      </uib-tab-heading>
+      <div ng-if="data.mode == 'select'">
+        <div class="container-fluid" style="margin-top:100px;">
+          <h3 class="text-center" style="margin-bottom:40px;">
+            <i class="fa fa-search-plus fa-4x" style="color:#0577a8;"></i>
+          </h3>
+          <div class="input-group input-group-lg col-md-6 col-md-offset-3">
+            <input uib-typeahead="listing as listing.title for listing in listingSearch($viewValue)" ng-model="data.listing" type="text" class="form-control" placeholder="Search and create a offering against a listing">
+            <span class="input-group-addon btn btn-primary" ng-click="buildForm()"> Create <i class="fa fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+      <div ng-if="data.mode == 'create'">
+        <h3>
+          Create an offering for : {{data.listing.title}} listing
+        </h3>
+        <div ng-include="'/static/ngTemplates/app.ecommerce.vendor.form.offering.html'"></div>
+
+      </div>
+    </uib-tab>
+    <uib-tab>
+      <uib-tab-heading>
+        Browse  <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+
+      <generic-Table resource-Url = "{{'/api/ecommerce/offering/'}}" search="true"
+          primary-Search-Field="{{'item'}}" views='views' ></generic-Table>
+
+
+
+
+    </uib-tab>
+  </uib-tabset>
+
+</div>

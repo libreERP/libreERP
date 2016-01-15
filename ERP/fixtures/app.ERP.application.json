@@ -254,7 +254,7 @@
       "name" : "app.ecommerce.orders",
       "created" : "2016-01-07 00:44:00.737000",
       "module" : 3,
-      "description" : "Configure ecommerce settings ",
+      "description" : "Vendors orders against each offerings he have made",
       "owners": [1],
       "canConfigure": null
     }
@@ -267,7 +267,7 @@
       "name" : "app.ecommerce.earnings",
       "created" : "2016-01-07 00:44:00.737000",
       "module" : 3,
-      "description" : "Configure ecommerce settings ",
+      "description" : "Vendors earnings view ",
       "owners": [1],
       "canConfigure": null
     }
@@ -293,7 +293,20 @@
       "name" : "app.ecommerce.support",
       "created" : "2016-01-07 00:44:00.737000",
       "module" : 3,
-      "description" : "Configure ecommerce settings ",
+      "description" : "Support and customer care section for the ecommerce platform",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 24,
+    "fields" : {
+      "icon" : "fa-th-large",
+      "name" : "app.ecommerce.offerings",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Here you can  select a listing and provide your offerings",
       "owners": [1],
       "canConfigure": null
     }
