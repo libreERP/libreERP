@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/angular-chart.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/anim-in-out.css' %}" charset="utf-8">
     <!-- custom css -->
     <link rel="stylesheet" href="{% static 'css/custom/base.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/app.ecommerce.css' %}" charset="utf-8">
@@ -22,7 +23,7 @@
     <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
 
     <div ng-include="headerUrl"></div>
-    <div ui-view ></div>
+    <div ui-view class="anim-in-out anim-fade" data-anim-speed="500"></div>
     <div ng-include="footerUrl"></div>
 
     <!-- contains very common ng templates used in the directives -->
@@ -31,6 +32,7 @@
     <script src="{% static 'js/Chart.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/angular.min.js' %}"></script>
+    <script src="{% static 'js/angular-animate.min.js' %}"></script>
     <script src="{% static 'js/angular-ui-router.min.js' %}"></script>
     <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
     <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
@@ -45,6 +47,7 @@
     <script src="{% static 'js/ng-tags-input.min.js' %}"></script>
     <script src="{% static 'js/tinymce.min.js' %}"></script>
     <script src="{% static 'js/ng-tinymce.js' %}"></script>
+    <script src="{% static 'js/anim-in-out.js' %}"></script>
     <!-- Custom JS files -->
     <script type="text/javascript">
       var wampServer = '{{wampServer}}';

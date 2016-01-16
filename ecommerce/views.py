@@ -204,7 +204,7 @@ class choiceOptionViewSet(viewsets.ModelViewSet):
 
 class offeringViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
-    queryset = offering.objects.all()
+    queryset = offering.objects.all().order_by('rate')
     serializer_class = offeringSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['item']

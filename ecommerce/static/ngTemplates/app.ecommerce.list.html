@@ -1,45 +1,16 @@
-<div class="container-fluid">
-  <div ng-repeat="l in listings">
-    <div class="col-md-8 col-md-offset-2 ">
-      <div class="card bg-white container-fluid" style="padding:0px;margin-top:15px;position:relative;">
-        <div class="col-md-1" style="padding:0px;">
-          <img ng-repeat="f in l.files" ng-click="changePicture(l , $index)" style="width: 100%;" class="img"  ng-src="{{f.attachment}}" >
-        </div>
-        <div class="col-md-5" style="padding:0px;">
-          <img style="width: 100%;" class="img" ng-src="{{l.files[l.pictureInView].attachment}}" >
-        </div>
-        <div class="col-md-6" style="position:absolute;height:100%;right:0px;">
-          <div class="row container-fluid">
-            <p style="padding-bottom:0px;">
-              <strong style="font-size:18px;">Description :</strong> {{l.description}} <br>
-            </p>
-            <hr>
+<div class="container-fluid" style="min-height:600px;">
+  <div class="col-md-8 col-md-offset-2 ">
+    <div ng-repeat="l in listings" >
+      <div class="col-md-4">
+        <div class="container-fluid" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
+          <div class="row" >
+            <img style="width: 100%;" class="img" ng-src="{{l.files[0].attachment}}" >
           </div>
-          <div class="row container-fluid">
-            <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating> 28 Reviews
-            <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
-          </div>
-          <div class="row container-fluid" style="padding-top:14px;">
-            <i class="fa fa-money fa-1x text-muted" ></i> Cash on delivery : {{l.cod ? 'Yes' : 'No'}} <br>
-            <i class="fa fa-retweet fa-1x text-muted"></i> Free returns : {{l.freeReturns ? 'Yes' : 'No'}} <br>
-
-          </div>
-          <div class="row container-fluid" style="margin-top:10px;">
-            <span ng-repeat="s in l.specifications" ng-if="$index<5">
-              <span> <strong>{{s.name | humanize}} </strong> ({{s.unit}}): {{s.value}}
-              </span>
-              <br>
-            </span>
-          </div>
-          <span style="position:absolute;bottom:40px;right:10px;">
-            <span style="font-size:30px;"><i class="fa fa-inr"></i> {{l.rate}}</span>
-            <span ng-if="l.priceModel=='time'">/ per Hour</span>
-            <span ng-if="l.priceModel=='quantity'">/ per Piece</span>
-            <span ng-if="l.priceModel=='weight'">/ per Kg</span>
-          </span>
-          <div class="row" style="position:absolute;bottom:0px;width:100%;">
-            <button type="button" style="border-radius:0px;" ng-click="addToCart(l)" class="btn btn-warning col-md-6">Add to cart</button>
-            <button type="button" style="border-radius:0px;" ng-click="buy(l)"  class="btn btn-success col-md-6">Buy</button>
+          <div class="row" >
+            <div class="container-fluid card bg-white" style="padding:10px;">
+              <h3>{{l.title}}</h3>
+              {{l.providerOptions.length}} {{l.providerOptions.length>1? 'Vendors' : 'Vendor'}} starting at {{l.bestOffer.rate}} <i class="fa fa-inr"></i>
+            </div>
           </div>
         </div>
       </div>

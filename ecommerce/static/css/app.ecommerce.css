@@ -24,3 +24,16 @@
     background-image: url("/static/images/register.jpg");
     background-color: #cccccc;
 }
+
+.navbar-default .nav li a:hover,
+.navbar-default .nav li a:focus {
+    border-radius: 4px;
+    color: #ffffff !important;
+    background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus,
+.navbar-default .navbar-brand:active,
+.navbar-default .navbar-brand.active {
+    color: #ffffff !important;
+}

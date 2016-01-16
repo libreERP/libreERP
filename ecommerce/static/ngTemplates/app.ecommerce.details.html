@@ -1,0 +1,93 @@
+<div class="container-fluid">
+  <div class="col-md-8 col-md-offset-2 ">
+    <div class="row card bg-white container-fluid" style="padding:0px;margin-top:15px;position:relative;">
+      <div class="col-md-1" style="padding:0px;">
+        <img ng-repeat="f in data.files" ng-click="changePicture($index)" style="width: 100%;" class="img"  ng-src="{{f.attachment}}" >
+      </div>
+      <div class="col-md-5" style="padding:0px;">
+        <img style="width: 100%;" class="img" ng-src="{{data.files[data.pictureInView].attachment}}" >
+      </div>
+      <div class="col-md-6" style="position:absolute;height:100%;right:0px;">
+        <div class="row container-fluid">
+          <p style="padding-bottom:0px;">
+            <strong style="font-size:18px;">{{data.title}}</strong><br>
+          </p>
+          <hr>
+        </div>
+        <div class="row container-fluid">
+          <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating> 28 Reviews
+          <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
+        </div>
+        <div class="row container-fluid" style="padding-top:14px;">
+          <i class="fa fa-money fa-1x text-muted" ></i> Cash on delivery : {{data.providerOptions[offeringInView].cod ? 'Yes' : 'No'}} <br>
+          <i class="fa fa-retweet fa-1x text-muted"></i> Free returns : {{data.providerOptions[offeringInView].freeReturns ? 'Yes' : 'No'}} <br>
+
+        </div>
+        <div class="row container-fluid" style="margin-top:10px;">
+          <span ng-repeat="s in data.specifications" ng-if="$index<5">
+            <span> <strong>{{s.name | humanize}} </strong> ({{s.unit}}): {{s.value}}
+            </span>
+            <br>
+          </span>
+        </div>
+        <span style="position:absolute;bottom:100px;right:15px;">
+          <strong>Provided by</strong> <br>
+          <span class="pull-right">{{data.providerOptions[offeringInView].service.name}}</span> <br>
+        </span>
+        <span style="position:absolute;bottom:40px;right:15px;">
+          <span style="font-size:30px;"><i class="fa fa-inr"></i> {{data.providerOptions[offeringInView].rate}}</span>
+          <span ng-if="data.priceModel=='time'">/ per Hour</span>
+          <span ng-if="data.priceModel=='quantity'">/ per Piece</span>
+          <span ng-if="data.priceModel=='weight'">/ per Kg</span>
+        </span>
+        <div class="row" style="position:absolute;bottom:0px;width:100%;">
+          <button type="button" style="border-radius:0px;" ng-click="addToCart(data)" class="btn btn-warning col-md-6">Add to cart</button>
+          <button type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">Buy</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:5px;">
+      <div ng-repeat="p in data.providerOptions">
+        <div class="card bg-white" style="padding:0px;">
+          <div class="container-fluid" style="padding:10px;">
+            <div class="col-md-8">
+              <strong> Rate : </strong> <i class="fa fa-inr"></i> {{p.rate}} <br>
+              <strong> Vendor : </strong> {{p.service.name}}
+            </div>
+            <div class="col-md-4">
+              <button type="button" class="btn btn-default pull-right" ng-click="buy(data.providerOptions[$index])" >
+                Buy
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row card bg-white">
+      <div class="container-fluid" style="padding:10px;">
+        <strong>Description : </strong> {{data.description}}
+        <hr>
+        <div class="col-md-6">
+          <table class="table table-striped">
+            <th>
+              Property
+            </th>
+            <th>
+              Value
+            </th>
+            <tr ng-repeat="f in data.specifications">
+              <td>
+                {{f.name}}
+              </td>
+              <td>
+                {{f.value}} ({{f.unit}})
+              </td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

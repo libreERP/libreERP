@@ -54,7 +54,7 @@ class serviceSerializer(serializers.ModelSerializer):
     address = addressSerializer(many = False, read_only = True)
     class Meta:
         model = service
-        fields = ('pk' , 'created' ,'name' , 'user' , 'cin' , 'tin' , 'address' , 'mobile' , 'telephone' , 'logo' , 'description')
+        fields = ('pk' , 'created' ,'name' , 'user' , 'cin' , 'tin' , 'address' , 'mobile' , 'telephone' , 'logo' , 'about')
 
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,10 +70,11 @@ class mediaSerializer(serializers.ModelSerializer):
         return m
 
 class offeringSerializer(serializers.ModelSerializer):
+    service = serviceSerializer(many = False , read_only = True)
     class Meta:
         model = offering
         fields = ('pk' , 'user' , 'created' ,'inStock', 'service' , 'item' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
-        read_only_fields = ('user' , 'service' )
+        read_only_fields = ('user' , 'service' , )
     def create(self ,  validated_data):
         o = offering(**validated_data)
         u = self.context['request'].user

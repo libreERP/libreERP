@@ -159,6 +159,9 @@ class offering(models.Model):
     shippingFee = models.PositiveIntegerField(null = True)
     inStock = models.PositiveIntegerField(null = True) # the number of items available with this provider
 
+    class Meta:
+        unique_together = ('service', 'item',)
+
 class order(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceOrders' , null = False)
     created = models.DateTimeField(auto_now_add = True)

@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce', 'ngAnimate', 'anim-in-out']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
 
@@ -24,6 +24,13 @@ app.config(function($stateProvider ){
     url: "/",
     templateUrl: '/static/ngTemplates/app.ecommerce.list.html',
     controller: 'controller.ecommerce.list'
+  })
+
+  $stateProvider
+  .state('details', {
+    url: "/details/:id",
+    templateUrl: '/static/ngTemplates/app.ecommerce.details.html',
+    controller: 'controller.ecommerce.details'
   })
 
   $stateProvider
@@ -76,9 +83,62 @@ app.config(function($stateProvider ){
 
 });
 
+app.controller('controller.ecommerce.details' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+
+  $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
+  then(function(response){
+    d = response.data;
+    d.specifications = JSON.parse(d.specifications);
+    d.pictureInView = 0;
+    $scope.data = d;
+    console.log(d);
+    min = d.providerOptions[0].rate;
+    index = 0;
+    for (var i =1; i < d.providerOptions.length; i++) {
+      if (d.providerOptions[i].rate <min){
+        index = i;
+        min = d.providerOptions[i].rate;
+      }
+    }
+    $scope.offeringInView = index;
+  })
+
+
+  $scope.changePicture = function(pic){
+    $scope.data.pictureInView = pic;
+  }
+
+  $scope.addToCart = function(input){
+    dataToSend = {
+      category : 'cart',
+      user : getPK($scope.me.url),
+      item : input.pk,
+    }
+    $http({method : 'POST' , url : '/api/ecommerce/saved/' , data : dataToSend }).
+    then(function(response){
+      for (var i = 0; i < $scope.inCart.length; i++) {
+        if ($scope.inCart[i].pk == response.data.pk){
+          return;
+        }
+      }
+      $scope.inCart.push(response.data);
+    })
+  }
+
+  $scope.buy = function(input){
+    $state.go('checkout' , {pk : input.pk})
+  }
+
+
+
+
+
+
+
+});
 
 app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
-
+// for the dashboard of the account tab
 });
 app.controller('controller.ecommerce.account.cart' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
 
@@ -154,10 +214,15 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
     $scope.data.address = response.data[0].address;
   })
 
-  $http({method : 'GET' , url : '/api/ecommerce/listing/' + $state.params.pk + '/'}).
+  $http({method : 'GET' , url : '/api/ecommerce/offering/' + $state.params.pk + '/'}).
   then(function(response){
-    $scope.item = response.data;
+    $scope.offering = response.data;
+    $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/'}).
+    then(function(response){
+      $scope.item = response.data;
+    })
   })
+
 
   $scope.next = function(){
     if ($scope.data.stage == 'review') {
@@ -177,7 +242,7 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
   $scope.pay = function(){
     dataToSend = {
       user : getPK($scope.me.url),
-      item : $scope.item.pk,
+      offer : $scope.offering.pk,
       paymentType : 'COD',
       quantity : $scope.data.quantity,
       mobile : $scope.customerProfile.mobile,
@@ -274,13 +339,19 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
     $scope.listings[$scope.listings.indexOf(parent)].pictureInView = pic;
   }
 
-
   $http({method : "GET" , url : '/api/ecommerce/listing/'}).
   then(function(response){
     for (var i = 0; i < response.data.length; i++) {
       l = response.data[i];
-      l.specifications = JSON.parse(l.specifications);
-      l.pictureInView = 0;
+      index = 0
+      min = l.providerOptions[index].rate;
+      for (var j = 1; j < l.providerOptions.length; j++) {
+        if (l.providerOptions[j].rate < min) {
+          min = l.providerOptions[j].rate;
+          index = j;
+        }
+      }
+      l.bestOffer = l.providerOptions[index];
       $scope.listings.push(l);
     }
   })
