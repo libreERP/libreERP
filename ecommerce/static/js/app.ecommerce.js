@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce', 'ngAnimate', 'anim-in-out']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce', 'ngAnimate', 'anim-in-out' ,'ui.bootstrap.datetimepicker']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
 
@@ -275,6 +275,9 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
+  $scope.data.pickupTime = new Date();
+  $scope.data.dropInTime = new Date();
+
   $http({method : 'GET' , url : '/api/ecommerce/saved/'}).
   then(function(response){
     for (var i = 0; i < response.data.length; i++) {
@@ -298,7 +301,7 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
     }
   }, true);
 
-  $scope.getLocationSuggeation = function(query){
+  $scope.getLocationSuggeations = function(query){
     return $http.get('/api/ecommerce/suggestLocations/?query=' + query).
     then(function(response){
       return response.data.predictions;

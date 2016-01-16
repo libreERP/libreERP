@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#2f5287;height:60px;">
-    <div class="container" style="position:relative;top:-20px;">
+    <div class="container" style="position:relative;top:-20px;width:100%;">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -24,11 +24,32 @@
                 <a style="text-transform: capitalize;" ng-if="me != null" ui-sref="account"><i class="fa fa-user"></i> {{me.url | getName}}</a>
               </li>
             </ul>
-            <form class="navbar-form navbar-right" role="search">
-                <div class="input-group" style="width:600px;">
-                    <input uib-typeahead="location as location.description for location in getLocationSuggeation($viewValue)"
-                    ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
-                </div>
+            <form class="navbar-form navbar-right" role="search" style="position:relative;right:20%;top:-5px;">
+              <span style="color:white;position:relative;top:-10px;">Dropin</span>
+              <span class="fa fa-clock-o fa-3x" style="color:white;" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+              </span>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <datetimepicker data-ng-model="data.dropInTime"
+                  data-datetimepicker-config="{ dropdownSelector: '#dLabel' }"></datetimepicker>
+              </ul>
+
+              <span style="color:white;margin-left:60px;cursor:pointer;top:-6px;position:relative;" class="fa fa-search fa-2x"></span>
+
+            </form>
+            <form style="width:600px;margin-right:20%;" class="navbar-form navbar-right" role="search">
+              <div style="width:100%;position:relative;">
+                <input style="width:100%;" uib-typeahead="location as location.description for location in getLocationSuggeations($viewValue)"
+                ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
+              </div>
+            </form>
+            <form class="navbar-form navbar-right" role="search" style="position:relative;top:-5px;">
+              <span style="color:white;position:relative;top:-10px;">Pickup</span>
+              <span class="fa fa-clock-o fa-3x" style="color:white;"id="dLabel2" role="button" data-toggle="dropdown" >
+              </span>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
+                <datetimepicker data-ng-model="data.pickupTime"
+                data-datetimepicker-config="{ dropdownSelector: '#dLabel2' }"></datetimepicker>
+              </ul>
             </form>
         </div>
         <!-- /.navbar-collapse -->
@@ -36,8 +57,8 @@
     <!-- /.container-fluid -->
 </nav>
 
-<!-- <header  style="background-image: url('/static/images/ecommerce.jpg');">
-    <div class="container">
+<!-- <header  style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:400px ;">
+    <div class="container-fluid" style="position:relative;top:-100px;">
         <div class="intro-text">
             <div class="intro-lead-in">Lowest price</div>
             <div class="intro-heading">Amazing deals</div>
