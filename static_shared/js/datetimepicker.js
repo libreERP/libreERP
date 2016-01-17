@@ -383,7 +383,6 @@
               ngModelController.$setViewValue(newDate);
 
               if (configuration.dropdownSelector) {
-                console.log(configuration.dropdownSelector);
                 jQuery(configuration.dropdownSelector).dropdown('toggle');
               }
 

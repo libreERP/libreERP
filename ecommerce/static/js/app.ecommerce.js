@@ -160,11 +160,42 @@ app.controller('controller.ecommerce.account' , function($scope , $state , $asid
 });
 app.controller('controller.ecommerce.account.cart' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
 
-  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
+  $scope.views = [{name : 'list' , icon : 'fa-bars' ,
+    template : '/static/ngTemplates/app.ecommerce.account.cart.list.html' ,
+    itemTemplate : '/static/ngTemplates/app.ecommerce.account.cart.item.html',
 
+  },];
 
 });
+
+app.controller('controller.ecommerce.account.cart.item' , function($scope , $http , $state){
+  console.log("item loaded");
+
+  $scope.data = $scope.$parent.$parent.data;
+  console.log($scope.data);
+  $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/'}).
+  then(function(response){
+    index = 0
+    l = response.data;
+    min = l.providerOptions[index].rate;
+    for (var j = 1; j < l.providerOptions.length; j++) {
+      if (l.providerOptions[j].rate < min) {
+        min = l.providerOptions[j].rate;
+        index = j;
+      }
+    }
+    l.bestOffer = l.providerOptions[index];
+    for(key in l){
+      $scope.data[key] = l[key];
+    }
+  })
+
+  $scope.view = function(){
+    $state.go('details' , {id : $scope.data.pk})
+  }
+
+
+})
 
 app.controller('controller.ecommerce.account.orders' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
@@ -226,9 +257,12 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
   $scope.me = $users.get('mySelf');
   $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
 
-  $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
-  $scope.data.dropInTime = $scope.$parent.data.dropInTime;
-  $scope.data.location = $scope.$parent.data.location;
+  $scope.$watch(function(){
+    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
+    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
+    $scope.data.location = $scope.$parent.data.location;
+  })
+
 
   $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
   then(function(response){
@@ -239,6 +273,15 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
   $http({method : 'GET' , url : '/api/ecommerce/offering/' + $state.params.pk + '/'}).
   then(function(response){
     $scope.offering = response.data;
+    $scope.getBookingAmount = function(){
+      h = Math.floor(($scope.data.dropInTime-$scope.data.pickUpTime)/3600000);
+      if (h<0){
+        return 0
+      }else {
+        return $scope.offering.rate * $scope.data.quantity*h
+      }
+    }
+
     $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/'}).
     then(function(response){
       $scope.item = response.data;
@@ -353,19 +396,10 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
 
 app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
 
-  // $scope.$watch(function(){
-  //   console.log($scope.$parent);
-  //   return $scope.$parent.location==null} ,
-  //   function(newValue , oldValue){
-  //
-  // })
-
   $scope.fetchListings = function(){
-    console.log($scope);
     url = '/api/ecommerce/listing/?'
     $scope.listings = [];
     parent = $scope.$parent;
-    console.log(parent);
     if (parent.data.location != null && typeof parent.data.location!='string') {
       l = parent.data.location;
       pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
@@ -393,11 +427,8 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
         $scope.listings.push(l);
       }
     })
-
-    console.log("yes , callable");
   }
 
-  console.log("public");
   $scope.listings = [];
   $scope.me = $users.get('mySelf');
 

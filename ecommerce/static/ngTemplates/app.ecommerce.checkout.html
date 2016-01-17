@@ -66,16 +66,16 @@
                 <span ng-if="item.priceModel=='weight'">/ per Kg</span>
               </div>
               <div class="row">
-                <strong>Seller : </strong> {{offering.service.name }} <br>
+                <strong>Vendor : </strong> {{offering.service.name }} <br>
                 <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
                 <br> Power Seller <i style="color:#db55e7;" class="fa fa-shield"></i>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" style="padding-top:10px;">
               <div class="input-group">
                 <span class="input-group-addon">#</span>
                 <input type="text" class="form-control" ng-model = "data.quantity">
-                <span class="input-group-addon" ng-if="item.priceModel=='time'">Hours</span>
+                <span class="input-group-addon" ng-if="item.priceModel=='time'">Bookings</span>
                 <span class="input-group-addon" ng-if="item.priceModel=='quantity'">Pieces</span>
                 <span class="input-group-addon" ng-if="item.priceModel=='weight'">Kgs</span>
               </div>
@@ -87,25 +87,36 @@
 
             </div>
             <div class="col-md-3">
-              <span class="text-muted" style="font-size:20px;">Shipping method</span>
-              <br>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" value="express" ng-model="data.shipping">
-                  One day express {{data.expressShipping}}
-                </label>
-                <p class="help-block">
-                  <i class="fa fa-inr"></i> 30 additional charge
+              <div ng-if="item.priceModel=='time'">
+                <span style="font-size:25px;">Trip details</span>
+                <p>
+                  <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.pickUpTime ? '':'Not selected'}}
+                </p>
+                <p>
+                  <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.dropInTime? '':'Not selected'}}
                 </p>
               </div>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" value="normal" ng-model="data.shipping">
-                   7 Day
-                </label>
-                <p class="help-block">
-                  <i class="fa fa-inr"></i> No additional charge
-                </p>
+              <div ng-if="item.priceModel=='quantity'">
+                <span class="text-muted" style="font-size:20px;">Shipping method</span>
+                <br>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="optionsRadios" value="express" ng-model="data.shipping">
+                    One day express {{data.expressShipping}}
+                  </label>
+                  <p class="help-block">
+                    <i class="fa fa-inr"></i> 30 additional charge
+                  </p>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="optionsRadios" value="normal" ng-model="data.shipping">
+                     7 Day
+                  </label>
+                  <p class="help-block">
+                    <i class="fa fa-inr"></i> No additional charge
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -115,7 +126,7 @@
               <div class="row">
                 <span class="text-muted" style="font-size:20px;">Subtotal</span>
                 <br>
-                <i class="fa fa-2x fa-inr"></i> {{offering.rate * data.quantity}}
+                <i class="fa fa-2x fa-inr"></i> {{getBookingAmount()}}
               </div>
             </div>
             <div class="col-md-6">
@@ -166,6 +177,9 @@
 
           <div class="row">
             <h1>COD</h1>
+            <p>
+              <strong>Total amount payable :</strong>{{getBookingAmount()}}
+            </p>
           </div>
 
           <div class="row" >
@@ -184,6 +198,9 @@
           <strong> Order date and time : </strong> {{data.order.created | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>
           <strong> Item ID : </strong> {{data.order.item}}<br>
           <strong> Payment mode. : </strong> {{data.order.paymentType}}<br>
+          <hr>
+          <strong> Booking starts from : </strong> {{data.order.start | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>
+          <strong> Booking ends at : </strong> {{data.order.end | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>
         </div>
       </div>
 
