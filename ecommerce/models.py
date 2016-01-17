@@ -173,3 +173,5 @@ class order(models.Model):
     shipping = models.CharField(max_length = 20 , null = True)
     coupon = models.CharField(max_length = 20 , null = True)
     quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
+    start = models.DateTimeField(null = True)
+    end = models.DateTimeField(null = True)

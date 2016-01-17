@@ -85,23 +85,41 @@ app.config(function($stateProvider ){
 
 app.controller('controller.ecommerce.details' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
 
+  $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
+
   $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
   then(function(response){
     d = response.data;
     d.specifications = JSON.parse(d.specifications);
     d.pictureInView = 0;
-    $scope.data = d;
-    console.log(d);
     min = d.providerOptions[0].rate;
     index = 0;
-    for (var i =1; i < d.providerOptions.length; i++) {
+    for (var i =0; i < d.providerOptions.length; i++) {
+      if ($scope.data.pickUpTime == null || $scope.data.dropInTime == null) {
+        d.providerOptions[i].available = 'error';
+      } else {
+        dataToSend = {
+          start : $scope.data.pickUpTime,
+          end : $scope.data.dropInTime,
+          offering : d.providerOptions[i].pk,
+        }
+        $http({method : 'GET' , url : '/api/ecommerce/offeringAvailability/?mode=time' , params : dataToSend}).
+        then((function(i){
+          return function(response){
+            $scope.data.providerOptions[i].available = response.data.available;
+          }
+        })(i))
+        d.providerOptions[i].available = true;
+      }
       if (d.providerOptions[i].rate <min){
         index = i;
         min = d.providerOptions[i].rate;
       }
     }
+    console.log(d);
+    $scope.data = d;
     $scope.offeringInView = index;
-  })
+  });
 
 
   $scope.changePicture = function(pic){
@@ -208,6 +226,10 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
   $scope.me = $users.get('mySelf');
   $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
 
+  $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
+  $scope.data.dropInTime = $scope.$parent.data.dropInTime;
+  $scope.data.location = $scope.$parent.data.location;
+
   $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
   then(function(response){
     $scope.customerProfile = response.data[0];
@@ -240,6 +262,14 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
   }
 
   $scope.pay = function(){
+    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
+    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
+    $scope.data.location = $scope.$parent.data.location;
+
+    if ($scope.data.pickUpTime == null || $scope.data.dropInTime== null) {
+      Flash.create('danger' , 'No start date and end date provided');
+      return;
+    }
     dataToSend = {
       user : getPK($scope.me.url),
       offer : $scope.offering.pk,
@@ -248,6 +278,8 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
       mobile : $scope.customerProfile.mobile,
       coupon : $scope.data.coupon,
       shipping : $scope.data.shipping,
+      start : $scope.data.pickUpTime,
+      end : $scope.data.dropInTime,
     }
     for (key in $scope.data.address) {
       if (key == 'pk') {
@@ -275,8 +307,8 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
-  $scope.data.pickupTime = new Date();
-  $scope.data.dropInTime = new Date();
+  $scope.data.pickUpTime = null;
+  $scope.data.dropInTime = null;
 
   $http({method : 'GET' , url : '/api/ecommerce/saved/'}).
   then(function(response){
@@ -308,10 +340,62 @@ app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $t
     })
   }
 
+  $scope.refreshResults = function(){
+    $state.go('ecommerce' , {} , {reload : true})
+    // if (angular.isDefined($scope.$$childHead.fetchListings)) {
+    //   $scope.$$childHead.fetchListings()
+    // }else {
+    //   $scope.$$childTail.fetchListings()
+    // }
+  }
+
 });
 
 app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
 
+  // $scope.$watch(function(){
+  //   console.log($scope.$parent);
+  //   return $scope.$parent.location==null} ,
+  //   function(newValue , oldValue){
+  //
+  // })
+
+  $scope.fetchListings = function(){
+    console.log($scope);
+    url = '/api/ecommerce/listing/?'
+    $scope.listings = [];
+    parent = $scope.$parent;
+    console.log(parent);
+    if (parent.data.location != null && typeof parent.data.location!='string') {
+      l = parent.data.location;
+      pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
+      if (pin != null) {
+        url += 'geo=' + pin[0].substring(0,3);
+      } else {
+        return;
+      }
+
+    }
+
+    $http({method : "GET" , url : url}).
+    then(function(response){
+      for (var i = 0; i < response.data.length; i++) {
+        l = response.data[i];
+        index = 0
+        min = l.providerOptions[index].rate;
+        for (var j = 1; j < l.providerOptions.length; j++) {
+          if (l.providerOptions[j].rate < min) {
+            min = l.providerOptions[j].rate;
+            index = j;
+          }
+        }
+        l.bestOffer = l.providerOptions[index];
+        $scope.listings.push(l);
+      }
+    })
+
+    console.log("yes , callable");
+  }
 
   console.log("public");
   $scope.listings = [];
@@ -342,21 +426,7 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
     $scope.listings[$scope.listings.indexOf(parent)].pictureInView = pic;
   }
 
-  $http({method : "GET" , url : '/api/ecommerce/listing/'}).
-  then(function(response){
-    for (var i = 0; i < response.data.length; i++) {
-      l = response.data[i];
-      index = 0
-      min = l.providerOptions[index].rate;
-      for (var j = 1; j < l.providerOptions.length; j++) {
-        if (l.providerOptions[j].rate < min) {
-          min = l.providerOptions[j].rate;
-          index = j;
-        }
-      }
-      l.bestOffer = l.providerOptions[index];
-      $scope.listings.push(l);
-    }
-  })
+  $scope.fetchListings()
+
 
 });

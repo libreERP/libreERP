@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'support/$' , supportApi.as_view() ),
     url(r'suggestLocations/$' , locationAutoCompleteApi.as_view() ),
     url(r'locationDetails/$' , locationDetailsApi.as_view() ),
+    url(r'offeringAvailability/$' , offeringAvailabilityApi.as_view() ),
 ]

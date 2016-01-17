@@ -7,6 +7,9 @@ from django.template import RequestContext
 from django.conf import settings as globalSettings
 from django.core.mail import send_mail
 import hashlib, datetime, random
+import pytz
+
+
 from django.utils import timezone
 from time import time
 import requests
@@ -29,11 +32,34 @@ def ecommerceHome(request):
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
 
+class offeringAvailabilityApi(APIView): # suggest places for a query
+    renderer_classes = (JSONRenderer,)
+    def get(self, request , format = None):
+        utc=pytz.UTC
+        if request.GET['mode']=='time':
+            s = datetime.datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            s = s.replace(tzinfo=utc)
+            e = datetime.datetime.strptime(request.GET['end'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            e = e.replace(tzinfo=utc)
+            booked = 0
+            for o in order.objects.filter(offer=int(request.GET['offering'])):
+                if o.start <e and o.start>s:
+                    booked += 1
+                if o.end <e and o.end>s:
+                    booked += 1
+            print offering.objects.get(pk = request.GET['offering']).inStock
+            if booked < offering.objects.get(pk = request.GET['offering']).inStock:
+                available = True
+            else:
+                available = False
+            content = {'available' : available}
+        return Response(content , status = status.HTTP_200_OK)
+
 class locationAutoCompleteApi(APIView): # suggest places for a query
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         query = request.GET['query']
-        r = requests.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query)
+        r = requests.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=establishment&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query)
         return Response(r.json(),status = status.HTTP_200_OK)
 
 class locationDetailsApi(APIView): # returns location details such as lattitude and longitude for a given location id
@@ -150,10 +176,15 @@ class mediaViewSet(viewsets.ModelViewSet):
 
 class listingViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
-    queryset = listing.objects.all()
     serializer_class = listingSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+    def get_queryset(self):
+        if 'geo' in self.request.GET:
+            geo = self.request.GET['geo']
+            return listing.objects.filter(providerOptions__in = offering.objects.filter(service__in = service.objects.filter(address__in = address.objects.filter(pincode__startswith=geo))))
+        else:
+            return listing.objects.all()
 
 class orderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )

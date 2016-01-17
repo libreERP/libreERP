@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand " ui-sref="ecommerce">Ecommerce <i class="fa fa-shopping-cart"></i></a>
+            <a class="navbar-brand " style="position:relative;top:-5px;" ui-sref="ecommerce">Ecommerce <i class="fa fa-shopping-cart"></i></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -33,7 +33,7 @@
                   data-datetimepicker-config="{ dropdownSelector: '#dLabel' }"></datetimepicker>
               </ul>
 
-              <span style="color:white;margin-left:60px;cursor:pointer;top:-6px;position:relative;" class="fa fa-search fa-2x"></span>
+              <span style="color:white;margin-left:60px;cursor:pointer;top:-6px;position:relative;" class="fa fa-arrow-right fa-2x" ng-click="refreshResults()"></span>
 
             </form>
             <form style="width:600px;margin-right:20%;" class="navbar-form navbar-right" role="search">
@@ -47,7 +47,7 @@
               <span class="fa fa-clock-o fa-3x" style="color:white;"id="dLabel2" role="button" data-toggle="dropdown" >
               </span>
               <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
-                <datetimepicker data-ng-model="data.pickupTime"
+                <datetimepicker data-ng-model="data.pickUpTime"
                 data-datetimepicker-config="{ dropdownSelector: '#dLabel2' }"></datetimepicker>
               </ul>
             </form>

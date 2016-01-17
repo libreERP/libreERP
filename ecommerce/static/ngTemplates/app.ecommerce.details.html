@@ -14,10 +14,10 @@
           </p>
           <hr>
         </div>
-        <div class="row container-fluid">
+        <!-- <div class="row container-fluid">
           <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating> 28 Reviews
           <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
-        </div>
+        </div> -->
         <div class="row container-fluid" style="padding-top:14px;">
           <i class="fa fa-money fa-1x text-muted" ></i> Cash on delivery : {{data.providerOptions[offeringInView].cod ? 'Yes' : 'No'}} <br>
           <i class="fa fa-retweet fa-1x text-muted"></i> Free returns : {{data.providerOptions[offeringInView].freeReturns ? 'Yes' : 'No'}} <br>
@@ -42,7 +42,7 @@
         </span>
         <div class="row" style="position:absolute;bottom:0px;width:100%;">
           <button type="button" style="border-radius:0px;" ng-click="addToCart(data)" class="btn btn-warning col-md-6">Add to cart</button>
-          <button type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">Buy</button>
+          <button type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">{{data.priceModel=='time' ? 'Book':'Buy'}}</button>
         </div>
       </div>
     </div>
@@ -50,13 +50,24 @@
       <div ng-repeat="p in data.providerOptions">
         <div class="card bg-white" style="padding:0px;">
           <div class="container-fluid" style="padding:10px;">
-            <div class="col-md-8">
+            <div class="col-md-4">
               <strong> Rate : </strong> <i class="fa fa-inr"></i> {{p.rate}} <br>
               <strong> Vendor : </strong> {{p.service.name}}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
+              <p class="text-success" ng-if="p.available==true">
+                Available
+              </p>
+              <p class="text-error" ng-if="p.available==false">
+                Sold Out
+              </p>
+              <p class="text-warning" ng-if="p.available=='error'">
+                No date and time specified, please choose a time period
+              </p>
+            </div>
+            <div class="col-md-3">
               <button type="button" class="btn btn-default pull-right" ng-click="buy(data.providerOptions[$index])" >
-                Buy
+                {{data.priceModel=='time' ? 'Book':'Buy'}}
               </button>
             </div>
           </div>

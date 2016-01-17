@@ -108,7 +108,7 @@ class orderSerializer(serializers.ModelSerializer):
     address = addressSerializer(many = False , read_only = True)
     class Meta:
         model = order
-        fields = ('id' , 'user' , 'created' , 'offer' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping')
+        fields = ('id' , 'user' , 'created' , 'offer' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping' , 'start' , 'end')
     def create(self , validated_data):
         u = self.context['request'].user
         street = self.context['request'].data['street']
@@ -154,7 +154,6 @@ class customerProfileSerializer(serializers.ModelSerializer):
 
     def update (self, instance, validated_data):
         u = self.context['request'].user
-        print "came"
         cp = customerProfile.objects.get(user = u)
         try:
             street = self.context['request'].data['street']
@@ -165,12 +164,18 @@ class customerProfileSerializer(serializers.ModelSerializer):
             pass
         su = self.context['request'].data['sendUpdates']
         m = self.context['request'].data['mobile']
-        a = cp.address
+
+        try:
+            a = cp.address
+        except:
+            a = address()
         a.street = street
         a.city = city
         a.pincode = pincode
         a.state = state
         a.save()
+
+        cp.address = a
         cp.sendUpdates = su
         cp.mobile = m
         cp.save()
