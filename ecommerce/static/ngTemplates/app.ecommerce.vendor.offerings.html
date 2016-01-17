@@ -13,7 +13,7 @@
             <i class="fa fa-search-plus fa-4x" style="color:#0577a8;"></i>
           </h3>
           <div class="input-group input-group-lg col-md-6 col-md-offset-3">
-            <input uib-typeahead="listing as listing.title for listing in listingSearch($viewValue)" ng-model="data.listing" type="text" class="form-control" placeholder="Search and create a offering against a listing">
+            <input uib-typeahead="listing as listing.title for listing in listingSearch($viewValue)" ng-model="data.listing" type="text" class="form-control" placeholder="Search and create an offering against a listing">
             <span class="input-group-addon btn btn-primary" ng-click="buildForm()"> Create <i class="fa fa-arrow-right"></i></span>
           </div>
         </div>
@@ -31,7 +31,7 @@
         Browse  <i class="fa fa-list-ul"></i>
       </uib-tab-heading>
 
-      <generic-Table resource-Url = "{{'/api/ecommerce/offering/'}}" search="true"
+      <generic-Table resource-Url = "{{'/api/ecommerce/offeringAdmin/'}}" search="true"
           primary-Search-Field="{{'item'}}" views='views' ></generic-Table>
 
 

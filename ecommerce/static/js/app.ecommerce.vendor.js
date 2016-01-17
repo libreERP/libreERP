@@ -71,7 +71,7 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
   $scope.resetForm()
 
   $scope.listingSearch = function(query) {
-    return $http.get('/api/ecommerce/listing/?name__contains=' + query).
+    return $http.get('/api/ecommerce/listing/?title__contains=' + query).
     then(function(response){
       return response.data;
     })
@@ -87,7 +87,7 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
   $scope.submit = function() {
     dataToSend = $scope.data.form;
     dataToSend.item = $scope.data.listing.pk;
-    $http({method : 'POST' , url : '/api/ecommerce/offering/' , data : $scope.data.form}).
+    $http({method : 'POST' , url : '/api/ecommerce/offeringAdmin/' , data : $scope.data.form}).
     then(function(response){
       $scope.resetForm();
       Flash.create('success', response.status + ' : ' + response.statusText);
@@ -226,6 +226,9 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
       for (var i = 0; i < $scope.data.genericProduct.fields.length; i++) {
         $scope.data.genericProduct.fields[i].default = '';
       }
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
     })
 
 
@@ -346,7 +349,7 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
 
     $http({method : 'POST' , url : url , data : dataToSend}).
     then(function(response){
-      $scope.data = {mode : $scope.data.mode , type : 'char'}
+      $scope.data = {mode : $scope.data.mode , type : 'char', parentLabel : $scope.data.parentLabel}
       Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );

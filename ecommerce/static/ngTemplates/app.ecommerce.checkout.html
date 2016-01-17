@@ -90,10 +90,10 @@
               <div ng-if="item.priceModel=='time'">
                 <span style="font-size:25px;">Trip details</span>
                 <p>
-                  <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.pickUpTime ? '':'Not selected'}}
+                  <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.pickUpTime ? '':'Not selected'}}
                 </p>
                 <p>
-                  <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.dropInTime? '':'Not selected'}}
+                  <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.dropInTime? '':'Not selected'}}
                 </p>
               </div>
               <div ng-if="item.priceModel=='quantity'">
@@ -196,7 +196,7 @@
           <h2>Your order details are as follows</h2>
           <strong> Order No. : </strong> {{data.order.id}}<br>
           <strong> Order date and time : </strong> {{data.order.created | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>
-          <strong> Item ID : </strong> {{data.order.item}}<br>
+          <strong> Item ID : </strong> {{data.order.offer}}<br>
           <strong> Payment mode. : </strong> {{data.order.paymentType}}<br>
           <hr>
           <strong> Booking starts from : </strong> {{data.order.start | date : 'dd-mm-yyyy: hh:mm:ss a'}}<br>

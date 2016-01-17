@@ -239,3 +239,12 @@ class offeringViewSet(viewsets.ModelViewSet):
     serializer_class = offeringSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['item']
+
+class offeringAdminViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    serializer_class = offeringAdminSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['item']
+    def get_queryset(self):
+        u = self.request.user
+        return offering.objects.filter(user = u)

@@ -70,11 +70,15 @@ class mediaSerializer(serializers.ModelSerializer):
         return m
 
 class offeringSerializer(serializers.ModelSerializer):
-    service = serviceSerializer(many = False , read_only = True)
+    service = serviceSerializer(read_only = True, many = False )
     class Meta:
         model = offering
-        fields = ('pk' , 'user' , 'created' ,'inStock', 'service' , 'item' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
-        read_only_fields = ('user' , 'service' , )
+        fields = ('pk' , 'created' ,'inStock', 'item' , 'service' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
+
+class offeringAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = offering
+        fields = ('pk' , 'created' ,'inStock', 'item' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
     def create(self ,  validated_data):
         o = offering(**validated_data)
         u = self.context['request'].user
@@ -82,7 +86,6 @@ class offeringSerializer(serializers.ModelSerializer):
         o.service = service.objects.get(user = u)
         o.save()
         return o
-
 
 class listingSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)

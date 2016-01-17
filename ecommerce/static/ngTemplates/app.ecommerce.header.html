@@ -60,10 +60,10 @@
 <div ng-if="$state.is('ecommerce') || $state.is('details')" style="position:fixed;top:70px;left:10px;padding:10px;display:block;">
   <h3 class="text-muted">Trip details</h3>
   <p>
-    <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.pickUpTime ? '':'Not selected'}}
+    <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.pickUpTime ? '':'Not selected'}}
   </p>
   <p>
-    <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-mm-yyyy: hh:mm:ss a'}} {{data.dropInTime? '':'Not selected'}}
+    <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.dropInTime? '':'Not selected'}}
   </p>
 </div>
 

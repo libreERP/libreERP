@@ -84,7 +84,7 @@ app.config(function($stateProvider ){
 });
 
 app.controller('controller.ecommerce.details' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
-
+  
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
 
   $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).

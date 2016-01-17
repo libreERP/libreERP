@@ -13,6 +13,7 @@ from rest_framework.exceptions import *
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+from ERP.models import application, permission
 
 def tokenAuthentication(request):
     ak = get_object_or_404(accountsKey, activation_key=request.GET['key'])
@@ -23,7 +24,11 @@ def tokenAuthentication(request):
     user = ak.user
     user.is_active = True
     user.save()
-    return render(request , 'login.html' )
+    user.accessibleApps.all().delete()
+    for a in ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings']:
+        app = application.objects.get(name = a)
+        p = permission.objects.create(app =  app, user = user , givenBy = User.objects.get(pk=1))
+    return redirect(reverse('ERP'))
 
 
 def loginView(request):

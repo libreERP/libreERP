@@ -25,7 +25,10 @@
         </div>
         <div class="row container-fluid" style="margin-top:10px;">
           <span ng-repeat="s in data.specifications" ng-if="$index<5">
-            <span> <strong>{{s.name | humanize}} </strong> ({{s.unit}}): {{s.value}}
+            <span> <strong>{{s.name | humanize}} </strong>
+              <span ng-if="s.fieldType !='choice' && s.fieldType != 'boolean'">({{s.unit}})</span>
+              <span ng-if="s.fieldType != 'boolean'">: {{s.value}} </span>
+              <span ng-if="s.fieldType == 'boolean'">: {{s.value? 'Yes' :'No'}} </span>
             </span>
             <br>
           </span>
@@ -42,7 +45,7 @@
         </span>
         <div class="row" style="position:absolute;bottom:0px;width:100%;">
           <button type="button" style="border-radius:0px;" ng-click="addToCart(data)" class="btn btn-warning col-md-6">Add to cart</button>
-          <button type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">{{data.priceModel=='time' ? 'Book':'Buy'}}</button>
+          <button ng-if="data.providerOptions[offeringInView].available==true" type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">{{data.priceModel=='time' ? 'Book':'Buy'}}</button>
         </div>
       </div>
     </div>
@@ -50,9 +53,13 @@
       <div ng-repeat="p in data.providerOptions">
         <div class="card bg-white" style="padding:0px;">
           <div class="container-fluid" style="padding:10px;">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <strong> Rate : </strong> <i class="fa fa-inr"></i> {{p.rate}} <br>
               <strong> Vendor : </strong> {{p.service.name}}
+            </div>
+            <div class="col-md-2">
+              <strong>City</strong><br>
+              {{p.service.address.city}}
             </div>
             <div class="col-md-5">
               <p class="text-success" ng-if="p.available==true">
@@ -65,8 +72,8 @@
                 No date and time specified, please choose a time period
               </p>
             </div>
-            <div class="col-md-3">
-              <button type="button" class="btn btn-default pull-right" ng-click="buy(data.providerOptions[$index])" >
+            <div class="col-md-2">
+              <button type="button" class="btn btn-default pull-right" ng-click="buy(data.providerOptions[$index])" ng-if="p.available==true">
                 {{data.priceModel=='time' ? 'Book':'Buy'}}
               </button>
             </div>
