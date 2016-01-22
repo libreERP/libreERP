@@ -1,35 +1,25 @@
 
 app.controller('admin.settings.modulesAndApps' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
-  $scope.resourceUrl = '/api/ERP/applicationAdminMode/';
+  $scope.url = '/api/ERP/applicationAdminMode/';
 
-  $scope.views = [{name : 'list' , icon : 'fa-bars' ,
+  views = [{name : 'list' , icon : 'fa-bars' ,
     template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.list.html' ,
     itemTemplate : '/static/ngTemplates/app.ERP.settings.modulesAndApps.item.html',
-
   },];
 
-  $scope.editorTemplate ='/static/ngTemplates/app.ERP.settings.modulesAndApps.form.html',
+  editorTemplate ='/static/ngTemplates/app.ERP.settings.modulesAndApps.form.html',
+
+  $scope.config = {
+    url : $scope.url ,
+    views : views ,
+    searchField : 'name',
+    editorTemplate : editorTemplate,
+    canCreate : true,
+  };
+
 
   $scope.rowInput = { // row input is available as rowScope in the main table scope and later fused with the rowScopes
-    ownersSearch : function(query) {
-      return $http.get('/api/HR/userSearch/?username__contains=' + query)
-    },
-    appSearch : function(query) {
-      return $http.get('/api/ERP/applicationAdminMode/?name__contains=' + query).
-      then(function(response){
-        return response.data;
-      })
-    },
-    moduleSearch : function(query) {
-      return $http.get('/api/ERP/module/?name__contains=' + query).
-      then(function(response){
-        return response.data;
-      })
-    },
-    views : [{name : 'list' , icon : 'fa-bars' ,
-      template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.html' ,
-    },],
 
   }
 
@@ -42,7 +32,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
       dataToSend = {
         owners : owners,
       }
-      $http({method : 'PATCH' , url : $scope.resourceUrl + data.pk + '/' , data : dataToSend}).
+      $http({method : 'PATCH' , url : $scope.url + data.pk + '/' , data : dataToSend}).
       then(function(response){
         $scope.$broadcast('forceGenericTableRowRefresh', { owners : response.data.owners , pk : response.data.pk});
         Flash.create('success', response.status + ' : ' + response.statusText );
@@ -86,7 +76,40 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
 
 });
 
+app.controller('sudo.admin.settings.modulesAndApplications.editor' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
+  $scope.ownersSearch = function(query) {
+    return $http.get('/api/HR/userSearch/?username__contains=' + query)
+  };
+  $scope.appSearch = function(query) {
+    return $http.get('/api/ERP/applicationAdminMode/?name__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  }
+  $scope.moduleSearch = function(query) {
+    return $http.get('/api/ERP/module/?name__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  };
+  views = [{name : 'list' , icon : 'fa-bars' ,
+    template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.settingsFields.html' ,
+  },];
+
+  url = '/api/ERP/appSettingsAdminMode/';
+  getParams = [{key : 'app' , value :$scope.$parent.data.pk}];
+  editorTemplate ='/static/ngTemplates/app.ERP.settings.modulesAndApps.form.html',
+
+  $scope.config = {
+    url : url ,
+    views : views ,
+    searchField : 'name',
+    editorTemplate : editorTemplate,
+    getParams : getParams,
+  };
+
+})
 
 // controller for the inline form in the modal window of the application edit form
 app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , function($scope , $http , $aside , $state , Flash , $users , $filter){
@@ -106,7 +129,6 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.tableData.push(response.data)
       $scope.delete(-1,$scope.editor.index);
-      $scope.editor.index = -1;
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     })

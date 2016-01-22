@@ -9,7 +9,7 @@
     </tr>
   </thead>
   <tbody >
-      <tr ng-repeat = "row in tableData  ">
+      <tr ng-repeat = "row in data  ">
 
         <td>
           <div ng-if="editor.index == $index">
@@ -71,7 +71,7 @@
             <button type="button" class="btn btn-success" ng-click="update(row ); row.pk=(row.pk=='')? 0: row.pk ;"
               ng-show="editor.index == $index && row.pk !=0"><i class="fa fa-floppy-o"></i></button>
 
-            <button type="button" class="btn btn-success" ng-click="save(row , getParams[0].value);"
+            <button type="button" class="btn btn-success" ng-click="save(row , getParams[0].value);editor.index=-1;"
               ng-show="editor.index == $index && row.pk == 0"><i class="fa fa-floppy-o"></i></button>
 
             <button type="button" class="btn btn-default" ng-show="$index == editor.index && !row.new"
@@ -94,7 +94,7 @@
         <td></td>
         <td>
           <button type="button"  class="btn btn-sm btn-primary"
-            ng-click="tableData.push({pk : 0 ,name:'', flag: false ,value:'',description:'' , fieldType:'flag' , new : true});editor.index = tableData.length-1;">
+            ng-click="data.push({pk : 0 ,name:'', flag: false ,value:'',description:'' , fieldType:'flag' , new : true});editor.index = data.length-1;">
             New <i class="fa fa-plus"></i>
           </button>
         </td>

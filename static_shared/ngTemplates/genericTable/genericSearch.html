@@ -17,7 +17,7 @@
 <nav>
   <ul class="pagination pull-right">
     <li ng-repeat="num in itemsNumPerView" ng-class="{'active' : itemsNumPerView[$index] == itemsPerView}" ng-click="changeNumView(itemsNumPerView[$index])"><a href="">{{num}}</a></li>
-    <li ng-if="!searchShow" ng-click="fetchData()"><a href=""><i class="fa fa-refresh"></i></a></li>
+    <li ng-if="searchShow" ng-click="fetchData()"><a href=""><i class="fa fa-refresh"></i></a></li>
   </ul>
   <ul class="pagination pull-right" style="margin-right: 10px;">
     <li ng-repeat = "option in multiselectOptions" ng-click = "multiSelectAction(option.text)"><a href="" style="color: #6f6f6f;"><i class = "{{option.icon}}">  {{option.text | humanize}}</i></a></li>

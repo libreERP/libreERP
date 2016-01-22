@@ -1,4 +1,4 @@
-<div ng-repeat="item in tableData" class="panel-group" id="accordion">
-  <table-Item data="item" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" index="{{$index}}" delete="delete" 
-  selectable = "isSelectable" editor-Template="{{editorTemplate}}" row-Scope = "rowScope" template="{{views[0].itemTemplate}}"></table-Item>
+<div ng-repeat="item in data track by $index" class="panel-group" id="accordion">
+  <table-Item data="item" row-Action = "callbackFn" index="{{$index}}" delete="delete"
+  editor-Template="{{editorTemplate}}" template="{{views[0].itemTemplate}}"></table-Item>
 </div>

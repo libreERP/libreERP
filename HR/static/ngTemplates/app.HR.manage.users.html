@@ -12,10 +12,8 @@
         <uib-tab-heading >
           Search  <i ng-if="tab.cancel" class="fa fa-search"></i>
         </uib-tab-heading>
-        <!-- <generic-Table callback-Fn = "tableAction" options='options' resource-Url = "{{'/api/HR/users/'}}" search="true"
-            primary-Search-Field="{{'username'}}" views='views' multiselect-Options = 'multiselectOptions' ></generic-Table> -->
-
-        <generic-Table2 callback-Fn = "tableAction" data="tableData" config-Obj="{{config}}"></generic-Table2>
+        
+        <generic-Table callback-Fn = "tableAction" data="tableData" config-Obj="{{config}}"></generic-Table>
 
       </uib-tab>
       <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
