@@ -1,29 +1,22 @@
-app.directive('genericTable', function () {
+app.directive('genericTable2' , function(){
   return {
     templateUrl: '/static/ngTemplates/genericTable/genericSearch.html',
     restrict: 'E',
     transclude: true,
     replace: false,
     scope: {
-      tableData :'=',
-      resourceUrl : '@',
-      primarySearchField : '@',
+      data :'=',
+      configObj : '@',
       callbackFn : '=',
-      views : '=',
-      options : '=',
-      multiselectOptions : '=',
-      search : '@',
-      getParams :'=',
-      rowScope : '=',
-      canCreate : '@',
-      editorTemplate : '@',
     },
-    controller : 'genericTable',
+    controller : 'genericTable2',
   };
 });
 
-app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
-  $scope.tableData = [];
+app.controller('genericTable2' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
+
+  $scope.config = JSON.parse($scope.configObj);
+  $scope.data = [];
   $scope.searchText = '';
   $scope.originalTable = [];
   $scope.itemsNumPerView = [5, 10, 20];
@@ -34,25 +27,34 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.numOfPagesPerView = 5;
   $scope.viewMode = 0;
 
-  $scope.isSelectable = angular.isDefined($scope.multiselectOptions) ? true:false;
-  $scope.haveOptions = angular.isDefined($scope.options) ? true:false;
-  $scope.canCreate = angular.isDefined($scope.canCreate) ? $scope.canCreate:false;
-  $scope.searchShow = angular.isDefined($scope.search)? $scope.search : false;
+  $scope.isSelectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
+  $scope.haveOptions = angular.isDefined($scope.config.options) ? true:false;
+  $scope.canCreate = angular.isDefined($scope.config.canCreate) ? $scope.canCreate:false;
 
-  $scope.$watch('tableData' , function(newValue , oldValue){
+  $scope.url = $scope.config.url;
+  $scope.searchField = angular.isDefined($scope.config.searchField) ? $scope.config.searchField:'';
+  $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
+  $scope.searchShow = $scope.searchField==''? false:true,
+
+  $scope.views = $scope.config.views;
+  $scope.options = $scope.config.options;
+  $scope.multiselectOptions = $scope.config.multiselectOptions;
+  $scope.getParams = $scope.config.getParams;
+  $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
+
+
+  $scope.$watch('data' , function(newValue , oldValue){
     $scope.selectStates = [];
     if ($scope.isSelectable) {
-      for (var i = 0; i < $scope.tableData.length; i++) {
+      for (var i = 0; i < $scope.data.length; i++) {
         $scope.selectStates.push({value : false , disabled : false});
       }
     }
   });
 
-
-
-  $scope.$on('forceInsetTableData', function(event, input) {
-    // console.log($scope.tableData);
-    $scope.tableData.push(input);
+  $scope.$on('forceInsetdata', function(event, input) {
+    // console.log($scope.data);
+    $scope.data.push(input);
   });
 
   $scope.create = function(){
@@ -89,13 +91,13 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
   $scope.delete = function(pk , index){
     if (pk == -1) {
-      $scope.tableData.splice(index, 1);
+      $scope.data.splice(index, 1);
       return;
     }
-    $http({method : 'DELETE' , url : $scope.resourceUrl + pk + '/' }).
+    $http({method : 'DELETE' , url : $scope.url + pk + '/' }).
     then(function(response){
-      $scope.tableData.splice(index, 1);
-      if ($scope.tableData.length ==0) {
+      $scope.data.splice(index, 1);
+      if ($scope.data.length ==0) {
         $scope.changePage($scope.pageNo-1);
       }
       Flash.create('success', response.status + ' : ' + response.statusText );
@@ -111,10 +113,10 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     items = [];
     for (var i = 0; i < $scope.selectStates.length; i++) {
       if ($scope.selectStates[i].value == true) {
-        if (typeof $scope.tableData[i].url == 'undefined') {
-          items.push($scope.tableData[i].pk);
+        if (typeof $scope.data[i].url == 'undefined') {
+          items.push($scope.data[i].pk);
         } else{
-          items.push($scope.tableData[i].url);
+          items.push($scope.data[i].url);
         }
       }
     }
@@ -151,21 +153,22 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
       };
     } // main for loop
 
-    $scope.tableData = [];
+    $scope.data = [];
     for (var i = 0; i < rowsContaining.length; i++) {
-      $scope.tableData.push($scope.originalTable[rowsContaining[i]]);
+      $scope.data.push($scope.originalTable[rowsContaining[i]]);
     }
   }
+
   $scope.fetchData = function(){
     // getting the data from the server based on the state of the filter params
     if (typeof $scope.getStr == 'undefined') {
       return;
     }
     fetch.method = 'GET';
-    if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField =='') {
-      fetch.url = $scope.resourceUrl +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+    if (typeof $scope.searchField == 'undefined' || $scope.searchField =='') {
+      fetch.url = $scope.url +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
     } else {
-      fetch.url = $scope.resourceUrl +'?&'+ $scope.primarySearchField +'__contains=' + $scope.getStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+      fetch.url = $scope.url +'?&'+ $scope.searchField +'__contains=' + $scope.getStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
     }
     if (typeof $scope.getParams != 'undefined') {
       for (var i = 0; i < $scope.getParams.length; i++) {
@@ -187,11 +190,325 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
           }
         }
         // console.log($scope.pageList);
-        $scope.tableData = response.data.results;
-        $scope.originalTable = angular.copy($scope.tableData);
+        $scope.data = response.data.results;
+        $scope.originalTable = angular.copy($scope.data);
         $scope.sortFlag = [];
         $scope.tableHeading = [];
-        for (key in $scope.tableData[0]){
+        for (key in $scope.data[0]){
+          $scope.tableHeading.push(key);
+          $scope.sortFlag.push(0);  // by default no sort is applied , 1 for accending and -1 for descending
+        }
+        if ($scope.isSelectable) {
+          $scope.tableHeading.unshift('Select');
+          $scope.sortFlag.unshift(-2); // no sort can be applied on this column
+        }
+
+        if ($scope.haveOptions) {
+          $scope.tableHeading.push('Options')
+          $scope.sortFlag.push(-2); // no sort possible
+        }
+      }, function(response) {
+
+    });
+  }
+
+  $scope.$watch('getStr' , function(){ // getStr is the search query sent to the server
+    $scope.fetchData();
+  });
+
+  $scope.$watch('searchText',function(){
+    $scope.updateData()
+  });
+
+  $scope.updateData = function(){ // at any point of time forcing to refresh data
+    parts = $scope.searchText.split('>');
+    if (typeof $scope.searchField == 'undefined' || $scope.searchField == '') {
+      searchStr = $scope.searchText;
+    } else {
+      $scope.getStr = parts[0].trim();
+      if (typeof parts[1] == 'undefined'){
+        searchStr = '';
+      }else{
+        searchStr = parts[1].trim();
+      };
+    }
+    // console.log(searchStr);
+    $scope.fullTextSearch(searchStr);
+  }
+
+  $scope.changePage = function(toPage){
+    // change page number ot the seleted page
+    $scope.pageNo = toPage;
+    $scope.fetchData();
+    // console.log("will change the page now" + toPage);
+
+  }
+  $scope.loadPrevSetPages = function(){
+    // function to load prev set of pages
+    var currentlyFirst = $scope.pageList[0];
+    if (currentlyFirst!=1) {
+      $scope.pageList = [currentlyFirst - $scope.numOfPagesPerView];
+      // console.log(pageCount);
+      for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+        if ($scope.pageList.length<$scope.numOfPagesPerView) {
+          $scope.pageList.push(i);
+        }
+      }
+    }
+  }
+  $scope.loadNextSetPages = function(){
+    // function to load the next set of pages
+    // console.log($scope.pageList[$scope.pageList.length -1]);
+    var currentlyLast = $scope.pageList[$scope.pageList.length -1];
+    if (currentlyLast!=$scope.pageCount) {
+      $scope.pageList = [currentlyLast+1];
+      // console.log(pageCount);
+      for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+        if ($scope.pageList.length<$scope.numOfPagesPerView) {
+          $scope.pageList.push(i);
+        }
+      }
+    }
+  }
+  $scope.changeNumView = function(num){
+    $scope.itemsPerView = num;
+    $scope.changePage(1);
+    $scope.fetchData();
+    // console.log($scope.pageNo);
+  }
+  $scope.sort = function(col){
+    $scope.tableSnap = angular.copy($scope.data);
+    if ($scope.sortFlag[col]==-2) {
+      console.log("No sort possible");
+      return;
+    }
+
+    // console.log("will sort according to col " + col);
+    colData = [];
+    len =$scope.data.length;
+    var indices = new Array(len);
+    for (var i = 0; i < len; i++) {
+      colData.push($scope.data[i][$scope.tableHeading[col]]);
+      indices[i] = i;
+    }
+    if ($scope.sortFlag[col]==0 || $scope.sortFlag[col]==-1) {
+      indices.sort(function (a, b) { return colData[a] < colData[b] ? -1 : colData[a] > colData[b] ? 1 : 0; });
+      $scope.sortFlag[col] = 1;
+
+    }else{
+      indices.sort(function (a, b) { return colData[a] > colData[b] ? -1 : colData[a] < colData[b] ? 1 : 0; });
+      $scope.sortFlag[col] = -1;
+    }
+
+    for (var i = 0; i < $scope.sortFlag.length; i++) {
+      if (i !=col && $scope.sortFlag[i] !==-2) {
+        $scope.sortFlag[i] = 0;
+      }
+    }
+    // console.log(indices)
+    // console.log($scope.sortFlag);
+    for(var i =0 ; i < len ; i++){
+      $scope.data[i] = angular.copy($scope.tableSnap[indices[i]])
+    }
+  };
+
+});
+
+
+app.directive('genericTable', function () {
+  return {
+    templateUrl: '/static/ngTemplates/genericTable/genericSearch.html',
+    restrict: 'E',
+    transclude: true,
+    replace: false,
+    scope: {
+      data :'=',
+      url : '@',
+      searchField : '@',
+      callbackFn : '=',
+      views : '=',
+      options : '=',
+      multiselectOptions : '=',
+      search : '@',
+      getParams :'=',
+      rowScope : '=',
+      canCreate : '@',
+      editorTemplate : '@',
+    },
+    controller : 'genericTable',
+  };
+});
+
+app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
+  $scope.data = [];
+  $scope.searchText = '';
+  $scope.originalTable = [];
+  $scope.itemsNumPerView = [5, 10, 20];
+  $scope.itemsPerView = 5;
+  $scope.pageList = [1];
+  $scope.pageNo = 1; // default page number set to 0
+  $scope.viewMode = 'list';
+  $scope.numOfPagesPerView = 5;
+  $scope.viewMode = 0;
+
+  $scope.isSelectable = angular.isDefined($scope.multiselectOptions) ? true:false;
+  $scope.haveOptions = angular.isDefined($scope.options) ? true:false;
+  $scope.canCreate = angular.isDefined($scope.canCreate) ? $scope.canCreate:false;
+  $scope.searchShow = angular.isDefined($scope.search)? $scope.search : false;
+
+  $scope.$watch('data' , function(newValue , oldValue){
+    $scope.selectStates = [];
+    if ($scope.isSelectable) {
+      for (var i = 0; i < $scope.data.length; i++) {
+        $scope.selectStates.push({value : false , disabled : false});
+      }
+    }
+  });
+
+
+
+  $scope.$on('forceInsetdata', function(event, input) {
+    // console.log($scope.data);
+    $scope.data.push(input);
+  });
+
+  $scope.create = function(){
+    // the template is in $scope.itemTemplate
+    $scope.createModalInstance = $uibModal.open({
+      templateUrl: $scope.editorTemplate,
+      size: 'lg',
+      scope:$scope, //Refer to parent scope here
+      resolve: {
+       rowScope: function () {
+         return $scope.rowScope; // put stuffs in $scope.rowScope.newFormData
+       },
+       submitFormFn : function(){
+         return $scope.callbackFn; // pass data directly from the template to the callbackFn
+       }
+      },
+      controller: function($scope , rowScope , submitFormFn ){
+        $scope.submitForm = submitFormFn;
+        // $scope.data = row
+        for (key in rowScope){
+          $scope[key] = rowScope[key];
+        }
+        $scope.mode = 'new';
+        $scope.data = {};
+        $scope.$on('forceSetFormData', function(event, input) {
+          for (key in input) {
+            $scope.data[key] = input[key];
+          }
+        });
+
+      },
+    });
+  }
+
+  $scope.delete = function(pk , index){
+    if (pk == -1) {
+      $scope.data.splice(index, 1);
+      return;
+    }
+    $http({method : 'DELETE' , url : $scope.url + pk + '/' }).
+    then(function(response){
+      $scope.data.splice(index, 1);
+      if ($scope.data.length ==0) {
+        $scope.changePage($scope.pageNo-1);
+      }
+      Flash.create('success', response.status + ' : ' + response.statusText );
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText );
+    })
+  }
+
+  $scope.changeView = function(mode){
+    $scope.viewMode = mode;
+  }
+  $scope.multiSelectAction = function(action){
+    items = [];
+    for (var i = 0; i < $scope.selectStates.length; i++) {
+      if ($scope.selectStates[i].value == true) {
+        if (typeof $scope.data[i].url == 'undefined') {
+          items.push($scope.data[i].pk);
+        } else{
+          items.push($scope.data[i].url);
+        }
+      }
+    }
+    $scope.callbackFn(items , action , 'multi')
+  };
+
+  $scope.fullTextSearch = function(str){
+    rowsContaining = [];
+    str = str.toLowerCase();
+    // console.log(str);
+    for (var i = 0; i < $scope.originalTable.length; i++) {
+
+      row = $scope.originalTable[i];
+      for (key in row){
+        val = row[key].toString().toLowerCase();
+        if (val.indexOf(str) !=-1){
+          rowsContaining.push(i)
+          break;
+        };
+        rowNested = row[key];
+        if (typeof rowNested == 'object') {
+          for (keyNested in rowNested){
+            if (rowNested[keyNested] != null) {
+              valNested = rowNested[keyNested].toString().toLowerCase();
+              if (valNested.indexOf(str) !=-1){
+                if (rowsContaining.indexOf(i) == -1) {
+                  rowsContaining.push(i)
+                  break;
+                }
+              };
+            }
+          };
+        }
+      };
+    } // main for loop
+
+    $scope.data = [];
+    for (var i = 0; i < rowsContaining.length; i++) {
+      $scope.data.push($scope.originalTable[rowsContaining[i]]);
+    }
+  }
+  $scope.fetchData = function(){
+    // getting the data from the server based on the state of the filter params
+    if (typeof $scope.getStr == 'undefined') {
+      return;
+    }
+    fetch.method = 'GET';
+    if (typeof $scope.searchField == 'undefined' || $scope.searchField =='') {
+      fetch.url = $scope.url +'?&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+    } else {
+      fetch.url = $scope.url +'?&'+ $scope.searchField +'__contains=' + $scope.getStr + '&limit='+ $scope.itemsPerView + '&offset='+ ($scope.pageNo-1)*$scope.itemsPerView;
+    }
+    if (typeof $scope.getParams != 'undefined') {
+      for (var i = 0; i < $scope.getParams.length; i++) {
+        fetch.url += '&'+$scope.getParams[i].key + '='+ $scope.getParams[i].value;
+      }
+    }
+    $http({method: fetch.method, url: fetch.url}).
+      then(function(response) {
+        // console.log(response);
+        $scope.pageCount = Math.floor(response.data.count/$scope.itemsPerView)+(response.data.count%$scope.itemsPerView == 0 ? 0 : 1);
+        if ($scope.pageCount<$scope.pageList[0]) {
+          $scope.pageList = [1];
+        } else {
+          $scope.pageList = [$scope.pageList[0]];
+        }
+        for (var i = $scope.pageList[0]+1; i <= $scope.pageCount; i++) {
+          if ($scope.pageList.length<$scope.numOfPagesPerView) {
+            $scope.pageList.push(i);
+          }
+        }
+        // console.log($scope.pageList);
+        $scope.data = response.data.results;
+        $scope.originalTable = angular.copy($scope.data);
+        $scope.sortFlag = [];
+        $scope.tableHeading = [];
+        for (key in $scope.data[0]){
           $scope.tableHeading.push(key);
           $scope.sortFlag.push(0);  // by default no sort is applied , 1 for accending and -1 for descending
         }
@@ -220,9 +537,12 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
   $scope.updateData = function(){ // at any point of time forcing to refresh data
     parts = $scope.searchText.split('>');
-    if (typeof $scope.primarySearchField == 'undefined' || $scope.primarySearchField == '') {
+    if (typeof $scope.searchField == 'undefined' || $scope.searchField == '') {
       searchStr = $scope.searchText;
+      console.log("in if of update data");
+      console.log($scope.getStr);
     } else {
+      console.log("in else of update data");
       $scope.getStr = parts[0].trim();
       if (typeof parts[1] == 'undefined'){
         searchStr = '';
@@ -276,7 +596,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     // console.log($scope.pageNo);
   }
   $scope.sort = function(col){
-    $scope.tableSnap = angular.copy($scope.tableData);
+    $scope.tableSnap = angular.copy($scope.data);
     if ($scope.sortFlag[col]==-2) {
       console.log("No sort possible");
       return;
@@ -284,10 +604,10 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
     // console.log("will sort according to col " + col);
     colData = [];
-    len =$scope.tableData.length;
+    len =$scope.data.length;
     var indices = new Array(len);
     for (var i = 0; i < len; i++) {
-      colData.push($scope.tableData[i][$scope.tableHeading[col]]);
+      colData.push($scope.data[i][$scope.tableHeading[col]]);
       indices[i] = i;
     }
     if ($scope.sortFlag[col]==0 || $scope.sortFlag[col]==-1) {
@@ -307,7 +627,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     // console.log(indices)
     // console.log($scope.sortFlag);
     for(var i =0 ; i < len ; i++){
-      $scope.tableData[i] = angular.copy($scope.tableSnap[indices[i]])
+      $scope.data[i] = angular.copy($scope.tableSnap[indices[i]])
     }
   };
 });
@@ -319,18 +639,17 @@ app.directive('tableRow', function () {
     transclude: true,
     replace: true,
     scope:{
+      options : '=', // dropdown menu options passed as options in the main directive
+      selectable : '=', // if true there will be a checkbox
+      editorTemplate : '@', // the template to be used in the modal popup
+      fields : '=',
       data : '=', // individual row data
       rowAction : '=', // originally the callbackFn function
-      options : '=', // dropdown menu options passed as options in the main directive
       checkbox : '=', // boolean flag for the value of the checkbox binded to the table
       // directive scope where it will collect the state of the checkboxes and passed to
       //the main controller upon selecting the multi select option
-      selectable : '=', // if true there will be a checkbox
-      rowScope : '=', // contains row specific function which can be called in the template {editorTemplate , fun1 , fun2 , .. and so on }
-      // passed as rowInput in the main table directive
       index : '@', // the index of the item in the repeat
       delete :'=', // delete callback function
-      editorTemplate : '@', // the template to be used in the modal popup
     },
     controller : 'genericTableItem',
   };
@@ -349,7 +668,6 @@ app.directive('tableItem', function () {
       options : '=',
       checkbox : '=',
       selectable : '=',
-      rowScope : '=',
       index: '@',
       delete: '=',
       editorTemplate : '@',

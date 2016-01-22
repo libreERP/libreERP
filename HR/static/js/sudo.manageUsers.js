@@ -1,6 +1,39 @@
 
 app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
+  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+      {name : 'thumbnail' , icon : 'fa-th-large' , template : '/static/ngTemplates/empSearch/tableThumbnail.html'},
+      {name : 'icon' , icon : 'fa-th' , template : '/static/ngTemplates/empSearch/tableIcon.html'},
+      {name : 'graph' , icon : 'fa-pie-chart' , template : '/static/ngTemplates/empSearch/tableGraph.html'}
+    ];
+
+  var options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
+    others : [{icon : '' , text : 'social' },
+      {icon : '' , text : 'editProfile' },
+      {icon : '' , text : 'editDesignation' },
+      {icon : '' , text : 'editPermissions' },
+      {icon : '' , text : 'editMaster' },]
+    };
+  var fields = ['username' , 'email' , 'first_name' , 'last_name' , 'profile'];
+
+  var multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
+    {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
+    {icon : 'fa fa-envelope-o' , text : 'message' },
+  ];
+
+  $scope.config = {
+    url : '/api/HR/users/' ,
+    views : views ,
+    options : options,
+    multiselectOptions : multiselectOptions,
+    searchField : 'username',
+    fields : fields,
+  };
+
+
+
+
+  // create new user
   $scope.newUser = {username : '' , firstName : '' , lastName : '' , password : ''};
   $scope.createUser = function(){
     dataToSend = {username : $scope.newUser.username , first_name : $scope.newUser.firstName , last_name : $scope.newUser.lastName , password : $scope.newUser.password};
@@ -19,28 +52,6 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   $scope.closeTab = function(index){
     $scope.tabs.splice(index , 1)
   }
-
-  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-      {name : 'thumbnail' , icon : 'fa-th-large' , template : '/static/ngTemplates/empSearch/tableThumbnail.html'},
-      {name : 'icon' , icon : 'fa-th' , template : '/static/ngTemplates/empSearch/tableIcon.html'},
-      {name : 'graph' , icon : 'fa-pie-chart' , template : '/static/ngTemplates/empSearch/tableGraph.html'}
-    ];
-
-  $scope.options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
-    others : [{icon : '' , text : 'social' },
-      // {icon : '' , text : 'learning' },
-      // {icon : '' , text : 'leaveManagement' },
-      {icon : '' , text : 'editProfile' },
-      {icon : '' , text : 'editDesignation' },
-      {icon : '' , text : 'editPermissions' },
-      {icon : '' , text : 'editMaster' },]
-    };
-
-  // $scope.multiselectOptions = [{icon : 'fa fa-book' , text : 'Learning' },
-  //   {icon : 'fa fa-bar-chart-o' , text : 'Performance' },
-  //   {icon : 'fa fa-envelope-o' , text : 'message' },
-  // ];
-
   $scope.tableAction = function(target , action , mode){
     // target is the url of the object
     if (typeof mode == 'undefined') {
