@@ -15,6 +15,7 @@ from .serializers import *
 from API.permissions import *
 from ERP.models import application, permission , module
 from ERP.views import getApps, getModules
+from django.db.models import Q
 
 def tokenAuthentication(request):
     ak = get_object_or_404(accountsKey, activation_key=request.GET['key'])
@@ -93,6 +94,7 @@ def home(request):
     else:
         apps = getApps(u)
         modules = getModules(u)
+    apps = apps.filter(~Q(name__startswith='configure.')).filter(~Q(name='app.users'))
     print apps , modules
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'apps' : apps , 'modules' : modules})
 

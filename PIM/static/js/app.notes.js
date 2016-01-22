@@ -10,9 +10,6 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
 
   $scope.$watch('bookInView' , function(newValue , oldValue){
     if (newValue != -1) {
-      console.log(newValue);
-      console.log($scope);
-      console.log($scope.notebooks[newValue]);
       if ($scope.notebooks[newValue].pages.length == 0) {
         dataToSend =  {
           source : 'blank',
