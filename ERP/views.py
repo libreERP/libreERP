@@ -12,6 +12,19 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 
+def getModules(user):
+    if user.is_superuser:
+        return module.objects.all()
+    else:
+        ma = []
+        for m in application.objects.filter(owners__in = [user,]).values('module').distinct():
+            ma.append(m['module'])
+        aa = []
+        for a in user.accessibleApps.all().values('app'):
+            aa.append(a['app'])
+        for m in application.objects.filter(pk__in = aa).values('module').distinct():
+            ma.append(m['module'])
+        return module.objects.filter(pk__in = ma)
 
 class moduleViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
@@ -21,17 +34,7 @@ class moduleViewSet(viewsets.ModelViewSet):
     filter_fields = ['name']
     def get_queryset(self):
         u = self.request.user
-        if u.is_superuser:
-            return module.objects.all()
-        ma = []
-        for m in application.objects.filter(owners__in = [u,]).values('module').distinct():
-            ma.append(m['module'])
-        aa = []
-        for a in u.accessibleApps.all().values('app'):
-            aa.append(a['app'])
-        for m in application.objects.filter(pk__in = aa).values('module').distinct():
-            ma.append(m['module'])
-        return module.objects.filter(pk__in = ma)
+        return getModules(u)
 
 def getApps(user):
     aa = []
@@ -47,8 +50,9 @@ class applicationViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name' , 'module']
     def get_queryset(self):
-        if not self.request.user.is_superuser:
-            return getApps(self.request.user)
+        u = self.request.user
+        if not u.is_superuser:
+            return getApps(u)
         else:
             if 'user' in self.request.GET:
                 return getApps(User.objects.get(username = self.request.GET['user']))

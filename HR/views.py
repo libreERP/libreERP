@@ -13,7 +13,8 @@ from rest_framework.exceptions import *
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
-from ERP.models import application, permission
+from ERP.models import application, permission , module
+from ERP.views import getApps, getModules
 
 def tokenAuthentication(request):
     ak = get_object_or_404(accountsKey, activation_key=request.GET['key'])
@@ -85,7 +86,15 @@ def logoutView(request):
 
 @login_required(login_url = '/login')
 def home(request):
-    return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
+    u = request.user
+    if u.is_superuser:
+        apps = application.objects.all()
+        modules = module.objects.all()
+    else:
+        apps = getApps(u)
+        modules = getModules(u)
+    print apps , modules
+    return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'apps' : apps , 'modules' : modules})
 
 class userProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

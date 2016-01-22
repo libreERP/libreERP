@@ -68,17 +68,13 @@
     <script src="{% static 'js/custom/directives.native.js' %}"></script>
     <script src="{% static 'js/custom/filters.js' %}"></script>
     <script src="{% static 'js/custom/services.js' %}"></script>
-    <script src="{% static 'js/module.home.js' %}"></script>
-    <script src="{% static 'js/app.home.calendar.js' %}"></script>
-    <script src="{% static 'js/app.home.blog.js' %}"></script>
-    <script src="{% static 'js/app.home.notes.js' %}"></script>
-    <script src="{% static 'js/app.social.js' %}"></script>
-    <script src="{% static 'js/app.mail.js' %}"></script>
-    <script src="{% static 'js/module.admin.js' %}"></script>
-    <script src="{% static 'js/module.businessManagement.js' %}"></script>
-    <script src="{% static 'js/app.ecommerce.vendor.js' %}"></script>
-    <script src="{% static 'js/app.HR.admin.settings.js' %}"></script>
-    <script src="{% static 'js/app.HR.admin.manageUsers.js' %}"></script>
+
+    {% for a in apps %}
+      <script src="{% static '' %}js/{{a.name}}.js"></script>
+    {% endfor %}
+    {% for m in modules %}
+      <script src="{% static '' %}js/module.{{m.name}}.js"></script>
+    {% endfor %}
 
   </body>
 </html>
