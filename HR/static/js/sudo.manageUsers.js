@@ -30,6 +30,29 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     fields : fields,
   };
 
+  $scope.tabs = [];
+  $scope.searchTabActive = true;
+
+  $scope.closeTab = function(index){
+    $scope.tabs.splice(index , 1)
+  }
+
+  $scope.addTab = function( input ){
+    $scope.searchTabActive = false;
+    alreadyOpen = false;
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].data.url == input.data.url && $scope.tabs[i].app == input.app) {
+        $scope.tabs[i].active = true;
+        alreadyOpen = true;
+      }else{
+        $scope.tabs[i].active = false;
+      }
+    }
+    if (!alreadyOpen) {
+      $scope.tabs.push(input)
+    }
+  }
+
 
 
 
@@ -46,12 +69,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     });
   }
 
-  $scope.tabs = [];
-  $scope.searchTabActive = true;
 
-  $scope.closeTab = function(index){
-    $scope.tabs.splice(index , 1)
-  }
   $scope.tableAction = function(target , action , mode){
     // target is the url of the object
     if (typeof mode == 'undefined') {
@@ -179,22 +197,5 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
        Flash.create('danger', response.status + ' : ' + response.statusText);
     });
   }
-
-  $scope.addTab = function( input ){
-    $scope.searchTabActive = false;
-    alreadyOpen = false;
-    for (var i = 0; i < $scope.tabs.length; i++) {
-      if ($scope.tabs[i].data.url == input.data.url && $scope.tabs[i].app == input.app) {
-        $scope.tabs[i].active = true;
-        alreadyOpen = true;
-      }else{
-        $scope.tabs[i].active = false;
-      }
-    }
-    if (!alreadyOpen) {
-      $scope.tabs.push(input)
-    }
-  }
-
 
 });

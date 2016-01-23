@@ -1,8 +1,7 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
 
-  <generic-Table resource-Url = "{{'/api/ecommerce/order/'}}" search="true"
-      primary-Search-Field="{{'id'}}" views='views' get-Params="getParams"></generic-Table>
+  <generic-Table data="tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
 
 
 </div>

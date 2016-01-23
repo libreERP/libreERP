@@ -27,7 +27,8 @@
           <span ng-repeat="s in data.specifications" ng-if="$index<5">
             <span> <strong>{{s.name | humanize}} </strong>
               <span ng-if="s.fieldType !='choice' && s.fieldType != 'boolean'">({{s.unit}})</span>
-              <span ng-if="s.fieldType != 'boolean'">: {{s.value}} </span>
+              <span ng-if="s.fieldType != 'boolean' && s.fieldType != 'choice' ">: {{s.value}} </span>
+              <span ng-if="s.fieldType == 'choice'">: {{s.value.name}} </span>
               <span ng-if="s.fieldType == 'boolean'">: {{s.value? 'Yes' :'No'}} </span>
             </span>
             <br>

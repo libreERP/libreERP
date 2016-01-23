@@ -16,19 +16,16 @@ app.config(function($stateProvider){
         }
     }
   })
-
   .state('businessManagement.ecommerce.listings', {
     url: "/listings",
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.listings.html',
     controller: 'businessManagement.ecommerce.listings'
   })
-
   .state('businessManagement.ecommerce.orders', {
     url: "/orders",
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.orders.html',
     controller: 'businessManagement.ecommerce.orders'
   })
-
   .state('businessManagement.ecommerce.earnings', {
     url: "/earnings",
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.earnings.html',

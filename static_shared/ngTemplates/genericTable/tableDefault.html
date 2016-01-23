@@ -10,8 +10,8 @@
   </thead>
   <tbody>
     <div >
-      <tr table-row ng-repeat = "row in data" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" row-Scope = "rowScope"
-      selectable = "isSelectable" editor-Template="{{editorTemplate}}" others = "others" editable="editable" fields = "fields"></tr>
+      <tr table-row ng-repeat = "row in data" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" row-Scope = "rowScope" index="$index"
+      selectable = "isSelectable" editor-Template="{{editorTemplate}}" others = "others" editable="editable" deletable="deletable" fields = "fields" delete="delete"></tr>
     </div>
   </tbody>
 </table>

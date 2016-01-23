@@ -49,8 +49,6 @@ class userSerializer(serializers.HyperlinkedModelSerializer):
         raise PermissionDenied(detail=None)
     def update (self, instance, validated_data):
         user = self.context['request'].user
-        print self.context['request'].data['oldPassword']
-        print user.username
         if authenticate(username = user.username , password = self.context['request'].data['oldPassword']) is not None:
             user = User.objects.get(username = user.username)
             user.set_password(validated_data['password'])

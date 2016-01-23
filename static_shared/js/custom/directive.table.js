@@ -16,6 +16,7 @@ app.directive('genericTable' , function(){
 app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
 
   $scope.config = JSON.parse($scope.configObj);
+
   $scope.data = [];
   $scope.searchText = '';
   $scope.originalTable = [];
@@ -30,6 +31,8 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.isSelectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
   $scope.haveOptions = angular.isDefined($scope.config.options) ? true:false;
   $scope.canCreate = angular.isDefined($scope.config.canCreate) ? $scope.config.canCreate:false;
+  $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
+  console.log($scope.deletable);
   $scope.url = $scope.config.url;
   $scope.searchField = angular.isDefined($scope.config.searchField) ? $scope.config.searchField:'';
   $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
@@ -82,6 +85,9 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.delete = function(pk , index){
+    console.log("called");
+    console.log(pk);
+    console.log(index);
     if (pk == -1) {
       $scope.data.splice(index, 1);
       return;
@@ -319,6 +325,7 @@ app.directive('tableRow', function () {
     scope:{
       options : '=', // dropdown menu options passed as options in the main directive
       selectable : '=', // if true there will be a checkbox
+      deletable : '=', // if true there will be a checkbox
       editorTemplate : '@', // the template to be used in the modal popup
       fields : '=',
       data : '=', // individual row data
@@ -326,7 +333,7 @@ app.directive('tableRow', function () {
       checkbox : '=', // boolean flag for the value of the checkbox binded to the table
       // directive scope where it will collect the state of the checkboxes and passed to
       //the main controller upon selecting the multi select option
-      index : '@', // the index of the item in the repeat
+      index : '=', // the index of the item in the repeat
       delete :'=', // delete callback function
     },
     controller : 'genericTableItem',
@@ -346,7 +353,8 @@ app.directive('tableItem', function () {
       options : '=',
       checkbox : '=',
       selectable : '=',
-      index: '@',
+      deletable: '=',
+      index: '=',
       delete: '=',
       editorTemplate : '@',
     },
@@ -356,10 +364,10 @@ app.directive('tableItem', function () {
 
 app.controller('genericTableItem' , function($scope , $uibModal){
   if (typeof $scope.data.url == 'undefined') {
-    $scope.target = $scope.pk;
+    $scope.target = $scope.data.pk;
   } else {
     $scope.target = $scope.data.url;
-    $scope.pk = getPK($scope.data.url);
+    $scope.data.pk = getPK($scope.data.url);
   }
 
   $scope.rowActionClicked = function(option){

@@ -1,7 +1,5 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
-
-
   <uib-tabset>
     <uib-tab >
       <uib-tab-heading>
@@ -22,22 +20,27 @@
         <h3>
           Create a {{data.genericProduct.name}} listing
         </h3>
-        <div ng-include="'/static/ngTemplates/app.ecommerce.vendor.form.listing.html'"></div>
+        <div ecommerce-Listing-Editor config-Obj="{{getConfig('parent' , data.genericProduct)}}"></div>
 
       </div>
     </uib-tab>
-    <uib-tab>
+    <uib-tab active="searchTabActive">
       <uib-tab-heading>
         Browse  <i class="fa fa-list-ul"></i>
       </uib-tab-heading>
-
-      <generic-Table resource-Url = "{{'/api/ecommerce/listing/'}}" search="true"
-          primary-Search-Field="{{'description'}}" views='views' ></generic-Table>
-
-
-
-
+      <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
-  </uib-tabset>
 
+    <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+      <uib-tab-heading >
+        {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+      </uib-tab-heading>
+      <div ng-if="tab.app == 'editListing'">
+        <div class="container-fluid" style="padding-top:20px;">
+          <div ecommerce-Listing-Editor config-Obj="{{getConfig('pk' , tab.data.pk)}}" ></div>
+        </div>
+      </div>
+    </uib-tab>
+
+  </uib-tabset>
 </div>

@@ -89,7 +89,7 @@ class offeringAdminSerializer(serializers.ModelSerializer):
 
 class listingSerializer(serializers.ModelSerializer):
     user = userSearchSerializer(many = False , read_only = True)
-    parentType = genericProductSerializer(many = False , read_only = True)
+    # parentType = genericProductSerializer(many = False , read_only = True)
     files = mediaSerializer(many = True , read_only = True)
     providerOptions = offeringSerializer(many = True , read_only = True)
 
@@ -106,6 +106,18 @@ class listingSerializer(serializers.ModelSerializer):
         l.parentType = genericProduct.objects.get(pk = self.context['request'].data['parentType'])
         l.save()
         return l
+    def update(self , instance , validated_data):
+        for key in ['title' , 'description' , 'priceModel' , 'category' , 'specifications' ]:
+            try:
+                setattr(instance , key , validated_data[key])
+            except:
+                pass
+        instance.files.clear()
+        if 'files' in self.context['request'].data:
+            for m in self.context['request'].data['files']:
+                instance.files.add(media.objects.get(pk = m))
+        instance.save()
+        return instance
 
 class orderSerializer(serializers.ModelSerializer):
     address = addressSerializer(many = False , read_only = True)
