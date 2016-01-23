@@ -156,7 +156,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
   $scope.fetchData = function(){
     // getting the data from the server based on the state of the filter params
-    if (typeof $scope.getStr == 'undefined') {
+    if (typeof $scope.getStr == 'undefined' && $scope.searchField!='') {
       return;
     }
     fetch.method = 'GET';

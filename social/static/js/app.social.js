@@ -443,8 +443,16 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
       $scope.parent[key] = requests.data[key];
     }
   });
-  $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
-  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
+
+  var views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ];
+  var getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.me.username}];
+
+  $scope.config = {
+    url : '/api/social/picture/' ,
+    views : views ,
+    getParams : getParams,
+  };
+
   $scope.droppedObjects = angular.copy($scope.parent.photos);
   tagged = [];
   for (var i = 0; i < $scope.parent.tagged.length; i++) {
@@ -808,9 +816,16 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
   }
 
 
-  $scope.views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ]; // to be used in the album editor
-  $scope.getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
+  var views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ]; // to be used in the album editor
+  var getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
   $scope.tempAlbum = {title : '' , photos : [] , tagged : ''};
+
+  $scope.config = {
+    url : '/api/social/picture/' ,
+    views : views ,
+    getParams : getParams,
+  };
+
 
   $scope.loadTags = function(query) {
     return $http.get('/api/HR/userSearch/?username__contains=' + query)
