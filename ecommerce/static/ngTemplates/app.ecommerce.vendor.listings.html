@@ -3,7 +3,7 @@
   <uib-tabset>
     <uib-tab >
       <uib-tab-heading>
-        New  <i class="fa fa-plus"></i>
+        New <i class="fa fa-plus"></i>
       </uib-tab-heading>
       <div ng-if="data.mode == 'select'">
         <div class="container-fluid" style="margin-top:100px;">
@@ -12,14 +12,15 @@
           </h3>
           <div class="input-group input-group-lg col-md-6 col-md-offset-3">
             <input uib-typeahead="type as type.name for type in genericProductSearch($viewValue)" ng-model="data.genericProduct" type="text" class="form-control" placeholder="Search and create a listing">
-            <span class="input-group-addon btn btn-primary" ng-click="buildForm()"> Create <i class="fa fa-arrow-right"></i></span>
+            <span class="input-group-addon btn btn-primary" ng-click="data.mode = 'create';"> Create <i class="fa fa-arrow-right"></i></span>
           </div>
         </div>
       </div>
       <div ng-if="data.mode == 'create'">
         <h3>
-          Create a {{data.genericProduct.name}} listing
+          <button type="button" class="btn btn-warning" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Go back</button> Create a {{data.genericProduct.name}} listing
         </h3>
+
         <div ecommerce-Listing-Editor config-Obj="{{getConfig('parent' , data.genericProduct)}}"></div>
 
       </div>

@@ -32,7 +32,6 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.haveOptions = angular.isDefined($scope.config.options) ? true:false;
   $scope.canCreate = angular.isDefined($scope.config.canCreate) ? $scope.config.canCreate:false;
   $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
-  console.log($scope.deletable);
   $scope.url = $scope.config.url;
   $scope.searchField = angular.isDefined($scope.config.searchField) ? $scope.config.searchField:'';
   $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
