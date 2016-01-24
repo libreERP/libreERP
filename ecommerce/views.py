@@ -6,9 +6,12 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.conf import settings as globalSettings
 from django.core.mail import send_mail
+from django.http import HttpResponse ,StreamingHttpResponse
+import mimetypes
 import hashlib, datetime, random
 import pytz
-
+from reportlab import *
+from StringIO import StringIO
 
 from django.utils import timezone
 from time import time
@@ -20,17 +23,32 @@ from rest_framework.exceptions import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 from HR.models import accountsKey
-from rest_framework.decorators import api_view
 
 def ecommerceHome(request):
     return render(request , 'ngEcommerce.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
+
+class printInvoiceApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        
+
+
+        return Response(status=status.HTTP_200_OK)
+        fileName = 'invoice.pdf'
+        filePath = os.path.join(globalSettings.BASE_DIR , 'media_root','ecommerce', 'invoices' , fileName)
+        fs = StringIO(file(filePath).read())
+        response = HttpResponse(fs, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=invoice.pdf'
+        response['Content-Length'] = os.path.getsize(filePath)
+        return response
 
 class offeringAvailabilityApi(APIView): # suggest places for a query
     renderer_classes = (JSONRenderer,)

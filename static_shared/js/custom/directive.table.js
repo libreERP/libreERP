@@ -363,7 +363,11 @@ app.directive('tableItem', function () {
 
 app.controller('genericTableItem' , function($scope , $uibModal){
   if (typeof $scope.data.url == 'undefined') {
-    $scope.target = $scope.data.pk;
+    if (typeof $scope.data.pk == 'undefined') {
+      $scope.target = $scope.data.id;
+    } else {
+      $scope.target = $scope.data.pk;
+    }
   } else {
     $scope.target = $scope.data.url;
     $scope.data.pk = getPK($scope.data.url);

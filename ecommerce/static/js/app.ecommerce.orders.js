@@ -4,19 +4,32 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
     ];
   var getParams = [{key : 'mode' , value : 'provider'}]
 
-  var options = {main : {icon : 'fa-envelope-o', text: 'im'} ,
-    others : [{icon : '' , text : 'social' },
-      {icon : '' , text : 'editMaster' },]
-    };
+  var options = {main : {icon : 'fa-print', text: 'print invoice'} ,
+    others : [
+      {icon : 'fa-check' , text : 'markComplete' },
+      {icon : '' , text : 'cancel' },
+      {icon : '' , text : 'sendMessage' },
+      {icon : '' , text : 'printAgreement' },
+    ]
+  };
 
   $scope.config = {
     views : views,
     getParams : getParams,
     url : '/api/ecommerce/order/',
     options : options,
+    searchField : 'id',
   }
 
   $scope.tableAction = function(target , action , mode){
-    console.log("target");
+    console.log(target);
+    console.log(action);
+    var doc = new jsPDF();
+    doc.fromHTML($('#pdf').get(0), 15, 15, {
+    	'width': 170,
+    });
+    doc.save('pdf.pdf')
   }
+
+
 });

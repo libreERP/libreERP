@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'suggestLocations/$' , locationAutoCompleteApi.as_view() ),
     url(r'locationDetails/$' , locationDetailsApi.as_view() ),
     url(r'offeringAvailability/$' , offeringAvailabilityApi.as_view() ),
+    url(r'printInvoice/$' , printInvoiceApi.as_view() ),
 ]
