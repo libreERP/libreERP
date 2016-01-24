@@ -28,8 +28,15 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
     $scope.data.mode = 'create'
   }
 
-  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
+
+  $scope.config = {
+    url : '/api/ecommerce/offeringAdmin/',
+    views : views,
+    searchField : 'item',
+  }
+
 
   $scope.submit = function() {
     dataToSend = $scope.data.form;

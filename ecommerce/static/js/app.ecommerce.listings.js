@@ -168,13 +168,13 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
         specs = $scope.data.specifications;
         for (var i = 0; i < gp.fields.length; i++) {
           for (var j = 0; j < specs.length; j++) {
-            if (gp.fields[i].name== specs[j].name) {
+            if (gp.fields[i].name == specs[j].name) {
               gp.fields[i].default = specs[j].value;
             }
           }
         }
+
         $scope.data.genericProduct = gp;
-        $scope.buildForm();
       })
     })
   }else {
