@@ -14,15 +14,15 @@
           </h3>
           <div class="input-group input-group-lg col-md-6 col-md-offset-3">
             <input uib-typeahead="listing as listing.title for listing in listingSearch($viewValue)" ng-model="data.listing" type="text" class="form-control" placeholder="Search and create an offering against a listing">
-            <span class="input-group-addon btn btn-primary" ng-click="buildForm()"> Create <i class="fa fa-arrow-right"></i></span>
+            <span class="input-group-addon btn btn-primary" ng-click="data.mode='create';"> Create <i class="fa fa-arrow-right"></i></span>
           </div>
         </div>
       </div>
       <div ng-if="data.mode == 'create'">
         <h3>
-          Create an offering for : {{data.listing.title}} listing
+          <button type="button" class="btn btn-default" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Go back</button> Create an offering for : {{data.listing.title}} listing
         </h3>
-        <div ng-include="'/static/ngTemplates/app.ecommerce.vendor.form.offering.html'"></div>
+        <div ecommerce-Offering-Editor config-Obj="{{getConfig('parent' , data.listing)}}" ></div>
 
       </div>
     </uib-tab>
@@ -30,12 +30,17 @@
       <uib-tab-heading>
         Browse  <i class="fa fa-list-ul"></i>
       </uib-tab-heading>
-
       <generic-Table data = "tableData" config-Obj = "{{config}}"></generic-Table>
-
-
-
-
+    </uib-tab>
+    <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+      <uib-tab-heading >
+        {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+      </uib-tab-heading>
+      <div ng-if="tab.app == 'editOffering'">
+        <div class="container-fluid" style="padding-top:20px;">
+          <div ecommerce-Offering-Editor config-Obj="{{getConfig('pk' , tab.data.pk)}}" ></div>
+        </div>
+      </div>
     </uib-tab>
   </uib-tabset>
 
