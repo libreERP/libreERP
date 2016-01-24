@@ -40,7 +40,8 @@ Run the following commands in your console / command prompt with super user priv
     $ pip install django-url-filter
     $ pip install django-cors-headers
     $ pip install pillow
-    $ pip install grequests
+    $ pip install requests
+    $ pip install pytz
 
 in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document worked (For installation on windows please refer http://crossbar.io)
 

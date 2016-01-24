@@ -6,16 +6,16 @@ app.directive('ecommerceOfferingEditor', function () {
     scope: {
       configObj:'@',
     },
-    controller : 'ecommerce.form.listing',
+    controller : 'ecommerce.form.offering',
   };
 });
 
-app.controller('ecommerce.form.listing' , function($scope , $state , $stateParams , $http , Flash){
+app.controller('ecommerce.form.offering' , function($scope , $state , $stateParams , $http , Flash){
   $scope.data = {mode : 'select' , form : {} };
   $scope.config = JSON.parse($scope.configObj);
 
   if (angular.isDefined($scope.config.pk)) {
-    $scope.id = $scope.config.pk;
+    $scope.pk = $scope.config.pk;
     $scope.editorMode = 'edit';
   }else {
     $scope.editorMode = 'new';
@@ -36,20 +36,30 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
 
   $scope.resetForm()
 
-
   $scope.submit = function() {
+    if ($scope.editorMode == 'edit') {
+      var post = {method : 'PATCH' , url : '/api/ecommerce/offeringAdmin/' + $scope.pk +'/'}
+
+    }else {
+      var post = {method : 'POST' , url : '/api/ecommerce/offeringAdmin/'}
+    }
     dataToSend = $scope.data.form;
-    dataToSend.item = $scope.data.listing.pk;
-    $http({method : 'POST' , url : '/api/ecommerce/offeringAdmin/' , data : $scope.data.form}).
+    $http({method : post.method , url : post.url , data : $scope.data.form}).
     then(function(response){
-      $scope.resetForm();
       Flash.create('success', response.status + ' : ' + response.statusText);
       }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText);
     });
   }
 
+  if ($scope.editorMode == 'edit') {
+    $http({method : 'GET' , url : '/api/ecommerce/offeringAdmin/' + $scope.pk +'/'}).
+    then(function(response){
+      $scope.data.form = response.data;
+    })
+  };
 });
+
 app.controller('businessManagement.ecommerce.offerings' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
   $scope.getConfig = function(mode , data){
@@ -63,10 +73,17 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
+  var options = {main : {icon : 'fa-pencil', text: 'edit'} ,
+    // others : [{icon : '' , text : 'social' },
+      // {icon : '' , text : 'editMaster' },]
+    };
+
   $scope.config = {
     url : '/api/ecommerce/offeringAdmin/',
     views : views,
     searchField : 'item',
+    deletable : true,
+    options : options,
   }
 
   $scope.goBack = function(){
@@ -80,6 +97,40 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
       return response.data;
     })
   };
+
+  $scope.tabs = [];
+  $scope.searchTabActive = true;
+
+  $scope.closeTab = function(index){
+    $scope.tabs.splice(index , 1)
+  }
+
+  $scope.addTab = function( input ){
+    $scope.searchTabActive = false;
+    alreadyOpen = false;
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].data.pk == input.data.pk && $scope.tabs[i].app == input.app) {
+        $scope.tabs[i].active = true;
+        alreadyOpen = true;
+      }else{
+        $scope.tabs[i].active = false;
+      }
+    }
+    if (!alreadyOpen) {
+      $scope.tabs.push(input)
+    }
+  }
+
+  $scope.tableAction = function(target , action , mode){
+    if (action=='edit') {
+      for (var i = 0; i < $scope.data.tableData.length; i++) {
+        if ($scope.data.tableData[i].pk == parseInt(target)){
+          $scope.addTab({title : 'Edit offering : ' + $scope.data.tableData[i].pk , cancel : true , app : 'editOffering' , data : {pk : target} , active : true})
+        }
+      }
+    }
+  }
+
 
 
 })

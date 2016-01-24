@@ -1,7 +1,5 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
-
-
   <uib-tabset>
     <uib-tab >
       <uib-tab-heading>
@@ -26,11 +24,11 @@
 
       </div>
     </uib-tab>
-    <uib-tab>
+    <uib-tab active="searchTabActive">
       <uib-tab-heading>
         Browse  <i class="fa fa-list-ul"></i>
       </uib-tab-heading>
-      <generic-Table data = "tableData" config-Obj = "{{config}}"></generic-Table>
+      <generic-Table callback-Fn="tableAction" data = "data.tableData" config-Obj = "{{config}}"></generic-Table>
     </uib-tab>
     <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
       <uib-tab-heading >
