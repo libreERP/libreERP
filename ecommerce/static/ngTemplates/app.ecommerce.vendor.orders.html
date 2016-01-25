@@ -1,4 +1,25 @@
 <breadcrumb></breadcrumb>
-<div class="container-fluid" >
-  <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
+<div class="container-fluid">
+  <uib-tabset>
+    <uib-tab active="searchTabActive">
+      <uib-tab-heading>
+        Browse  <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+      <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
+    </uib-tab>
+
+    <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+      <uib-tab-heading >
+        {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+      </uib-tab-heading>
+      <div ng-if="tab.app == 'print invoice'">
+        <div class="container-fluid" style="padding-top:20px;">
+          <object data="{{tab.data.content}}" type="application/pdf" width="100%" height="600px">
+            <p>Alternative text - include a link <a href="/api/ecommerce/printInvoice/?id={{tab.data.pk}}">to the PDF!</a></p>
+          </object>
+        </div>
+      </div>
+    </uib-tab>
+
+  </uib-tabset>
 </div>

@@ -10,8 +10,18 @@ from django.http import HttpResponse ,StreamingHttpResponse
 import mimetypes
 import hashlib, datetime, random
 import pytz
-from reportlab import *
 from StringIO import StringIO
+import math
+# related to the invoice generator
+from reportlab import *
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm, mm
+from reportlab.lib import colors
+from reportlab.platypus import Paragraph, Table, TableStyle, Image
+from PIL import Image
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+
 
 from django.utils import timezone
 from time import time
@@ -35,19 +45,129 @@ def ecommerceHome(request):
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
 
+def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
+    c.setFont("Times-Roman" , 20)
+    c.drawCentredString(2*cm, 27*cm,"Brand")
+    c.line(1*cm , 26*cm ,20*cm,26*cm )
+    c.drawImage(os.path.join(globalSettings.BASE_DIR , 'static_shared','images' , 'logo.png') , 3*cm , 26.2*cm , 2*cm, 2*cm)
+    c.setFont("Times-Roman" , 12)
+    c.drawString(5*cm, 27.35*cm , "Contact us : 1800 1234 5678 | care@ecommerce.com")
+    styles=getSampleStyleSheet()
+    sead = se.address # service provide address
+    serAddress = '<p><font size=14>%s.</font><font size=10>  34, %s , %s, %s, Pin : %s</font></p>' %(se.name , sead.street , sead.city , sead.state , sead.pincode)
+    p = Paragraph( serAddress , styles['Normal'])
+    p.wrapOn(c, 15*cm, 1*cm)
+    p.drawOn(c, 5*cm, 26.3*cm)
+    c.setDash(6,3)
+    c.rect(14.4*cm, 27.2*cm, 5.5*cm, 0.6*cm )
+    c.drawString(14.5*cm, 27.35*cm , "Invoice # DEL-%s" %(o.pk))
+    pSrc = '''
+        <font size=10>
+            <strong>Order ID: OD%s</strong><br/><br/>
+            <strong>Order Date : </strong> %s <br/>
+            <strong>Invoice Date : </strong> %s <br/>
+            <strong>VAT/TIN : </strong> %s <br/>
+            <strong>CST# : </strong> %s <br/>
+        </font>
+    ''' % (o.pk , o.created.date() , o.created.date() , se.tin , se.tin)
+    p = Paragraph( pSrc , styles['Normal'])
+    p.wrapOn(c, 6*cm, 5*cm)
+    p.drawOn(c, 1*cm, 22.4*cm)
+    custAdd = o.address # customer address
+    cust = o.user
+    pSrc = '''
+        <font size=10>
+            <strong>Billing Address</strong><br/><br/>
+            %s %s<br/>
+            %s,<br/>
+            %s Pin : %s,<br/>
+            %s<br/>
+            Phone : %s <br/>
+        </font>
+    ''' % (cust.first_name , cust.last_name , custAdd.street ,custAdd.city , custAdd.pincode , custAdd.state , o.mobile )
+    p = Paragraph( pSrc , styles['Normal'])
+    p.wrapOn(c, 6*cm, 5*cm)
+    p.drawOn(c, 7.5*cm, 22*cm)
+    # p = Paragraph( pSrc , styles['Normal'])
+    p.wrapOn(c, 6*cm, 5*cm)
+    p.drawOn(c, 14*cm, 22*cm)
+    c.setDash()
+    pHeadProd = Paragraph('<strong>Product</strong>' , styles['Normal'])
+    pHeadDetails = Paragraph('<strong>Details</strong>' , styles['Normal'])
+    pHeadQty = Paragraph('<strong>Qty</strong>' , styles['Normal'])
+    pHeadPrice = Paragraph('<strong>Price</strong>' , styles['Normal'])
+    pHeadTax = Paragraph('<strong>Tax</strong>' , styles['Normal'])
+    pHeadTotal = Paragraph('<strong>Total</strong>' , styles['Normal'])
+
+    bookingHrs = o.end-o.start
+    bookingHrs = math.ceil((bookingHrs.total_seconds())/(3600))
+    bookingTotal = o.quantity*ofr.rate*bookingHrs
+
+    pSrc = ''''<strong>%s</strong><br/>(5.00%sCST) <br/><strong>Start : </strong> %s <br/>
+        <strong>End : </strong> %s <br/><strong>Booking Hours : </strong> %s Hours <br/>
+        ''' %(it.description[0:100] , '%' , o.start.strftime('%Y-%m-%d , %H:%M %p'), o.end.strftime('%Y-%m-%d , %H:%M %p'), bookingHrs)
+    pBodyProd = Paragraph('%s <strong>VB%s</strong>' %(it.title , it.pk) , styles['Normal'])
+    pBodyTitle = Paragraph( pSrc , styles['Normal'])
+    pBodyQty = Paragraph('%s' % (o.quantity) , styles['Normal'])
+    pBodyPrice = Paragraph('<strong> %s </strong>/ Hr' % (ofr.rate) , styles['Normal'])
+
+    tax = 0.05*bookingTotal
+    pBodyTax = Paragraph('%s' % (tax) , styles['Normal'])
+    pBodyTotal = Paragraph('%s' %(bookingTotal) , styles['Normal'])
+
+    pFooterQty = Paragraph('%s' % (o.quantity) , styles['Normal'])
+    pFooterTax = Paragraph('%s' %(tax) , styles['Normal'])
+    pFooterTotal = Paragraph('%s' % (bookingTotal) , styles['Normal'])
+    pFooterGrandTotal = Paragraph('%s' % (bookingTotal) , styles['Normal'])
+
+    data = [[ pHeadProd, pHeadDetails, pHeadPrice , pHeadQty, pHeadTax , pHeadTotal],
+            [pBodyProd, pBodyTitle, pBodyPrice, pBodyQty, pBodyTax , pBodyTotal],
+            ['', '', '', pFooterQty, pFooterTax , pFooterTotal],
+            ['', '', '', 'Grand Total', '' , pFooterGrandTotal]]
+    t=Table(data)
+    ts = TableStyle([('ALIGN',(1,1),(-2,-2),'RIGHT'),
+                ('SPAN',(-3,-1),(-2,-1)),
+                ('LINEABOVE',(0,0),(-1,0),0.25,colors.gray),
+                ('LINEABOVE',(0,1),(-1,1),0.25,colors.gray),
+                ('LINEABOVE',(-3,-2),(-1,-2),0.25,colors.gray),
+                ('LINEABOVE',(0,-1),(-1,-1),0.25,colors.gray),
+                ('LINEBELOW',(0,-1),(-1,-1),0.25,colors.gray),
+            ])
+    t.setStyle(ts)
+    t._argW[0] = 3*cm
+    t._argW[1] = 8*cm
+    t._argW[2] = 2*cm
+    t._argW[3] = 2*cm
+    t._argW[4] = 2*cm
+    t._argW[5] = 2*cm
+    t.wrapOn(c, 19*cm, 6*cm)
+    t.drawOn(c, 1*cm, 18*cm)
+
 class printInvoiceApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
-        
+        if 'id' not in request.GET:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        o = order.objects.get(id = request.GET['id'])
+        ofr = o.offer
+        it = ofr.item
+        se = ofr.service
 
-
-        return Response(status=status.HTTP_200_OK)
-        fileName = 'invoice.pdf'
+        fileName = 'invoice%s.pdf' % (str(time()).replace('.', '_'))
         filePath = os.path.join(globalSettings.BASE_DIR , 'media_root','ecommerce', 'invoices' , fileName)
+
+        c = canvas.Canvas(filePath , pagesize=A4)
+        pageWidth, pageHeight = A4
+        genInvoice(c , o, ofr , it, se)
+        c.showPage()
+        c.save()
+
+        # return Response(status=status.HTTP_200_OK)
         fs = StringIO(file(filePath).read())
         response = HttpResponse(fs, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=invoice.pdf'
         response['Content-Length'] = os.path.getsize(filePath)
+        os.remove(filePath)
         return response
 
 class offeringAvailabilityApi(APIView): # suggest places for a query

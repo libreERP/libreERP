@@ -59,7 +59,8 @@ def genInvoice(c):
     p = Paragraph( pSrc , styles['Normal'])
     p.wrapOn(c, 6*cm, 5*cm)
     p.drawOn(c, 14*cm, 22*cm)
-
+    c.setDash()
+    c.line(1*cm , 26*cm ,20*cm,2*cm )
     data = [['00', '01', '02', '03', '04'],
             ['10', '11', '12', '13', '14'],
             ['20', '21', '22', '23', '24'],
