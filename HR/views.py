@@ -95,7 +95,7 @@ def home(request):
         apps = getApps(u)
         modules = getModules(u)
     apps = apps.filter(~Q(name__startswith='configure.')).filter(~Q(name='app.users'))
-    print apps , modules
+    # print apps , modules
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'apps' : apps , 'modules' : modules})
 
 class userProfileViewSet(viewsets.ModelViewSet):

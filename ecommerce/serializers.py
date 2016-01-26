@@ -95,7 +95,7 @@ class listingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions')
+        fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source')
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user
@@ -123,7 +123,7 @@ class orderSerializer(serializers.ModelSerializer):
     address = addressSerializer(many = False , read_only = True)
     class Meta:
         model = order
-        fields = ('id' , 'user' , 'created' , 'offer' , 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping' , 'start' , 'end')
+        fields = ('id' , 'user' , 'created' , 'offer' , 'rate', 'status', 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping' , 'start' , 'end')
     def create(self , validated_data):
         u = self.context['request'].user
         street = self.context['request'].data['street']

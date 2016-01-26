@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce', 'ngAnimate', 'anim-in-out' ,'ui.bootstrap.datetimepicker']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap' ,'flash' , 'ngAnimate', 'anim-in-out' ,'ui.bootstrap.datetimepicker']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
 
@@ -83,8 +83,8 @@ app.config(function($stateProvider ){
 
 });
 
-app.controller('controller.ecommerce.details' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
-  
+app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
+
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
 
   $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
@@ -155,10 +155,10 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $asid
 
 });
 
-app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
 // for the dashboard of the account tab
 });
-app.controller('controller.ecommerce.account.cart' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account.cart' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
 
   $scope.views = [{name : 'list' , icon : 'fa-bars' ,
     template : '/static/ngTemplates/app.ecommerce.account.cart.list.html' ,
@@ -197,7 +197,7 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
 
 })
 
-app.controller('controller.ecommerce.account.orders' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account.orders' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
   $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
@@ -205,7 +205,7 @@ app.controller('controller.ecommerce.account.orders' , function($scope , $state 
 
 });
 
-app.controller('controller.ecommerce.account.settings' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account.settings' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
   $scope.form = {address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }}
 
   $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
@@ -232,7 +232,7 @@ app.controller('controller.ecommerce.account.settings' , function($scope , $stat
 
 });
 
-app.controller('controller.ecommerce.account.support' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account.support' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
 
   $scope.message = {subject : '' , body : ''};
   $scope.sendMessage = function(){
@@ -248,12 +248,12 @@ app.controller('controller.ecommerce.account.support' , function($scope , $state
 
 });
 
-app.controller('controller.ecommerce.account' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
 
 });
 
 
-app.controller('controller.ecommerce.checkout' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.checkout' , function($scope , $state, $http , $timeout , $uibModal , $users , Flash){
   $scope.me = $users.get('mySelf');
   $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
 
@@ -344,7 +344,7 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state , $asi
 })
 
 
-app.controller('ecommerce.main' , function($scope , $state , $aside , $http , $timeout , $uibModal , $users){
+app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , $uibModal , $users){
   $scope.me = $users.get('mySelf')
   $scope.inCart = [];
   $scope.data = {location : null}

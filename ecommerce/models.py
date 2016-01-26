@@ -120,6 +120,8 @@ class listing(models.Model):
     specifications = models.TextField(max_length = 2000 , null = False) # JSON data with key from one of the spec and value as the value for this perticular item
     files = models.ManyToManyField(media , related_name='listings')
     parentType = models.ForeignKey(genericProduct , related_name='products' , null = True)
+    source = models.TextField(max_length = 40000 , null = True)
+    # ths may contain the html source for the description giving the admin a way to full featured webpage description
 
 PAYMENT_TYPE_CHOICES = (
     ('onlineBanking' , 'onlineBanking'),
@@ -162,6 +164,13 @@ class offering(models.Model):
     class Meta:
         unique_together = ('service', 'item',)
 
+ORDER_STATUS_CHOICES = (
+    ('new' , 'new'),
+    ('complete' , 'complete'),
+    ('canceledByCustomer' , 'canceledByCustomer'),
+    ('canceledByVendor' , 'canceledByVendor'),
+)
+
 class order(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceOrders' , null = False)
     created = models.DateTimeField(auto_now_add = True)
@@ -172,6 +181,8 @@ class order(models.Model):
     mobile = models.PositiveIntegerField(null=True)
     shipping = models.CharField(max_length = 20 , null = True)
     coupon = models.CharField(max_length = 20 , null = True)
+    rate = models.CharField(max_length = 20 , null = True)
     quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
     start = models.DateTimeField(null = True)
     end = models.DateTimeField(null = True)
+    status = models.CharField(choices = ORDER_STATUS_CHOICES , null = True , max_length = 20 , default = 'new')

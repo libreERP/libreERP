@@ -11,8 +11,8 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
     others : [
       {icon : 'fa-check' , text : 'markComplete' },
       {icon : '' , text : 'cancel' },
-      {icon : '' , text : 'sendMessage' },
-      {icon : '' , text : 'printAgreement' },
+      // {icon : '' , text : 'sendMessage' },
+      // {icon : '' , text : 'printAgreement' },
     ]
   };
 
@@ -22,6 +22,7 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
     url : '/api/ecommerce/order/',
     options : options,
     searchField : 'id',
+    fields : ['user' , 'created' , 'rate' , 'status' , 'paymentType' , 'paid' , 'quantity' , 'start' , 'end']
   }
 
   $scope.tabs = [];
@@ -48,22 +49,34 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
   }
 
   $scope.tableAction = function(target , action , mode){
-    console.log(target);
-    if (action == 'print invoice') {
-      for (var i = 0; i < $scope.data.tableData.length; i++) {
-        if ($scope.data.tableData[i].id == parseInt(target)){
-          $http.get('/api/ecommerce/printInvoice/?id=' + target ,'', {responseType:'arraybuffer'}).
-          success((function(target){
-            return function(response){
-            var file = new Blob([response], { type: 'application/pdf' });
-            var fileURL = URL.createObjectURL(file);
-            content = $sce.trustAsResourceUrl(fileURL);
-            $scope.addTab({title : 'Print Invocie for order ID : '+ target , cancel : true , app : 'print invoice' , data : {pk : target , content : content} , active : true})
-            }
-            })(target)
-          )
-        }
+    for (var i = 0; i < $scope.data.tableData.length; i++) {
+      if ($scope.data.tableData[i].id == parseInt(target)){
+        index = i;
+        break;
       }
+    }
+    // index is the index of the object in the table in the view and target is either the id or Pk of the object
+    if (action == 'print invoice') {
+      $http.get('/api/ecommerce/printInvoice/?id=' + target ,'', {responseType:'arraybuffer'}).
+      success((function(target){
+        return function(response){
+        var file = new Blob([response], { type: 'application/pdf' });
+        var fileURL = URL.createObjectURL(file);
+        content = $sce.trustAsResourceUrl(fileURL);
+        $scope.addTab({title : 'Print Invocie for order ID : '+ target , cancel : true , app : 'print invoice' , data : {pk : target , content : content} , active : true})
+        }
+        })(target)
+      )
+    } else if (action == 'markComplete') {
+      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'complete'}}).
+      then(function(response) {
+        console.log(response);
+      })
+    } else if (action == 'cancel') {
+      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'canceledByVendor'}}).
+      then(function(response) {
+        console.log(response);
+      })
     }
   }
 

@@ -88,7 +88,17 @@ def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
     p = Paragraph( pSrc , styles['Normal'])
     p.wrapOn(c, 6*cm, 5*cm)
     p.drawOn(c, 7.5*cm, 22*cm)
-    # p = Paragraph( pSrc , styles['Normal'])
+    pSrc = '''
+        <font size=10>
+            <strong>Shipping Address</strong><br/><br/>
+            %s %s<br/>
+            %s,<br/>
+            %s Pin : %s,<br/>
+            %s<br/>
+            Phone : %s <br/>
+        </font>
+    ''' % (cust.first_name , cust.last_name , custAdd.street ,custAdd.city , custAdd.pincode , custAdd.state , o.mobile )
+    p = Paragraph( pSrc , styles['Normal'])
     p.wrapOn(c, 6*cm, 5*cm)
     p.drawOn(c, 14*cm, 22*cm)
     c.setDash()
@@ -166,7 +176,7 @@ class printInvoiceApi(APIView):
         fs = StringIO(file(filePath).read())
         response = HttpResponse(fs, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename=invoice.pdf'
-        response['Content-Length'] = os.path.getsize(filePath)
+        # response['Content-Length'] = os.path.getsize(filePath)
         os.remove(filePath)
         return response
 
@@ -337,7 +347,7 @@ class orderViewSet(viewsets.ModelViewSet):
             elif self.request.GET['mode'] == 'consumer':
                 return u.ecommerceOrders.all()
         else:
-            content = {'mode' : 'You mode specified , please specified either of mode = provider or consumer'}
+            content = {'mode' : 'No mode specified , please specified either of mode = provider or consumer'}
             raise PermissionDenied(detail=content)
 
 
