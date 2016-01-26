@@ -4,7 +4,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
   $scope.url = '/api/ERP/applicationAdminMode/';
 
   views = [{name : 'list' , icon : 'fa-bars' ,
-    template : '/static/ngTemplates/app.ERP.settings.modulesAndApps.list.html' ,
+    template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
     itemTemplate : '/static/ngTemplates/app.ERP.settings.modulesAndApps.item.html',
   },];
 

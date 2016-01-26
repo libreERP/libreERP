@@ -42,6 +42,7 @@ Run the following commands in your console / command prompt with super user priv
     $ pip install pillow
     $ pip install requests
     $ pip install pytz
+    $ pip install reportlab
 
 in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document worked (For installation on windows please refer http://crossbar.io)
 

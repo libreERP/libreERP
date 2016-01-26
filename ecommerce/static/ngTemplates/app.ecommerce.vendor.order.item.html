@@ -1,0 +1,12 @@
+<div class="container-fluid card {{index | rainbow}}">
+  <div class="row">
+    {{data.user | getName}}
+  </div>
+  <p>
+    {{data.start | date : 'dd-MMM-YYY : HH:MM a'}}
+  </p>
+  <p>
+    {{data.end | date : 'dd-MMM-YYY : HH:MM a'}}
+  </p>
+  <!-- {{data}} -->
+</div>

@@ -3,8 +3,10 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
 
   $scope.data = {tableData : []}
 
-  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
+  views = [{name : 'list' , icon : 'fa-bars' ,
+    template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
+    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.order.item.html',
+  },];
   var getParams = [{key : 'mode' , value : 'provider'}]
 
   var options = {main : {icon : 'fa-print', text: 'print invoice'} ,

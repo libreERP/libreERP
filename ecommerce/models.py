@@ -167,6 +167,7 @@ class offering(models.Model):
 ORDER_STATUS_CHOICES = (
     ('new' , 'new'),
     ('complete' , 'complete'),
+    ('acceptedByVendor' , 'acceptedByVendor'),
     ('canceledByCustomer' , 'canceledByCustomer'),
     ('canceledByVendor' , 'canceledByVendor'),
 )
