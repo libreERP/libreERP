@@ -163,21 +163,14 @@ class printInvoiceApi(APIView):
         it = ofr.item
         se = ofr.service
 
-        fileName = 'invoice%s.pdf' % (str(time()).replace('.', '_'))
-        filePath = os.path.join(globalSettings.BASE_DIR , 'media_root','ecommerce', 'invoices' , fileName)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
 
-        c = canvas.Canvas(filePath , pagesize=A4)
+        c = canvas.Canvas(response , pagesize=A4)
         pageWidth, pageHeight = A4
         genInvoice(c , o, ofr , it, se)
         c.showPage()
         c.save()
-
-        # return Response(status=status.HTTP_200_OK)
-        fs = StringIO(file(filePath).read())
-        response = HttpResponse(fs, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=invoice.pdf'
-        # response['Content-Length'] = os.path.getsize(filePath)
-        os.remove(filePath)
         return response
 
 class offeringAvailabilityApi(APIView): # suggest places for a query

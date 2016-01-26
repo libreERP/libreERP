@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap' ,'flash' , 'ngAnimate', 'anim-in-out' ,'ui.bootstrap.datetimepicker']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap' ,'flash' ,'ngSanitize', 'ngAnimate', 'anim-in-out' ,'ui.bootstrap.datetimepicker']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
 

@@ -61,7 +61,7 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
   }
 
   $scope.resetForm = function(){
-    $scope.data.form = {mediaType : '' , files : [] , file : emptyFile , url : '',
+    $scope.data.form = {mediaType : '' , files : [] , file : emptyFile , url : '', source : '',
       availability : 'local',
       priceModel : 'quantity',
       shippingOptions : 'pickup',
@@ -90,7 +90,7 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
     if (files.length != 0) {
       dataToSend.files = files;
     }
-    console.log(files);
+    console.log(form);
     for (key in form) {
       if (key != 'files' && key !='file') {
         if (key == 'replacementPeriod') {
@@ -180,6 +180,19 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
   }else {
     $scope.buildForm()
   }
+
+
+  $scope.tinymceOptions = {
+    selector: 'textarea',
+    content_css : '/static/css/bootstrap.min.css',
+    inline: false,
+    plugins : 'advlist autolink link image lists charmap preview imagetools paste table insertdatetime code searchreplace ',
+    skin: 'lightgray',
+    theme : 'modern',
+    height : 640,
+    toolbar : 'saveBtn publishBtn cancelBtn headerMode bodyMode | undo redo | bullist numlist | alignleft aligncenter alignright alignjustify | outdent  indent blockquote | bold italic underline | image link',
+  };
+
 
 
 });

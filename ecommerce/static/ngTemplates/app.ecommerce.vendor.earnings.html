@@ -1,5 +1,81 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="info-box bg-aqua">
+      <span class="info-box-icon info-box-faIcon"><i class="fa fa-link"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Completed</span>
+        <span class="info-box-number">163</span>
+        <div class="progress">
+          <div class="progress-bar" style="width: 40%"></div>
+        </div>
+        <span class="progress-description">
+          40% Increase in 30 Days
+        </span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+  </div><!-- /.col -->
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="info-box bg-red">
+      <span class="info-box-icon info-box-faIcon"><i class="fa fa-music"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Earnings this weak</span>
+        <span class="info-box-number">114,381 <i class="fa fa-inr"></i></span>
+        <div class="progress">
+          <div class="progress-bar" style="width: 70%"></div>
+        </div>
+        <span class="progress-description">
+          70% Increase in 30 Days
+        </span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+  </div><!-- /.col -->
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="info-box bg-yellow">
+      <span class="info-box-icon info-box-faIcon"><i class="fa fa-music"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Expected this week</span>
+        <span class="info-box-number">114,381 <i class="fa fa-inr"></i></span>
+        <div class="progress">
+          <div class="progress-bar" style="width: 70%"></div>
+        </div>
+        <span class="progress-description">
+          70% Increase in 30 Days
+        </span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+  </div><!-- /.col -->
+
+
+
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1">
+      <canvas class="chart chart-line" chart-data="data"
+        chart-labels="labels" chart-legend="true" chart-series="series"
+        chart-click="onClick" >
+      </canvas>
+    </div>
+
+    <div class="col-md-6">
+      <canvas class="chart chart-doughnut" chart-legend="true"
+        chart-data="data2" chart-labels="labels2">
+      </canvas>
+    </div>
+
+    <div class="col-md-6">
+      <canvas class="chart chart-radar" chart-legend="true"
+        chart-data="data3" chart-labels="labels3" chart-series="seriesLabel3">
+      </canvas>
+    </div>
+
+    <div class="col-md-6">
+      <canvas class="chart chart-bar" chart-legend="true" chart-series="series4"
+        chart-data="data3" chart-labels="labels3"> chart-series="series"
+      </canvas
+    </div>
+
+  </div>
+
 
 
 </div>

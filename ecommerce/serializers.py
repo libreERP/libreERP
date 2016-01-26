@@ -107,7 +107,7 @@ class listingSerializer(serializers.ModelSerializer):
         l.save()
         return l
     def update(self , instance , validated_data):
-        for key in ['title' , 'description' , 'priceModel' , 'category' , 'specifications' ]:
+        for key in ['title' , 'description' , 'priceModel' , 'category' , 'specifications' , 'source' ]:
             try:
                 setattr(instance , key , validated_data[key])
             except:

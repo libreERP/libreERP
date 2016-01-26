@@ -120,36 +120,31 @@
       <uib-tab-heading>
         Fields
       </uib-tab-heading>
-      <generic-Table resource-Url = "{{'/api/ecommerce/field/'}}" search="true"
-          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+      <generic-Table data="tableData.field" config-Obj="{{fieldConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
     <uib-tab>
       <uib-tab-heading>
         Product Types
       </uib-tab-heading>
-      <generic-Table resource-Url = "{{'/api/ecommerce/genericType/'}}" search="true"
-          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+      <generic-Table data="tableData.genericType" config-Obj="{{genericTypeConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
     <uib-tab>
       <uib-tab-heading>
         Generic Product
       </uib-tab-heading>
-      <generic-Table resource-Url = "{{'/api/ecommerce/genericProduct/'}}" search="true"
-          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+      <generic-Table data="tableData.genericProduct" config-Obj="{{genericProductConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
     <uib-tab>
       <uib-tab-heading>
         Chocie label
       </uib-tab-heading>
-      <generic-Table resource-Url = "{{'/api/ecommerce/choiceLabel/'}}" search="true"
-          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+      <generic-Table data="tableData.choiceLabel" config-Obj="{{choiceLabelConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
     <uib-tab>
       <uib-tab-heading>
         Chocie options
       </uib-tab-heading>
-      <generic-Table resource-Url = "{{'/api/ecommerce/choiceOption/'}}" search="true"
-          primary-Search-Field="{{'name'}}" views='views' ></generic-Table>
+      <generic-Table data="tableData.choiceOption" config-Obj="{{choiceOptionConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
   </uib-tabset>
 

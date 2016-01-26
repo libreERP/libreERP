@@ -1,8 +1,50 @@
 
 app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
-  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+  var options = {
+    main : {icon : 'fa-pencil', text: 'edit'} ,
+    };
+
+  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
+
+  $scope.fieldConfig = {
+    views : views,
+    url : '/api/ecommerce/field/',
+    fields : ['pk','fieldType','unit' , 'name' , 'default' , 'helpText'],
+    searchField: 'name',
+    options : options,
+    deletable : true,
+  }
+  $scope.genericTypeConfig = {
+    views : views,
+    url : '/api/ecommerce/genericType/',
+    options : options,
+    deletable : true,
+  }
+
+  $scope.genericProductConfig = {
+    views : views,
+    url : '/api/ecommerce/genericProduct/',
+    fields : ['pk', 'name' , 'productType' ],
+    options : options,
+    deletable : true,
+  }
+
+  $scope.choiceLabelConfig = {
+    views : views,
+    url : '/api/ecommerce/choiceLabel/',
+    options : options,
+    deletable : true,
+  }
+
+  $scope.choiceOptionConfig = {
+    views : views,
+    url : '/api/ecommerce/choiceOption/',
+    options : options,
+    deletable : true,
+  }
+
 
   $scope.typeSearch = function(query) {
     return $http.get('/api/ecommerce/genericType/?name__contains=' + query).

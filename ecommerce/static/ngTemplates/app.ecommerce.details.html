@@ -25,11 +25,12 @@
         </div>
         <div class="row container-fluid" style="margin-top:10px;">
           <span ng-repeat="s in data.specifications" ng-if="$index<5">
-            <span> <strong>{{s.name | humanize}} </strong>
-              <span ng-if="s.fieldType !='choice' && s.fieldType != 'boolean'">({{s.unit}})</span>
-              <span ng-if="s.fieldType != 'boolean' && s.fieldType != 'choice' ">: {{s.value}} </span>
-              <span ng-if="s.fieldType == 'choice'">: {{s.value.name}} </span>
-              <span ng-if="s.fieldType == 'boolean'">: {{s.value? 'Yes' :'No'}} </span>
+            <span> <strong>{{s.name | humanize}} : </strong>
+              <span ng-if="['choice' , 'date' , 'boolean'].indexOf(s.fieldType) == -1">({{s.unit}})</span>
+              <span ng-if="['choice' , 'date' , 'boolean'].indexOf(s.fieldType) == -1"> {{s.value}} </span>
+              <span ng-if="s.fieldType == 'choice'"> {{s.value.name}} </span>
+              <span ng-if="s.fieldType == 'boolean'"> {{s.value? 'Yes' :'No'}} </span>
+              <span ng-if="s.fieldType =='date'">{{s.value | date : 'dd-MMM-yyyy'}}</span>
             </span>
             <br>
           </span>
@@ -87,25 +88,40 @@
       <div class="container-fluid" style="padding:10px;">
         <strong>Description : </strong> {{data.description}}
         <hr>
-        <div class="col-md-6">
-          <table class="table table-striped">
-            <th>
-              Property
-            </th>
-            <th>
-              Value
-            </th>
-            <tr ng-repeat="f in data.specifications">
-              <td>
-                {{f.name}}
-              </td>
-              <td>
-                {{f.value}} ({{f.unit}})
-              </td>
-            </tr>
-          </table>
+        <div class="row">
+          <div class="col-md-6">
+            <table class="table table-striped">
+              <th>
+                Property
+              </th>
+              <th>
+                Value
+              </th>
+              <tr ng-repeat="f in data.specifications">
+                <td>
+                  {{f.name}}
+                </td>
+                <td>
+                  <span ng-if="f.fieldType=='choice'">
+                    {{f.value.name | humanize}}
+                  </span>
+                  <span ng-if="f.fieldType=='date'">
+                    {{f.value | date : 'dd-MMM-yyyy'}}
+                  </span>
+                  <span ng-if="f.fieldType=='boolean'">
+                    {{f.value == 'true'? 'Yes' : 'No'}}
+                  </span>
+                  <span ng-if="['choice' , 'date' , 'boolean'].indexOf(f.fieldType) == -1">
+                    {{f.value}} ({{f.unit}})
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-
+        <div class="row">
+          <div class="container-fluid" ng-bind-html="data.source"></div>
+        </div>
       </div>
     </div>
   </div>
