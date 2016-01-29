@@ -37,13 +37,14 @@ app.controller('ecommerce.form.offering' , function($scope , $state , $statePara
   $scope.resetForm()
 
   $scope.submit = function() {
+    dataToSend = $scope.data.form;
     if ($scope.editorMode == 'edit') {
       var post = {method : 'PATCH' , url : '/api/ecommerce/offeringAdmin/' + $scope.pk +'/'}
 
     }else {
       var post = {method : 'POST' , url : '/api/ecommerce/offeringAdmin/'}
+      dataToSend.item = $scope.data.listing.pk;
     }
-    dataToSend = $scope.data.form;
     $http({method : post.method , url : post.url , data : $scope.data.form}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText);

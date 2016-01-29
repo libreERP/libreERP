@@ -317,6 +317,7 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
       user : getPK($scope.me.url),
       offer : $scope.offering.pk,
       paymentType : 'COD',
+      rate : $scope.offering.rate,
       quantity : $scope.data.quantity,
       mobile : $scope.customerProfile.mobile,
       coupon : $scope.data.coupon,
@@ -416,6 +417,9 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
       for (var i = 0; i < response.data.length; i++) {
         l = response.data[i];
         index = 0
+        if (l.providerOptions.length == 0) {
+          continue;
+        }
         min = l.providerOptions[index].rate;
         for (var j = 1; j < l.providerOptions.length; j++) {
           if (l.providerOptions[j].rate < min) {

@@ -115,7 +115,7 @@ def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
 
     pSrc = ''''<strong>%s</strong><br/>(5.00%sCST) <br/><strong>Start : </strong> %s <br/>
         <strong>End : </strong> %s <br/><strong>Booking Hours : </strong> %s Hours <br/>
-        ''' %(it.description[0:100] , '%' , o.start.strftime('%Y-%m-%d , %H:%M %p'), o.end.strftime('%Y-%m-%d , %H:%M %p'), bookingHrs)
+        ''' %(it.description[0:40] , '%' , o.start.strftime('%Y-%m-%d , %H:%M %p'), o.end.strftime('%Y-%m-%d , %H:%M %p'), bookingHrs)
     pBodyProd = Paragraph('%s <strong>VB%s</strong>' %(it.title , it.pk) , styles['Normal'])
     pBodyTitle = Paragraph( pSrc , styles['Normal'])
     pBodyQty = Paragraph('%s' % (o.quantity) , styles['Normal'])
@@ -358,7 +358,14 @@ class customerProfileViewSet(viewsets.ModelViewSet):
     serializer_class = customerProfileSerializer
     def get_queryset(self):
         u = self.request.user
-        return customerProfile.objects.filter(user = u)
+        cp = customerProfile.objects.filter(user = u)
+        if not cp.exists():
+            a = address()
+            a.save()
+            cp = customerProfile(user = u , address = a)
+            cp.save()
+            return customerProfile.objects.filter(user = u)
+        return cp
 
 class choiceLabelViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin,)

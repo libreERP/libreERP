@@ -17,12 +17,12 @@
         </div>
       </div>
       <div ng-if="data.mode == 'create'">
-        <h3>
-          <button type="button" class="btn btn-warning" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Go back</button> Create a {{data.genericProduct.name}} listing
-        </h3>
-
-        <div ecommerce-Listing-Editor config-Obj="{{getConfig('parent' , data.genericProduct)}}"></div>
-
+        <div class="container-fluid">
+          <h3>
+            <button type="button" class="btn btn-warning" ng-click="goBack()"><i class="fa fa-arrow-left"></i> Go back</button> Create a {{data.genericProduct.name}} listing
+          </h3>
+          <div ecommerce-Listing-Editor config-Obj="{{getConfig('parent' , data.genericProduct)}}"></div>
+        </div>
       </div>
     </uib-tab>
     <uib-tab active="searchTabActive">

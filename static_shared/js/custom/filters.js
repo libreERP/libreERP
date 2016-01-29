@@ -5,9 +5,9 @@ app.filter('rainbow' , function(){
     if (input%10 == 1){
       return "bg-aqua";
     } else if (input%10 == 2){
-      return "bg-yellow";
-    } else if (input%10 == 3) {
       return "bg-orange";
+    } else if (input%10 == 3) {
+      return "bg-yellow";
     }else if (input%10 == 4) {
       return "bg-blue";
     }else if (input%10 == 5) {
@@ -126,7 +126,7 @@ app.filter('explodeObj' , function($filter){
         toReturn =  input ;
       } else if (!angular.isNumber(input) && angular.isDate(new Date(input))) {
         toReturn =  $filter('date')(input , 'short');
-      } else { // generally a number 
+      } else { // generally a number
         toReturn = input;
       }
       // console.log(type);

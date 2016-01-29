@@ -9,12 +9,12 @@ def getEcommercePictureUploadPath(instance , filename ):
     return 'ecommerce/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
 class address(models.Model):
-    street = models.CharField(max_length=300 , null = False)
-    city = models.CharField(max_length=100 , null = False)
-    state = models.CharField(max_length=50 , null = False)
-    pincode = models.PositiveIntegerField(null = False)
-    lat = models.CharField(max_length=15)
-    lon = models.CharField(max_length=15)
+    street = models.CharField(max_length=300 , null = True)
+    city = models.CharField(max_length=100 , null = True)
+    state = models.CharField(max_length=50 , null = True)
+    pincode = models.PositiveIntegerField(null = True)
+    lat = models.CharField(max_length=15 ,null = True)
+    lon = models.CharField(max_length=15 ,null = True)
 
 class service(models.Model):
     created = models.DateTimeField(auto_now_add = True)
@@ -166,10 +166,12 @@ class offering(models.Model):
 
 ORDER_STATUS_CHOICES = (
     ('new' , 'new'),
-    ('complete' , 'complete'),
+    ('inProgress' , 'inProgress'),
+    ('processing' , 'processing'),
     ('acceptedByVendor' , 'acceptedByVendor'),
     ('canceledByCustomer' , 'canceledByCustomer'),
     ('canceledByVendor' , 'canceledByVendor'),
+    ('complete' , 'complete'),
 )
 
 class order(models.Model):

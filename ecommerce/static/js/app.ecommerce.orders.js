@@ -1,3 +1,27 @@
+app.controller('businessManagement.ecommerce.orders.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
+  console.log($scope.data);
+  $scope.bookingTime = function() {
+    return Math.floor((new Date($scope.data.end)- new Date($scope.data.start))/3600000);
+  }
+  $scope.getBookingAmount = function(){
+    h = $scope.bookingTime()
+    if (h<0){
+      return 0
+    }else {
+      return $scope.data.rate * $scope.data.quantity*h
+    }
+  }
+  $http({method : 'GET' , url : '/api/ecommerce/offering/' + $scope.data.offer + '/'}).
+  then(function (response) {
+    $scope.data.offer = response.data;
+    $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/' }).
+    then(function (response) {
+      $scope.data.item = response.data;
+      console.log($scope.data);
+    })
+  })
+  console.log($scope.getBookingAmount());
+})
 
 app.controller('businessManagement.ecommerce.orders' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
 
@@ -5,7 +29,7 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
 
   views = [{name : 'list' , icon : 'fa-bars' ,
     template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
-    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.order.item.html',
+    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.orders.item.html',
   },];
   var getParams = [{key : 'mode' , value : 'provider'}]
 
@@ -58,7 +82,7 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
       }
     }
     // index is the index of the object in the table in the view and target is either the id or Pk of the object
-    if (action == 'print invoice') {
+    if (action == 'printInvoice') {
       $http.get('/api/ecommerce/printInvoice/?id=' + target ,'', {responseType:'arraybuffer'}).
       success((function(target){
         return function(response){
@@ -69,16 +93,10 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
         }
         })(target)
       )
-    } else if (action == 'markComplete') {
-      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'complete'}}).
-      then(function(response) {
-        console.log(response);
-      })
-    } else if (action == 'cancel') {
-      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'canceledByVendor'}}).
-      then(function(response) {
-        console.log(response);
-      })
+    } else if (action == 'complete') {
+      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'complete'}})
+    } else if (action == 'reject') {
+      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'canceledByVendor'}})
     }
   }
 
