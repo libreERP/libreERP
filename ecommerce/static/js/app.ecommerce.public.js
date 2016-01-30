@@ -274,7 +274,7 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
   then(function(response){
     $scope.offering = response.data;
     $scope.getBookingAmount = function(){
-      h = Math.floor(($scope.data.dropInTime-$scope.data.pickUpTime)/3600000);
+      h = Math.ceil(($scope.data.dropInTime-$scope.data.pickUpTime)/3600000);
       if (h<0){
         return 0
       }else {

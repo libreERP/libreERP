@@ -1,7 +1,6 @@
 app.controller('businessManagement.ecommerce.orders.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
-  console.log($scope.data);
   $scope.bookingTime = function() {
-    return Math.floor((new Date($scope.data.end)- new Date($scope.data.start))/3600000);
+    return Math.ceil((new Date($scope.data.end)- new Date($scope.data.start))/3600000);
   }
   $scope.getBookingAmount = function(){
     h = $scope.bookingTime()
@@ -11,17 +10,32 @@ app.controller('businessManagement.ecommerce.orders.item' , function($scope , $h
       return $scope.data.rate * $scope.data.quantity*h
     }
   }
-  $http({method : 'GET' , url : '/api/ecommerce/offering/' + $scope.data.offer + '/'}).
-  then(function (response) {
-    $scope.data.offer = response.data;
-    $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/' }).
+  $scope.$watch('data.offer' , function(newValue , oldValue){
+    if (typeof $scope.data.offer != 'number') {
+      return;
+    }
+    $http({method : 'GET' , url : '/api/ecommerce/offering/' + $scope.data.offer + '/'}).
     then(function (response) {
-      $scope.data.item = response.data;
-      console.log($scope.data);
+      $scope.data.offer = response.data;
+      $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/' }).
+      then(function (response) {
+        $scope.data.item = response.data;
+      })
     })
-  })
-  console.log($scope.getBookingAmount());
-})
+  });
+  $scope.getStatusClass = function(input) {
+    if (input == 'inProgress') {
+      return 'fa-spin fa-spinner';
+    }else if (input == 'complete') {
+      return 'fa-check';
+    }else if (input == 'canceledByVendor') {
+      return 'fa-ban';
+    }else if (input == 'new') {
+      return 'fa-file'
+    }
+  }
+
+});
 
 app.controller('businessManagement.ecommerce.orders' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
 
@@ -93,12 +107,30 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
         }
         })(target)
       )
-    } else if (action == 'complete') {
-      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'complete'}})
-    } else if (action == 'reject') {
-      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : 'canceledByVendor'}})
+    } else {
+      if (action == 'complete') {
+        status = 'complete';
+      } else if (action == 'reject') {
+        status = 'canceledByVendor';
+      } else if (action == 'progress') {
+        status = 'inProgress';
+      }
+      $http({method : 'PATCH' , url : '/api/ecommerce/order/'+target+'/?mode=provider', data : {status : status}}).
+      then((function(target){
+        console.log(target);
+        console.log($scope.data.tableData);
+        return function (response) {
+          for (var i = 0; i < $scope.data.tableData.length; i++) {
+            if ($scope.data.tableData[i].id == target) {
+              $scope.data.tableData[i].status = response.data.status;
+            }
+          }
+        }
+      })(target));
     }
   }
+
+
 
 
 });

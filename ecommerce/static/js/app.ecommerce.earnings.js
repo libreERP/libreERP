@@ -1,6 +1,16 @@
 
 app.controller('businessManagement.ecommerce.earnings' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
+  $http({method : 'GET' , url : '/api/ecommerce/earnings/'}).
+  then(function(response) {
+    $scope.data = response.data;
+    $scope.compareLastWeek = Math.ceil(($scope.data.lastWeekEarnings-$scope.data.last2LastWeekEarnings)*100/$scope.data.last2LastWeekEarnings);
+    $scope.compareCurrentWeek = Math.ceil(($scope.data.expectedThisWeek-$scope.data.lastWeekEarnings)*100/$scope.data.lastWeekEarnings);
+    $scope.labels2 = ["Completed", "On Going", "Cancelled"];
+    $scope.data2 = [$scope.data.completeThisWeek, $scope.data.inProgressOrders, $scope.data.cancelledThisWeek];
+  });
+
+
   $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
   $scope.series = ['Series A', 'Series B'];
   $scope.data = [
@@ -10,9 +20,6 @@ app.controller('businessManagement.ecommerce.earnings' , function($scope , $http
   $scope.onClick = function (points, evt) {
     console.log(points, evt);
   };
-
-  $scope.labels2 = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-  $scope.data2 = [300, 500, 100];
 
   $scope.labels3 =["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"];
 

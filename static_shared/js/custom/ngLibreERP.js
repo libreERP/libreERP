@@ -37,7 +37,12 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   success(function(response){
     // console.log(response);
     $scope.modules = response;
-    
+    if ($scope.modules.length == 1) {
+      if ($state.current.name.split('.').length = 0){
+        $state.go($scope.modules[0].name);
+      }
+    }
+
   });
 
 

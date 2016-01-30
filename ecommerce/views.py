@@ -22,7 +22,7 @@ from reportlab.platypus import Paragraph, Table, TableStyle, Image
 from PIL import Image
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
-
+from datetime import timedelta , date
 from django.utils import timezone
 from time import time
 import requests
@@ -39,11 +39,62 @@ from .serializers import *
 from API.permissions import *
 from HR.models import accountsKey
 
+from django.core import serializers
+from django.http import JsonResponse
+
+def getBookingAmount(o):
+    bookingHrs = o.end-o.start
+    bookingHrs = math.ceil((bookingHrs.total_seconds())/(3600))
+    return o.quantity*int(o.rate)*bookingHrs , bookingHrs
+
+class earningsApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        user = self.request.user
+        s = service.objects.get(user = user)
+        os = offering.objects.filter(service = s)
+        td = timezone.now() # today
+        # weeks starts on monday and ends on sunday
+        enddate = td - timedelta((td.weekday() + 1) % 7) # last week's sunday
+        startdate = enddate - timedelta(days=6) # last week's monday
+        cxo = order.objects.filter(offer__in = os , status='canceledByVendor' , end__range= [enddate , td]).count() # current weeks cancelled orders
+        cco = order.objects.filter(offer__in = os , status='completed' , end__range= [enddate , td]).count() # current weeks cancelled orders
+        acol = order.objects.filter(offer__in = os , status='complete' , end__range= [startdate , enddate]).order_by('-created') # all completed orders in last week
+        lastWeekEarnings = 0
+        for o in acol:
+            a , _ = getBookingAmount(o)
+            lastWeekEarnings += a
+        # for last to last week
+        enddate = enddate - timedelta(weeks=1) # last week's sunday
+        startdate = startdate - timedelta(weeks=1) # last week's monday
+        acol = order.objects.filter(offer__in = os , status='complete' , end__range= [startdate , enddate]).order_by('-created') # all completed orders in last week
+        last2LastWeekEarnings = 0
+        for o in acol:
+            a , _ = getBookingAmount(o)
+            last2LastWeekEarnings += a
+
+        tco = order.objects.filter(offer__in = os , status='complete').count() # total completed orders so far
+        ipo = order.objects.filter(offer__in = os , status='inProgress') # inProgress orders
+        expectedThisWeek = 0
+        for o in ipo:
+            a , _ = getBookingAmount(o)
+            expectedThisWeek += a
+        content = {'last2LastWeekEarnings' : last2LastWeekEarnings ,
+            'lastWeekEarnings' : lastWeekEarnings ,
+            'completeLastWeek': acol.count(),
+            'totalCompletedOrders' : tco ,
+            'inProgressOrders' : ipo.count() ,
+            'cancelledThisWeek' : cxo ,
+            'completeThisWeek' : cco ,
+            'expectedThisWeek' : expectedThisWeek}
+        return Response(content, status=status.HTTP_200_OK)
+
 def ecommerceHome(request):
     return render(request , 'ngEcommerce.html' , {'wampServer' : globalSettings.WAMP_SERVER,})
 
 def serviceRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
+
 
 def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
     c.setFont("Times-Roman" , 20)
@@ -109,9 +160,7 @@ def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
     pHeadTax = Paragraph('<strong>Tax</strong>' , styles['Normal'])
     pHeadTotal = Paragraph('<strong>Total</strong>' , styles['Normal'])
 
-    bookingHrs = o.end-o.start
-    bookingHrs = math.ceil((bookingHrs.total_seconds())/(3600))
-    bookingTotal = o.quantity*ofr.rate*bookingHrs
+    bookingTotal , bookingHrs = getBookingAmount(o)
 
     pSrc = ''''<strong>%s</strong><br/>(5.00%sCST) <br/><strong>Start : </strong> %s <br/>
         <strong>End : </strong> %s <br/><strong>Booking Hours : </strong> %s Hours <br/>

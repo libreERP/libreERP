@@ -1,55 +1,68 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
-  <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="info-box bg-aqua">
-      <span class="info-box-icon info-box-faIcon"><i class="fa fa-link"></i></span>
-      <div class="info-box-content">
-        <span class="info-box-text">Completed</span>
-        <span class="info-box-number">163</span>
-        <div class="progress">
-          <div class="progress-bar" style="width: 40%"></div>
+  <div class="row">
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{data.totalCompletedOrders}}</h3>
+          <p>Total Completed</p>
         </div>
-        <span class="progress-description">
-          40% Increase in 30 Days
-        </span>
-      </div><!-- /.info-box-content -->
-    </div><!-- /.info-box -->
-  </div><!-- /.col -->
-  <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="info-box bg-red">
-      <span class="info-box-icon info-box-faIcon"><i class="fa fa-music"></i></span>
-      <div class="info-box-content">
-        <span class="info-box-text">Earnings this weak</span>
-        <span class="info-box-number">114,381 <i class="fa fa-inr"></i></span>
-        <div class="progress">
-          <div class="progress-bar" style="width: 70%"></div>
+        <div class="icon">
+          <i class="fa fa-check"></i>
         </div>
-        <span class="progress-description">
-          70% Increase in 30 Days
-        </span>
-      </div><!-- /.info-box-content -->
-    </div><!-- /.info-box -->
-  </div><!-- /.col -->
-  <div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="info-box bg-yellow">
-      <span class="info-box-icon info-box-faIcon"><i class="fa fa-music"></i></span>
-      <div class="info-box-content">
-        <span class="info-box-text">Expected this week</span>
-        <span class="info-box-number">114,381 <i class="fa fa-inr"></i></span>
-        <div class="progress">
-          <div class="progress-bar" style="width: 70%"></div>
+        <!-- <a href="" class="small-box-footer">
+          More info <i class="fa fa-arrow-circle-right"></i>
+        </a> -->
+      </div>
+    </div><!-- /.col -->
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box bg-red">
+        <span class="info-box-icon info-box-faIcon"><i class="fa fa-credit-card"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Earnings last weak</span>
+          <span class="info-box-number">{{data.lastWeekEarnings}}    <i class="fa fa-inr"></i></span>
+          <div class="progress">
+            <div class="progress-bar" style="width: {{compareLastWeek}}%"></div>
+          </div>
+          <span class="progress-description">
+            {{compareLastWeek}}% {{compareLastWeek<0 ? 'Decrease':'Increase'}}
+          </span>
+        </div><!-- /.info-box-content -->
+      </div><!-- /.info-box -->
+    </div><!-- /.col -->
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box bg-purple">
+        <span class="info-box-icon info-box-faIcon"><i class="fa fa-spinner fa-spin"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Expected this week</span>
+          <span class="info-box-number">{{data.expectedThisWeek}}   <i class="fa fa-inr"></i></span>
+          <div class="progress">
+            <div class="progress-bar" style="width: 70%"></div>
+          </div>
+          <span class="progress-description">
+            {{compareCurrentWeek}}% {{compareCurrentWeek<0 ? 'Decrease':'Increase'}}
+          </span>
+        </div><!-- /.info-box-content -->
+      </div><!-- /.info-box -->
+    </div><!-- /.col -->
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="small-box bg-aqua">
+        <div class="inner">
+          <h3>{{data.inProgressOrders}}</h3>
+          <p>On going</p>
         </div>
-        <span class="progress-description">
-          70% Increase in 30 Days
-        </span>
-      </div><!-- /.info-box-content -->
-    </div><!-- /.info-box -->
-  </div><!-- /.col -->
-
-
+        <div class="icon">
+          <i class="fa fa-motorcycle"></i>
+        </div>
+        <!-- <a href="" class="small-box-footer">
+          More info <i class="fa fa-arrow-circle-right"></i>
+        </a> -->
+      </div>
+    </div><!-- /.col -->
+  </div>
 
   <div class="row">
-    <div class="col-md-5 col-md-offset-1">
+    <div class="col-md-6">
       <canvas class="chart chart-line" chart-data="data"
         chart-labels="labels" chart-legend="true" chart-series="series"
         chart-click="onClick" >
@@ -62,6 +75,8 @@
       </canvas>
     </div>
 
+  </div>
+  <div class="row">
     <div class="col-md-6">
       <canvas class="chart chart-radar" chart-legend="true"
         chart-data="data3" chart-labels="labels3" chart-series="seriesLabel3">
@@ -71,10 +86,10 @@
     <div class="col-md-6">
       <canvas class="chart chart-bar" chart-legend="true" chart-series="series4"
         chart-data="data3" chart-labels="labels3"> chart-series="series"
-      </canvas
+      </canvas>
     </div>
-
   </div>
+
 
 
 
