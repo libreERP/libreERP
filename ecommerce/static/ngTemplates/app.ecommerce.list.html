@@ -1,7 +1,7 @@
 <div class="container-fluid" style="min-height:600px;">
   <div class="col-md-8 col-md-offset-2 ">
     <div ng-repeat="l in listings" >
-      <div class="col-md-4 anim-in-out anim-zoom-out">
+      <div class="col-md-4 anim-in-out anim-zoom-out" style="margin-bottom:15px;">
         <div class="container-fluid" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
           <div class="row" >
             <img style="width: 100%;" class="img" ng-src="{{l.files[0].attachment}}" >

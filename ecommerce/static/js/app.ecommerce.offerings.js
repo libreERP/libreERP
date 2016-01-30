@@ -1,3 +1,18 @@
+app.controller('businessManagement.ecommerce.offerings.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
+
+  $scope.$watch('data.item' , function(newValue , oldValue){
+    $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/' }).
+    then(function (response) {
+      $scope.data.item = response.data;
+      $http({method : 'GET' , url : '/api/ecommerce/insight/?offering=' + $scope.data.pk}).
+      then(function(response) {
+        $scope.insight = response.data;
+      })
+    });
+  })
+
+});
+
 app.directive('ecommerceOfferingEditor', function () {
   return {
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.form.offering.html',
@@ -71,8 +86,10 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
 
   $scope.data = {mode : 'select' , form : {} };
 
-  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
+  views = [{name : 'list' , icon : 'fa-bars' ,
+    template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
+    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.offerings.item.html',
+  },];
 
   var options = {main : {icon : 'fa-pencil', text: 'edit'} ,
     // others : [{icon : '' , text : 'social' },

@@ -160,7 +160,7 @@ class offering(models.Model):
     availability = models.CharField(choices = AVAILABILITY_CHOICES , default = 'local' , max_length = 15)
     shippingFee = models.PositiveIntegerField(null = True)
     inStock = models.PositiveIntegerField(null = True) # the number of items available with this provider
-
+    active = models.BooleanField(default = True)
     class Meta:
         unique_together = ('service', 'item',)
 

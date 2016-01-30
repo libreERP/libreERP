@@ -73,12 +73,12 @@ class offeringSerializer(serializers.ModelSerializer):
     service = serviceSerializer(read_only = True, many = False )
     class Meta:
         model = offering
-        fields = ('pk' , 'created' ,'inStock', 'item' , 'service' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
+        fields = ('pk' , 'created' ,'inStock', 'item' , 'service' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
 
 class offeringAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = offering
-        fields = ('pk' , 'created' ,'inStock', 'item' , 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
+        fields = ('pk' , 'created' ,'inStock', 'item' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
     def create(self ,  validated_data):
         o = offering(**validated_data)
         u = self.context['request'].user

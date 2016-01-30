@@ -57,7 +57,7 @@
     <!-- /.container-fluid -->
 </nav>
 
-<div ng-if="$state.is('ecommerce') || $state.is('details')" style="position:fixed;top:70px;left:10px;padding:10px;display:block;">
+<div ng-if="$state.is('ecommerce') || $state.is('details')" style="position:fixed;top:70px;left:10px;padding:10px;display:block;z-index:100;">
   <h3 class="text-muted">Trip details</h3>
   <p>
     <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.pickUpTime ? '':'Not selected'}}
@@ -67,7 +67,7 @@
   </p>
 </div>
 
-<!-- <header  style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:400px ;">
+<!-- <header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:400px ;">
     <div class="container-fluid" style="position:relative;top:-100px;">
         <div class="intro-text">
             <div class="intro-lead-in">Lowest price</div>

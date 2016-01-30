@@ -7,11 +7,17 @@ from django.template import RequestContext
 from django.conf import settings as globalSettings
 from django.core.mail import send_mail
 from django.http import HttpResponse ,StreamingHttpResponse
+from django.utils import timezone
+from django.db.models import Aggregate , Min
 import mimetypes
 import hashlib, datetime, random
+from datetime import timedelta , date
+from time import time
 import pytz
+
 from StringIO import StringIO
 import math
+import requests
 # related to the invoice generator
 from reportlab import *
 from reportlab.pdfgen import canvas
@@ -22,10 +28,6 @@ from reportlab.platypus import Paragraph, Table, TableStyle, Image
 from PIL import Image
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
-from datetime import timedelta , date
-from django.utils import timezone
-from time import time
-import requests
 
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
@@ -47,6 +49,32 @@ def getBookingAmount(o):
     bookingHrs = math.ceil((bookingHrs.total_seconds())/(3600))
     return o.quantity*int(o.rate)*bookingHrs , bookingHrs
 
+class insightApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        user = self.request.user
+        if 'offering' in self.request.GET:
+            s = service.objects.get(user = user)
+            offr = offering.objects.get(pk = self.request.GET['offering'] , service = s)
+            ordrs = order.objects.filter(offer = offr) # total orders for this offer
+            td = timezone.now() # today
+            ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month
+            lastMonthRevenue = 0
+            for o in ordrsLastMonth:
+                a , _  = getBookingAmount(o)
+                lastMonthRevenue += a
+            allOfrs = offering.objects.filter(item = offr.item)
+            lowestRate = allOfrs.aggregate(Min('rate'))
+            content = {'totalOrders' : ordrs.count() ,
+                'lastMonthBooking' : ordrsLastMonth.count(),
+                'lastMonthRevenue' : lastMonthRevenue,
+                'vendors' : allOfrs.count(),
+                'lowestRate' : lowestRate}
+            return Response(content, status=status.HTTP_200_OK)
+        return Response({'NO_STARTING_POINT' : 'you have not provided any object for analysis'} , status=status.HTTP_400_BAD_REQUEST)
+
+
+
 class earningsApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
@@ -54,6 +82,7 @@ class earningsApi(APIView):
         s = service.objects.get(user = user)
         os = offering.objects.filter(service = s)
         td = timezone.now() # today
+        # print td.month
         # weeks starts on monday and ends on sunday
         enddate = td - timedelta((td.weekday() + 1) % 7) # last week's sunday
         startdate = enddate - timedelta(days=6) # last week's monday

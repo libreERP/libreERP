@@ -38,8 +38,10 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     // console.log(response);
     $scope.modules = response;
     if ($scope.modules.length == 1) {
-      if ($state.current.name.split('.').length = 0){
-        $state.go($scope.modules[0].name);
+      // console.log($state);
+      // console.log($state.current.name);
+      if ($state.current.name.split('.').length == 1){
+        // $state.go($scope.modules[0].name);
       }
     }
 

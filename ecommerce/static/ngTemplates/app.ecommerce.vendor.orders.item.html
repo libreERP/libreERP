@@ -9,7 +9,7 @@
   </div>
   <div class="col-md-3">
     <div class="row" style="padding-left:10px;">
-      <i class="fa fa-calendar fa-2x"></i> <span style="font-size : 18px;margin-left:10px;">Booking : {{data.id}}</span>
+      <i class="fa fa-calendar fa-2x"></i> <span style="font-size : 18px;margin-left:10px;">Booking # {{data.id}}</span>
     </div>
     <div class="row" style="margin-top:10px;">
       <div class="col-md-3">
@@ -64,7 +64,11 @@
   </div>
   <div class="col-md-1 " style="position:absolute;height:100%;top:0px;right:0px;padding-top:15px;">
     <i class="fa {{getStatusClass(data.status)}} fa-3x" style="margin-left:15px;"></i>
-    <br><span style="font-size:11px;margin-top:10px;width:200px;position:relative;left:7px;">{{data.status | humanize}}</span>
+    <br>
+    <span style="font-size:11px;margin-top:10px;width:200px;position:relative;left:7px;">
+      <span ng-if="data.status != 'canceledByVendor'">{{data.status | humanize}}</span>
+      <span ng-if="data.status == 'canceledByVendor'">Declined</span>
+    </span>
   </div>
 
 

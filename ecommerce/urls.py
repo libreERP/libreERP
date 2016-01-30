@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'offeringAvailability/$' , offeringAvailabilityApi.as_view() ),
     url(r'printInvoice/$' , printInvoiceApi.as_view() ),
     url(r'earnings/$' , earningsApi.as_view() ),
+    url(r'insight/$' , insightApi.as_view() ),
 ]
