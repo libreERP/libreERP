@@ -26,6 +26,7 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     fields : ['pk', 'name' , 'icon' ],
     editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
+    searchField: 'name',
   }
 
   $scope.genericProductConfig = {
@@ -34,6 +35,7 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     fields : ['pk', 'name' , 'productType' ],
     editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
+    searchField: 'name',
   }
 
   $scope.choiceLabelConfig = {
@@ -42,6 +44,7 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     fields : ['pk', 'name' , 'icon' ],
     editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
+    searchField: 'name',
   }
 
   $scope.choiceOptionConfig = {
@@ -50,6 +53,7 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     fields : ['pk', 'name' , 'icon', 'parent' ],
     editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
+    searchField: 'name',
   }
 
 

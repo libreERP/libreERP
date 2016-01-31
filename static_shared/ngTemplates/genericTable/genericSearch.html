@@ -1,6 +1,6 @@
 <div class="row container-fluid">
   <div class="input-group" style="padding-top:15px;width:100%;" >
-    <input ng-show="{{searchShow}}" type="text" class="form-control" placeholder="Search" ng-model = "searchText" ng-enter="fetchData()" style="{{views.length==1 ? 'width:100%;' : ''}}">
+    <input ng-show="{{searchShow}}" type="text" class="form-control" placeholder="Search" ng-model = "searchText" ng-enter="updateData()" style="{{views.length==1 ? 'width:100%;' : ''}}">
     <div class="input-group-btn"  ng-if="views.length > 1">
       <a ng-repeat = "view in views" class='btn btn-default ' ng-click = "changeView($index)"><i class="fa {{view.icon}}"></i></a>
       <!-- <a class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>

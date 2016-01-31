@@ -188,6 +188,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
           }
         }
         // console.log($scope.pageList);
+
         $scope.data = response.data.results;
         $scope.originalTable = angular.copy($scope.data);
         $scope.sortFlag = [];
@@ -214,10 +215,15 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     $scope.fetchData();
   });
 
-  $scope.$watch('searchText',function(){
-    $scope.changePage(1)
-    $scope.updateData()
-  });
+  // $scope.$watch('searchText',function(newValue , oldValue){
+  //   $scope.changePage(1)
+  //   $scope.updateData()
+  // });
+
+  $scope.searchDb = function() {
+      $scope.changePage(1)
+      $scope.updateData()
+  }
 
   $scope.updateData = function(){ // at any point of time forcing to refresh data
     parts = $scope.searchText.split('>');
@@ -310,6 +316,8 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
       $scope.data[i] = angular.copy($scope.tableSnap[indices[i]])
     }
   };
+
+  $scope.updateData();
 
 });
 
