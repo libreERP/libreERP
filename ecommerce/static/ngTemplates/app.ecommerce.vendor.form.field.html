@@ -1,0 +1,38 @@
+<div class="container-fluid" >
+  <div style="padding-botton:40px;">
+    <div class="form-group" ng-init="data.type = 'char'">
+      <label>Type</label>
+      <select class="form-control" ng-model="data.type" >
+        <option value="char">char</option>
+        <option value="boolean">boolean</option>
+        <option value="float">float</option>
+        <option value="date">date</option>
+        <option value="choice">choice</option>
+      </select>
+      <p class="help-block">Select the type of this field.</p>
+    </div>
+
+    <div class="form-group">
+      <label > Name</label>
+      <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this field , For eg. Length">
+    </div>
+
+    <div class="form-group">
+      <label > Unit</label>
+      <input type="text" class="form-control" ng-model="data.unit" placeholder="Unit of this field , For eg. mm">
+    </div>
+
+    <div class="form-group">
+      <label > Help text</label>
+      <textarea rows="8" cols="40" class="form-control" ng-model="data.helpText"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label > Default</label>
+      <input type="text" class="form-control" ng-model="data.default" placeholder="Default value for this field of this field , For eg. mm">
+    </div>
+
+    <button type="button" class="btn btn-primary" ng-click="submit()">Submit</button>
+
+  </div>
+</div>

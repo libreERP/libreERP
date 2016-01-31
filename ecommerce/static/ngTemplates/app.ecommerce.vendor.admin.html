@@ -8,7 +8,7 @@
       </uib-tab-heading>
       <div class="col-md-6" style="margin-top:10px;">
         <div class="form-group">
-          <label> Type {{mode}}</label>
+          <label> Type {{data.mode}}</label>
           <select class="form-control" ng-model="data.mode">
             <option value = "field">Field</option>
             <option value = "genericType">Generic Type</option>
@@ -26,93 +26,21 @@
       </div>
       <div class="col-md-6" style="margin-top:10px;">
         <div ng-if="data.mode == 'field'" >
-          <div class="form-group" ng-init="data.type = 'char'">
-            <label>Type</label>
-            <select class="form-control" ng-model="data.type" >
-              <option value="char">char</option>
-              <option value="boolean">boolean</option>
-              <option value="float">float</option>
-              <option value="date">date</option>
-              <option value="choice">choice</option>
-            </select>
-            <p class="help-block">Select the type of this field.</p>
-          </div>
-
-          <div class="form-group">
-            <label > Name</label>
-            <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this field , For eg. Length">
-          </div>
-
-          <div class="form-group">
-            <label > Unit</label>
-            <input type="text" class="form-control" ng-model="data.unit" placeholder="Unit of this field , For eg. mm">
-          </div>
-
-          <div class="form-group">
-            <label > Help text</label>
-            <textarea rows="8" cols="40" class="form-control" ng-model="data.helpText"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label > Default</label>
-            <input type="text" class="form-control" ng-model="data.default" placeholder="Default value for this field of this field , For eg. mm">
-          </div>
+          <div ng-include="editorTemplateField"></div>
         </div>
-        <div ng-if="data.mode == 'genericType'">
-          <div class="form-group">
-            <label > Name</label>
-            <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this type of product ">
-          </div>
-          <div class="form-group">
-            <label > Icon</label>
-            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this type of the product , For eg. fa-mobile-phone">
-          </div>
-        </div>
-
-        <div ng-if="data.mode == 'genericProduct'">
-          <div class="form-group">
-            <label > Name</label>
-            <input ng-model="data.name" type="text" class="form-control" placeholder="Name of this product ">
-          </div>
-          <div class="form-group">
-            <label > Product Type</label>
-            <input uib-typeahead="type as type.name for type in typeSearch($viewValue)" ng-model="data.productType" type="text" class="form-control" placeholder="Select the product type">
-          </div>
-          <div class="form-group">
-            <label > Property Fields</label>
-            <tags-input ng-model="data.fields" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="name">
-              <auto-complete source="getFieldsSuggestions($query)" load-on-down-arrow="true"></auto-complete>
-            </tags-input>
-          </div>
+        <div ng-if="data.mode == 'genericType'" ng-include="editorTemplateGenericType">
 
         </div>
-        <div ng-if="data.mode == 'choiceLabel'">
-          <div class="form-group">
-            <label>label</label>
-            <input type="text" class="form-control" ng-model="data.name" placeholder="Label, for example mobileManufacturer">
-          </div>
-          <div class="form-group">
-            <label > Icon</label>
-            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this type of the label">
-          </div>
-        </div>
-        <div ng-if="data.mode == 'choiceOption'">
-          <div class="form-group">
-            <label > Parent label</label>
-            <input uib-typeahead="parent as parent.name for parent in parentLabelSearch($viewValue)" ng-model="data.parentLabel" type="text" class="form-control" placeholder="Select the parent label">
-          </div>
-          <div class="form-group">
-            <label>Option</label>
-            <input type="text" class="form-control" ng-model="data.name" placeholder="Option">
-          </div>
-          <div class="form-group">
-            <label > Icon</label>
-            <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this option">
-          </div>
-        </div>
+        <div ng-if="data.mode == 'genericProduct'" ng-include="editorTemplateGenericProduct">
 
+        </div>
+        <div ng-if="data.mode == 'choiceLabel'" ng-include="editorTemplateChoiceLabel">
 
-        <button type="button" class="btn btn-primary" ng-click="submit()">Submit</button>
+        </div>
+        <div ng-if="data.mode == 'choiceOption'" ng-include="editorTemplateChoiceOption">
+
+        </div>
+        
       </div>
 
     </uib-tab>
@@ -147,6 +75,4 @@
       <generic-Table data="tableData.choiceOption" config-Obj="{{choiceOptionConfig}}" callback-Fn="tableAction"></generic-Table>
     </uib-tab>
   </uib-tabset>
-
-
 </div>

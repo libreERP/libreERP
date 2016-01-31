@@ -1,0 +1,14 @@
+<div class="form-group">
+  <label > Name</label>
+  <input ng-model="data.name" type="text" class="form-control" placeholder="Name of this product ">
+</div>
+<div class="form-group">
+  <label > Product Type</label>
+  <input uib-typeahead="type as type.name for type in typeSearch($viewValue)" ng-model="data.productType" type="text" class="form-control" placeholder="Select the product type">
+</div>
+<div class="form-group">
+  <label > Property Fields</label>
+  <tags-input ng-model="data.fields" add-on-paste="true" add-From-Autocomplete-Only="true" display-property="name">
+    <auto-complete source="getFieldsSuggestions($query)" load-on-down-arrow="true"></auto-complete>
+  </tags-input>
+</div>

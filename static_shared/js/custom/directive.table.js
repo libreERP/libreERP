@@ -84,9 +84,6 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.delete = function(pk , index){
-    console.log("called");
-    console.log(pk);
-    console.log(index);
     if (pk == -1) {
       $scope.data.splice(index, 1);
       return;
@@ -203,7 +200,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
           $scope.sortFlag.unshift(-2); // no sort can be applied on this column
         }
 
-        if ($scope.haveOptions) {
+        if ($scope.haveOptions || $scope.editable || $scope.deletable) {
           $scope.tableHeading.push('Options')
           $scope.sortFlag.push(-2); // no sort possible
         }

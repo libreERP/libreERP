@@ -1,6 +1,9 @@
 app.controller('businessManagement.ecommerce.offerings.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
 
   $scope.$watch('data.item' , function(newValue , oldValue){
+    if (typeof $scope.data.item != 'number') {
+      return;
+    }
     $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/' }).
     then(function (response) {
       $scope.data.item = response.data;
@@ -110,7 +113,7 @@ app.controller('businessManagement.ecommerce.offerings' , function($scope , $htt
 
 
   $scope.listingSearch = function(query) {
-    return $http.get('/api/ecommerce/listing/?title__contains=' + query).
+    return $http.get('/api/ecommerce/listing/?mode=vendor&title__contains=' + query).
     then(function(response){
       return response.data;
     })

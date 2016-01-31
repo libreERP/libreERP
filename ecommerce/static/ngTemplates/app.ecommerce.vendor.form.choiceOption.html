@@ -1,0 +1,12 @@
+<div class="form-group">
+  <label > Parent label</label>
+  <input uib-typeahead="parent as parent.name for parent in parentLabelSearch($viewValue)" ng-model="data.parentLabel" type="text" class="form-control" placeholder="Select the parent label">
+</div>
+<div class="form-group">
+  <label>Option</label>
+  <input type="text" class="form-control" ng-model="data.name" placeholder="Option">
+</div>
+<div class="form-group">
+  <label > Icon</label>
+  <input type="text" class="form-control" ng-model="data.icon" placeholder="Icon of this option">
+</div>

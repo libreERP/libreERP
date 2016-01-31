@@ -8,7 +8,7 @@ from django.conf import settings as globalSettings
 from django.core.mail import send_mail
 from django.http import HttpResponse ,StreamingHttpResponse
 from django.utils import timezone
-from django.db.models import Aggregate , Min
+from django.db.models import Min
 import mimetypes
 import hashlib, datetime, random
 from datetime import timedelta , date
@@ -399,9 +399,15 @@ class listingViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
     def get_queryset(self):
+        u = self.request.user
         if 'geo' in self.request.GET:
             geo = self.request.GET['geo']
             return listing.objects.filter(providerOptions__in = offering.objects.filter(service__in = service.objects.filter(address__in = address.objects.filter(pincode__startswith=geo))))
+        elif 'mode' in self.request.GET:
+            if self.request.GET['mode'] == 'vendor':
+                s = service.objects.get(user = u)
+                items = offering.objects.filter( service = s).values_list('item' , flat = True)
+                return listing.objects.exclude(pk__in = items)
         else:
             return listing.objects.all()
 

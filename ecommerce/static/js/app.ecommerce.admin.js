@@ -8,18 +8,25 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
+
+  $scope.editorTemplateField = '/static/ngTemplates/app.ecommerce.vendor.form.field.html'
+  $scope.editorTemplateChoiceLabel = '/static/ngTemplates/app.ecommerce.vendor.form.choiceLabel.html'
+  $scope.editorTemplateChoiceOption = '/static/ngTemplates/app.ecommerce.vendor.form.choiceOption.html'
+  $scope.editorTemplateGenericProduct = '/static/ngTemplates/app.ecommerce.vendor.form.genericProduct.html'
+  $scope.editorTemplateGenericType = '/static/ngTemplates/app.ecommerce.vendor.form.genericType.html'
+
   $scope.fieldConfig = {
     views : views,
     url : '/api/ecommerce/field/',
     fields : ['pk','fieldType','unit' , 'name' , 'default' , 'helpText'],
     searchField: 'name',
-    options : options,
     deletable : true,
+    editorTemplate : $scope.editorTemplateField,
   }
   $scope.genericTypeConfig = {
     views : views,
     url : '/api/ecommerce/genericType/',
-    options : options,
+    editorTemplate : $scope.editorTemplateGenericType,
     deletable : true,
   }
 
@@ -27,21 +34,21 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     views : views,
     url : '/api/ecommerce/genericProduct/',
     fields : ['pk', 'name' , 'productType' ],
-    options : options,
+    editorTemplate : $scope.editorTemplateGenericProduct,
     deletable : true,
   }
 
   $scope.choiceLabelConfig = {
     views : views,
     url : '/api/ecommerce/choiceLabel/',
-    options : options,
+    editorTemplate : $scope.editorTemplateChoiceLabel,
     deletable : true,
   }
 
   $scope.choiceOptionConfig = {
     views : views,
     url : '/api/ecommerce/choiceOption/',
-    options : options,
+    editorTemplate : $scope.editorTemplateChoiceOption,
     deletable : true,
   }
 
