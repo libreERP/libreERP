@@ -25,22 +25,13 @@
         </div>
       </div>
       <div class="col-md-6" style="margin-top:10px;">
-        <div ng-if="data.mode == 'field'" >
-          <div ng-include="editorTemplateField"></div>
-        </div>
-        <div ng-if="data.mode == 'genericType'" ng-include="editorTemplateGenericType">
+        <div ng-if="data.mode == 'field'" ng-include="editorTemplateField"></div>
+        <div ng-if="data.mode == 'genericType'" ng-include="editorTemplateGenericType"></div>
+        <div ng-if="data.mode == 'genericProduct'" ng-include="editorTemplateGenericProduct"></div>
+        <div ng-if="data.mode == 'choiceLabel'" ng-include="editorTemplateChoiceLabel"></div>
+        <div ng-if="data.mode == 'choiceOption'" ng-include="editorTemplateChoiceOption"></div>
 
-        </div>
-        <div ng-if="data.mode == 'genericProduct'" ng-include="editorTemplateGenericProduct">
-
-        </div>
-        <div ng-if="data.mode == 'choiceLabel'" ng-include="editorTemplateChoiceLabel">
-
-        </div>
-        <div ng-if="data.mode == 'choiceOption'" ng-include="editorTemplateChoiceOption">
-
-        </div>
-        
+        <button type="button" class="btn btn-primary" ng-click="submit()">Submit</button>
       </div>
 
     </uib-tab>

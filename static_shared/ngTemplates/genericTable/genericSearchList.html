@@ -1,4 +1,3 @@
 <div ng-repeat="item in data track by $index" class="panel-group">
-  <table-Item data="item" row-Action = "callbackFn" index="$index" delete="delete"
-  editor-Template="{{editorTemplate}}" template="{{views[0].itemTemplate}}"></table-Item>
+  <table-Item data="item" row-Action = "callbackFn" index="$index" config-Obj="{{configObj}}" template="{{views[0].itemTemplate}}"></table-Item>
 </div>

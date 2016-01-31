@@ -28,20 +28,21 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.numOfPagesPerView = 5;
   $scope.viewMode = 0;
 
+  $scope.options = $scope.config.options;
   $scope.isSelectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
+  $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
+  $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
+
   $scope.haveOptions = angular.isDefined($scope.config.options) ? true:false;
   $scope.canCreate = angular.isDefined($scope.config.canCreate) ? $scope.config.canCreate:false;
-  $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
   $scope.url = $scope.config.url;
   $scope.searchField = angular.isDefined($scope.config.searchField) ? $scope.config.searchField:'';
   $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
   $scope.searchShow = $scope.searchField==''? false:true,
 
   $scope.views = $scope.config.views;
-  $scope.options = $scope.config.options;
   $scope.multiselectOptions = $scope.config.multiselectOptions;
   $scope.getParams = $scope.config.getParams;
-  $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
 
 
   $scope.$watch('data' , function(newValue , oldValue){
@@ -319,16 +320,14 @@ app.directive('tableRow', function () {
     transclude: true,
     replace: true,
     scope:{
-      options : '=', // dropdown menu options passed as options in the main directive
-      selectable : '=', // if true there will be a checkbox
-      deletable : '=', // if true there will be a checkbox
-      editorTemplate : '@', // the template to be used in the modal popup
-      fields : '=',
+      // fields that can be passed as string
+      configObj : '@',
+
       data : '=', // individual row data
       rowAction : '=', // originally the callbackFn function
       checkbox : '=', // boolean flag for the value of the checkbox binded to the table
       // directive scope where it will collect the state of the checkboxes and passed to
-      //the main controller upon selecting the multi select option
+      // the main controller upon selecting the multi select option
       index : '=', // the index of the item in the repeat
       delete :'=', // delete callback function
     },
@@ -343,22 +342,28 @@ app.directive('tableItem', function () {
     transclude: false,
     replace: true,
     scope:{
+      configObj : '@',
+
       template : '@',
       data : '=',
       rowAction : '=',
-      options : '=',
       checkbox : '=',
-      selectable : '=',
-      deletable: '=',
       index: '=',
       delete: '=',
-      editorTemplate : '@',
     },
     controller : 'genericTableItem',
   };
 });
 
 app.controller('genericTableItem' , function($scope , $uibModal){
+
+  $scope.config = JSON.parse($scope.configObj);
+  $scope.options = $scope.config.options;
+  $scope.selectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
+  $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
+  $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
+  $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
+
   if (typeof $scope.data.url == 'undefined') {
     if (typeof $scope.data.pk == 'undefined') {
       $scope.target = $scope.data.id;
@@ -406,13 +411,17 @@ app.controller('genericTableItem' , function($scope , $uibModal){
        },
        data : function(){
          return $scope.data;
-       }
+       },
+       config : function(){
+         return $scope.config;
+       },
       },
-      controller: function($scope , submitFormFn , data){
+      controller: function($scope , submitFormFn , data , config){
         $scope.submitForm = submitFormFn;
         $scope.data = data;
         $scope.data.formData = [];
         $scope.mode = 'edit';
+        $scope.config = config;
       },
     });
   }

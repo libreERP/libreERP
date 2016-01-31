@@ -1,13 +1,10 @@
 
 app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
-  var options = {
-    main : {icon : 'fa-pencil', text: 'edit'} ,
-    };
-
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
+  console.log($scope);
 
   $scope.editorTemplateField = '/static/ngTemplates/app.ecommerce.vendor.form.field.html'
   $scope.editorTemplateChoiceLabel = '/static/ngTemplates/app.ecommerce.vendor.form.choiceLabel.html'
@@ -21,12 +18,13 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     fields : ['pk','fieldType','unit' , 'name' , 'default' , 'helpText'],
     searchField: 'name',
     deletable : true,
-    editorTemplate : $scope.editorTemplateField,
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
   }
   $scope.genericTypeConfig = {
     views : views,
     url : '/api/ecommerce/genericType/',
-    editorTemplate : $scope.editorTemplateGenericType,
+    fields : ['pk', 'name' , 'icon' ],
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
   }
 
@@ -34,23 +32,26 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     views : views,
     url : '/api/ecommerce/genericProduct/',
     fields : ['pk', 'name' , 'productType' ],
-    editorTemplate : $scope.editorTemplateGenericProduct,
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
   }
 
   $scope.choiceLabelConfig = {
     views : views,
     url : '/api/ecommerce/choiceLabel/',
-    editorTemplate : $scope.editorTemplateChoiceLabel,
+    fields : ['pk', 'name' , 'icon' ],
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
   }
 
   $scope.choiceOptionConfig = {
     views : views,
     url : '/api/ecommerce/choiceOption/',
-    editorTemplate : $scope.editorTemplateChoiceOption,
+    fields : ['pk', 'name' , 'icon', 'parent' ],
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.modal.html',
     deletable : true,
   }
+
 
 
   $scope.typeSearch = function(query) {
@@ -71,9 +72,22 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
     })
   }
 
-  $scope.data = {mode : 'field'};
+  if (angular.isUndefined($scope.data)) { // we are creating new entry
+    $scope.data = {mode : 'field'};
+    $scope.editing = false;
+  } else { // editing
+    $scope.editing = true;
+    $scope.config = $scope.$parent.config;
+    $scope.backup = angular.copy($scope.data);
+    $scope.data.mode = $scope.config.url.split('/')[3];
+    if ($scope.data.mode == 'choiceOption' && !angular.isDefined($scope.data.parentLabel)) {
+      $http({method : 'GET' , url : '/api/ecommerce/choiceLabel/' + $scope.data.parent + '/'}).
+      then(function(response) {
+        $scope.data.parentLabel = response.data;
+      });
+    }
+  }
   $scope.submit = function(){
-    console.log($scope.data.mode);
     d = $scope.data;
     if ($scope.data.mode == 'field') {
       dataToSend = {
@@ -96,7 +110,6 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
       for (var i = 0; i < d.fields.length; i++) {
         fs.push(d.fields[i].pk);
       }
-      console.log(fs);
       if (fs.length == 0) {
         Flash.create('danger' , 'No fields selected')
         return;
@@ -121,11 +134,19 @@ app.controller('businessManagement.ecommerce.admin' , function($scope , $http , 
       }
       url = '/api/ecommerce/choiceOption/';
     }
-    console.log(url);
 
-    $http({method : 'POST' , url : url , data : dataToSend}).
+    if ($scope.editing) {
+      url += $scope.data.pk + '/';
+      method = 'PATCH';
+    } else {
+      method = 'POST';
+    }
+
+    $http({method : method , url : url , data : dataToSend}).
     then(function(response){
-      $scope.data = {mode : $scope.data.mode , type : 'char', parentLabel : $scope.data.parentLabel}
+      if (!$scope.editing) {
+        $scope.data = {mode : $scope.data.mode , type : 'char', parentLabel : $scope.data.parentLabel}
+      }
       Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );

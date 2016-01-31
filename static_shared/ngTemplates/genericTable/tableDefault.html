@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th ng-repeat = "heading in tableHeading" ng-if="fields==false || fields.indexOf(heading)!=-1 || ['Select' , 'Options'].indexOf(heading)!=-1"
-      ng-click="sort($index)" style="cursor:pointer;text-align:{{$last ? 'center':''}}">{{heading | humanize}}
+      ng-click="sort($index)" style="cursor:pointer;text-align:{{$last ? 'center;':''}} min-width: 100px;width:auto !important;" >{{heading | humanize}}
         <i ng-if="sortFlag[$index]==1" class="fa fa-angle-up"></i>
         <i ng-if="sortFlag[$index]==-1" class="fa fa-angle-down"></i>
       </th>
@@ -10,8 +10,8 @@
   </thead>
   <tbody>
     <div >
-      <tr table-row ng-repeat = "row in data" data="row" options="options" row-Action = "callbackFn" checkbox = "selectStates[$index]" row-Scope = "rowScope" index="$index"
-      selectable = "isSelectable" editor-Template="{{editorTemplate}}" others = "others" editable="editable" deletable="deletable" fields = "fields" delete="delete"></tr>
+      <tr table-row ng-repeat = "row in data" data="row" row-Action = "callbackFn" checkbox = "selectStates[$index]"
+      index="$index" delete="delete" config-Obj="{{configObj}}"></tr>
     </div>
   </tbody>
 </table>
