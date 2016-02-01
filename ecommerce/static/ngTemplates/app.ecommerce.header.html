@@ -57,21 +57,30 @@
     <!-- /.container-fluid -->
 </nav>
 
-<div ng-if="$state.is('ecommerce') || $state.is('details')" style="position:fixed;top:70px;left:10px;padding:10px;display:block;z-index:100;">
-  <h3 class="text-muted">Trip details</h3>
-  <p>
-    <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.pickUpTime ? '':'Not selected'}}
-  </p>
-  <p>
-    <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.dropInTime? '':'Not selected'}}
-  </p>
+<div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=false;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};display:inline-block;
+  z-index:100;color:white;background-color:#1b375c;width:;box-sizing:border-box;transition:left 0.1s linear;width:240px;">
+
+  <div class="container-fluid" style="display:inline-block;overflow: hidden;">
+    <h3 class="text-muted" style="color:white;">Trip details</h3>
+    <p>
+      <strong>Starts : </strong><br> {{data.pickUpTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.pickUpTime ? '':'Not selected'}}
+    </p>
+    <p>
+      <strong>Ends : </strong> <br> {{data.dropInTime | date : 'dd-MMM-yyyy: hh:mm a'}} {{data.dropInTime? '':'Not selected'}}
+    </p>
+  </div>
+  <div style="position:absolute;display:block;right:-40px;top:0px;width:40px;height:40px;
+    background-color:#e69a41;padding-top:6px;border-radius:0px 5px 5px 0px;cursor:pointer;" ng-click="tripDetails = !tripDetails "
+    class=" text-center">
+    <i class="fa fa-chevron-{{tripDetails? 'left': 'right'}} fa-2x"></i>
+  </div>
 </div>
 
-<!-- <header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:400px ;">
-    <div class="container-fluid" style="position:relative;top:-100px;">
+<header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:450px ;">
+    <div class="container-fluid" style="position:relative;top:-200px;">
         <div class="intro-text">
             <div class="intro-lead-in">Lowest price</div>
             <div class="intro-heading">Amazing deals</div>
         </div>
     </div>
-</header> -->
+</header>
