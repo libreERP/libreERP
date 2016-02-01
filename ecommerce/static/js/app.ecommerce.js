@@ -36,10 +36,10 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.support.html',
     controller: 'businessManagement.ecommerce.support'
   })
-  .state('businessManagement.ecommerce.admin', {
-    url: "/admin",
-    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.admin.html',
-    controller: 'businessManagement.ecommerce.admin'
+  .state('businessManagement.ecommerce.configure', {
+    url: "/configure",
+    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.configure.html',
+    controller: 'businessManagement.ecommerce.configure'
   })
   .state('businessManagement.ecommerce.offerings', {
     url: "/offerings",

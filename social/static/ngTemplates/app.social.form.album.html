@@ -38,7 +38,7 @@
       <div ng-repeat="obj in droppedObjects" ng-drag-data="obj" data-allow-transform="true">
         <div class="container" style="position:relative; width:100%; padding:20px;" ng-mouseover="deleteObjOption=true" ng-mouseleave="deleteObjOption=false">
           <span>
-            <i ng-show="deleteObjOption" ng-click = "removeFromTempAlbum($index)" class="fa fa-times-circle fa-3x" style="position:absolute;top:0px;right:0px;text-align: center;;z-index:10;cursor:pointer"></i>
+            <i ng-show="deleteObjOption" ng-click = "removeFromTempAlbum($index)" class="fa fa-times-circle fa-3x" style="position:absolute;top:0px;right:0px;text-align: center;z-index:10;cursor:pointer"></i>
           </span>
           <img height="auto" width="100%" ng-src="{{obj.photo}}" alt="" />
         </div>

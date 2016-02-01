@@ -1,0 +1,47 @@
+<div class="col-md-6" ng-controller="businessManagement.ecommerce.listings.item" style="margin-bottom:20px;">
+
+  <div class="container-fluid card" style="padding-bottom:10px;">
+    <div class="row" style="border-bottom: 1px solid #dedede;">
+      <div class="col-md-4" style="padding:0px;">
+        <img style="width: 100%;" class="img" ng-src="{{data.files[0].attachment}}" >
+      </div>
+      <div class="col-md-8" style="position:relative;display:block;">
+        <div class="row" style="padding-left:10px;">
+          <h3>{{data.title}}</h3>
+          <span class="text-muted" style="position:absolute; top:10px;right:10px;">
+            <i class="fa fa-hashtag"></i> <span style="font-size:20px;">{{insight.inStock.inStock__sum? insight.inStock.inStock__sum :0}}</span>
+          </span>
+        </div>
+        <div class="row" ng-if="insight.inStock.inStock__sum">
+          <span style="position:absolute;right:10px;bottom:-45px;" class="text-muted">
+            <span class="text-muted">Starts from </span><span style="font-size:25px;margin-left:20px;"><i class="fa fa-inr"></i>{{insight.lowestRate.rate__min}}</span>
+            <span ng-if="data.priceModel=='time'">/ per Hour</span>
+            <span ng-if="data.priceModel=='quantity'">/ per Piece</span>
+            <span ng-if="data.priceModel=='weight'">/ per Kg</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row container-fluid" style="padding-top:10px;">
+      <div class="col-md-6">
+        <span><strong>Total orders : </strong>{{insight.totalBookings}}</span> <br>
+        <span><strong>Month's Revenue : </strong>{{insight.lastMonthRevenue}}</span> <i class="fa fa-inr"></i><br>
+        <span><strong>Vendors # : </strong>{{insight.vendors}}</span> <br>
+      </div>
+      <div class="col-md-2">
+        <i class="fa fa-bar-chart-o fa-5x" style="color:#fafafa;margin-top:15px;"></i>
+      </div>
+      <div class = "col-md-4" style="padding-right:0px;">
+        <div class="text-muted text-right" style="margin-top:20px;">
+          <span ng-if="data.approved" class="text-success">
+            <i class="fa fa-check fa-lg "></i> Approved </span>
+          <span ng-if="!data.approved" class="text-danger">
+            <i class="fa fa-ban fa-lg "></i> Not approved </span><br>
+          <span style="cursor:pointer;" ng-click = "rowActionClicked('edit')">
+            <i class="fa fa-pencil fa-lg" style="margin-top:20px;"></i> Edit
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

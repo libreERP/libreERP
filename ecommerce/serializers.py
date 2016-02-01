@@ -56,6 +56,12 @@ class serviceSerializer(serializers.ModelSerializer):
         model = service
         fields = ('pk' , 'created' ,'name' , 'user' , 'cin' , 'tin' , 'address' , 'mobile' , 'telephone' , 'logo' , 'about')
 
+class serviceLiteSerializer(serializers.ModelSerializer):
+    address = addressSerializer(many = False, read_only = True)
+    class Meta:
+        model = service
+        fields = ('pk'  ,'name' , 'address' , 'mobile' )
+
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = media
@@ -68,9 +74,14 @@ class mediaSerializer(serializers.ModelSerializer):
         m.link =  validated_data.pop('link')
         m.save()
         return m
+class offeringLiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = offering
+        fields = ('pk' , 'rate' ,'service' )
+
 
 class offeringSerializer(serializers.ModelSerializer):
-    service = serviceSerializer(read_only = True, many = False )
+    service = serviceLiteSerializer(read_only = True, many = False )
     class Meta:
         model = offering
         fields = ('pk' , 'created' ,'inStock', 'item' , 'service' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
@@ -87,12 +98,16 @@ class offeringAdminSerializer(serializers.ModelSerializer):
         o.save()
         return o
 
+class listingLiteSerializer(serializers.ModelSerializer):
+    files = mediaSerializer(many = True , read_only = True)
+    providerOptions = offeringLiteSerializer(many = True , read_only = True)
+    class Meta:
+        model = listing
+        fields = ('pk' , 'title' , 'priceModel'  , 'approved' , 'category' , 'files' , 'parentType'  , 'providerOptions')
+
 class listingSerializer(serializers.ModelSerializer):
-    user = userSearchSerializer(many = False , read_only = True)
-    # parentType = genericProductSerializer(many = False , read_only = True)
     files = mediaSerializer(many = True , read_only = True)
     providerOptions = offeringSerializer(many = True , read_only = True)
-
     class Meta:
         model = listing
         fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source')

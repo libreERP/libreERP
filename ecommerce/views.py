@@ -8,7 +8,7 @@ from django.conf import settings as globalSettings
 from django.core.mail import send_mail
 from django.http import HttpResponse ,StreamingHttpResponse
 from django.utils import timezone
-from django.db.models import Min
+from django.db.models import Min , Sum
 import mimetypes
 import hashlib, datetime, random
 from datetime import timedelta , date
@@ -65,10 +65,28 @@ class insightApi(APIView):
                 lastMonthRevenue += a
             allOfrs = offering.objects.filter(item = offr.item)
             lowestRate = allOfrs.aggregate(Min('rate'))
-            content = {'totalOrders' : ordrs.count() ,
+            content = {'totalBookings' : ordrs.count() ,
                 'lastMonthBooking' : ordrsLastMonth.count(),
                 'lastMonthRevenue' : lastMonthRevenue,
                 'vendors' : allOfrs.count(),
+                'lowestRate' : lowestRate}
+            return Response(content, status=status.HTTP_200_OK)
+        if 'listing' in self.request.GET:
+            l = listing.objects.get(pk = self.request.GET['listing'])
+            allOfrs = offering.objects.filter(item = l) # all offers
+            lowestRate = allOfrs.aggregate(Min('rate'))
+            ordrs = order.objects.filter(offer__in = allOfrs) # all orders
+            td = timezone.now() # today
+            ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month
+            lastMonthRevenue = 0
+            for o in ordrsLastMonth:
+                a , _  = getBookingAmount(o)
+                lastMonthRevenue += a
+            content = {'totalBookings' : ordrs.count() ,
+                'lastMonthBooking' : ordrsLastMonth.count(),
+                'lastMonthRevenue' : lastMonthRevenue,
+                'vendors' : allOfrs.count(),
+                'inStock' : allOfrs.aggregate(Sum('inStock')),
                 'lowestRate' : lowestRate}
             return Response(content, status=status.HTTP_200_OK)
         return Response({'NO_STARTING_POINT' : 'you have not provided any object for analysis'} , status=status.HTTP_400_BAD_REQUEST)
@@ -392,6 +410,13 @@ class mediaViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
     queryset = media.objects.all()
     serializer_class = mediaSerializer
+
+class listingLiteViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated , readOnly )
+    queryset = listing.objects.all()
+    serializer_class = listingLiteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
 
 class listingViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly , )

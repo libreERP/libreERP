@@ -398,7 +398,7 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
 app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
 
   $scope.fetchListings = function(){
-    url = '/api/ecommerce/listing/?'
+    url = '/api/ecommerce/listingLite/?'
     $scope.listings = [];
     parent = $scope.$parent;
     if (parent.data.location != null && typeof parent.data.location!='string') {

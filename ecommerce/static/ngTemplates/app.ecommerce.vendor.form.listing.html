@@ -85,10 +85,15 @@
         <hr>
         <div class="row">
           <div class="col-md-3 col-sm-4 col-xs-6" style="padding:10px;" ng-repeat= "f in data.form.files">
-            <img ng-if="f.mediaType == 'image'" class="shaddowed" ng-src="{{f.attachment}}"  height="50" width="90"/>
-            <img ng-if="f.mediaType == 'onlineImage'" class="shaddowed" ng-src="{{f.link}}"  height="50" width="90"/>
-            <div ng-if="['video' , 'doc' , 'onlineVideo'].indexOf(f.mediaType) != -1">
-              <a href="{{f.link}}">{{f.link}}</a>
+            <div class="container" style="position:relative; width:100%; padding:20px;" ng-mouseover="deleteObjOption=true" ng-mouseleave="deleteObjOption=false">
+              <span>
+                <i ng-show="deleteObjOption" ng-click = "removeMedia($index)" class="fa fa-times fa-3x" style="position:absolute;top:-5px;right:0px;text-align: center;z-index:10;cursor:pointer"></i>
+              </span>
+              <img ng-if="f.mediaType == 'image'" class="shaddowed" ng-src="{{f.attachment}}"  height="50" width="90"/>
+              <img ng-if="f.mediaType == 'onlineImage'" class="shaddowed" ng-src="{{f.link}}"  height="50" width="90"/>
+              <div ng-if="['video' , 'doc' , 'onlineVideo'].indexOf(f.mediaType) != -1">
+                <a href="{{f.link}}">{{f.link}}</a>
+              </div>
             </div>
           </div>
         </div>

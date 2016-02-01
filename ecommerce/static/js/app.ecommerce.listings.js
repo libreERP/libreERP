@@ -1,3 +1,11 @@
+app.controller('businessManagement.ecommerce.listings.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
+  $http({method : 'GET' , url : '/api/ecommerce/insight/?listing='+ $scope.data.pk }).
+  then(function(response) {
+    $scope.insight = response.data;
+    console.log($scope);
+  })
+});
+
 app.directive('ecommerceListingEditor', function () {
   return {
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.form.listing.html',
@@ -27,6 +35,10 @@ app.controller('ecommerce.form.listing' , function($scope , $state , $stateParam
     then(function(response){
       return response.data;
     })
+  }
+
+  $scope.removeMedia = function(index) {
+    $scope.data.form.files.splice(index,1);
   }
 
 
@@ -210,12 +222,16 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
     main : {icon : 'fa-pencil', text: 'edit'} ,
     };
 
-  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
+  views = [{name : 'list' , icon : 'fa-th-large' ,
+      template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
+      itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.listings.item.html',
+    },
+    {name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+  ];
 
   $scope.config = {
     views : views,
-    url : '/api/ecommerce/listing/',
+    url : '/api/ecommerce/listingLite/',
     fields : ['pk','title' , 'description' , 'priceModel' , 'approved' , 'category' , 'parentType'],
     searchField: 'title',
     options : options,

@@ -1,5 +1,5 @@
 
-app.controller('businessManagement.ecommerce.admin' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+app.controller('businessManagement.ecommerce.configure' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
