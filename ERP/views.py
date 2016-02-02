@@ -11,10 +11,11 @@ from rest_framework.exceptions import *
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+from django.db.models import Q
 
 def getModules(user):
     if user.is_superuser:
-        return module.objects.all()
+        return module.objects.filter(~Q(name='public'))
     else:
         ma = []
         for m in application.objects.filter(owners__in = [user,]).values('module').distinct():

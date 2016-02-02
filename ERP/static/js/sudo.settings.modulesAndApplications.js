@@ -51,7 +51,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
         url = '/api/ERP/applicationAdminMode/'
 
         if (type == 'app') {
-          dataToSend.name = type + '.' + data.module.name +'.' + data.name;
+          dataToSend.name = type + '.' + data.name;
         } else {
           dataToSend.canConfigure = data.app.pk;
           parts = data.app.name.split('.');

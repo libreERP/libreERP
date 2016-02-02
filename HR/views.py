@@ -90,11 +90,11 @@ def home(request):
     u = request.user
     if u.is_superuser:
         apps = application.objects.all()
-        modules = module.objects.all()
+        modules = module.objects.filter(~Q(name='public'))
     else:
         apps = getApps(u)
         modules = getModules(u)
-    apps = apps.filter(~Q(name__startswith='configure.')).filter(~Q(name='app.users'))
+    apps = apps.filter(~Q(name__startswith='configure.' )).filter(~Q(name='app.users')).filter(~Q(name__endswith='.public'))
     # print apps , modules
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'apps' : apps , 'modules' : modules})
 
