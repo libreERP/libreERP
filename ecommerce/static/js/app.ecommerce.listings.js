@@ -2,7 +2,6 @@ app.controller('businessManagement.ecommerce.listings.item' , function($scope , 
   $http({method : 'GET' , url : '/api/ecommerce/insight/?listing='+ $scope.data.pk }).
   then(function(response) {
     $scope.insight = response.data;
-    console.log($scope);
   })
 });
 
@@ -262,6 +261,7 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
   }
 
   $scope.tableAction = function(target , action , mode){
+    console.log(target);
     if (action=='edit') {
       for (var i = 0; i < $scope.data.tableData.length; i++) {
         if ($scope.data.tableData[i].pk == parseInt(target)){

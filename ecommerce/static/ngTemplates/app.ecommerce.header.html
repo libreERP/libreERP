@@ -57,8 +57,8 @@
     <!-- /.container-fluid -->
 </nav>
 
-<div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=false;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};display:inline-block;
-  z-index:100;color:white;background-color:#1b375c;width:;box-sizing:border-box;transition:left 0.1s linear;width:240px;">
+<div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=false;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};
+  display:inline-block;z-index:100;color:white;background-color:#1b375c;width:;box-sizing:border-box;transition:left 0.1s linear;width:240px;">
 
   <div class="container-fluid" style="display:inline-block;overflow: hidden;">
     <h3 class="text-muted" style="color:white;">Trip details</h3>
@@ -76,8 +76,9 @@
   </div>
 </div>
 
-<header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');position:relative; top:-30px ;max-height:450px ;">
-    <div class="container-fluid" style="position:relative;top:-200px;">
+<header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');
+  position:relative; top:-30px ;max-height:450px;">
+    <div class="container-fluid" style="position:relative;top:-100px;">
         <div class="intro-text">
             <div class="intro-lead-in">Lowest price</div>
             <div class="intro-heading">Amazing deals</div>

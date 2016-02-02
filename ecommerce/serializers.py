@@ -111,6 +111,7 @@ class listingSerializer(serializers.ModelSerializer):
     class Meta:
         model = listing
         fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source')
+        read_only_fields = ('user',)
     def create(self ,  validated_data):
         l = listing(**validated_data)
         l.user =  self.context['request'].user

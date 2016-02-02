@@ -211,7 +211,7 @@
     "flag": true,
     "value": "",
     "description": "Flag to enable and disable access to all the users to this app",
-    "app": 16,
+    "app": 25,
     "fieldType": "flag"
   }
 }, {
@@ -223,7 +223,7 @@
     "flag": false,
     "value": "RideON",
     "description": "The name of the service as seen by the users and vendors",
-    "app": 16,
+    "app": 25,
     "fieldType": "value"
   }
 }, {
@@ -235,7 +235,7 @@
     "flag": false,
     "value": "fa-motorcycle",
     "description": "URL or font awesome class of the logo",
-    "app": 16,
+    "app": 25,
     "fieldType": "value"
   }
 }]

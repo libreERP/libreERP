@@ -1,0 +1,10 @@
+django==1.9
+djangorestframework==3.3
+markdown==2.6
+django-filter==0.11
+django-url-filter==0.2
+django-cors-headers==1.1
+pillow==3.1
+requests==2.9
+pytz==2015.7
+reportlab==3.2

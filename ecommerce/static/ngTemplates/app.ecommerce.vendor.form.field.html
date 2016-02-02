@@ -1,7 +1,6 @@
-
-<div class="form-group" ng-init="data.type = 'char'">
+<div class="form-group">
   <label>Type</label>
-  <select class="form-control" ng-model="data.type" >
+  <select class="form-control" ng-model="data.fieldType" >
     <option value="char">char</option>
     <option value="boolean">boolean</option>
     <option value="float">float</option>
@@ -11,12 +10,17 @@
   <p class="help-block">Select the type of this field.</p>
 </div>
 
+<div class="form-group" ng-if="data.fieldType=='choice'">
+  <label > Parent fieldType</label>
+  <input uib-typeahead="label as label.name for label in parentLabelSearch($viewValue)" ng-model="data.choiceLabel" type="text" class="form-control" placeholder="Select the choice label">
+</div>
+
 <div class="form-group">
   <label > Name</label>
   <input type="text" class="form-control" ng-model="data.name" placeholder="Name of this field , For eg. Length">
 </div>
 
-<div class="form-group">
+<div class="form-group" ng-if="data.fieldType!='choice'">
   <label > Unit</label>
   <input type="text" class="form-control" ng-model="data.unit" placeholder="Unit of this field , For eg. mm">
 </div>

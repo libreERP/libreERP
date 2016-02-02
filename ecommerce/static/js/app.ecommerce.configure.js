@@ -77,7 +77,7 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
   }
 
   if (angular.isUndefined($scope.data)) { // we are creating new entry
-    $scope.data = {mode : 'field'};
+    $scope.data = {mode : 'field' , fieldType : 'char'};
     $scope.editing = false;
   } else { // editing
     $scope.editing = true;
@@ -89,18 +89,27 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
       then(function(response) {
         $scope.data.parentLabel = response.data;
       });
+    } else if ($scope.data.mode == 'field' && $scope.data.fieldType == 'choice') {
+      $http({method : 'GET' , url : '/api/ecommerce/choiceLabel/?name=' + $scope.data.unit}).
+      then(function(response) {
+        $scope.data.choiceLabel = response.data[0];
+      });
     }
   }
   $scope.submit = function(){
     d = $scope.data;
     if ($scope.data.mode == 'field') {
       dataToSend = {
-        fieldType : d.type,
+        fieldType : d.fieldType,
         name : d.name,
-        unit : d.unit,
         helpText : d.helpText,
         default : d.default,
       };
+      if (d.fieldType == 'choice') {
+        dataToSend.unit = d.choiceLabel.name;
+      }else {
+        dataToSend.unit = d.fieldType;
+      }
 
       url = '/api/ecommerce/field/';
     } else if($scope.data.mode == 'genericType'){

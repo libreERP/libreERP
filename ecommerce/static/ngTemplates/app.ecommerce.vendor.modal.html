@@ -2,13 +2,11 @@
   Edit {{data.mode | humanize}} : {{data.name}}
 </div>
 
-<div ng-controller="businessManagement.ecommerce.admin" class="modal-body">
-  some
+<div ng-controller="businessManagement.ecommerce.configure" class="modal-body">
   <div ng-if="data.mode == 'field'" ng-include="editorTemplateField"></div>
   <div ng-if="data.mode == 'genericType'" ng-include="editorTemplateGenericType"></div>
   <div ng-if="data.mode == 'genericProduct'" ng-include="editorTemplateGenericProduct"></div>
   <div ng-if="data.mode == 'choiceLabel'" ng-include="editorTemplateChoiceLabel"></div>
   <div ng-if="data.mode == 'choiceOption'" ng-include="editorTemplateChoiceOption"></div>
-
   <button type="button" class="btn btn-primary" ng-click="submit()">Save</button>
 </div>

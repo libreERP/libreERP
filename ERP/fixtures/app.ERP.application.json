@@ -230,7 +230,7 @@
       "module" : 2,
       "description" : "Configure ecommerce settings ",
       "owners": [],
-      "canConfigure": 16
+      "canConfigure": 25
     }
   },
   {
@@ -277,7 +277,7 @@
     "pk" : 22,
     "fields" : {
       "icon" : "fa-wrench",
-      "name" : "app.ecommerce.admin",
+      "name" : "app.ecommerce.configure",
       "created" : "2016-01-07 00:44:00.737000",
       "module" : 3,
       "description" : "Configure ecommerce settings ",
@@ -304,6 +304,19 @@
     "fields" : {
       "icon" : "fa-th-large",
       "name" : "app.ecommerce.offerings",
+      "created" : "2016-01-07 00:44:00.737000",
+      "module" : 3,
+      "description" : "Here you can  select a listing and provide your offerings",
+      "owners": [1],
+      "canConfigure": null
+    }
+  },
+  {
+    "model" : "ERP.application",
+    "pk" : 25,
+    "fields" : {
+      "icon" : "fa-shopping-cart",
+      "name" : "app.ecommerce.public",
       "created" : "2016-01-07 00:44:00.737000",
       "module" : 3,
       "description" : "Here you can  select a listing and provide your offerings",
