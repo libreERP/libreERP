@@ -6,14 +6,20 @@
     <meta charset="utf-8">
     <title>Ecommerce</title>
     <!-- stock css libraries -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
+    {% if useCDN %}
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" charset="utf-8">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" charset="utf-8">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.1/animate.min.css" charset="utf-8">
+    {% else %}
+      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+      <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
+      <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
+    {% endif %}
+    
+    <link rel="stylesheet" href="{% static 'css/datetimepicker.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/angular-aside.min.css' %}" charset="utf-8">
-    <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
-    <link rel="stylesheet" href="{% static 'css/angular-chart.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/anim-in-out.css' %}" charset="utf-8">
-    <link rel="stylesheet" href="{% static 'css/datetimepicker.css' %}" charset="utf-8">
     <!-- custom css -->
     <link rel="stylesheet" href="{% static 'css/custom/base.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/app.ecommerce.css' %}" charset="utf-8">
@@ -28,19 +34,33 @@
 
     <!-- contains very common ng templates used in the directives -->
     <!-- Stock JS libraries -->
-    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/angular.min.js' %}"></script>
-    <script src="{% static 'js/angular-animate.min.js' %}"></script>
-    <script src="{% static 'js/angular-ui-router.min.js' %}"></script>
-    <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
-    <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
-    <script src="{% static 'js/autobahn.min.js' %}"></script>
+
+    {% if useCDN %}
+      <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.17/angular-ui-router.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.9/angular-sanitize.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.2/ui-bootstrap-tpls.min.js"></script>
+      <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script src="https://cdn.jsdelivr.net/angularjs/1.4.7/angular-animate.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/momentjs/2.11.1/moment.min.js"></script>
+    {% else %}
+      <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+      <script src="{% static 'js/bootstrap.min.js' %}"></script>
+      <script src="{% static 'js/angular.min.js' %}"></script>
+      <script src="{% static 'js/angular-ui-router.min.js' %}"></script>
+      <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+      <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
+      <script src="{% static 'js/angular-animate.min.js' %}"></script>
+      <script src="{% static 'js/autobahn.min.js' %}"></script>
+      <script src="{% static 'js/moment.js' %}"></script>
+    {% endif %}
+
+    <script src="{% static 'js/datetimepicker.js' %}"></script>
     <script src="{% static 'js/angular-flash.js' %}"></script>
     <script src="{% static 'js/ng-tags-input.min.js' %}"></script>
     <script src="{% static 'js/anim-in-out.js' %}"></script>
-    <script src="{% static 'js/moment.js' %}"></script>
-    <script src="{% static 'js/datetimepicker.js' %}"></script>
     <!-- Custom JS files -->
     <script type="text/javascript">
       var wampServer = '{{wampServer}}';
