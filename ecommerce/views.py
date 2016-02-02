@@ -405,6 +405,8 @@ class serviceViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
     queryset = service.objects.all()
     serializer_class = serviceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class mediaViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )

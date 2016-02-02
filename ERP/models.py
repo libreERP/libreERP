@@ -11,7 +11,7 @@ class module(models.Model):
     name = models.CharField(max_length = 50 , null = False , unique = True)
     description = models.CharField(max_length = 500 , null = False)
     icon = models.CharField(max_length = 20 , null = True )
-    
+
 
 class application(models.Model):
     # each application in a module will have an instance of this model
@@ -19,6 +19,8 @@ class application(models.Model):
     name = models.CharField(max_length = 50 , null = False , unique = True)
     owners = models.ManyToManyField(User , related_name = 'appsManaging' , blank = True)
     icon = models.CharField(max_length = 20 , null = True )
+    haveCss = models.BooleanField(default = True)
+    haveJs = models.BooleanField(default = True)
     # only selected users can assign access to the application to other user
     module = models.ForeignKey(module , related_name = "apps" , null=False)
     description = models.CharField(max_length = 500 , null = False)

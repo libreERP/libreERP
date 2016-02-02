@@ -351,7 +351,14 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
-  $http({method : 'GET' , url : '/api/ERP/'})
+  $scope.settings = {};
+  $http({method : 'GET' , url : '/api/ERP/appSettings/?app=25'}).
+  then(function(response) {
+    for (var i = 0; i < response.data.length; i++) {
+      $scope.settings[response.data[i].name] = response.data[i].value;
+    }
+    console.log($scope.settings);
+  })
 
   $scope.data.pickUpTime = null;
   $scope.data.dropInTime = null;

@@ -46,6 +46,11 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.ecommerce.vendor.offerings.html',
     controller: 'businessManagement.ecommerce.offerings'
   })
+  .state('businessManagement.ecommerce.providers', {
+    url: "/providers",
+    templateUrl: '/static/ngTemplates/app.ecommerce.vendor.providers.html',
+    controller: 'businessManagement.ecommerce.providers'
+  })
 
 });
 

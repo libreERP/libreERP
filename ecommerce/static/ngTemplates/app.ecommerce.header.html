@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand " style="position:relative;top:-5px;" ui-sref="ecommerce">Ecommerce <i class="fa fa-shopping-cart"></i></a>
+            <a class="navbar-brand " style="position:relative;top:-5px;" ui-sref="ecommerce">{{settings.serviceName ? settings.serviceName:'Ecommerce'}} <i class="fa {{settings.logo? settings.logo : 'fa-shopping-cart'}}"></i></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
