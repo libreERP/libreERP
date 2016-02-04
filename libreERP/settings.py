@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'corsheaders',
     'API', # uncategorised REST points
-    'ERP', # permission, overall management of platform
+    'ERP', # permissions, overall management of the platform
     'HR', # people aspect of the platform
     'PIM', # personal information manager
     'social', # social networking client

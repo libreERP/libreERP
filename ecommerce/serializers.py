@@ -50,7 +50,7 @@ class addressSerializer(serializers.ModelSerializer):
         fields = ('pk' , 'street' , 'city' , 'state' , 'pincode', 'lat' , 'lon')
 
 class serviceSerializer(serializers.ModelSerializer):
-    user = userSearchSerializer(many = False , read_only = True)
+    # user = userSearchSerializer(many = False , read_only = True)
     address = addressSerializer(many = False, read_only = True)
     class Meta:
         model = service

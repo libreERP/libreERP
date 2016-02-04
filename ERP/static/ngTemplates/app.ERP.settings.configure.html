@@ -16,7 +16,7 @@
         </div>
         <div ng-if="field.fieldType == 'value'">
           <div class="form-group">
-            <label>{{field.name}}</label>
+            <label>{{field.name | humanize}}</label>
             <input type="text" class="form-control" ng-model="field.value" placeholder="Enter the value of the field {{field.name}}">
             <p class="help-block">
               {{field.description}}

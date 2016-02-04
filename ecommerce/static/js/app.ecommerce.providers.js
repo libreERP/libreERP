@@ -1,7 +1,14 @@
+app.controller('businessManagement.ecommerce.providers.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
+
+});
+
+
 app.controller('businessManagement.ecommerce.providers' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
-  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
+  views = [{name : 'list' , icon : 'fa-bars' ,
+    template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
+    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.providers.item.html',
+  },];
 
   $scope.data = {tableData : {}};
 

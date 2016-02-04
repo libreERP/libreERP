@@ -13,7 +13,7 @@ app.directive('genericTable' , function(){
   };
 });
 
-app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , $aside , Flash , $uibModal) {
+app.controller('genericTable' , function($scope , $http, $templateCache, $timeout , $users , Flash , $uibModal) {
 
   $scope.config = JSON.parse($scope.configObj);
 

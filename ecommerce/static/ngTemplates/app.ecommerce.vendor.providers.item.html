@@ -1,0 +1,30 @@
+<div class="col-md-6" ng-controller="businessManagement.ecommerce.providers.item" style="margin-bottom:20px;">
+  <div class="container-fluid card" style="padding-bottom:10px;">
+    <div class="container-fluid">
+      <div class="row" style="border-bottom: 1px solid #dedede;">
+        <span style="font-size:20px;" class="text-muted">{{data.name}}</span>
+      </div>
+      <div class="row">
+        <div class="row">
+          <div class="col-md-3">
+            <strong>Contact no. : </strong>
+          </div>
+          <div class="col-md-9">
+            {{data.mobile}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <strong>Address</strong>
+          </div>
+          <div class="col-md-9">
+            <span>{{data.address.street}}</span> <br>
+            <span>{{data.address.city}}</span> <br>
+            <span>{{data.address.state}}</span> <br>
+            <span>{{data.address.pincode}}</span> <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

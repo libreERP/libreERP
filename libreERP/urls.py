@@ -8,12 +8,12 @@ from HR.views import loginView , logoutView , home , registerView , tokenAuthent
 from ecommerce.views import ecommerceHome , serviceRegistration
 
 urlpatterns = [
-    url(r"^$", index , name = 'index'),
+    url(r"^$", ecommerceHome , name = 'index'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', loginView , name ='login'),
     url(r'^register', registerView , name ='register'),
-    url(r'^service', serviceRegistration , name ='serviceRegistration'),
+    url(r'^providers', serviceRegistration , name ='serviceRegistration'),
     url(r'^token', tokenAuthentication , name ='tokenAuthentication'),
     url(r'^logout/', logoutView , name ='logout'),
     url(r'^ERP/', home , name ='ERP'),
