@@ -11,7 +11,8 @@ class module(models.Model):
     name = models.CharField(max_length = 50 , null = False , unique = True)
     description = models.CharField(max_length = 500 , null = False)
     icon = models.CharField(max_length = 20 , null = True )
-
+    haveCss = models.BooleanField(default = True)
+    haveJs = models.BooleanField(default = True)
 
 class application(models.Model):
     # each application in a module will have an instance of this model

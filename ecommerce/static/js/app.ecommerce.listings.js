@@ -235,6 +235,7 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
     searchField: 'title',
     options : options,
     deletable : true,
+    itemsNumPerView : [6,12,24],
   }
 
   $scope.tabs = [];
@@ -261,7 +262,6 @@ app.controller('businessManagement.ecommerce.listings' , function($scope , $http
   }
 
   $scope.tableAction = function(target , action , mode){
-    console.log(target);
     if (action=='edit') {
       for (var i = 0; i < $scope.data.tableData.length; i++) {
         if ($scope.data.tableData[i].pk == parseInt(target)){

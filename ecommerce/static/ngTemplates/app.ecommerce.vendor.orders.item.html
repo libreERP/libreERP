@@ -37,22 +37,22 @@
   </div>
   <div class="col-md-2">
     <div class="row" >
-      <img style="width: 50px;margin-left:15%;" class="img" ng-src="{{data.user | getDP}}" >
+      <img style="width: 50px;height:50px;display: table-caption;margin: 0 auto;" class="img-circle" ng-src="{{data.user | getDP}}" >
     </div>
-    <div class="row">
-      <span style="font-size : 15px;text-align:center;">{{data.user | getName}} </span>
+    <div class="row" style="text-align:center;">
+      <span style="font-size:15px;" >{{data.user | getName}} </span>
     </div>
   </div>
   <div class="col-md-1 " >
     <div class="row hoverableDiv">
-      <div style="display:block;box-sizing: border-box;" ng-click="rowActionClicked('printInvoice')">
-        <i class="fa fa-print fa-2x" style="padding-left:35px;"></i> <br>
-        <span style="margin-left:10px;">Print Invoice</span>
+      <div style="display:block;box-sizing: border-box;text-align:center;" ng-click="rowActionClicked('printInvoice')">
+        <i class="fa fa-print fa-2x"></i> <br>
+        <span >Print Invoice</span>
       </div>
     </div>
     <div class="row ">
-      <span class="dropdown" ng-if="['new' , 'inProgress'].indexOf(data.status) != -1">
-        <i style="padding-left:35px;cursor:pointer;" class="fa fa-ellipsis-h fa-2x" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
+      <span class="dropdown" ng-if="['new' , 'inProgress'].indexOf(data.status) != -1" >
+        <i style="cursor:pointer;" class="fa fa-ellipsis-h fa-2x" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('progress')"><i class="fa fa-spin fa-spinner"></i> In Progress</a></li>
           <li ng-if="['inProgress' , 'new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('complete')"><i class="fa fa-check"></i> Mark complete</a></li>
@@ -61,10 +61,10 @@
       </span>
     </div>
   </div>
-  <div class="col-md-1 " style="position:absolute;height:100%;top:0px;right:0px;padding-top:15px;">
-    <i class="fa {{getStatusClass(data.status)}} fa-3x" style="margin-left:15px;"></i>
+  <div class="col-md-1 " style="position:absolute;height:100%;top:0px;right:0px;padding-top:15px;text-align:center;">
+    <i class="fa {{getStatusClass(data.status)}} fa-3x" ></i>
     <br>
-    <span style="font-size:11px;margin-top:10px;width:200px;position:relative;left:7px;">
+    <span style="font-size:11px;margin-top:10px;width:200px;position:relative;">
       <span ng-if="data.status != 'canceledByVendor'">{{data.status | humanize}}</span>
       <span ng-if="data.status == 'canceledByVendor'">Declined</span>
     </span>

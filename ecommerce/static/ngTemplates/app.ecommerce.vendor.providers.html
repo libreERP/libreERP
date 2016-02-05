@@ -1,7 +1,25 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
+  <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
 
+  <!-- <uib-tabset>
+    <uib-tab active="searchTabActive">
+      <uib-tab-heading>
+        Browse  <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+    </uib-tab>
 
-<generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
+    <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+      <uib-tab-heading >
+        {{tab.title}} <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+      </uib-tab-heading>
+      <div ng-if="tab.app == 'showDetails'">
+        <div class="container-fluid" style="padding-top:20px;">
+          some text
+        </div>
+      </div>
+    </uib-tab>
+  </uib-tabset> -->
+
 
 </div>

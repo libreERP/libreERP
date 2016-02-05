@@ -7,6 +7,9 @@ app.factory('$users', function(){
         input = input.toString(); // if the PK is passed then get the string form of it
       } else{
         if (input != 'mySelf') { // url is passed and it will not get converted to int
+          if (typeof input == 'object') {
+            return;
+          }
           input = getPK(input).toString()
         }
       }

@@ -20,8 +20,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.data = [];
   $scope.searchText = '';
   $scope.originalTable = [];
-  $scope.itemsNumPerView = [5, 10, 20];
-  $scope.itemsPerView = 5;
+
   $scope.pageList = [1];
   $scope.pageNo = 1; // default page number set to 0
   $scope.viewMode = 'list';
@@ -30,6 +29,8 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
   $scope.options = $scope.config.options;
   $scope.isSelectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
+  $scope.itemsNumPerView = angular.isDefined($scope.config.itemsNumPerView) ? $scope.config.itemsNumPerView:[5, 10, 20];
+  $scope.itemsPerView = $scope.itemsNumPerView[0];
   $scope.deletable = angular.isDefined($scope.config.deletable) ? $scope.config.deletable:false;
   $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
 

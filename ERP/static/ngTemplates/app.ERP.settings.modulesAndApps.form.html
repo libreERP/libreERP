@@ -79,6 +79,21 @@
           <textarea type="text" class="form-control" ng-model="data.description"  placeholder="Describe ths {{type}} object a little."></textarea>
         </div>
 
+        <div class="form-group">
+          <label>Have CSS</label>
+          <input type="checkbox" ng-model="data.haveCss" >
+          <p class="help-block">
+            Does this module / app needs a css file.
+          </p>
+        </div>
+        <div class="form-group">
+          <label>Have JS</label>
+          <input type="checkbox" ng-model="data.haveJs" >
+          <p class="help-block">
+            Does this module / app needs a js file.
+          </p>
+        </div>
+
         <button type="button" class="btn btn-primary" ng-click="submitForm('new' , type , data )"> Create </button>
 
       </div>

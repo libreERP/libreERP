@@ -1,3 +1,5 @@
+
+
 body {
   background-color: #eee;
   padding-top:70px;
@@ -15,6 +17,11 @@ body {
   padding-bottom: 20px;
 }
 
+.navbar {
+    -webkit-box-shadow: 0 5px 6px -6px #999;
+    -moz-box-shadow: 0 5px 6px -6px #999;
+    box-shadow: 0 5px 6px -6px #999;
+}
 .nav-sidebar> li > a {
   color:var(--themeMain);
 }
@@ -24,19 +31,19 @@ body {
 	color: #fff;
 }
 
-.sidebarList> li > a {
-	color:#337AB7;
-}
-
 .nav-sidebar-inverse> li > a {
   color:white;
   border-right: solid 6px var(--themeMain);
 }
 
 .nav-sidebar-inverse> li > a:hover, .nav-sidebar-inverse > li >a:focus , .nav-sidebar-inverse> .active > a{
-	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+  background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
   border-right: solid 6px white;
-	color: #fff;
+  color: #fff;
+}
+
+.sidebarList> li > a {
+	color:#337AB7;
 }
 
 
@@ -430,7 +437,7 @@ body {
 }
 .widget-user .widget-user-image > img {
     width: 90px;
-    height: auto;
+    height: 90px;
     border: 3px solid #FFF;
     border-radius: 50%;
     vertical-align: middle;

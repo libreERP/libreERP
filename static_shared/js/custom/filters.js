@@ -190,6 +190,10 @@ app.filter('getName' , function($users){
     if (mode == 'short') {
       return user.first_name;
     }
-    return user.first_name + ' ' + user.last_name;
+    if (typeof user != 'undefined' && typeof user.first_name != 'undefined') {
+      return user.first_name + ' ' + user.last_name;
+    } else {
+      return "";
+    }
   }
 })

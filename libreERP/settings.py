@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-USE_CDN = True # when turned on the application will use the cndjs.com and other similar content delivery network for css and jss libraries
+USE_CDN = False # when turned on the application will use the cndjs.com and other similar content delivery network for css and jss libraries
 
 # Application definition
 

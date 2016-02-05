@@ -100,11 +100,11 @@ app.controller('businessManagement.ecommerce.orders' , function($scope , $http ,
       $http.get('/api/ecommerce/printInvoice/?id=' + target ,'', {responseType:'arraybuffer'}).
       success((function(target){
         return function(response){
-        var file = new Blob([response], { type: 'application/pdf' });
-        var fileURL = URL.createObjectURL(file);
-        content = $sce.trustAsResourceUrl(fileURL);
-        $scope.addTab({title : 'Print Invocie for order ID : '+ target , cancel : true , app : 'print invoice' , data : {pk : target , content : content} , active : true})
-        }
+          var file = new Blob([response], { type: 'application/pdf' });
+          var fileURL = URL.createObjectURL(file);
+          content = $sce.trustAsResourceUrl(fileURL);
+          $scope.addTab({title : 'Print Invocie for order ID : '+ target , cancel : true , app : 'print invoice' , data : {pk : target , content : content} , active : true})
+          }
         })(target)
       )
     } else {

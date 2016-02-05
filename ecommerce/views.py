@@ -415,7 +415,7 @@ class mediaViewSet(viewsets.ModelViewSet):
     serializer_class = mediaSerializer
 
 class listingLiteViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated , readOnly )
+    permission_classes = (readOnly, )
     queryset = listing.objects.all()
     serializer_class = listingLiteSerializer
     filter_backends = [DjangoFilterBackend]

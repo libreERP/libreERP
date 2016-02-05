@@ -1,23 +1,41 @@
 <div class="col-md-6" ng-controller="businessManagement.ecommerce.providers.item" style="margin-bottom:20px;">
   <div class="container-fluid card" style="padding-bottom:10px;">
-    <div class="container-fluid">
-      <div class="row" style="border-bottom: 1px solid #dedede;">
+    <div class="container-fluid" style="position:relative;">
+      <i class="fa fa-building-o fa-5x" style="color:#eeeeee;position:absolute;right:20px;bottom:30px;"></i>
+      <i class="fa fa-building-o fa-5x" style="color:#eeeeee;position:absolute;right:20px;bottom:30px;"></i>
+      <!-- <i class="fa fa-ellipsis-h fa-2x" style="position:absolute;right:30px;top:15px;cursor:pointer;" ng-click="rowActionClicked('showDetails')"></i> -->
+      <!-- <i class="fa fa-map-marker fa-2x" style="color:#2661a7;position:absolute;right:20px;top:15px;cursor:pointer;" title="Show on the map"></i> -->
+      <div class="row" style="border-bottom: 1px solid #dedede;height:60px;padding-top:15px;">
         <span style="font-size:20px;" class="text-muted">{{data.name}}</span>
       </div>
       <div class="row">
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
+            <strong>Contact Person : </strong>
+          </div>
+          <div class="col-md-8">
+            {{data.user.url | getName}}
+          </div>
+          <div class="col-md-4">
+            <strong>Email : </strong>
+          </div>
+          <div class="col-md-8">
+            {{data.user.email}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
             <strong>Contact no. : </strong>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-8">
             {{data.mobile}}
           </div>
         </div>
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <strong>Address</strong>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-8">
             <span>{{data.address.street}}</span> <br>
             <span>{{data.address.city}}</span> <br>
             <span>{{data.address.state}}</span> <br>

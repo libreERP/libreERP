@@ -43,6 +43,8 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
       dataToSend = {
         description : data.description,
         icon : data.icon,
+        haveJs : data.haveJs,
+        haveCss : data.haveCss,
       },
       url = '/api/ERP/module/' ;
 
@@ -62,7 +64,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
       }
       $http({method : 'POST' , url : url , data : dataToSend}).
       then(function(response){
-        $scope.$broadcast('forceSetFormData', { icon : '' , name : '' , description : '' , module : '' , type : 'module' , app : '' });
+        $scope.$broadcast('forceSetFormData', { icon : '' , name : '' , description : '' , module : '' , type : 'module' , app : '' , haveJs : false , haveCss : false });
         if (response.config.url.indexOf('/ERP/module/') == -1) {
           $scope.$broadcast('forceInsetTableData', response.data);
         }

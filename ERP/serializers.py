@@ -10,12 +10,12 @@ from rest_framework.response import Response
 class moduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = module
-        fields = ( 'pk', 'name' , 'icon' )
+        fields = ( 'pk', 'name' , 'icon' , 'haveJs' , 'haveCss')
 
 class applicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure')
+        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure'  ,  'haveJs' , 'haveCss')
 
 class applicationSettingsSerializer(serializers.ModelSerializer):
     # non admin mode

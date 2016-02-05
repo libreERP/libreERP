@@ -4,8 +4,6 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
-  console.log($scope);
-
   $scope.editorTemplateField = '/static/ngTemplates/app.ecommerce.vendor.form.field.html'
   $scope.editorTemplateChoiceLabel = '/static/ngTemplates/app.ecommerce.vendor.form.choiceLabel.html'
   $scope.editorTemplateChoiceOption = '/static/ngTemplates/app.ecommerce.vendor.form.choiceOption.html'
