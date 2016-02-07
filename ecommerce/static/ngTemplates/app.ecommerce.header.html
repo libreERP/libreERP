@@ -19,8 +19,8 @@
           <div class="label label-primary" style="position:absolute;top:5px;right:-5px;">{{inCart.length==0? '':inCart.length}}</div>
         </a>
       </li>
-      <li ng-if="me == null">
-        <a  href="/login/?next=/ecommerce"><i class="fa fa-sign-in"></i></a>
+      <li ng-if="me == null" style="margin-right:40px;">
+        <a  href="/login"><i class="fa fa-sign-in"></i></a>
       </li>
       <li class="dropdown" ng-if="me != null" style="margin-right:30px;">
 			  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{me.url | getName}}  <span class="glyphicon glyphicon-chevron-down"></span></a>

@@ -1,15 +1,15 @@
 <div ng-controller="businessManagement.ecommerce.configure.offerBanner">
   <div class="modal-header">
-    Create a new offer banner
+    {{mode ? 'Create a new': 'Edit'}} offer banner
   </div>
   <div class="modal-body">
     <div class="form-group">
       <label>Title</label>
-      <input type="text" ng-model="form.title" class="form-control" placeholder="Enter title">
+      <input type="text" ng-model="data.title" class="form-control" placeholder="Enter title">
     </div>
     <div class="form-group">
       <label>Subtitle</label>
-      <input type="text" class="form-control" ng-model="form.subtitle" placeholder="Enter Subtitle">
+      <input type="text" class="form-control" ng-model="data.subtitle" placeholder="Enter Subtitle">
     </div>
     <div class="form-group">
       <label>Banner Image</label>
@@ -17,18 +17,18 @@
     </div>
     <div class="form-group">
       <label>Level</label>
-      <input type="number" class="form-control" ng-model="form.level">
+      <input type="number" class="form-control" ng-model="data.level">
       <p class="help-block">
         Enter 1 if it will be on the slide show , 2 if it will be shown in the sidebar, 2 if this will be a flash message
       </p>
     </div>
     <div class="form-group">
       <label>State</label>
-      <input type="text" class="form-control" ng-model="form.state" placeholder="Enter  ui-router state that this image will direct to when clicked">
+      <input type="text" class="form-control" ng-model="data.state" placeholder="Enter  ui-router state that this image will direct to when clicked">
     </div>
     <div class="form-group">
       <label>Params</label>
-      <input type="text" class="form-control" ng-model="form.params" placeholder="Enter state's params ">
+      <input type="text" class="form-control" ng-model="data.params" placeholder="Enter state's params ">
     </div>
 
     <button type="button" class="btn btn-primary" ng-click="submit()">

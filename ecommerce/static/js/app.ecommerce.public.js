@@ -352,20 +352,14 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
 
   $http({method : 'GET' , url : '/api/ecommerce/offerBanner/'}).
   then(function(response) {
+    for (var i = 0; i < response.data.length; i++) {
+      s = response.data[i].params;
+      s = s.split(':')[1];
+      s = s.split('}')[0];
+      response.data[i].params = {id : parseInt(s)}
+    }
     $scope.slide.banners = response.data;
   })
-
-  // banner = {image : '/static/images/ecommerce2.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
-  // $scope.slide.banners.push(banner);
-  // banner = {image : '/static/images/background4.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
-  // $scope.slide.banners.push(banner);
-  // banner = {image : '/static/images/background2.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
-  // $scope.slide.banners.push(banner);
-  // banner = {image : '/static/images/background3.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
-  // $scope.slide.banners.push(banner);
-  // banner = {image : '/static/images/ecommerce.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
-  // $scope.slide.banners.push(banner);
-
   $scope.changeSlide = function(index){
     $scope.slide.active = index;
   }

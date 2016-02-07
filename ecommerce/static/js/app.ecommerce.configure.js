@@ -1,21 +1,42 @@
 app.controller('businessManagement.ecommerce.configure.offerBanner' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-  $scope.form = {title : '' , subtitle : '' , image : emptyFile , level : 1 , state : '' , params : ''};
+
+  $scope.form = {image : emptyFile};
+
+  if (angular.isUndefined($scope.data.pk)) {
+    $scope.mode = 'new';
+    $scope.data = {title : '' , subtitle : '' , level : 1 , state : '' , params : ''};
+    $scope.url =  '/api/ecommerce/offerBanner/';
+    $scope.method = 'POST';
+  }else {
+    $scope.mdoe = 'edit';
+    $scope.url =  '/api/ecommerce/offerBanner/' + $scope.data.pk + '/';
+    $scope.method = 'PATCH';
+  }
 
   $scope.submit = function() {
-    if ($scope.form.image == emptyFile) {
-      Flash.create('danger', 'No image selected');
-      return;
-    }
     var fd = new FormData();
-    fd.append( 'title' , $scope.form.title);
-    fd.append( 'subtitle' , $scope.form.subtitle);
-    fd.append( 'image' , $scope.form.image);
-    fd.append( 'level' , $scope.form.level);
-    fd.append( 'state' , $scope.form.state);
-    fd.append( 'params' , $scope.form.params);
-    $http({method : 'POST' , url : '/api/ecommerce/offerBanner/' , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    fd.append( 'title' , $scope.data.title);
+    fd.append( 'subtitle' , $scope.data.subtitle);
+    fd.append( 'level' , $scope.data.level);
+    fd.append( 'state' , $scope.data.state);
+    fd.append( 'params' , $scope.data.params);
+    if ($scope.mode == 'new') {
+      if ($scope.form.image == emptyFile) {
+        Flash.create('danger', 'No image selected');
+        return;
+      }else {
+        fd.append( 'image' , $scope.form.image);
+      }
+    }else {
+      if ($scope.form.image != emptyFile) {
+        fd.append( 'image' , $scope.form.image);
+      }
+    }
+    $http({method : $scope.method , url : $scope.url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
-      $scope.form = {title : '' , subtitle : '' , image : emptyFile , level : 1 , state : '' , params : ''};
+      if ($scope.mode == 'new') {
+        $scope.data = {title : '' , subtitle : '' , image : emptyFile , level : 1 , state : '' , params : ''};
+      }
       Flash.create('success', response.status + ' : ' + response.statusText);
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText);

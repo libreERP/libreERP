@@ -409,18 +409,6 @@ class serviceViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
 
-class feedbackViewSet(viewsets.ModelViewSet):
-    queryset = feedback.objects.all()
-    serializer_class = feedbackSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['email']
-
-class offerBannerViewSet(viewsets.ModelViewSet):
-    serializer_class = offerBannerSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['title']
-    def get_queryset(self):
-        return offerBanner.objects.filter(active = True)[:5]
 
 class mediaViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
@@ -521,3 +509,18 @@ class offeringAdminViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         u = self.request.user
         return offering.objects.filter(user = u)
+
+
+class feedbackViewSet(viewsets.ModelViewSet):
+    queryset = feedback.objects.all()
+    serializer_class = feedbackSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['email']
+
+class offerBannerViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdminOrReadOnly, )
+    serializer_class = offerBannerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+    def get_queryset(self):
+        return offerBanner.objects.filter(active = True)

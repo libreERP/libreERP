@@ -8,7 +8,7 @@ from HR.views import loginView , logoutView , home , registerView , tokenAuthent
 from ecommerce.views import ecommerceHome , serviceRegistration
 
 urlpatterns = [
-    url(r"^$", ecommerceHome , name = 'ecommerceHome'),
+    url(r"^$", ecommerceHome , name = 'home'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', loginView , name ='login'),
