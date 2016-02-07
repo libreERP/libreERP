@@ -8,6 +8,10 @@ from django.contrib.auth.models import User
 def getEcommercePictureUploadPath(instance , filename ):
     return 'ecommerce/pictureUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
+def getEcommerceBannerUploadPath(instance , filename ):
+    return 'ecommerce/bannerUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
+
+
 class address(models.Model):
     street = models.CharField(max_length=300 , null = True)
     city = models.CharField(max_length=100 , null = True)
@@ -189,3 +193,20 @@ class order(models.Model):
     start = models.DateTimeField(null = True)
     end = models.DateTimeField(null = True)
     status = models.CharField(choices = ORDER_STATUS_CHOICES , null = True , max_length = 20 , default = 'new')
+
+class offerBanner(models.Model):
+    user = models.ForeignKey(User, null = False)
+    created = models.DateTimeField(auto_now_add = True)
+    level = models.PositiveIntegerField(null = False) # level indicates the position of display , 1 means the main banner , 2 for side and 3 for flash messages
+    image = models.ImageField(null = False , upload_to = getEcommerceBannerUploadPath)
+    title = models.CharField(max_length = 20 , null = True)
+    subtitle = models.CharField(max_length = 20 , null = True)
+    state = models.CharField(max_length = 20 , null = True)
+    params = models.CharField(max_length = 200 , null = True) # string repr of json obj to be passed as params
+    active = models.BooleanField(default = False)
+
+class feedback(models.Model):
+    email = models.EmailField(null = False)
+    mobile = models.PositiveIntegerField(null = False)
+    message = models.CharField(max_length = 400 , null = False)
+    created = models.DateTimeField(auto_now_add = True)

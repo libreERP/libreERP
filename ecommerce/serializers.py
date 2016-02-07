@@ -211,3 +211,20 @@ class customerProfileSerializer(serializers.ModelSerializer):
         cp.mobile = m
         cp.save()
         return cp
+
+class feedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = feedback
+        fields = ('pk' , 'email' , 'mobile'  , 'message')
+
+class offerBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = offerBanner
+        fields = ('pk' , 'user' , 'created'  , 'level' , 'image' , 'title' , 'subtitle' , 'state' , 'params' , 'active')
+        read_only_fields = ('user',)
+    def create(self ,  validated_data):
+        u = self.context['request'].user
+        b = offerBanner(**validated_data)
+        b.user = u
+        b.save()
+        return b

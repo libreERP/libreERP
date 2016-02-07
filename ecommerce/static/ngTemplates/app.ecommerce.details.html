@@ -24,16 +24,16 @@
 
         </div>
         <div class="row container-fluid" style="margin-top:10px;">
-          <span ng-repeat="s in data.specifications" ng-if="$index<4">
-            <span> <strong>{{s.name | humanize}}  </strong>
+          <!-- <span ng-repeat="s in data.specifications" ng-if="$index<4">
+            <span> <strong>{{s.name | humanize}} </strong>
               <span ng-if="['choice' , 'date' , 'boolean'].indexOf(s.fieldType) == -1">{{s.unit !='' && s.unit != null ? '(' + s.unit + ')': ''}} :</span>
-              <span ng-if="['choice' , 'date' , 'boolean'].indexOf(s.fieldType) == -1"> {{s.value}} </span>
+              <span ng-if="['choice' , 'date' , 'boolean'].indexOf(s.fieldType) == -1"> {{s.value}}</span>
               <span ng-if="s.fieldType == 'choice'"> {{s.value.name}} </span>
               <span ng-if="s.fieldType == 'boolean'"> {{s.value? 'Yes' :'No'}} </span>
-              <span ng-if="s.fieldType =='date'">{{s.value | date : 'dd-MMM-yyyy'}}</span>
+              <span ng-if="s.fieldType =='date'">: {{s.value | date : 'dd-MMM-yyyy'}}</span>
             </span>
             <br>
-          </span>
+          </span> -->
         </div>
         <span style="position:absolute;bottom:100px;right:15px;">
           <strong>Provided by</strong> <br>
@@ -46,8 +46,13 @@
           <span ng-if="data.priceModel=='weight'">/ per Kg</span>
         </span>
         <div class="row" style="position:absolute;bottom:0px;width:100%;">
-          <button type="button" style="border-radius:0px;" ng-click="addToCart(data)" class="btn btn-warning col-md-6">Add to cart</button>
-          <button ng-if="data.providerOptions[offeringInView].available==true" type="button" style="border-radius:0px;" ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">{{data.priceModel=='time' ? 'Book':'Buy'}}</button>
+          <span ng-click="addToCart(data)" style="margin-left:20px;bottom:20px;position:relative;">
+            <span style="bottom:5px;position:relative;padding-right:20px;">Add to cart </span>
+            <i class="fa fa-shopping-cart fa-2x" ></i> <i class="fa fa-plus fa-lg"></i>
+          </span>
+          <button ng-if="data.providerOptions[offeringInView].available==true" type="button" style="border-radius:0px;"
+            ng-click="buy(data.providerOptions[offeringInView])"  class="btn btn-success col-md-6">{{data.priceModel=='time' ? 'Book':'Buy'}}
+          </button>
         </div>
       </div>
     </div>
@@ -70,7 +75,7 @@
               <p class="text-error" ng-if="p.available==false">
                 Sold Out
               </p>
-              <p class="text-warning" ng-if="p.available=='error'">
+              <p class="text-primary" ng-if="p.available=='error'">
                 No date and time specified, please choose a time period
               </p>
             </div>

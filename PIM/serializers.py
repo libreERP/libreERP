@@ -26,15 +26,16 @@ class calendarSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = calendar
         fields = ('url' , 'eventType' , 'followers' ,'originator', 'duration' , 'created', 'updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
-        read_only_fields = ('followers',)
+        read_only_fields = ('followers', 'user' , )
     def create(self , validated_data):
-        cal = calendar.objects.create(**validated_data)
+        cal = calendar(**validated_data)
+        cal.user = self.context['request'].user
+        cal.save()
         if 'with' in  self.context['request'].data:
             tagged = self.context['request'].data['with']
             for tag in tagged.split(','):
                 cal.followers.add( User.objects.get(username = tag))
 
-        cal.user = self.context['request'].user
         cal.save()
         return cal
     def update(self, instance, validated_data): # like the comment

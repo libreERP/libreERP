@@ -1,61 +1,68 @@
-<nav class="navbar navbar-default navbar-fixed-top animated slideInDown" style="background-color:#208374;height:60px;">
-    <div class="container" style="position:relative;top:-20px;width:100%;">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand " style="position:relative;top:-5px;" ui-sref="ecommerce">{{settings.serviceName ? settings.serviceName:'Ecommerce'}} <i class="fa {{settings.logo? settings.logo : 'fa-shopping-cart'}}"></i></a>
-        </div>
+<div class="navbar navbar-default navbar-fixed-top animated slideInDown" >
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand " style="position:relative;font-size:20px;" ui-sref="ecommerce">{{settings.serviceName ? settings.serviceName:'Ecommerce'}} <i class="fa {{settings.logo? settings.logo : 'fa-shopping-cart'}}"></i></a>
+  </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-              <li ng-if="me != null" style="margin-right:10px;">
-                <a ui-sref="account.cart"><i class="fa fa-shopping-cart" ></i>
-                  <div class="label label-warning" style="position:absolute;top:0px;right:-5px;">{{inCart.length==0? '':inCart.length}}</div>
-                </a>
-              </li>
-              <li>
-                <a ng-if="me == null" href="/login/?next=/ecommerce"><i class="fa fa-sign-in"></i></a>
-                <a style="text-transform: capitalize;" ng-if="me != null" ui-sref="account"><i class="fa fa-user"></i> {{me.url | getName}}</a>
-              </li>
-            </ul>
-            <div class="navbar-form navbar-right" style="position:relative;right:20%;top:-5px;">
-              <span style="color:white;position:relative;top:-10px;">Dropin</span>
-              <span class="fa fa-clock-o fa-3x" style="color:white;cursor:pointer;" id="dLabel" data-toggle="dropdown" >
-              </span>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                <datetimepicker data-ng-model="data.dropInTime"
-                  data-datetimepicker-config="{ dropdownSelector: '#dLabel' }"></datetimepicker>
-              </ul>
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-              <span style="color:white;margin-left:60px;cursor:pointer;top:-6px;position:relative;" class="fa fa-arrow-right fa-2x" ng-click="refreshResults()"></span>
-
+    <ul class="nav navbar-nav navbar-right">
+      <li ng-if="me != null" style="margin-right:10px;">
+        <a ui-sref="account.cart"><i class="fa fa-shopping-cart" ></i>
+          <div class="label label-primary" style="position:absolute;top:5px;right:-5px;">{{inCart.length==0? '':inCart.length}}</div>
+        </a>
+      </li>
+      <li ng-if="me == null">
+        <a  href="/login/?next=/ecommerce"><i class="fa fa-sign-in"></i></a>
+      </li>
+      <li class="dropdown" ng-if="me != null" style="margin-right:30px;">
+			  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{me.url | getName}}  <span class="glyphicon glyphicon-chevron-down"></span></a>
+			  <ul class="dropdown-menu" >
+  				<li><img class="img-responsive" width="200px" src="/static/images/userIcon.png" ng-src="{{me.profile.displayPicture}}" style="top:-5px; position:relative; width:200px"></li>
+  				<li>
+            <div style="text-align:center; -moz-user-select: none;">{{me.email}}</br>
             </div>
-            <div style="width:600px;margin-right:20%;" class="navbar-form navbar-right">
-              <div style="width:100%;position:relative;">
-                <input style="width:100%;" uib-typeahead="location as location.description for location in getLocationSuggeations($viewValue)"
-                ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
-              </div>
-            </div>
-            <div class="navbar-form navbar-right" style="position:relative;top:-5px;">
-              <span style="color:white;position:relative;top:-10px;">Pickup</span>
-              <span class="fa fa-clock-o fa-3x" style="color:white;cursor:pointer;"id="dLabel2" data-toggle="dropdown" >
-              </span>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
-                <datetimepicker data-ng-model="data.pickUpTime"
-                data-datetimepicker-config="{ dropdownSelector: '#dLabel2' }"></datetimepicker>
-              </ul>
-            </div>
-        </div>
-        <!-- /.navbar-collapse -->
+          </li>
+  				<li role="separator" class="divider"></li>
+  				<li><a href="#/account"><i class="fa fa-gears fa-fw"></i> Accounts </a></li>
+          <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+			  </ul>
+			</li>
+    </ul>
+    <div class="navbar-form navbar-right" style="position:relative;right:10%;">
+      <span style="position:relative;">Dropin</span>
+      <i class="fa fa-calendar fa-2x" style="cursor:pointer;margin-left:20px;" id="dLabel" data-toggle="dropdown" ></i>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <datetimepicker data-ng-model="data.dropInTime"
+          data-datetimepicker-config="{ dropdownSelector: '#dLabel' }"></datetimepicker>
+      </ul>
+      <span style="margin-left:100px;cursor:pointer;position:relative;" class="fa fa-arrow-right fa-2x text-muted" ng-click="refreshResults()"></span>
     </div>
-    <!-- /.container-fluid -->
-</nav>
+    <div style="width:400px;margin-right:10%;" class="navbar-form navbar-right">
+      <div style="width:100%;position:relative;">
+        <input style="width:100%;" uib-typeahead="location as location.description for location in getLocationSuggeations($viewValue)"
+        ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
+      </div>
+    </div>
+    <div class="navbar-form navbar-right" style="position:relative;">
+      <span style="position:relative;">Pickup</span>
+      <i class="fa fa-calendar fa-2x" style="cursor:pointer;margin-left:20px;"id="dLabel2" data-toggle="dropdown" ></i>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
+        <datetimepicker data-ng-model="data.pickUpTime"
+        data-datetimepicker-config="{ dropdownSelector: '#dLabel2' }"></datetimepicker>
+      </ul>
+    </div>
+  </div>
+  <!-- /.navbar-collapse -->
+<!-- /.container-fluid -->
+</div>
 
 <div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=false;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};
   display:inline-block;z-index:100;color:white;background-color:#1b375c;width:;box-sizing:border-box;transition:left 0.1s linear;width:240px;">
@@ -76,12 +83,71 @@
   </div>
 </div>
 
-<header ng-if="$state.is('ecommerce')" style="background-image: url('/static/images/ecommerce2.jpg');
-  position:relative; top:-30px ;max-height:450px;">
-    <div class="container-fluid" style="position:relative;top:-100px;">
-        <div class="intro-text">
-            <div class="intro-lead-in">Lowest price</div>
-            <div class="intro-heading">Amazing deals</div>
-        </div>
+<div ng-if="$state.is('ecommerce')" style="position:relative;height:400px;margin-bottom:20px;margin-top:15px; width:63.5%;right:-18.3%;display:border-box;overflow:hidden;" class="card">
+  <img class="anim-in-out anim-fade" data-anim-speed="100" ng-click="$state.go(slide.banners[slide.active].state , slide.banners[slide.active].params)" style="width:100%;"
+    ng-if="$index == slide.active" ng-repeat="b in slide.banners" ng-src="{{b.image}}" />
+  <div class="row" style="background-color:#525252;position:absolute;bottom:0px;width:100%; height:60px;margin:0px;">
+    <ul style="padding:0px;">
+      <li ng-click="changeSlide($index)" ng-init="onHover = False;" ng-mouseenter="onHover = true;" ng-mouseleave="onHover = false;" style="display:inline-block;min-width:20%;height:60px;cursor:pointer;"
+        ng-repeat="s in slide.banners track by $index" class="text-center {{($index == slide.active || onHover) ? 'activeSlideTab' : ''}}">
+        <span style="color:{{($index == slide.active || onHover) ? '#3c3c3c' : 'white'}};position:relative;top:-15px;">
+          {{s.title | uppercase}}  <br>
+          {{s.subtitle}}
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<div ng-init="showShortlist=false;" class="bg-white card" style="position:fixed; top:70px;right:{{!showShortlist ? '-350' : '0'}}px;transition:right 0.1s linear;
+  width:350px;height:250px;z-index:10;border-left:solid 5px #831bad;">
+  <div style="position:absolute;right:266px;width:200px;height:32px;top:100px;background-color:#831bad;cursor:pointer;
+    transform: rotate(-90deg);border-radius : 6px 6px 0px 0px; padding-right:20px;padding-left:20px;" ng-click="showShortlist = !showShortlist;">
+    <span style="font-size:18px;color:white;letter-spacing: 3px;"><i class="fa fa-star"></i> Shortlist
+      <span class="badge" style="background-color:white;"><span style="color:#be2611;">0</span></span>
+    </span>
+  </div>
+
+</div>
+
+<div ng-init="showFeedback=false;" class="bg-white card" style="position:fixed; top:350px;right:{{!showFeedback ? '-350' : '0'}}px;transition:right 0.1s linear;
+  width:350px;height:460px;z-index:10;border-left:solid 5px #136ab1;">
+  <div style="position:absolute;right:290px;width:150px;height:32px;top:100px;background-color:#136ab1;cursor:pointer;
+    transform: rotate(-90deg);border-radius : 6px 6px 0px 0px; padding-right:20px;padding-left:20px;" ng-click="showFeedback = !showFeedback;">
+    <span style="font-size:18px;color:white;letter-spacing: 3px;">Feedback
+    </span>
+  </div>
+  <div class="container-fluid" style="margin:10px;">
+    <div class="row">
+      <strong>Send us your feeback / message / complaint or query.</strong>
     </div>
-</header>
+    <div class="row" style="margin-top:20px;">
+      <div class="form-group">
+        <label> Email</label>
+        <input type="email" ng-model="feedback.email" class="form-control" placeholder="Enter your email address">
+      </div>
+      <div class="form-group">
+        <label> Mobile</label>
+        <input type="number" ng-model="feedback.mobile"  class="form-control" placeholder="Enter your mobile number">
+      </div>
+
+      <div class="form-group">
+        <label> Message</label>
+        <textarea rows="3" ng-model="feedback.message"  class="form-control" placeholder="Enter your message/feedback"> </textarea>
+      </div>
+
+      <div style="position:absolute;bottom:10px;">
+        <button type="button" class="btn btn-success" ng-click="sendFeedback()">
+          Send
+        </button>
+        <button type="button" class="btn btn-default" ng-click="showFeedback=false;">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

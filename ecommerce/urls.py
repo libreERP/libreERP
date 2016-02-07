@@ -18,6 +18,8 @@ router.register(r'choiceLabel' , choiceLabelViewSet , base_name = 'choiceLabel')
 router.register(r'choiceOption' , choiceOptionViewSet , base_name = 'choiceOption')
 router.register(r'offering' , offeringViewSet , base_name = 'offering')
 router.register(r'offeringAdmin' , offeringAdminViewSet , base_name = 'offeringAdmin')
+router.register(r'feedback' , feedbackViewSet)
+router.register(r'offerBanner' , offerBannerViewSet , base_name='offerBanner')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

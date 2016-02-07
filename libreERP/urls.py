@@ -8,7 +8,7 @@ from HR.views import loginView , logoutView , home , registerView , tokenAuthent
 from ecommerce.views import ecommerceHome , serviceRegistration
 
 urlpatterns = [
-    url(r"^$", ecommerceHome , name = 'index'),
+    url(r"^$", ecommerceHome , name = 'ecommerceHome'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', loginView , name ='login'),
@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^token', tokenAuthentication , name ='tokenAuthentication'),
     url(r'^logout/', logoutView , name ='logout'),
     url(r'^ERP/', home , name ='ERP'),
-    url(r'^ecommerce/', ecommerceHome , name ='ecommerce'),
+    url(r'^corporate/', index , name ='index'),
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
 ]
 

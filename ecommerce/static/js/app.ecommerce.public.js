@@ -77,16 +77,12 @@ app.config(function($stateProvider ){
     controller: 'controller.ecommerce.account.support'
   })
 
-
-
-
-
 });
 
-app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $window){
 
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
-
+  $window.scrollTo(0,0)
   $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
   then(function(response){
     d = response.data;
@@ -345,11 +341,59 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
 })
 
 
-app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , $uibModal , $users){
+app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , $uibModal , $users , $interval , Flash){
   $scope.me = $users.get('mySelf')
   $scope.inCart = [];
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
+
+
+  $scope.slide = {banners : [] , active : 0};
+
+  $http({method : 'GET' , url : '/api/ecommerce/offerBanner/'}).
+  then(function(response) {
+    $scope.slide.banners = response.data;
+  })
+
+  // banner = {image : '/static/images/ecommerce2.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
+  // $scope.slide.banners.push(banner);
+  // banner = {image : '/static/images/background4.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
+  // $scope.slide.banners.push(banner);
+  // banner = {image : '/static/images/background2.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
+  // $scope.slide.banners.push(banner);
+  // banner = {image : '/static/images/background3.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
+  // $scope.slide.banners.push(banner);
+  // banner = {image : '/static/images/ecommerce.jpg' , title : 'Title 1' , subtitle : 'Sub' , state : 'details'  , params : {id : 22}}
+  // $scope.slide.banners.push(banner);
+
+  $scope.changeSlide = function(index){
+    $scope.slide.active = index;
+  }
+
+  $interval(function () {
+    $scope.slide.active += 1;
+    if ($scope.slide.active == 5) {
+      $scope.slide.active = 0;
+    }
+  }, 5000);
+
+  $scope.feedback = {email : '' , mobile : null , message : ''};
+
+  $scope.sendFeedback = function() {
+    dataToSend = {
+      email : $scope.feedback.email,
+      mobile : $scope.feedback.mobile,
+      message : $scope.feedback.message,
+    }
+
+    $http({method : 'POST' , url : '/api/ecommerce/feedback/' , data : dataToSend }).
+    then(function(response) {
+      Flash.create('success', 'Thank you!');
+      $scope.feedback = {email : '' , mobile : null , message : ''};
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+  }
 
   $scope.settings = {};
   $http({method : 'GET' , url : '/api/ERP/appSettings/?app=25'}).

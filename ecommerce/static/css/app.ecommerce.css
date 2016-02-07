@@ -7,6 +7,27 @@
 	color: #fff;
 }
 
+.activeSlideTab {
+  background-color:white;
+  border-bottom: solid 6px #f0a71e;
+  border-top: solid 2px #8a8a8a;
+
+}
+.activeSlideTab:before {
+  content: '';
+  display: block;
+  position: relative;
+  top: -11px;
+  right:-45%;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-top: solid 2px #8a8a8a;
+  border-right: solid 2px #8a8a8a;
+  -moz-transform:rotate(-45deg);
+  -webkit-transform:rotate(-45deg);
+}
+
 .activeTab:after {
   content: '';
   display: block;
@@ -25,15 +46,20 @@
     background-color: #cccccc;
 }
 
-.navbar-default .nav li a:hover,
-.navbar-default .nav li a:focus {
-    border-radius: 4px;
-    color: #ffffff !important;
-    background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+footer {
+    padding: 25px 0;
+    text-align: center;
 }
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus,
-.navbar-default .navbar-brand:active,
-.navbar-default .navbar-brand.active {
-    color: #ffffff !important;
+
+footer span.copyright {
+    text-transform: uppercase;
+    text-transform: none;
+    line-height: 40px;
+}
+
+footer ul.quicklinks {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    text-transform: none;
+    line-height: 40px;
 }

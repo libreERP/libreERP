@@ -1,14 +1,40 @@
+app.controller('businessManagement.ecommerce.configure.offerBanner' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+  $scope.form = {title : '' , subtitle : '' , image : emptyFile , level : 1 , state : '' , params : ''};
 
+  $scope.submit = function() {
+    if ($scope.form.image == emptyFile) {
+      Flash.create('danger', 'No image selected');
+      return;
+    }
+    var fd = new FormData();
+    fd.append( 'title' , $scope.form.title);
+    fd.append( 'subtitle' , $scope.form.subtitle);
+    fd.append( 'image' , $scope.form.image);
+    fd.append( 'level' , $scope.form.level);
+    fd.append( 'state' , $scope.form.state);
+    fd.append( 'params' , $scope.form.params);
+    $http({method : 'POST' , url : '/api/ecommerce/offerBanner/' , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      $scope.form = {title : '' , subtitle : '' , image : emptyFile , level : 1 , state : '' , params : ''};
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+  }
+
+
+
+});
 app.controller('businessManagement.ecommerce.configure' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
     ];
 
-  $scope.editorTemplateField = '/static/ngTemplates/app.ecommerce.vendor.form.field.html'
-  $scope.editorTemplateChoiceLabel = '/static/ngTemplates/app.ecommerce.vendor.form.choiceLabel.html'
-  $scope.editorTemplateChoiceOption = '/static/ngTemplates/app.ecommerce.vendor.form.choiceOption.html'
-  $scope.editorTemplateGenericProduct = '/static/ngTemplates/app.ecommerce.vendor.form.genericProduct.html'
-  $scope.editorTemplateGenericType = '/static/ngTemplates/app.ecommerce.vendor.form.genericType.html'
+  $scope.editorTemplateField = '/static/ngTemplates/app.ecommerce.vendor.form.field.html';
+  $scope.editorTemplateChoiceLabel = '/static/ngTemplates/app.ecommerce.vendor.form.choiceLabel.html';
+  $scope.editorTemplateChoiceOption = '/static/ngTemplates/app.ecommerce.vendor.form.choiceOption.html';
+  $scope.editorTemplateGenericProduct = '/static/ngTemplates/app.ecommerce.vendor.form.genericProduct.html';
+  $scope.editorTemplateGenericType = '/static/ngTemplates/app.ecommerce.vendor.form.genericType.html';
 
   $scope.fieldConfig = {
     views : views,
@@ -53,7 +79,14 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
     deletable : true,
     searchField: 'name',
   }
-
+  $scope.offerBannersConfig = {
+    views : views,
+    url : '/api/ecommerce/offerBanner/',
+    deletable : true,
+    searchField: 'name',
+    canCreate : true,
+    editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.form.offerBanner.html',
+  }
 
 
   $scope.typeSearch = function(query) {
@@ -94,6 +127,8 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
       });
     }
   }
+
+
   $scope.submit = function(){
     d = $scope.data;
     if ($scope.data.mode == 'field') {
@@ -106,7 +141,7 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
       if (d.fieldType == 'choice') {
         dataToSend.unit = d.choiceLabel.name;
       }else {
-        dataToSend.unit = d.fieldType;
+        dataToSend.unit = d.unit;
       }
 
       url = '/api/ecommerce/field/';

@@ -7,15 +7,17 @@
     <title>Ecommerce</title>
     <!-- stock css libraries -->
     {% if useCDN %}
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" charset="utf-8">
+      <link rel="stylesheet" href="https://bootswatch.com/paper/bootstrap.min.css" charset="utf-8">
+      <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" charset="utf-8"> -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" charset="utf-8">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.1/animate.min.css" charset="utf-8">
     {% else %}
-      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+      <link rel="stylesheet" href="{% static 'css/bootstrap.paper.min.css' %}" charset="utf-8">
+      <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8"> -->
       <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
       <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
     {% endif %}
-    
+
     <link rel="stylesheet" href="{% static 'css/datetimepicker.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/angular-aside.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
@@ -23,7 +25,6 @@
     <!-- custom css -->
     <link rel="stylesheet" href="{% static 'css/custom/base.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/app.ecommerce.css' %}" charset="utf-8">
-    <link href="{% static 'css/agency.css' %}" rel="stylesheet">
   </head>
   <body>
 

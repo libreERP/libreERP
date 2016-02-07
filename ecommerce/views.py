@@ -316,7 +316,7 @@ class supportApi(APIView): # on the support tab of the accounts page , the users
         body = request.data['body']
         user = self.request.user
 
-        send_mail(subject, body, 'ciocpky@gmail.com', # support email , it should be something line support@ecommerce.com
+        send_mail(subject, body, 'ciocpky@gmail.com', # support email , it should be something like support@ecommerce.com
         [user.email , 'help@ecommerce.com'], fail_silently=False) # here the email is an array of email address
         return Response(status = status.HTTP_200_OK)
 
@@ -408,6 +408,19 @@ class serviceViewSet(viewsets.ModelViewSet):
     serializer_class = serviceSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
+
+class feedbackViewSet(viewsets.ModelViewSet):
+    queryset = feedback.objects.all()
+    serializer_class = feedbackSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['email']
+
+class offerBannerViewSet(viewsets.ModelViewSet):
+    serializer_class = offerBannerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+    def get_queryset(self):
+        return offerBanner.objects.filter(active = True)[:5]
 
 class mediaViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
