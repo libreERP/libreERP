@@ -1,0 +1,40 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Address</h2>
+      <div class="form-group">
+        <label>Address : </label>
+        <textarea ng-model="form.address.street" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Pincode : </label>
+        <input ng-model="form.address.pincode" type="number" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>City : </label>
+        <input ng-model="form.address.city" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>State : </label>
+        <input ng-model="form.address.state" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Mobile no. : </label>
+        <input ng-model="customerProfile.mobile" type="text" class="form-control">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Send updates on latest offers : </label>
+        <input ng-model="customerProfile.sendUpdates" type="checkbox">
+      </div>
+    </div>
+  </div>
+  <div class="row container-fluid">
+    <button ng-click="saveAddress()" type="button" class="btn btn-primary">
+      Save
+    </button>
+  </div>
+
+</div>
