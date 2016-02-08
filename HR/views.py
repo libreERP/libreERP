@@ -56,7 +56,8 @@ def loginView(request):
                 authStatus = {'status' : 'warning' , 'message' : 'Your account is not active.' }
         else:
             authStatus = {'status' : 'danger' , 'message' : 'Incorrect username or password.' }
-    return render(request , 'login.html' , {'authStatus' : authStatus})
+
+    return render(request , 'login.html' , {'authStatus' : authStatus ,'useCDN' : globalSettings.USE_CDN})
 
 def registerView(request):
     msg = {'status' : 'default' , 'message' : '' }

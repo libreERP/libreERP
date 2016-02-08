@@ -43,6 +43,15 @@ class genericProductSerializer(serializers.ModelSerializer):
             gp.fields.add(field.objects.get(pk = f))
         gp.save()
         return gp
+    def update(self , instance , validated_data):
+        instance.name = validated_data.pop('name')
+        instance.productType = genericType.objects.get(pk = self.context['request'].data['productType'])
+        instance.fields.clear()
+        instance.save()
+        for f in self.context['request'].data['fields']:
+            instance.fields.add(field.objects.get(pk = f))
+        instance.save()
+        return instance
 
 class addressSerializer(serializers.ModelSerializer):
     class Meta:

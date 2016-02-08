@@ -41,7 +41,7 @@
       <i class="fa fa-calendar fa-2x" style="cursor:pointer;margin-left:20px;" id="dLabel" data-toggle="dropdown" ></i>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
         <datetimepicker data-ng-model="data.dropInTime"
-          data-datetimepicker-config="{ dropdownSelector: '#dLabel' }"></datetimepicker>
+          data-datetimepicker-config="{ dropdownSelector: '#dLabel' , minView :'hour' }"></datetimepicker>
       </ul>
       <span style="margin-left:100px;cursor:pointer;position:relative;" class="fa fa-arrow-right fa-2x text-muted" ng-click="refreshResults()"></span>
     </div>
@@ -56,7 +56,7 @@
       <i class="fa fa-calendar fa-2x" style="cursor:pointer;margin-left:20px;"id="dLabel2" data-toggle="dropdown" ></i>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
         <datetimepicker data-ng-model="data.pickUpTime"
-        data-datetimepicker-config="{ dropdownSelector: '#dLabel2' }"></datetimepicker>
+        data-datetimepicker-config="{ dropdownSelector: '#dLabel2' , minView :'hour'}"></datetimepicker>
       </ul>
     </div>
   </div>

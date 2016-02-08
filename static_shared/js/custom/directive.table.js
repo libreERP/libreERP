@@ -45,7 +45,6 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   $scope.multiselectOptions = $scope.config.multiselectOptions;
   $scope.getParams = $scope.config.getParams;
 
-
   $scope.$watch('data' , function(newValue , oldValue){
     $scope.selectStates = [];
     if ($scope.isSelectable) {
@@ -373,18 +372,23 @@ app.controller('genericTableItem' , function($scope , $uibModal){
   $scope.editorTemplate = angular.isDefined($scope.config.editorTemplate) ? $scope.config.editorTemplate:'';
   $scope.fields = angular.isDefined($scope.config.fields) ? $scope.config.fields: false;
 
-  if (typeof $scope.data.url == 'undefined') {
-    if (typeof $scope.data.pk == 'undefined') {
-      $scope.target = $scope.data.id;
+  $scope.getTarget = function(){
+    if (typeof $scope.data.url == 'undefined') {
+      if (typeof $scope.data.pk == 'undefined') {
+        $scope.target = $scope.data.id;
+      } else {
+        $scope.target = $scope.data.pk;
+      }
     } else {
-      $scope.target = $scope.data.pk;
+      $scope.target = $scope.data.url;
+      $scope.data.pk = getPK($scope.data.url);
     }
-  } else {
-    $scope.target = $scope.data.url;
-    $scope.data.pk = getPK($scope.data.url);
   }
 
+  $scope.getTarget()
+
   $scope.rowActionClicked = function(option){
+    $scope.getTarget();
     $scope.rowAction( $scope.target ,  option)
   }
 
