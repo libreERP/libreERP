@@ -140,7 +140,7 @@ def ecommerceHome(request):
 
     return render(request , 'ngEcommerce.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'useCDN' : globalSettings.USE_CDN})
 
-def serviceRegistration(request): # the landing page for the vendors registration page
+def partnerRegistration(request): # the landing page for the vendors registration page
     return render(request , 'app.ecommerce.register.service.html')
 
 
