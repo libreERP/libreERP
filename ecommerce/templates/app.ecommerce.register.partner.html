@@ -1,0 +1,101 @@
+{% load staticfiles%}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html ng-app="app"  ng-controller="main" id="main">
+  <head>
+    <meta charset="utf-8">
+    <title>Partner</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/app.HR.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
+  </head>
+  <body >
+    <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
+    <div class="col-md-8" style="background-image: url('/static/images/ecommerce2.jpg');height:100%;position:absolute;left:0px;">
+    </div>
+    {% csrf_token %}
+     {% verbatim %}
+    <div class="col-md-4" style="background-color:#114c91;height:100%;position:absolute;right:0px;">
+      <div class="container-fluid" >
+
+        <div class="form-signin" ng-if="stage=='signupForm'">
+          <h2 class="form-signin-heading" style="color:white;margin-top:200px;">Become our partner</h2>
+
+          <input ng-model="form.signup.first_name" type="text" class="form-control" placeholder="First name" autofocus>
+          <input ng-model="form.signup.last_name" type="text" class="form-control" placeholder="Last name" autofocus>
+          <input ng-model="form.signup.email" type="text" class="form-control" placeholder="Email">
+          <input ng-model="form.signup.password" type="password" class="form-control" placeholder="Password">
+          <p style="color:white;">
+            On clicking next, you agree to the terms and conditions.
+          </p>
+          <button ng-click="continue()" class="btn btn-lg btn-primary btn-block" >Next</button>
+        </div>
+        <div class="form-signin" ng-if="stage=='serviceForm1'">
+          <h2 class="form-signin-heading" style="color:white;margin-bottom:50px;margin-top:50px;">
+            <span ng-click="goBack()" style="color:white;margin-right:50px;cursor:pointer;" class="fa fa-arrow-left"></span>Details</h2>
+          <div class="form-group">
+            <label>Company name</label>
+            <input ng-model="form.serviceForm1.name" type="text" class="form-control" placeholder="Company's name ">
+          </div>
+          <div class="form-group">
+            <label>CIN</label>
+            <input  ng-model="form.serviceForm1.cin" type="text" class="form-control" placeholder="Company Identification No.">
+          </div>
+          <div class="form-group">
+            <label>TIN</label>
+            <input  ng-model="form.serviceForm1.tin" type="text" class="form-control" placeholder="Tax Identification No.">
+          </div>
+          <div class="form-group">
+            <label>Mobile</label>
+            <input  ng-model="form.serviceForm1.mobile" type="number" class="form-control" placeholder="10 digit mobile number">
+          </div>
+          <div class="form-group">
+            <label>Telephone</label>
+            <input  ng-model="form.serviceForm1.telephone" type="number" class="form-control" placeholder="Telephone number with STD code">
+          </div>
+          <button ng-click="continue()" class="btn btn-lg btn-primary btn-block" >Next</button>
+        </div>
+        <div class="form-signin" ng-if="stage=='serviceForm2'">
+          <h2 class="form-signin-heading" style="color:white;margin-bottom:50px;margin-top:50px;">
+            <span ng-click="goBack()" style="color:white;margin-right:50px;cursor:pointer;" class="fa fa-arrow-left"></span>Details</h2>
+          <div class="form-group">
+            <label>Address</label>
+            <textarea ng-model="form.serviceForm2.street" class="form-control" placeholder="Street address"></textarea>
+          </div>
+          <div class="form-group">
+            <label>PINCODE</label>
+            <input ng-model="form.serviceForm2.pincode" type="number" class="form-control" >
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input ng-model="form.serviceForm2.city" type="text" class="form-control" >
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input ng-model="form.serviceForm2.state" type="text" class="form-control" >
+          </div>
+          <div class="form-group">
+            <label>About</label>
+            <textarea ng-model="form.serviceForm2.about" class="form-control" placeholder="Tell us about yourself, this will also be visible to the customers"></textarea>
+          </div>
+          <button ng-click="submit()" class="btn btn-lg btn-primary btn-block" >Submit</button>
+        </div>
+        <div ng-if="stage == 'confirm'">
+          <i style="color:white;cursor:pointer;margin-top:100px;" ng-click="goBack()" class="fa fa-arrow-left fa-3x"></i>
+          <h3 style="color:white;margin-top:180px;"> Thank you.</h3>
+          <p style="color:white;">
+            Your account has been created but is not active. Please confirm your email address to activate and access the provider's portal. More details can also be found in the email.
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>
+    {% endverbatim %}
+    <script src="{% static 'js/angular.min.js' %}"></script>
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/angular-flash.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.register.provider.js' %}"></script>
+  </body>
+</html>

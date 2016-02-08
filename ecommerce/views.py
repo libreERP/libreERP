@@ -141,7 +141,7 @@ def ecommerceHome(request):
     return render(request , 'ngEcommerce.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'useCDN' : globalSettings.USE_CDN})
 
 def partnerRegistration(request): # the landing page for the vendors registration page
-    return render(request , 'app.ecommerce.register.service.html')
+    return render(request , 'app.ecommerce.register.partner.html')
 
 
 def genInvoice(c , o, ofr , it, se): # canvas , order , offer , item , service
