@@ -77,10 +77,8 @@ class mediaSerializer(serializers.ModelSerializer):
         fields = ('pk' , 'link' , 'attachment' , 'mediaType')
     def create(self ,  validated_data):
         user =  self.context['request'].user
-        m = media()
+        m = media(**validated_data)
         m.user = user
-        m.attachment = validated_data.pop('attachment')
-        m.link =  validated_data.pop('link')
         m.save()
         return m
 class offeringLiteSerializer(serializers.ModelSerializer):

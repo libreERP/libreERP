@@ -212,7 +212,7 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
     $http({method : method , url : url , data : dataToSend}).
     then(function(response){
       if (!$scope.editing) {
-        $scope.data = {mode : $scope.data.mode , type : 'char', parentLabel : $scope.data.parentLabel}
+        $scope.data = {mode : $scope.data.mode , fieldType : 'char', parentLabel : $scope.data.parentLabel}
       }
       Flash.create('success', response.status + ' : ' + response.statusText );
     }, function(response){
