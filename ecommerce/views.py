@@ -55,7 +55,7 @@ class insightApi(APIView):
         user = self.request.user
         if 'offering' in self.request.GET:
             s = service.objects.get(user = user)
-            offr = offering.objects.get(pk = self.request.GET['offering'] , service = s)
+            offr = offering.objects.get(pk = self.request['offering'] , service = s)
             ordrs = order.objects.filter(offer = offr) # total orders for this offer
             td = timezone.now() # today
             ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month

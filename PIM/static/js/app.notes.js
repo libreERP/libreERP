@@ -2,6 +2,7 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
   $scope.me = $users.get('mySelf');
   $scope.editor = {pencil : false}
   $scope.canvas = new fabric.Canvas('canvas');
+  $scope.canvas.selection = true;
   $scope.canvas.isDrawingMode = false;
 
   $scope.bookInView = -1;
@@ -90,12 +91,16 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
   }
 
   $scope.addText = function(e){
+    // console.log("will add text");
     newText = new fabric.IText('', {
       fontFamily: 'arial black',
       left: e.layerX,
       top: e.layerY ,
       fontSize:20,
+      fontWeight: 3,
     });
+    // newText.set('selectable', true);
+    // console.log(newText);
     $scope.canvas.add(newText);
     $scope.canvas.setActiveObject(newText);
     newText.enterEditing();
