@@ -9,7 +9,7 @@ app.controller('businessManagement.ecommerce.configure.offerBanner' , function($
     $scope.method = 'POST';
   }else {
     $scope.mdoe = 'edit';
-    $scope.url =  '/api/ecommerce/offerBanner/' + $scope.data.pk + '/';
+    $scope.url =  '/api/ecommerce/offerBanner/' + $scope.data.pk + '/?mode=configure';
     $scope.method = 'PATCH';
   }
 
@@ -28,6 +28,7 @@ app.controller('businessManagement.ecommerce.configure.offerBanner' , function($
         fd.append( 'image' , $scope.form.image);
       }
     }else {
+      fd.append('active' , $scope.data.active);
       if ($scope.form.image != emptyFile) {
         fd.append( 'image' , $scope.form.image);
       }
@@ -103,10 +104,12 @@ app.controller('businessManagement.ecommerce.configure' , function($scope , $htt
   $scope.offerBannersConfig = {
     views : views,
     url : '/api/ecommerce/offerBanner/',
+    fields : ['pk', 'created' , 'level', 'image' , 'title' , 'subtitle' , 'state' , 'params' , 'active'],
     deletable : true,
     searchField: 'name',
     canCreate : true,
     editorTemplate : '/static/ngTemplates/app.ecommerce.vendor.form.offerBanner.html',
+    getParams : [{key : 'mode' , value : 'configure'}]
   }
 
 

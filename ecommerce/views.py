@@ -55,7 +55,7 @@ class insightApi(APIView):
         user = self.request.user
         if 'offering' in self.request.GET:
             s = service.objects.get(user = user)
-            offr = offering.objects.get(pk = self.request['offering'] , service = s)
+            offr = offering.objects.get(pk = self.request.GET['offering'] , service = s)
             ordrs = order.objects.filter(offer = offr) # total orders for this offer
             td = timezone.now() # today
             ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month
@@ -270,7 +270,7 @@ class printInvoiceApi(APIView):
         c.save()
         return response
 
-class offeringAvailabilityApi(APIView): # suggest places for a query
+class offeringAvailabilityApi(APIView): # checks for availabilty of an offer in a time period
     renderer_classes = (JSONRenderer,)
     def get(self, request , format = None):
         utc=pytz.UTC
@@ -523,4 +523,7 @@ class offerBannerViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
     def get_queryset(self):
+        if 'mode' in self.request.GET:
+            if self.request.GET['mode'] == 'configure':
+                return offerBanner.objects.all()
         return offerBanner.objects.filter(active = True)

@@ -1,4 +1,4 @@
-app.controller('businessManagement.ecommerce.providers.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
+app.controller('businessManagement.ecommerce.partners.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
 
   $scope.$watch('data.user', function(newValue , oldValue) {
     if (typeof $scope.data.user != 'object') {
@@ -15,11 +15,11 @@ app.controller('businessManagement.ecommerce.providers.item' , function($scope ,
 });
 
 
-app.controller('businessManagement.ecommerce.providers' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+app.controller('businessManagement.ecommerce.partners' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
   views = [{name : 'list' , icon : 'fa-bars' ,
     template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
-    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.providers.item.html',
+    itemTemplate : '/static/ngTemplates/app.ecommerce.vendor.partners.item.html',
   },];
 
   $scope.data = {tableData : {}};
@@ -29,6 +29,7 @@ app.controller('businessManagement.ecommerce.providers' , function($scope , $htt
     url : '/api/ecommerce/service/',
     fields : ['pk','name','cin' , 'tin' , 'address' , 'mobile' , 'telephone' , 'logo'],
     searchField: 'name',
+    itemsNumPerView : [6,12,24],
     // deletable : true,
   }
 

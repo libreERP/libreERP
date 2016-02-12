@@ -235,3 +235,18 @@ class offerBannerSerializer(serializers.ModelSerializer):
         b.user = u
         b.save()
         return b
+    def update (self, instance, validated_data):
+        if offerBanner.objects.filter(active = True).count() >= 5:
+            return HTTP_400_BAD_REQUEST
+        else:
+            instance.title = validated_data.pop('title')
+            instance.subtitle = validated_data.pop('subtitle')
+            instance.level = validated_data.pop('level')
+            instance.state = validated_data.pop('state')
+            instance.params = validated_data.pop('params')
+            try:
+                instance.image = validated_data.pop('image')
+            except:
+                pass
+            instance.save()
+            return instance
