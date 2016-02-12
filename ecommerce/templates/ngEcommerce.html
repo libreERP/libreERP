@@ -54,7 +54,7 @@
       <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
       <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
       <script src="{% static 'js/angular-animate.min.js' %}"></script>
-      <script src="{% static 'js/autobahn.min.js' %}"></script>
+      <!-- <script src="{% static 'js/autobahn.min.js' %}"></script> -->
       <script src="{% static 'js/moment.js' %}"></script>
     {% endif %}
 
@@ -63,12 +63,17 @@
     <script src="{% static 'js/ng-tags-input.min.js' %}"></script>
     <script src="{% static 'js/anim-in-out.js' %}"></script>
     <!-- Custom JS files -->
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
       var wampServer = '{{wampServer}}';
       var wampBindName = "{{user.username}}";
-    </script>
+    </script> -->
     <script src="{% static 'js/app.ecommerce.public.js' %}"></script>
-    <script src="{% static 'js/custom/wampProcessors.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.list.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.details.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.checkout.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.account.js' %}"></script>
+
+    <!-- <script src="{% static 'js/custom/wampProcessors.js' %}"></script> -->
     <script src="{% static 'js/custom/nativeJS.js' %}"></script>
     <script src="{% static 'js/custom/services.js' %}"></script>
     <script src="{% static 'js/custom/directives.js' %}"></script>

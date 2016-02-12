@@ -1,6 +1,6 @@
 <div ng-controller="businessManagement.ecommerce.configure.offerBanner">
   <div class="modal-header">
-    {{mode ? 'Create a new': 'Edit'}} offer banner
+    {{mode == 'new' ? 'Create a new': 'Edit'}} offer banner
   </div>
   <div class="modal-body">
     <div class="form-group" ng-if="mode == 'edit'">

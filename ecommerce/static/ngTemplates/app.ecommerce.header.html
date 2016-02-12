@@ -38,9 +38,9 @@
     </ul>
     <div class="navbar-form navbar-right" style="position:relative;right:10%;">
       <span style="position:relative;">Dropin</span>
-      <i class="fa fa-calendar fa-2x" style="cursor:pointer;margin-left:20px;" id="dLabel" data-toggle="dropdown" ></i>
+      <i class="fa fa-calendar fa-2x {{getDateTimePickerClass()}}" style="cursor:pointer;margin-left:20px;" id="dLabel" data-toggle="dropdown" ></i>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <datetimepicker data-ng-model="data.dropInTime"
+        <datetimepicker data-ng-model="data.dropInTime" data-on-set-time="checkDateTime(newDate, oldDate)"
           data-datetimepicker-config="{ dropdownSelector: '#dLabel' , minView :'hour' }"></datetimepicker>
       </ul>
       <span style="margin-left:100px;cursor:pointer;position:relative;" class="fa fa-arrow-right fa-2x text-muted" ng-click="refreshResults()"></span>
@@ -64,7 +64,7 @@
 <!-- /.container-fluid -->
 </div>
 
-<div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=false;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};
+<div ng-if="$state.is('ecommerce') || $state.is('details')" ng-init="tripDetails=true;" style="position:fixed;top:110px;left:{{!tripDetails? '-240px' : '0px;'}};
   display:inline-block;z-index:100;color:white;background-color:#1b375c;width:;box-sizing:border-box;transition:left 0.1s linear;width:240px;">
 
   <div class="container-fluid" style="display:inline-block;overflow: hidden;">

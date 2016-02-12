@@ -236,17 +236,20 @@ class offerBannerSerializer(serializers.ModelSerializer):
         b.save()
         return b
     def update (self, instance, validated_data):
-        if offerBanner.objects.filter(active = True).count() >= 5:
-            return HTTP_400_BAD_REQUEST
+        instance.title = validated_data.pop('title')
+        instance.subtitle = validated_data.pop('subtitle')
+        instance.level = validated_data.pop('level')
+        instance.state = validated_data.pop('state')
+        instance.params = validated_data.pop('params')
+        try:
+            instance.image = validated_data.pop('image')
+        except:
+            pass
+        if offerBanner.objects.filter(active = True).count() >= 5 and not instance.active:
+            content = {'details' : 'At any time only 5 offers can be active , please deactive an active one'};
+            raise NotAcceptable(detail=content)
         else:
-            instance.title = validated_data.pop('title')
-            instance.subtitle = validated_data.pop('subtitle')
-            instance.level = validated_data.pop('level')
-            instance.state = validated_data.pop('state')
-            instance.params = validated_data.pop('params')
-            try:
-                instance.image = validated_data.pop('image')
-            except:
-                pass
+            instance.active = validated_data.pop('active')
             instance.save()
-            return instance
+
+        return instance

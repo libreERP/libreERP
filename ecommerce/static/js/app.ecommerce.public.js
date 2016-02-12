@@ -79,266 +79,6 @@ app.config(function($stateProvider ){
 
 });
 
-app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $window){
-
-  $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
-  $window.scrollTo(0,0)
-  $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
-  then(function(response){
-    d = response.data;
-    d.specifications = JSON.parse(d.specifications);
-    d.pictureInView = 0;
-    min = d.providerOptions[0].rate;
-    index = 0;
-    for (var i =0; i < d.providerOptions.length; i++) {
-      if ($scope.data.pickUpTime == null || $scope.data.dropInTime == null) {
-        d.providerOptions[i].available = 'error';
-      } else {
-        dataToSend = {
-          start : $scope.data.pickUpTime,
-          end : $scope.data.dropInTime,
-          offering : d.providerOptions[i].pk,
-        }
-        $http({method : 'GET' , url : '/api/ecommerce/offeringAvailability/?mode=time' , params : dataToSend}).
-        then((function(i){
-          return function(response){
-            $scope.data.providerOptions[i].available = response.data.available;
-          }
-        })(i))
-        d.providerOptions[i].available = true;
-      }
-      if (d.providerOptions[i].rate <min){
-        index = i;
-        min = d.providerOptions[i].rate;
-      }
-    }
-    console.log(d);
-    $scope.data = d;
-    $scope.offeringInView = index;
-  });
-
-
-  $scope.changePicture = function(pic){
-    $scope.data.pictureInView = pic;
-  }
-
-  $scope.addToCart = function(input){
-    dataToSend = {
-      category : 'cart',
-      user : getPK($scope.me.url),
-      item : input.pk,
-    }
-    $http({method : 'POST' , url : '/api/ecommerce/saved/' , data : dataToSend }).
-    then(function(response){
-      for (var i = 0; i < $scope.inCart.length; i++) {
-        if ($scope.inCart[i].pk == response.data.pk){
-          return;
-        }
-      }
-      $scope.inCart.push(response.data);
-    })
-  }
-
-  $scope.buy = function(input){
-    $state.go('checkout' , {pk : input.pk})
-  }
-
-
-
-
-
-
-
-});
-
-app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-// for the dashboard of the account tab
-});
-app.controller('controller.ecommerce.account.cart' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-
-  $scope.views = [{name : 'list' , icon : 'fa-bars' ,
-    template : '/static/ngTemplates/app.ecommerce.account.cart.list.html' ,
-    itemTemplate : '/static/ngTemplates/app.ecommerce.account.cart.item.html',
-
-  },];
-
-});
-
-app.controller('controller.ecommerce.account.cart.item' , function($scope , $http , $state){
-  console.log("item loaded");
-
-  $scope.data = $scope.$parent.$parent.data;
-  console.log($scope.data);
-  $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/'}).
-  then(function(response){
-    index = 0
-    l = response.data;
-    min = l.providerOptions[index].rate;
-    for (var j = 1; j < l.providerOptions.length; j++) {
-      if (l.providerOptions[j].rate < min) {
-        min = l.providerOptions[j].rate;
-        index = j;
-      }
-    }
-    l.bestOffer = l.providerOptions[index];
-    for(key in l){
-      $scope.data[key] = l[key];
-    }
-  })
-
-  $scope.view = function(){
-    $state.go('details' , {id : $scope.data.pk})
-  }
-
-
-})
-
-app.controller('controller.ecommerce.account.orders' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-  $scope.views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
-    ];
-
-  $scope.getParams = [{key : 'mode', value : 'consumer'}];
-
-});
-
-app.controller('controller.ecommerce.account.settings' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-  $scope.form = {address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }}
-
-  $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
-  then(function(response){
-    // for(key in response.data[0])
-    $scope.customerProfile = response.data[0];
-    $scope.form.address = response.data[0].address;
-    console.log($scope.customerProfile);
-  })
-
-
-  $scope.saveAddress = function(){
-    console.log($scope.form);
-    dataToSend = $scope.form.address;
-    dataToSend.sendUpdates  = $scope.customerProfile.sendUpdates;
-    dataToSend.mobile  = $scope.customerProfile.mobile;
-    $http({method : 'PATCH' , url : '/api/ecommerce/profile/' + $scope.customerProfile.pk + '/' , data : dataToSend }).
-    then(function(response){
-      Flash.create('success', response.status + ' : ' + response.statusText);
-    }, function(response){
-      Flash.create('danger', response.status + ' : ' + response.statusText);
-    })
-  }
-
-});
-
-app.controller('controller.ecommerce.account.support' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-
-  $scope.message = {subject : '' , body : ''};
-  $scope.sendMessage = function(){
-    $http({method : 'POST' , url : '/api/ecommerce/support/' , data : $scope.message}).
-    then(function(response){
-      $scope.message = {subject : '' , body : ''};
-      Flash.create('success', response.status + ' : ' + response.statusText);
-    }, function(response){
-      Flash.create('danger', response.status + ' : ' + response.statusText);
-    })
-  }
-
-
-});
-
-app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-
-});
-
-
-app.controller('controller.ecommerce.checkout' , function($scope , $state, $http , $timeout , $uibModal , $users , Flash){
-  $scope.me = $users.get('mySelf');
-  $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
-
-  $scope.$watch(function(){
-    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
-    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
-    $scope.data.location = $scope.$parent.data.location;
-  })
-
-
-  $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
-  then(function(response){
-    $scope.customerProfile = response.data[0];
-    $scope.data.address = response.data[0].address;
-  })
-
-  $http({method : 'GET' , url : '/api/ecommerce/offering/' + $state.params.pk + '/'}).
-  then(function(response){
-    $scope.offering = response.data;
-    $scope.getBookingAmount = function(){
-      h = Math.ceil(($scope.data.dropInTime-$scope.data.pickUpTime)/3600000);
-      if (h<0){
-        return 0
-      }else {
-        return $scope.offering.rate * $scope.data.quantity*h
-      }
-    }
-
-    $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/'}).
-    then(function(response){
-      $scope.item = response.data;
-    })
-  })
-
-
-  $scope.next = function(){
-    if ($scope.data.stage == 'review') {
-      $scope.data.stage = 'shippingDetails';
-    } else if ($scope.data.stage == 'shippingDetails') {
-      $scope.data.stage = 'payment';
-    }
-  }
-  $scope.prev = function(){
-    if ($scope.data.stage == 'shippingDetails') {
-      $scope.data.stage = 'review';
-    } else if ($scope.data.stage == 'payment') {
-      $scope.data.stage = 'shippingDetails';
-    }
-  }
-
-  $scope.pay = function(){
-    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
-    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
-    $scope.data.location = $scope.$parent.data.location;
-
-    if ($scope.data.pickUpTime == null || $scope.data.dropInTime== null) {
-      Flash.create('danger' , 'No start date and end date provided');
-      return;
-    }
-    dataToSend = {
-      user : getPK($scope.me.url),
-      offer : $scope.offering.pk,
-      paymentType : 'COD',
-      rate : $scope.offering.rate,
-      quantity : $scope.data.quantity,
-      mobile : $scope.customerProfile.mobile,
-      coupon : $scope.data.coupon,
-      shipping : $scope.data.shipping,
-      start : $scope.data.pickUpTime,
-      end : $scope.data.dropInTime,
-    }
-    for (key in $scope.data.address) {
-      if (key == 'pk') {
-        continue;
-      }
-      dataToSend[key] = $scope.data.address[key];
-    }
-    $http({method : 'POST' , url : '/api/ecommerce/order/' , data : dataToSend}).
-    then(function(response){
-      $scope.data.stage = 'confirmation';
-      $scope.data.order = response.data;
-      Flash.create('success', response.status + ' : ' + response.statusText);
-    }, function(response){
-      Flash.create('danger', response.status + ' : ' + response.statusText);
-    })
-  }
-
-
-})
 
 
 app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , $uibModal , $users , $interval , Flash){
@@ -395,7 +135,6 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
     for (var i = 0; i < response.data.length; i++) {
       $scope.settings[response.data[i].name] = response.data[i].value;
     }
-    console.log($scope.settings);
   })
 
   $scope.data.pickUpTime = null;
@@ -431,6 +170,18 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
     })
   }
 
+  $scope.getDateTimePickerClass = function() {
+    if ($scope.data.pickUpTime && $scope.data.dropInTime && ($scope.data.dropInTime-$scope.data.pickUpTime)<0) {
+      return 'text-danger';
+    }
+  }
+
+  $scope.checkDateTime = function() {
+    if ($scope.data.pickUpTime && $scope.data.dropInTime && ($scope.data.dropInTime-$scope.data.pickUpTime)<0) {
+      Flash.create('danger', " Trip can not end before start please check the drop in time");
+    }
+  }
+
   $scope.refreshResults = function(){
     $state.go('ecommerce' , {} , {reload : true})
     // if (angular.isDefined($scope.$$childHead.fetchListings)) {
@@ -439,76 +190,5 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
     //   $scope.$$childTail.fetchListings()
     // }
   }
-
-});
-
-app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
-
-  $scope.fetchListings = function(){
-    url = '/api/ecommerce/listingLite/?'
-    $scope.listings = [];
-    parent = $scope.$parent;
-    if (parent.data.location != null && typeof parent.data.location!='string') {
-      l = parent.data.location;
-      pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
-      if (pin != null) {
-        url += 'geo=' + pin[0].substring(0,3);
-      } else {
-        return;
-      }
-
-    }
-
-    $http({method : "GET" , url : url}).
-    then(function(response){
-      for (var i = 0; i < response.data.length; i++) {
-        l = response.data[i];
-        index = 0
-        if (l.providerOptions.length == 0) {
-          continue;
-        }
-        min = l.providerOptions[index].rate;
-        for (var j = 1; j < l.providerOptions.length; j++) {
-          if (l.providerOptions[j].rate < min) {
-            min = l.providerOptions[j].rate;
-            index = j;
-          }
-        }
-        l.bestOffer = l.providerOptions[index];
-        $scope.listings.push(l);
-      }
-    })
-  }
-
-  $scope.listings = [];
-  $scope.me = $users.get('mySelf');
-
-  $scope.addToCart = function(input){
-    dataToSend = {
-      category : 'cart',
-      user : getPK($scope.me.url),
-      item : input.pk,
-    }
-    $http({method : 'POST' , url : '/api/ecommerce/saved/' , data : dataToSend }).
-    then(function(response){
-      for (var i = 0; i < $scope.inCart.length; i++) {
-        if ($scope.inCart[i].pk == response.data.pk){
-          return;
-        }
-      }
-      $scope.inCart.push(response.data);
-    })
-  }
-
-  $scope.buy = function(input){
-    $state.go('checkout' , {pk : input.pk})
-  }
-
-  $scope.changePicture = function(parent , pic){
-    $scope.listings[$scope.listings.indexOf(parent)].pictureInView = pic;
-  }
-
-  $scope.fetchListings()
-
 
 });
