@@ -11,11 +11,13 @@
       <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" charset="utf-8"> -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" charset="utf-8">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/animatecss/3.5.1/animate.min.css" charset="utf-8">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/angular.chartjs/0.8.8/angular-chart.min.css" charset="utf-8">
     {% else %}
       <link rel="stylesheet" href="{% static 'css/bootstrap.paper.min.css' %}" charset="utf-8">
       <!-- <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8"> -->
       <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
       <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
+      <link rel="stylesheet" href="{% static 'css/angular-chart.min.css' %}" charset="utf-8">
     {% endif %}
 
     <link rel="stylesheet" href="{% static 'css/datetimepicker.css' %}" charset="utf-8">
@@ -46,7 +48,10 @@
       <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
       <script src="https://cdn.jsdelivr.net/angularjs/1.4.7/angular-animate.min.js"></script>
       <script src="https://cdn.jsdelivr.net/momentjs/2.11.1/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/0.8.8/angular-chart.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
     {% else %}
+      <script src="{% static 'js/Chart.min.js' %}"></script>
       <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
       <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <script src="{% static 'js/angular.min.js' %}"></script>
@@ -56,6 +61,7 @@
       <script src="{% static 'js/angular-animate.min.js' %}"></script>
       <!-- <script src="{% static 'js/autobahn.min.js' %}"></script> -->
       <script src="{% static 'js/moment.js' %}"></script>
+      <script src="{% static 'js/angular-chart.min.js' %}"></script>
     {% endif %}
 
     <script src="{% static 'js/datetimepicker.js' %}"></script>

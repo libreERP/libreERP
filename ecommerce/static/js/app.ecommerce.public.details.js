@@ -1,4 +1,6 @@
-app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $window){
+app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , Flash , $window , $anchorScroll, $location ){
+
+  $scope.ratings = {spread : [4,2,6,1,0] , overall : 5};
 
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
   $window.scrollTo(0,0)
@@ -31,7 +33,6 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
         min = d.providerOptions[i].rate;
       }
     }
-    console.log(d);
     $scope.data = d;
     $scope.offeringInView = index;
   });
@@ -39,6 +40,23 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
   $scope.changePicture = function(pic){
     $scope.data.pictureInView = pic;
+  }
+
+  $scope.showGoToTop = false;
+  $scope.$watch(function(){
+    if ( $window.pageYOffset > 0 ) {
+      $scope.showGoToTop = true;
+    } else {
+      $scope.showGoToTop = false;
+    }
+    return null;
+  })
+
+  // $scope.data = [300, 500, 100];
+  // $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+
+  $scope.goToTop = function() {
+    $window.scrollTo(0,0)
   }
 
   $scope.addToCart = function(input){
@@ -50,11 +68,13 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
     $http({method : 'POST' , url : '/api/ecommerce/saved/' , data : dataToSend }).
     then(function(response){
       for (var i = 0; i < $scope.inCart.length; i++) {
-        if ($scope.inCart[i].pk == response.data.pk){
+        if ($scope.$parent.inCart[i].id == response.data.id){
+          Flash.create('danger' , 'Already in the cart.')
           return;
         }
       }
-      $scope.inCart.push(response.data);
+      $scope.$parent.inCart.push(response.data);
+      Flash.create('success' , 'Ok')
     })
   }
 

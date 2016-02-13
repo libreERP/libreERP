@@ -1,5 +1,5 @@
-app.controller('controller.ecommerce.account.cart' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-
+app.controller('controller.ecommerce.account.cart' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $window){
+  $window.scrollTo(0,0)
   views = [{name : 'list' , icon : 'fa-bars' ,
     template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
     itemTemplate : '/static/ngTemplates/app.ecommerce.account.cart.item.html',
@@ -15,10 +15,22 @@ app.controller('controller.ecommerce.account.cart' , function($scope , $state , 
 });
 
 app.controller('controller.ecommerce.account.cart.item' , function($scope , $http , $state){
-  console.log("item loaded");
 
+  $scope.tableData = $scope.$parent.$parent.$parent.$parent.$parent.data;
   $scope.data = $scope.$parent.$parent.data;
-  console.log($scope.data);
+  $scope.delete = $scope.$parent.$parent.delete;
+
+  $scope.delete = function(){
+    $http({method : 'DELETE' , url : '/api/ecommerce/saved/' +  $scope.data.id + '/'}).
+    then(function(response) {
+      for (var i = 0; i < $scope.tableData.length; i++) {
+        if ($scope.tableData[i].id == $scope.data.id){
+          $scope.tableData.splice(i,1);
+          $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.inCart.splice(0,1);
+        }
+      }
+    });
+  }
   $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/'}).
   then(function(response){
     index = 0
@@ -37,7 +49,7 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
   })
 
   $scope.view = function(){
-    $state.go('details' , {id : $scope.data.pk})
+    $state.go('details' , {id : $scope.data.pk});
   }
 
 
@@ -71,7 +83,6 @@ app.controller('controller.ecommerce.account.settings' , function($scope , $stat
 
 
   $scope.saveAddress = function(){
-    console.log($scope.form);
     dataToSend = $scope.form.address;
     dataToSend.sendUpdates  = $scope.customerProfile.sendUpdates;
     dataToSend.mobile  = $scope.customerProfile.mobile;
@@ -101,6 +112,6 @@ app.controller('controller.ecommerce.account.support' , function($scope , $state
 
 });
 
-app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
-
+app.controller('controller.ecommerce.account' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $window){
+  $window.scrollTo(0,0)
 });
