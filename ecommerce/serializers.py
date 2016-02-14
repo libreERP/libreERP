@@ -194,9 +194,16 @@ class orderSerializer(serializers.ModelSerializer):
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
         model = saved
-        fields = ('id' , 'user' , 'created' , 'item' , 'category' , 'state' , 'end' , 'quantity' )
+        fields = ('id' , 'user' , 'created' , 'item' , 'category' , 'start' , 'end' , 'quantity' )
     def create(self ,  validated_data):
         s , new = saved.objects.get_or_create(user = self.context['request'].user , item = validated_data.pop('item') , category = validated_data.pop('category'))
+        try:
+            s.start = validated_data.pop('start')
+            s.end = validated_data.pop('end')
+            s.quantity = validated_data.pop('quantity')
+        except:
+            pass
+        s.save()
         return s
 
 class customerProfileSerializer(serializers.ModelSerializer):

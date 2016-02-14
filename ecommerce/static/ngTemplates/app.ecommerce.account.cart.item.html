@@ -4,15 +4,21 @@
       <img style="width: 100%;" class="img" ng-src="{{data.files[0].attachment}}" >
     </div>
     <div class="row" >
-      <div class="container-fluid card bg-white" style="padding:10px;">
-        <h4>{{data.title}}</h4>
-        <span style="position:absolute;right:20px;bottom:55px;" ng-click="delete();$event.stopPropagation();" title="Remove"><i class="fa fa-trash-o text-muted fa-2x"></i></span>
-        {{data.providerOptions.length}} {{data.providerOptions.length>1? 'Vendors' : 'Vendor'}}
-        <span class="pull-right">
-          Starts from  <span style="font-size:20px;margin-left:10px;">
-            {{data.bestOffer.rate}} <i class="fa fa-inr"></i>
+      <div class=" card bg-white" style="padding:10px;">
+        <div class="row container-fluid">
+          <h4>{{data.title}}</h4>
+          <span style="position:absolute;right:20px;bottom:90px;" ng-click="delete();$event.stopPropagation();" title="Remove"><i class="fa fa-trash-o text-muted fa-2x"></i></span>
+          {{data.providerOptions.length}} {{data.providerOptions.length>1? 'Vendors' : 'Vendor'}}
+          <span class="pull-right">
+            Starts from  <span style="font-size:20px;margin-left:10px;">
+              {{data.bestOffer.rate}} <i class="fa fa-inr"></i>
+            </span>
           </span>
-        </span>
+        </div>
+        <div class="row container-fluid">
+          From : <span class="pull-right">{{data.start | date : 'hh : mm a , dd-MMM'}}</span> <br>
+          To : <span class="pull-right">{{data.end | date : 'hh : mm a , dd-MMM'}}</span> <br>
+        </div>
       </div>
     </div>
   </div>

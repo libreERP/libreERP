@@ -31,7 +31,7 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
       }
     });
   }
-  $http({method : 'GET' , url : '/api/ecommerce/listing/' + $scope.data.item + '/'}).
+  $http({method : 'GET' , url : '/api/ecommerce/listingLite/' + $scope.data.item + '/'}).
   then(function(response){
     index = 0
     l = response.data;
@@ -49,6 +49,8 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
   })
 
   $scope.view = function(){
+    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.pickUpTime = $scope.data.start;
+    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.dropInTime = $scope.data.end;
     $state.go('details' , {id : $scope.data.pk});
   }
 

@@ -119,7 +119,6 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
   };
 
   $scope.addToCart = function(input){
-
     dataToSend = {
       category : 'cart',
       user : getPK($scope.me.url),
