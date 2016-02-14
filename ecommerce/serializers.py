@@ -125,11 +125,15 @@ class reviewSerializer(serializers.ModelSerializer):
         read_only_fields = ('user' , 'verified' , 'likes' , )
     def create(self ,  validated_data):
         u = self.context['request'].user
-        if review.objects.filter(user = u).count()==0:
+        it = validated_data.pop('item')
+        if review.objects.filter(user = u , item = it ).count()==0:
+            print "if"
             r = review(**validated_data)
+            r.item = it
             r.user = u
         else:
-            r = review.objects.get(user = u)
+            print "else"
+            r = review.objects.get(user = u , item = it )
             if 'text' in self.context['request'].data:
                 r.text = validated_data.pop('text')
                 r.heading = validated_data.pop('heading');
@@ -190,7 +194,7 @@ class orderSerializer(serializers.ModelSerializer):
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
         model = saved
-        fields = ('id' , 'user' , 'created' , 'item' , 'category' )
+        fields = ('id' , 'user' , 'created' , 'item' , 'category' , 'state' , 'end' , 'quantity' )
     def create(self ,  validated_data):
         s , new = saved.objects.get_or_create(user = self.context['request'].user , item = validated_data.pop('item') , category = validated_data.pop('category'))
         return s

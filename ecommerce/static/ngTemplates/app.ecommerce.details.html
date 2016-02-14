@@ -15,7 +15,7 @@
           <hr style="margin-top:0px;margin-bottom:5px;">
         </div>
         <div class="row container-fluid">
-          <uib-rating ng-model="data.averageRatings" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;" class="text-muted"></uib-rating> 28 Reviews
+          <uib-rating ng-model="ratings.averageRating.rating__avg" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;color:#e2a900;" class="text-muted"></uib-rating> 28 Reviews
           <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
         </div>
         <div class="row container-fluid" style="padding-top:14px;">
@@ -65,7 +65,7 @@
               <p class="text-error" ng-if="p.available==false">
                 Sold Out
               </p>
-              <p class="text-primary" ng-if="p.available=='error'">
+              <p style="color:#042e59;" ng-if="p.available=='error'">
                 No date and time specified, please choose a time period
               </p>
             </div>

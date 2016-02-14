@@ -119,10 +119,13 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
   };
 
   $scope.addToCart = function(input){
+
     dataToSend = {
       category : 'cart',
       user : getPK($scope.me.url),
       item : input.pk,
+      start : $scope.$parent.data.pickUpTime,
+      end : $scope.$parent.data.dropInTime,
     }
     $http({method : 'POST' , url : '/api/ecommerce/saved/' , data : dataToSend }).
     then(function(response){

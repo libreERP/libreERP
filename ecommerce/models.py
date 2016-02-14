@@ -143,6 +143,10 @@ class saved(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     item = models.ForeignKey(listing , related_name = 'inCarts' , null = False)
     category = models.CharField(choices = SAVED_TYPE_CHOICES , max_length = 15 , default = 'cart')
+    quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
+    start = models.DateTimeField(null = True)
+    end = models.DateTimeField(null = True)
+    quantity = models.PositiveIntegerField(null=False , default = 0) # if the price model is wright then this is in grams and when its time in minutes
 
 class customerProfile(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceProfile' , null = False)
