@@ -20,6 +20,7 @@ router.register(r'offering' , offeringViewSet , base_name = 'offering')
 router.register(r'offeringAdmin' , offeringAdminViewSet , base_name = 'offeringAdmin')
 router.register(r'feedback' , feedbackViewSet)
 router.register(r'offerBanner' , offerBannerViewSet , base_name='offerBanner')
+router.register(r'review' , reviewViewSet , base_name='review')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

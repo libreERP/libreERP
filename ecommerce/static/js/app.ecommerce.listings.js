@@ -1,5 +1,5 @@
 app.controller('businessManagement.ecommerce.listings.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $sce){
-  $http({method : 'GET' , url : '/api/ecommerce/insight/?listing='+ $scope.data.pk }).
+  $http({method : 'GET' , url : '/api/ecommerce/insight/?mode=operations&listing='+ $scope.data.pk }).
   then(function(response) {
     $scope.insight = response.data;
   })

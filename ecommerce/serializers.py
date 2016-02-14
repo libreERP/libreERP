@@ -112,12 +112,38 @@ class listingLiteSerializer(serializers.ModelSerializer):
         model = listing
         fields = ('pk' , 'title' , 'priceModel'  , 'approved' , 'category' , 'files' , 'parentType'  , 'providerOptions')
 
+class reviewLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = reviewLike
+        fields = ('pk' , 'parent' , 'positive')
+        read_only_fields = ('user',)
+
+class reviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = review
+        fields = ('pk' , 'created' , 'user'  , 'item', 'rating' , 'text' , 'verified' , 'likes' , 'heading' )
+        read_only_fields = ('user' , 'verified' , 'likes' , )
+    def create(self ,  validated_data):
+        u = self.context['request'].user
+        if review.objects.filter(user = u).count()==0:
+            r = review(**validated_data)
+            r.user = u
+        else:
+            r = review.objects.get(user = u)
+            if 'text' in self.context['request'].data:
+                r.text = validated_data.pop('text')
+                r.heading = validated_data.pop('heading');
+            if 'rating' in self.context['request'].data:
+                r.rating = validated_data.pop('rating')
+        r.save()
+        return r
+
 class listingSerializer(serializers.ModelSerializer):
     files = mediaSerializer(many = True , read_only = True)
     providerOptions = offeringSerializer(many = True , read_only = True)
     class Meta:
         model = listing
-        fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source')
+        fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source' )
         read_only_fields = ('user',)
     def create(self ,  validated_data):
         l = listing(**validated_data)

@@ -210,3 +210,18 @@ class feedback(models.Model):
     mobile = models.PositiveIntegerField(null = False)
     message = models.CharField(max_length = 400 , null = False)
     created = models.DateTimeField(auto_now_add = True)
+
+class review(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    user = models.ForeignKey(User, null = False)
+    rating = models.PositiveIntegerField(null = True)
+    heading = models.CharField(max_length = 75 , null = True)
+    text = models.TextField(max_length=1000 , null = True)
+    verified = models.BooleanField(default = False)
+    item = models.ForeignKey(listing , related_name= 'reviews' , null = False)
+
+class reviewLike(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    user = models.ForeignKey(User, null = False)
+    review = models.ForeignKey(review , null = False , related_name= 'likes')
+    positive = models.BooleanField(default = True)

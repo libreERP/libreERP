@@ -15,7 +15,7 @@
           <hr style="margin-top:0px;margin-bottom:5px;">
         </div>
         <div class="row container-fluid">
-          <uib-rating ng-model="3.5" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;" class="text-muted"></uib-rating> 28 Reviews
+          <uib-rating ng-model="data.averageRatings" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;" class="text-muted"></uib-rating> 28 Reviews
           <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
         </div>
         <div class="row container-fluid" style="padding-top:14px;">
@@ -124,18 +124,15 @@
           <h5 style="color:white;">Rattings and Review</h5>
         </div>
         <div class="row">
-          <div class="col-md-6" style="padding-top:20px;">
-            <div class="col-md-4 text-center" >
-              <span>3.5/5</span> <br>
+          <div class="col-md-4" style="padding-top:20px;">
+            <div class="col-md-5 text-center" >
+              <span>{{ratings.averageRating.rating__avg == null ? 0 : ratings.averageRating.rating__avg}}/5</span> <br>
               <i class="fa fa-star" style="color:#e3bc18;font-size:80px;"></i>
             </div>
-            <div class="col-md-5">
-              <div class="container-fluid">
-                <uib-rating ng-model="5" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
-                <uib-rating ng-model="4" max="4" readonly="true" aria-labelledby="default-rating" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
-                <uib-rating ng-model="3" max="3" readonly="true" aria-labelledby="default-rating" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
-                <uib-rating ng-model="2" max="2" readonly="true" aria-labelledby="default-rating" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
-                <uib-rating ng-model="1" max="1" readonly="true" aria-labelledby="default-rating" style="font-size:15px;color:#e2a900;"></uib-rating>
+            <div class="col-md-7">
+              <div class="container-fluid" ng-repeat="m in ratings.meta">
+                <span style="margin-right:10px;">{{ratings.counts[$index]}}</span>
+                <uib-rating ng-model="m" max="m" readonly="true" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
               </div>
 
             </div>
@@ -143,17 +140,69 @@
 
             </div>
           </div>
-          <div class="col-md-6">
-            <h5>Have you used this product before <small>Give us your review</small> </h5>
-            <uib-rating ng-model="form.ratings" max="5" readonly="false" aria-labelledby="default-rating" style="font-size:30px;"></uib-rating> <br>
-            <button type="button" class="btn btn-default">
+          <div class="col-md-8">
+            <h5>Have you used this product before ?  <small style="margin-left:20px;">Give us your review</small> </h5>
+            <uib-rating ng-model="form.rating" max="5" readonly="!form.ratable" style="font-size:30px;color:#e2a900;" on-leave="sendReview('rating')"></uib-rating> <br>
+            <button type="button" class="btn btn-default" ng-click="form.reviewEditor = true;" ng-if="!form.reviewEditor">
               <i class="fa fa-pencil-square-o"></i>  Write a review
             </button>
+            <div ng-if="form.reviewEditor">
+              <div class="col-md-10">
+                <input type="text" placeholder="Heading.." ng-model="form.reviewHeading">
+                <textarea class="form-control" ng-model="form.reviewText" autofocus="true" placeholder="Write a review..."></textarea>
+              </div>
+              <div class="col-md-2 btn-group-vertical">
+                <button type="button" class="btn btn-success" ng-click="sendReview('text')">
+                  Send
+                </button>
+                <button type="button" class="btn btn-default" ng-click="form.reviewEditor = false">
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row">
+        <hr>
+        <div class="row text-center" ng-if="reviewsCount==0">
+          <h4>No reviews yet. Be the first to review</h4>
+        </div>
+        <div class="row" ng-if="reviewsCount>0">
           <div class="container-fluid">
-            <h5>Recent reviews <small>5 out of 100</small> </h5>
+            <h5>Recent reviews <small>{{reviewsCount < 5 ? reviewsCount : 5}} out of {{reviewsCount}}</small> </h5>
+          </div>
+          <div class="container-fluid">
+            <div ng-repeat="r in data.reviews">
+              <div class="row container-fluid">
+                <div class="col-md-3" style="padding-left:50px;">
+                  <div class="row">
+                    <uib-rating ng-model="r.rating" max="5" readonly="false" style="font-size:17px;color:#e2a900;"></uib-rating> <br>
+                  </div>
+                  <div class="row">
+                    {{r.user | getName}} <br>
+                    {{r.created | date : 'dd-MMM-yyyy'}} <br>
+                    <span ng-if="r.verified" class="btn btn-xs btn-success">
+                      Verified
+                    </span>
+                    <img style="width: 50px;height:50px;margin: 0 auto;" class="img-circle" ng-src="{{r.user | getDP}}" >
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <div class="row container-fluid">
+                    <h5>{{r.heading}}</h5>
+                    <p>
+                      {{r.text}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <hr>
+            </div>
+            <nav>
+              <ul class="pager">
+                <li><a href="" ng-click="prevReviews()">Previous</a></li>
+                <li><a href="" ng-click="nextReviews()">Next</a></li>
+              </ul>
+            </nav>
           </div>
         </div>
       </div>
@@ -162,7 +211,7 @@
 </div>
 
 <div class="row" style="position:fixed; bottom:40px; right:50px;z-index:100;" ng-if="showGoToTop">
-  <button ng-click="goToTop()" type="button" class="btn btn-default col-md-offset-9">
+  <button ng-click="goToTop()" type="button" class="btn btn-lg btn-default col-md-offset-9" style="border-radius:20px;">
     <i class="fa fa-level-up"></i> TOP
   </button>
 </div>

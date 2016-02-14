@@ -8,7 +8,7 @@ from django.conf import settings as globalSettings
 from django.core.mail import send_mail
 from django.http import HttpResponse ,StreamingHttpResponse
 from django.utils import timezone
-from django.db.models import Min , Sum
+from django.db.models import Min , Sum , Avg
 import mimetypes
 import hashlib, datetime, random
 from datetime import timedelta , date
@@ -73,22 +73,36 @@ class insightApi(APIView):
             return Response(content, status=status.HTTP_200_OK)
         if 'listing' in self.request.GET:
             l = listing.objects.get(pk = self.request.GET['listing'])
-            allOfrs = offering.objects.filter(item = l) # all offers
-            lowestRate = allOfrs.aggregate(Min('rate'))
-            ordrs = order.objects.filter(offer__in = allOfrs) # all orders
-            td = timezone.now() # today
-            ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month
-            lastMonthRevenue = 0
-            for o in ordrsLastMonth:
-                a , _  = getBookingAmount(o)
-                lastMonthRevenue += a
-            content = {'totalBookings' : ordrs.count() ,
-                'lastMonthBooking' : ordrsLastMonth.count(),
-                'lastMonthRevenue' : lastMonthRevenue,
-                'vendors' : allOfrs.count(),
-                'inStock' : allOfrs.aggregate(Sum('inStock')),
-                'lowestRate' : lowestRate}
-            return Response(content, status=status.HTTP_200_OK)
+            if self.request.GET['mode'] == 'operations':
+                allOfrs = offering.objects.filter(item = l) # all offers
+                lowestRate = allOfrs.aggregate(Min('rate'))
+                ordrs = order.objects.filter(offer__in = allOfrs) # all orders
+                td = timezone.now() # today
+                ordrsLastMonth = ordrs.filter(end__range=[td - timedelta(days = 30) , td]) # orders recieved in the past one month
+                lastMonthRevenue = 0
+                for o in ordrsLastMonth:
+                    a , _  = getBookingAmount(o)
+                    lastMonthRevenue += a
+                    content = {'totalBookings' : ordrs.count() ,
+                    'lastMonthBooking' : ordrsLastMonth.count(),
+                    'lastMonthRevenue' : lastMonthRevenue,
+                    'vendors' : allOfrs.count(),
+                    'inStock' : allOfrs.aggregate(Sum('inStock')),
+                    'lowestRate' : lowestRate}
+                    return Response(content, status=status.HTTP_200_OK)
+            elif self.request.GET['mode'] == 'public':
+                rs = review.objects.filter(item = l)
+                content = {
+                'averageRating' : rs.aggregate(Avg('rating')),
+                'counts' : [
+                    rs.filter(rating = 5).count() ,
+                    rs.filter(rating = 4).count() ,
+                    rs.filter(rating = 3).count() ,
+                    rs.filter(rating = 2).count() ,
+                    rs.filter(rating = 1).count() ,
+                    ],
+                }
+                return Response(content, status=status.HTTP_200_OK)
         return Response({'NO_STARTING_POINT' : 'you have not provided any object for analysis'} , status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -516,6 +530,21 @@ class feedbackViewSet(viewsets.ModelViewSet):
     serializer_class = feedbackSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['email']
+
+class reviewViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    serializer_class = reviewSerializer
+    def get_queryset(self):
+        if 'listing' in self.request.GET:
+            return review.objects.filter(item = self.request.GET['listing'])
+        else:
+            return review.objects.all()
+
+
+class reviewLikeViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    queryset = reviewLike.objects.all()
+    serializer_class = reviewLikeSerializer
 
 class offerBannerViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdminOrReadOnly, )
