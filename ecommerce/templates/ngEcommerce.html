@@ -28,11 +28,12 @@
     <link rel="stylesheet" href="{% static 'css/custom/base.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/app.ecommerce.css' %}" charset="utf-8">
   </head>
-  <body>
-
+  {% verbatim %}
+  <body style="background: url({{$state.is('ecommerce') ? mainBackground : ''}}) no-repeat;background-size: 100%;{{!$state.is('ecommerce') ? 'background-color:#e9e9e9;' : ''}}">
+    {% endverbatim %}
     <div flash-message="4000" style="position:fixed;top:70px;right:10px;z-index:9999;min-width:300px;"></div>
     <div ng-include="headerUrl"></div>
-    <div ui-view class="anim-in-out anim-fade" data-anim-speed="600"></div>
+    <div  ui-view class="anim-in-out anim-fade" data-anim-speed="600"></div>
     <div ng-include="footerUrl"></div>
 
     <!-- contains very common ng templates used in the directives -->
@@ -74,6 +75,8 @@
       var wampBindName = "{{user.username}}";
     </script> -->
     <script src="{% static 'js/app.ecommerce.public.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.home.js' %}"></script>
+    <script src="{% static 'js/app.ecommerce.public.main.js' %}"></script>
     <script src="{% static 'js/app.ecommerce.public.list.js' %}"></script>
     <script src="{% static 'js/app.ecommerce.public.details.js' %}"></script>
     <script src="{% static 'js/app.ecommerce.public.checkout.js' %}"></script>

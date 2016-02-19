@@ -118,6 +118,8 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
     $window.scrollTo(0,0);
   };
 
+  $scope.goToTop();
+
   $scope.addToCart = function(input){
     dataToSend = {
       category : 'cart',

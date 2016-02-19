@@ -1,5 +1,4 @@
-app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
-  console.log("loaded");
+app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users){
   $scope.fetchListings = function(){
     url = '/api/ecommerce/listingLite/?'
     $scope.listings = [];
@@ -38,7 +37,6 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
 
   $scope.listings = [];
   $scope.me = $users.get('mySelf');
-
 
   $scope.fetchListings()
 

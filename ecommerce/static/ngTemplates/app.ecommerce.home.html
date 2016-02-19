@@ -1,0 +1,117 @@
+<div class="container-fluid col-md-8 col-md-offset-2 text-center" style="padding:30px;">
+  <h1 style="color:white;">Rent a <u>bike</u>  from someone like you </h1>
+  <h3 style="color:white;">Save money, meet awesome people, and consume less </h3>
+</div>
+
+<div style="width:100%;position:relative;padding:35px;" class="row">
+  <div class="container-fluid col-md-8 col-md-offset-2 bg-white" style="margin-bottom:20px;padding:30px;border-radius:10px;height:100px;left:15px;">
+    <div class="row">
+
+      <div class="col-md-6">
+        <div style="width:100%;position:relative;">
+          <input style="width:100%;" uib-typeahead="location as location.description for location in getLocationSuggeations($viewValue)"
+          ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
+        </div>
+      </div>
+      <div class="col-md-3 text-center">
+        <div style="position:relative;">
+          <span style="position:relative;font-size:24px;">Pickup</span>
+          <i class="fa fa-calendar fa-3x" style="cursor:pointer;margin-left:10px;"id="dLabel2" data-toggle="dropdown" ></i>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
+            <datetimepicker data-ng-model="data.pickUpTime"
+            data-datetimepicker-config="{ dropdownSelector: '#dLabel2' , minView :'hour'}"></datetimepicker>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-3 ">
+        <span style="position:relative;font-size:24px;">Dropoff</span>
+        <i class="fa fa-calendar fa-3x {{getDateTimePickerClass()}}" style="cursor:pointer;margin-left:10px;" id="dLabel" data-toggle="dropdown" ></i>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <datetimepicker data-ng-model="data.dropInTime" data-on-set-time="checkDateTime(newDate, oldDate)"
+          data-datetimepicker-config="{ dropdownSelector: '#dLabel' , minView :'hour' }"></datetimepicker>
+        </ul>
+      </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-success" style="height:100px;width:100px;position:absolute;right:0px;top:0px;border-radius: 0px 10px 10px 0;" ng-click="refreshResults()">
+          <i class="fa fa-search fa-3x"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class=" col-md-8 col-md-offset-2" style="margin-top:30px;margin-bottom:50px;">
+    <div class="row" style="margin-bottom:100px;">
+      <div class="col-md-4 col-md-offset-4">
+        <div style="border:solid 3px white;border-radius:30px;padding:6px;color:white;cursor:pointer;" class="text-center glassy">
+          <i class="fa fa-play fa-2x"></i> <span style="font-size:25px;margin-left:10px;">See How it works</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2 col-md-offset-3">
+        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+          <i class="fa fa-car fa-4x"></i>
+        </div>
+        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
+          Car
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+          <i class="fa fa-motorcycle fa-4x"></i>
+        </div>
+        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
+          Bike
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+          <i class="fa fa-taxi fa-4x"></i>
+        </div>
+        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
+          Taxi
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div ng-if="$state.is('ecommerce')" style="background-color:black;position:relative;height:400px;margin-bottom:20px;width:63.5%;right:-18.3%;display:border-box;overflow:hidden;" class="card">
+  <img class="anim-in-out anim-fade" data-anim-speed="100" ng-click="$state.go(slide.banners[slide.active].state , slide.banners[slide.active].params)" style="width:100%;"
+    ng-if="$index == slide.active" ng-repeat="b in slide.banners" ng-src="{{b.image}}" />
+  <div class="row" style="background-color:#525252;position:absolute;bottom:0px;width:100%; height:60px;margin:0px;">
+    <ul style="padding:0px;">
+      <li ng-click="changeSlide($index)" ng-init="onHover = False;" ng-mouseenter="onHover = true;" ng-mouseleave="onHover = false;" style="display:inline-block;min-width:20%;height:60px;cursor:pointer;"
+        ng-repeat="s in slide.banners track by $index" class="text-center {{($index == slide.active || onHover) ? 'activeSlideTab' : ''}}">
+        <span style="color:{{($index == slide.active || onHover) ? '#3c3c3c' : 'white'}};position:relative;top:-15px;">
+          {{s.title | uppercase}}  <br>
+          {{s.subtitle}}
+        </span>
+      </li>
+    </ul>
+  </div>
+</div> -->
+
+<div class="container-fluid" style="min-height:600px;padding:60px;background-color:#eeecec;padding-bottom:30px;">
+  <div ng-repeat="l in listings" >
+    <div class="col-md-3 anim-in-out anim-zoom-out" style="margin-bottom:15px;">
+      <div class="container-fluid" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
+        <div class="row" >
+          <img style="width: 100%;" class="img" ng-src="{{l.files[0].attachment}}" >
+        </div>
+        <div class="row" >
+          <div class="container-fluid card bg-white" style="padding:10px;">
+            <h4>{{l.title}}</h4>
+            {{l.providerOptions.length}} {{l.providerOptions.length>1? 'Vendors' : 'Vendor'}}
+            <span class="pull-right">
+              Starts from  <span style="font-size:20px;margin-left:10px;">
+                {{l.bestOffer.rate}} <i class="fa fa-inr"></i>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
