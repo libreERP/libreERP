@@ -1,6 +1,18 @@
+.glassyButton{
+	border:solid 3px white;
+	border-radius:30px;
+	padding:6px;
+	color:white;
+	cursor:pointer;
+}
+
+.glassyButton:hover{
+	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+}
+
 
 .glassy {
-	
+
   -o-box-shadow:
       0 2px 8px rgba(0,0,0,0.5),
       inset 0 1px rgba(255,255,255,0.3),

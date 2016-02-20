@@ -11,7 +11,6 @@ app.controller('controller.ecommerce.account.cart' , function($scope , $state , 
     // fields : ['pk','fieldType','unit' , 'name' , 'default' , 'helpText'],
     // searchField: 'title',
   }
-
 });
 
 app.controller('controller.ecommerce.account.cart.item' , function($scope , $http , $state){

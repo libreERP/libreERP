@@ -1,4 +1,15 @@
-app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users){
+app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users ,$uibModal){
+
+  $scope.openIntroVideo = function() {
+    var modalInstance = $uibModal.open({
+      template: '<iframe width="100%" style="margin:0px;padding:0px;" height="500" src="https://www.youtube.com/embed/T4IkbcnaeOE" frameborder="0" allowfullscreen></iframe>',
+      controller: function($scope , $uibModalInstance) {
+
+      },
+      size: 'lg',
+    });
+  }
+
   $scope.fetchListings = function(){
     url = '/api/ecommerce/listingLite/?'
     $scope.listings = [];
@@ -11,7 +22,6 @@ app.controller('controller.ecommerce.home' , function($scope , $state , $http , 
       } else {
         return;
       }
-
     }
 
     $http({method : "GET" , url : url}).
