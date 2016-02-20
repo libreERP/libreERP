@@ -4,7 +4,7 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
-  $scope.mainBackground = '/static/images/ecommerce.wallpaper.jpg'; 
+  $scope.mainBackground = '/static/images/ecommerce.wallpaper.jpg';
 
   $scope.slide = {banners : [] , active : 0};
 
@@ -75,9 +75,9 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
       $http({method : 'GET' , url : '/api/ecommerce/locationDetails/?id=' + newValue.place_id}).
       then(function(response){
         $scope.params.location = response.data.result;
-        console.log($scope.params.location.geometry.location);
-        // lat lon is available in location.geometry.location.lat or lng
       })
+    }else {
+      $scope.params.location = null;
     }
   }, true);
 

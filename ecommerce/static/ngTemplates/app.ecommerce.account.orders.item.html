@@ -1,0 +1,72 @@
+<div class="container-fluid card" ng-controller="controller.ecommerce.account.orders.item" style="padding:10px;border-left:4px solid #0c9a9e;position:relative;">
+  <div class="row">
+    <div class="col-md-2">
+      <div class="row" style="padding-left:10px;">
+        <i class="fa fa-motorcycle fa-3x"></i>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <span style="font-size:20px;">{{data.item.title}}</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="row" style="padding-left:10px;">
+        <i class="fa fa-calendar fa-2x"></i> <span style="font-size : 18px;margin-left:10px;">Booking # {{data.id}}</span>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <div class="col-md-3">
+          From : <br>
+          To :
+        </div>
+        <div class="col-md-9">
+          {{data.start | date : 'dd-MMM-yyyy : HH:MM a'}} <br>
+          {{data.end | date : 'dd-MMM-yyyy : HH:MM a'}}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1">
+      <div class="row" style="padding-left:10px;">
+        <i class="fa fa-clock-o fa-3x"></i>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <span style="font-size:20px;">{{bookingTime()}} Hrs</span>
+      </div>
+    </div>
+    <div class="col-md-2" style="padding-top:20px;">
+      <i class="fa fa-3x fa-inr"></i>
+      <span style="font-size:23px;top:-8px;position:relative;margin-left:10px;">{{getBookingAmount()}}</span>
+      <small style="margin-left:20px;">@ {{data.rate}}</small>
+    </div>
+    <div class="col-md-1 " >
+      <div class="row hoverableDiv">
+        <div style="display:block;box-sizing: border-box;text-align:center;" ng-click="rowActionClicked('printInvoice')">
+          <i class="fa fa-print fa-2x"></i> <br>
+          <span >Print Invoice</span>
+        </div>
+      </div>
+      <div class="row ">
+        <span class="dropdown" ng-if="['new' , 'inProgress'].indexOf(data.status) != -1" >
+          <i style="cursor:pointer;margin-left:37%;" class="fa fa-ellipsis-h fa-2x" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('progress')"><i class="fa fa-spin fa-spinner"></i> In Progress</a></li>
+            <li ng-if="['inProgress' , 'new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('complete')"><i class="fa fa-check"></i> Mark complete</a></li>
+            <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('reject')"><i class="fa fa-close"></i> Reject</a></li>
+          </ul>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-1 text-center" style="padding:20px;" ng-init="showInfo = false;">
+      <i class="fa fa-info fa-2x" ng-click="showInfo != showInfo"></i>
+    </div>
+    <div class="col-md-1 " style="position:absolute;height:100%;top:0px;right:0px;padding-top:15px;text-align:center;">
+      <i class="fa {{getStatusClass(data.status)}} fa-3x" ></i>
+      <br>
+      <span style="font-size:11px;margin-top:10px;width:200px;position:relative;">
+        <span ng-if="data.status != 'canceledByVendor'">{{data.status | humanize}}</span>
+        <span ng-if="data.status == 'canceledByVendor'">Declined</span>
+      </span>
+    </div>
+  </div>
+  <div class="row" ng-if="showInfo">
+    {{data}}
+  </div>
+</div>

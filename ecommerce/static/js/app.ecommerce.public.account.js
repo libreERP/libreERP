@@ -52,21 +52,35 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
     $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.dropInTime = $scope.data.end;
     $state.go('details' , {id : $scope.data.pk});
   }
-
-
 })
+
+app.controller('controller.ecommerce.account.orders.item' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
+  $scope.getStatusClass = function(input) {
+    if (input == 'inProgress') {
+      return 'fa-spin fa-spinner';
+    }else if (input == 'complete') {
+      return 'fa-check';
+    }else if (input == 'canceledByVendor') {
+      return 'fa-ban';
+    }else if (input == 'new') {
+      return 'fa-file'
+    }
+  }
+
+});
 
 app.controller('controller.ecommerce.account.orders' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
   views = [{name : 'list' , icon : 'fa-bars' ,
-    template : '/static/ngTemplates/genericTable/tableDefault.html' ,
+    template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
+    itemTemplate : '/static/ngTemplates/app.ecommerce.account.orders.item.html',
   },];
 
   $scope.orderConfig = {
     views : views,
     url : '/api/ecommerce/order/',
     getParams : [{key : 'mode', value : 'consumer'}],
-    fields : ['pk','created','rate' , 'address' , 'start' , 'end' , 'paymentType'],
     searchField: 'name',
+    itemsNumPerView : [4,8,12],
   }
 
 });

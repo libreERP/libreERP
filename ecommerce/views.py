@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.conf import settings as globalSettings
 from django.core.mail import send_mail
+from django.core import serializers
 from django.http import HttpResponse ,StreamingHttpResponse
 from django.utils import timezone
 from django.db.models import Min , Sum , Avg
@@ -14,6 +15,8 @@ import hashlib, datetime, random
 from datetime import timedelta , date
 from time import time
 import pytz
+import math
+import json
 
 from StringIO import StringIO
 import math
@@ -429,30 +432,97 @@ class mediaViewSet(viewsets.ModelViewSet):
     queryset = media.objects.all()
     serializer_class = mediaSerializer
 
+from django.forms.models import model_to_dict
+
 class listingLiteViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly, )
     queryset = listing.objects.all()
     serializer_class = listingLiteSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
-
-class listingViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
-    serializer_class = listingSerializer
-    filter_backends = [DjangoFilterBackend]
-    filter_fields = ['title']
-    def get_queryset(self):
+    def list(self , request, *args, **kwargs):
         u = self.request.user
-        if 'geo' in self.request.GET:
-            geo = self.request.GET['geo']
-            return listing.objects.filter(providerOptions__in = offering.objects.filter(service__in = service.objects.filter(address__in = address.objects.filter(pincode__startswith=geo))))
+        if 'lat' in self.request.GET and 'lon' in self.request.GET:
+            da = [] # distance array
+            sa = service.objects.all() # service array
+            for s in sa:
+                p1 = {'lat' : s.address.lat , 'lon' : s.address.lon}
+                p2 = {'lat' : self.request.GET['lat'] , 'lon' : self.request.GET['lon'] }
+                d = geoDistance(p1 , p2)
+                if d<30000:
+                    da.append(d)
+            la = list() # listings array
+            for k in sorted(range(len(da)), key=lambda k: da[k]):
+                for l in listing.objects.filter(providerOptions__in = offering.objects.filter(service = sa[k])):
+                    if l not in la:
+                        la.append(l)
+            serializer = listingLiteSerializer(la , many = True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         elif 'mode' in self.request.GET:
             if self.request.GET['mode'] == 'vendor':
                 s = service.objects.get(user = u)
                 items = offering.objects.filter( service = s).values_list('item' , flat = True)
-                return listing.objects.exclude(pk__in = items)
+                la = listing.objects.exclude(pk__in = items)
         else:
-            return listing.objects.all()
+            la = listing.objects.all()
+        serializer = listingLiteSerializer(la , many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+def geoDistance(p1 , p2):
+    """
+    Returns the location distance between two position p1 and p2 p1.lat/lon is the lat lon of the location p1
+    """
+    lat1 = float(p1['lat'])*math.pi/180
+    lon1 = float(p1['lon'])*math.pi/180
+    lat2 = float(p2['lat'])*math.pi/180
+    lon2 = float(p2['lon'])*math.pi/180
+    R = 6371000
+    psy1 = lat1
+    psy2 = lat2
+    deltaPsy = (lat2-lat1)
+    deltaLambda = (lon2-lon1)
+    a = math.sin(deltaPsy/2) * math.sin(deltaPsy/2) + math.cos(psy1) * math.cos(psy2) *  math.sin(deltaLambda/2) * math.sin(deltaLambda/2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    d = R * c
+    return d
+
+
+class listingViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    serializer_class = listingSerializer
+    queryset = listing.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+
+    def list(self , request, *args, **kwargs):
+        u = self.request.user
+        if 'lat' in self.request.GET and 'lon' in self.request.GET:
+            da = [] # distance array
+            sa = service.objects.all() # service array
+            for s in sa:
+                p1 = {'lat' : s.address.lat , 'lon' : s.address.lon}
+                p2 = {'lat' : self.request.GET['lat'] , 'lon' : self.request.GET['lon'] }
+                d = geoDistance(p1 , p2)
+                if d<30000:
+                    da.append(d)
+            la = list() # listings array
+            for k in sorted(range(len(da)), key=lambda k: da[k]):
+                for l in listing.objects.filter(providerOptions__in = offering.objects.filter(service = sa[k])):
+                    if l not in la:
+                        la.append(l)
+            serializer = listingSerializer(la , many = True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif 'mode' in self.request.GET:
+            if self.request.GET['mode'] == 'vendor':
+                s = service.objects.get(user = u)
+                items = offering.objects.filter( service = s).values_list('item' , flat = True)
+                la = listing.objects.exclude(pk__in = items)
+        else:
+            la = listing.objects.all()
+        serializer = listingSerializer(la , many = True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class orderViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated , )

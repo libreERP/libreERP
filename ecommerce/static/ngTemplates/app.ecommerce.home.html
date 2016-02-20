@@ -7,7 +7,7 @@
   <div class="container-fluid col-md-8 col-md-offset-2 bg-white" style="margin-bottom:20px;padding:30px;border-radius:10px;height:100px;left:15px;">
     <div class="row">
 
-      <div class="col-md-6">
+      <div class="col-md-5">
         <div style="width:100%;position:relative;">
           <input style="width:100%;" uib-typeahead="location as location.description for location in getLocationSuggeations($viewValue)"
           ng-model="data.location" type="text" class="form-control" placeholder="Where are you ? .." >
@@ -15,21 +15,34 @@
       </div>
       <div class="col-md-3 text-center">
         <div style="position:relative;">
-          <span style="position:relative;font-size:24px;">Pickup</span>
-          <i class="fa fa-calendar fa-3x" style="cursor:pointer;margin-left:10px;"id="dLabel2" data-toggle="dropdown" ></i>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
-            <datetimepicker data-ng-model="data.pickUpTime"
-            data-datetimepicker-config="{ dropdownSelector: '#dLabel2' , minView :'hour'}"></datetimepicker>
-          </ul>
+          <div class="col-md-8 text-center">
+            <span ng-if="!data.pickUpTime" style="position:relative;font-size:24px;">Pickup</span>
+            <span ng-if="data.pickUpTime" style="position:relative;font-size:20px;top:-17px;">{{data.pickUpTime | date:'dd-MMM'}} <br> {{data.pickUpTime | date:'hh a'}}</span>
+          </div>
+          <div class="col-md-4">
+            <i class="fa fa-calendar fa-3x" style="cursor:pointer;margin-left:10px;"id="dLabel2" data-toggle="dropdown" ></i>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel2">
+              <datetimepicker data-ng-model="data.pickUpTime"
+              data-datetimepicker-config="{ dropdownSelector: '#dLabel2' , minView :'hour'}"></datetimepicker>
+            </ul>
+          </div>
         </div>
       </div>
-      <div class="col-md-3 ">
-        <span style="position:relative;font-size:24px;">Dropoff</span>
-        <i class="fa fa-calendar fa-3x {{getDateTimePickerClass()}}" style="cursor:pointer;margin-left:10px;" id="dLabel" data-toggle="dropdown" ></i>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <datetimepicker data-ng-model="data.dropInTime" data-on-set-time="checkDateTime(newDate, oldDate)"
-          data-datetimepicker-config="{ dropdownSelector: '#dLabel' , minView :'hour' }"></datetimepicker>
-        </ul>
+      <div class="col-md-4 ">
+        <div class="col-md-1 text-muted" ng-if="data.dropInTime">
+          <span style="position:relative;font-size:20px;left:-10px;">To </span>
+        </div>
+        <div class="col-md-5 text-center {{getDateTimePickerClass()}}">
+          <span ng-if="!data.dropInTime" style="position:relative;font-size:24px;">Dropoff</span>
+          <span ng-if="data.dropInTime" style="position:relative;font-size:20px;top:-17px;">{{data.dropInTime | date:'dd-MMM'}} <br> {{data.dropInTime | date:'hh a'}}</span>
+        </div>
+        <div class="col-md-4">
+          <i class="fa fa-calendar fa-3x {{getDateTimePickerClass()}}" style="cursor:pointer;margin-left:10px;" id="dLabel" data-toggle="dropdown" ></i>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <datetimepicker data-ng-model="data.dropInTime" data-on-set-time="checkDateTime(newDate, oldDate)"
+            data-datetimepicker-config="{ dropdownSelector: '#dLabel' , minView :'hour' }"></datetimepicker>
+          </ul>
+        </div>
       </div>
       <div class="pull-right">
         <button type="button" class="btn btn-success" style="height:100px;width:100px;position:absolute;right:0px;top:0px;border-radius: 0px 10px 10px 0;" ng-click="refreshResults()">
@@ -50,7 +63,7 @@
     </div>
     <div class="row">
       <div class="col-md-2 col-md-offset-3">
-        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
           <i class="fa fa-car fa-4x"></i>
         </div>
         <div class="row" style="color:white;padding-left:40%;font-size:20px;">
@@ -58,7 +71,7 @@
         </div>
       </div>
       <div class="col-md-2">
-        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
           <i class="fa fa-motorcycle fa-4x"></i>
         </div>
         <div class="row" style="color:white;padding-left:40%;font-size:20px;">
@@ -66,7 +79,7 @@
         </div>
       </div>
       <div class="col-md-2">
-        <div style="border: solid 2px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
           <i class="fa fa-taxi fa-4x"></i>
         </div>
         <div class="row" style="color:white;padding-left:40%;font-size:20px;">

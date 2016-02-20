@@ -1,20 +1,21 @@
 app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
   console.log("loaded");
+
+  console.log($scope);
+
   $scope.fetchListings = function(){
     url = '/api/ecommerce/listingLite/?'
     $scope.listings = [];
-    parent = $scope.$parent;
-    if (parent.data.location != null && typeof parent.data.location!='string') {
-      l = parent.data.location;
-      pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
-      if (pin != null) {
-        url += 'geo=' + pin[0].substring(0,3);
-      } else {
-        return;
+    if ($scope.$parent.params.location != null) {
+      l = $scope.$parent.params.location.geometry.location
+      if (typeof location != 'undefiner' && location != null && typeof location!='string') {
+        // pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
+        lat = l.lat
+        lon = l.lng
+        url += 'lat=' + lat + '&lon=' + lon;
+
       }
-
     }
-
     $http({method : "GET" , url : url}).
     then(function(response){
       for (var i = 0; i < response.data.length; i++) {
