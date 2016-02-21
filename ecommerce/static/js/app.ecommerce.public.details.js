@@ -7,11 +7,13 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
   console.log($scope);
 
-  $scope.$watch(function(){
+  $scope.getDateTime = function() {
     $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
     $scope.data.dropInTime = $scope.$parent.data.dropInTime;
     $scope.data.location = $scope.$parent.data.location;
-  })
+  }
+
+  $scope.$watch($scope.getDateTime)
 
   $scope.$watch('data.pickUpTime' , function(newValue , oldValue) {
     if ($scope.data.pickUpTime!= null && $scope.data.dropInTime!= null) {
@@ -47,12 +49,19 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
   }
 
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
-  // $window.scrollTo(0,0)
+
+
 
   $scope.refreshMainView = function() {
+
+    $scope.getDateTime();
+
     d = $scope.data;
     if (typeof d.specifications == 'string') {
       d.specifications = JSON.parse(d.specifications);
+    }
+    if (typeof d.providerOptions == 'undefined') {
+      return;
     }
     d.pictureInView = 0;
     min = d.providerOptions[0].rate;
@@ -72,7 +81,6 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
             $scope.data.providerOptions[i].available = response.data.available;
           }
         })(i))
-        d.providerOptions[i].available = true;
       }
       if (d.providerOptions[i].rate <min){
         index = i;
@@ -86,13 +94,9 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
   $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
   then(function(response){
-
     $scope.data = response.data;
-
     $scope.refreshMainView()
-
     $scope.fetchReviews();
-
     $http({method : 'GET' , url : '/api/ecommerce/insight/?mode=public&listing=' + $scope.data.pk}).
     then(function(response) {
       $scope.ratings.counts = response.data.counts;
@@ -177,6 +181,7 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
     $state.go('checkout' , {pk : input.pk})
   }
 
+  $scope.refreshMainView()
 
 
 

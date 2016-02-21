@@ -65,7 +65,7 @@ app.controller('controller.ecommerce.account.orders.item' , function($scope , $s
   $scope.cancelBooking = function(input) {
     $http({method : 'PATCH' , url : '/api/ecommerce/order/' + $scope.data.id + '/?mode=consumer' , data : {status : input}}).
     then(function(response) {
-      console.log(response);
+      $scope.data.status = response.data.status;
     });
   }
 

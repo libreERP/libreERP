@@ -292,9 +292,15 @@ class offeringAvailabilityApi(APIView): # checks for availabilty of an offer in 
     def get(self, request , format = None):
         utc=pytz.UTC
         if request.GET['mode']=='time':
-            s = datetime.datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            try:
+                s = datetime.datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            except:
+                s = datetime.datetime.strptime(request.GET['start'], '%Y-%m-%dT%H:%M:%SZ')
             s = s.replace(tzinfo=utc)
-            e = datetime.datetime.strptime(request.GET['end'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            try:
+                e = datetime.datetime.strptime(request.GET['end'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            except:
+                e = datetime.datetime.strptime(request.GET['end'], '%Y-%m-%dT%H:%M:%SZ')
             e = e.replace(tzinfo=utc)
             booked = 0
             for o in order.objects.filter(offer=int(request.GET['offering'])):

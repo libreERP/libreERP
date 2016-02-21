@@ -3,8 +3,12 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
   $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
 
   $scope.$watch(function(){
-    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
-    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
+    if (typeof $scope.$parent.data.pickUpTime == 'string') {
+      $scope.data.pickUpTime = new Date($scope.$parent.data.pickUpTime);
+    }
+    if (typeof $scope.$parent.data.dropInTime == 'string') {
+      $scope.data.dropInTime = new Date($scope.$parent.data.dropInTime);
+    }
     $scope.data.location = $scope.$parent.data.location;
   })
 
@@ -23,7 +27,7 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
       if (h<0){
         return 0
       }else {
-        return $scope.offering.rate * $scope.data.quantity*h
+        return $scope.offering.rate * $scope.data.quantity*h;
       }
     }
 

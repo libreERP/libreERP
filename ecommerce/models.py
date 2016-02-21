@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 from time import time
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models.signals import post_save , pre_delete
+from django.dispatch import receiver
 # Create your models here.
 
 def getEcommercePictureUploadPath(instance , filename ):
@@ -229,3 +230,9 @@ class reviewLike(models.Model):
     user = models.ForeignKey(User, null = False)
     review = models.ForeignKey(review , null = False , related_name= 'likes')
     positive = models.BooleanField(default = True)
+
+
+@receiver(post_save, sender=order, dispatch_uid="server_post_save")
+def socialCreatedUpdate(sender, instance, **kwargs):
+    print "postsave"
+    print instance
