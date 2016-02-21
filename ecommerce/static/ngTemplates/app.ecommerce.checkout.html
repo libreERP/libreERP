@@ -1,12 +1,12 @@
 <div class="container-fluid" >
-  <div class="col-md-10 col-md-offset-1 card bg-white" style="display:block;position:relative;min-height:750px;padding-left:0px;">
+  <div class="col-md-10 col-md-offset-1 card bg-white" style="display:block;position:relative;min-height:760px;padding-left:0px;margin-bottom:30px;">
 
-    <div class="col-md-2  bg-purple">
+    <div class="col-md-2  bg-purple" style="position:absolute; height:100%;">
       <div class="row" style="padding-left:40%; padding-top:20px;">
         <i class="fa fa-shopping-cart fa-4x"></i>
       </div>
 
-      <h4 style="text-align:center;text-transform:capitalize;">
+      <h4 style="text-align:center;text-transform:capitalize;color:white;">
         Checkout
       </h4>
       <hr>
@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <div class="col-md-10">
+    <div class="col-md-10 col-md-offset-2">
       <div class="container-fluid" style="margin-top:30px;">
         <div ng-if="data.stage == 'review'">
           <div class="row">
@@ -67,20 +67,19 @@
               </div>
               <div class="row">
                 <strong>Vendor : </strong> {{offering.service.name }} <br>
-                <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
-                <br> Power Seller <i style="color:#db55e7;" class="fa fa-shield"></i>
+                <!-- <uib-rating ng-model="rate" max="5" readonly="true" titles="['one','two','three']" aria-labelledby="default-rating"></uib-rating>
+                <br> Power Seller <i style="color:#db55e7;" class="fa fa-shield"></i> -->
               </div>
             </div>
             <div class="col-md-3" style="padding-top:10px;">
-              <div class="input-group">
+              <!-- <div class="input-group">
                 <span class="input-group-addon">#</span>
                 <input type="text" class="form-control" ng-model = "data.quantity">
                 <span class="input-group-addon" ng-if="item.priceModel=='time'">Bookings</span>
                 <span class="input-group-addon" ng-if="item.priceModel=='quantity'">Pieces</span>
                 <span class="input-group-addon" ng-if="item.priceModel=='weight'">Kgs</span>
-              </div>
-              <hr>
-              <div class="input-group pull-left" >
+              </div> -->
+              <div class="input-group pull-left"  style="margin-top:40px;">
                 <span class="input-group-addon">Coupon code</span>
                 <input ng-model="data.coupon" type="text" class="form-control">
               </div>

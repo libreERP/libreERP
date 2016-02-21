@@ -4,6 +4,27 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
   $scope.form = {rating : 0 , reviewText : '' , reviewEditor : false , ratable : true}
   $scope.reviewsPage = 0;
   $scope.reviewsCount = 0;
+
+  console.log($scope);
+
+  $scope.$watch(function(){
+    $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
+    $scope.data.dropInTime = $scope.$parent.data.dropInTime;
+    $scope.data.location = $scope.$parent.data.location;
+  })
+
+  $scope.$watch('data.pickUpTime' , function(newValue , oldValue) {
+    if ($scope.data.pickUpTime!= null && $scope.data.dropInTime!= null) {
+      $scope.refreshMainView()
+    }
+  });
+  $scope.$watch('data.dropInTime' , function(newValue , oldValue) {
+    if ($scope.data.pickUpTime!= null && $scope.data.dropInTime!= null) {
+      $scope.refreshMainView()
+    }
+  });
+
+
   $scope.nextReviews = function() {
     if ($scope.reviewsCount > ($scope.reviewsPage+1)*5) {
       $scope.reviewsPage += 1;
@@ -27,11 +48,12 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
   $scope.data = $scope.$parent.data; // contains the pickUpTime , location and dropInTime
   // $window.scrollTo(0,0)
-  $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
-  then(function(response){
 
-    d = response.data;
-    d.specifications = JSON.parse(d.specifications);
+  $scope.refreshMainView = function() {
+    d = $scope.data;
+    if (typeof d.specifications == 'string') {
+      d.specifications = JSON.parse(d.specifications);
+    }
     d.pictureInView = 0;
     min = d.providerOptions[0].rate;
     index = 0;
@@ -57,8 +79,18 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
         min = d.providerOptions[i].rate;
       }
     }
-    $scope.data = d;
+
     $scope.offeringInView = index;
+  }
+
+
+  $http({method : 'GET' , url : '/api/ecommerce/listing/'+ $state.params.id +'/'}).
+  then(function(response){
+
+    $scope.data = response.data;
+
+    $scope.refreshMainView()
+
     $scope.fetchReviews();
 
     $http({method : 'GET' , url : '/api/ecommerce/insight/?mode=public&listing=' + $scope.data.pk}).

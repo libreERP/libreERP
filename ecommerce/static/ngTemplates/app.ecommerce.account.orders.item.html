@@ -1,11 +1,11 @@
 <div class="container-fluid card" ng-controller="controller.ecommerce.account.orders.item" style="padding:10px;border-left:4px solid #0c9a9e;position:relative;">
   <div class="row">
     <div class="col-md-2">
-      <div class="row" style="padding-left:10px;">
+      <div class="row" style="padding-left:17px;">
         <i class="fa fa-motorcycle fa-3x"></i>
       </div>
       <div class="row" style="margin-top:10px;">
-        <span style="font-size:20px;">{{data.item.title}}</span>
+        <span style="font-size:20px;margin-left:13px;">{{data.item.title}}</span>
       </div>
     </div>
     <div class="col-md-4">
@@ -38,8 +38,8 @@
     </div>
     <div class="col-md-1 " >
       <div class="row hoverableDiv">
-        <div style="display:block;box-sizing: border-box;text-align:center;" ng-click="rowActionClicked('printInvoice')">
-          <i class="fa fa-print fa-2x"></i> <br>
+        <div style="display:block;box-sizing: border-box;text-align:center;">
+          <a ng-href="{{getInvoiceLink()}}" class="fa fa-print fa-2x" style="color:#000000 !important;text-decoration: none !important;"></a> <br>
           <span >Print Invoice</span>
         </div>
       </div>
@@ -47,26 +47,53 @@
         <span class="dropdown" ng-if="['new' , 'inProgress'].indexOf(data.status) != -1" >
           <i style="cursor:pointer;margin-left:37%;" class="fa fa-ellipsis-h fa-2x" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('progress')"><i class="fa fa-spin fa-spinner"></i> In Progress</a></li>
-            <li ng-if="['inProgress' , 'new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('complete')"><i class="fa fa-check"></i> Mark complete</a></li>
-            <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('reject')"><i class="fa fa-close"></i> Reject</a></li>
+            <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "cancelBooking('canceledByCustomer')"><i class="fa fa-close"></i> Cancel</a></li>
           </ul>
         </span>
       </div>
     </div>
-    <div class="col-md-1 text-center" style="padding:20px;" ng-init="showInfo = false;">
-      <i class="fa fa-info fa-2x" ng-click="showInfo != showInfo"></i>
+    <div class="col-md-1 text-center" style="padding:20px;">
+      <i class="fa fa-info fa-2x" style="cursor:pointer;" ng-click="toggleInfo()"></i>
     </div>
     <div class="col-md-1 " style="position:absolute;height:100%;top:0px;right:0px;padding-top:15px;text-align:center;">
       <i class="fa {{getStatusClass(data.status)}} fa-3x" ></i>
       <br>
       <span style="font-size:11px;margin-top:10px;width:200px;position:relative;">
-        <span ng-if="data.status != 'canceledByVendor'">{{data.status | humanize}}</span>
-        <span ng-if="data.status == 'canceledByVendor'">Declined</span>
+        <span ng-if="data.status != 'canceledByCustomer'">{{data.status | humanize}}</span>
+        <span ng-if="data.status == 'canceledByCustomer'">Canceled</span>
       </span>
     </div>
   </div>
-  <div class="row" ng-if="showInfo">
-    {{data}}
+  <div class="row anim-in-out anim-fade"  data-anim-speed="200" ng-if="showInfo">
+    <hr>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2">
+          Address
+        </div>
+        <div class="col-md-5">
+          {{data.offer.service.address.street}} <br>
+          {{data.offer.service.address.city}} <br>
+          {{data.offer.service.address.state}} <br>
+          {{data.offer.service.address.pincode}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          Name
+        </div>
+        <div class="col-md-5">
+          {{data.offer.service.name}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          Mobile
+        </div>
+        <div class="col-md-5">
+          {{data.offer.service.mobile}}
+        </div>
+      </div>
+    </div>
   </div>
 </div>

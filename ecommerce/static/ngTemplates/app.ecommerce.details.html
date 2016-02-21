@@ -15,8 +15,9 @@
           <hr style="margin-top:0px;margin-bottom:5px;">
         </div>
         <div class="row container-fluid">
-          <uib-rating ng-model="ratings.averageRating.rating__avg" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;color:#e2a900;" class="text-muted"></uib-rating> 28 Reviews
-          <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span>
+          <uib-rating ng-model="ratings.averageRating.rating__avg" max="5" readonly="true" aria-labelledby="default-rating" style="font-size:20px;color:#e2a900;" class="text-muted"></uib-rating>
+          {{reviewsCount}} Reviews
+          <!-- <span class="pull-right"> <i class="fa fa-heart"></i> Add to wish list</span> -->
         </div>
         <div class="row container-fluid" style="padding-top:14px;">
           <i class="fa fa-money fa-1x text-muted" ></i> Cash on {{data.priceModel=='time' ? 'pickup' : 'delivery'}} : {{data.providerOptions[offeringInView].cod ? 'Yes' : 'No'}} <br>

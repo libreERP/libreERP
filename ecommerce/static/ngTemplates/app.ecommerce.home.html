@@ -62,12 +62,28 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-2 col-md-offset-3">
+      <div class="col-md-2 col-md-offset-2">
         <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
-          <i class="fa fa-car fa-4x"></i>
+          <i class="fa fa-search fa-4x"></i>
         </div>
         <div class="row" style="color:white;padding-left:40%;font-size:20px;">
-          Car
+          Search
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+          <i class="fa fa-hand-pointer-o fa-4x"></i>
+        </div>
+        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
+          Select
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
+          <i class="fa fa-credit-card fa-4x"></i>
+        </div>
+        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
+          Book
         </div>
       </div>
       <div class="col-md-2">
@@ -75,15 +91,7 @@
           <i class="fa fa-motorcycle fa-4x"></i>
         </div>
         <div class="row" style="color:white;padding-left:40%;font-size:20px;">
-          Bike
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div style="border: solid 4px white; border-radius : 78px;padding-top:35px;padding-bottom:35px;color:white; width:80%;" class="text-center">
-          <i class="fa fa-taxi fa-4x"></i>
-        </div>
-        <div class="row" style="color:white;padding-left:40%;font-size:20px;">
-          Taxi
+          Ride
         </div>
       </div>
     </div>
@@ -106,10 +114,10 @@
   </div>
 </div> -->
 
-<div class="container-fluid" style="min-height:600px;padding:60px;background-color:#eeecec;padding-bottom:30px;">
+<div class="container-fluid" style="padding:60px;background-color:#eeecec;">
   <div ng-repeat="l in listings" >
     <div class="col-md-3 anim-in-out anim-zoom-out" style="margin-bottom:15px;">
-      <div class="container-fluid" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
+      <div class="container-fluid zoomOnHover" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
         <div class="row" >
           <img style="width: 100%;" class="img" ng-src="{{l.files[0].attachment}}" >
         </div>

@@ -30,7 +30,9 @@ def tokenAuthentication(request):
     for a in ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings']:
         app = application.objects.get(name = a)
         p = permission.objects.create(app =  app, user = user , givenBy = User.objects.get(pk=1))
-    return redirect(reverse('ERP'))
+    login(request , user)
+    authStatus = {'status' : 'success' , 'message' : 'Account actived, please login.' }
+    return render(request , 'login.html' , {'authStatus' : authStatus ,'useCDN' : globalSettings.USE_CDN})
 
 
 def loginView(request):
@@ -41,10 +43,15 @@ def loginView(request):
         else:
             return redirect(reverse('ERP'))
     if request.method == 'POST':
-    	username = request.POST['username']
+    	usernameOrEmail = request.POST['username']
     	password = request.POST['password']
-    	user = authenticate(username = username , password = password)
+        if '@' in usernameOrEmail and '.' in usernameOrEmail:
+            u = User.objects.get(email = usernameOrEmail)
+            username = u.username
+        else:
+            username = usernameOrEmail
 
+        user = authenticate(username = username , password = password)
     	if user is not None:
             if user.is_active:
                 login(request , user)

@@ -11,18 +11,8 @@ app.controller('controller.ecommerce.home' , function($scope , $state , $http , 
   }
 
   $scope.fetchListings = function(){
-    url = '/api/ecommerce/listingLite/?'
+    url = '/api/ecommerce/listingLite/?mode=suggest'
     $scope.listings = [];
-    parent = $scope.$parent;
-    if (parent.data.location != null && typeof parent.data.location!='string') {
-      l = parent.data.location;
-      pin = parent.params.location.formatted_address.match(/[0-9]{6}/);
-      if (pin != null) {
-        url += 'geo=' + pin[0].substring(0,3);
-      } else {
-        return;
-      }
-    }
 
     $http({method : "GET" , url : url}).
     then(function(response){

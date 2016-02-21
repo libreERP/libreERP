@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
+from django.template.loader import render_to_string, get_template
+from django.template import RequestContext , Context
 from django.conf import settings as globalSettings
-from django.core.mail import send_mail
+from django.core.mail import send_mail , EmailMessage
 from django.core import serializers
 from django.http import HttpResponse ,StreamingHttpResponse
 from django.utils import timezone
@@ -30,7 +31,6 @@ from reportlab.lib import colors
 from reportlab.platypus import Paragraph, Table, TableStyle, Image
 from PIL import Image
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-
 
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
@@ -311,10 +311,11 @@ class offeringAvailabilityApi(APIView): # checks for availabilty of an offer in 
         return Response(content , status = status.HTTP_200_OK)
 
 class locationAutoCompleteApi(APIView): # suggest places for a query
+    permission_classes = (permissions.AllowAny ,)
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         query = request.GET['query']
-        r = requests.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=establishment&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query)
+        r = requests.get('https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode&language=in&key=AIzaSyDqZoDeSwSbtfkFawD-VoO7nx2WLD3mCgU&input=' + query)
         return Response(r.json(),status = status.HTTP_200_OK)
 
 class locationDetailsApi(APIView): # returns location details such as lattitude and longitude for a given location id
@@ -383,16 +384,30 @@ class serviceRegistrationApi(APIView):
 
             ak = accountsKey(user=user, activation_key=activation_key,
                 key_expires=key_expires)
-            ak.save()
+            link = 'http://127.0.0.1:8000/token/?key=%s' % (activation_key)
+            ctx = {
+                'logoUrl' : 'http://design.ubuntu.com/wp-content/uploads/ubuntu-logo32.png',
+                'heading' : 'Welcome',
+                'recieverName' : user.first_name,
+                'message': 'Thanks for signing up. To activate your account, click this link within 48hours',
+                'linkUrl': link,
+                'linkText' : 'Activate',
+                'sendersAddress' : 'Street 101 , State, City 100001',
+                'sendersPhone' : '129087',
+                'linkedinUrl' : 'linkedin.com',
+                'fbUrl' : 'facebook.com',
+                'twitterUrl' : 'twitter.com',
+            }
 
             # Send email with activation key
             email_subject = 'Account confirmation'
-            email_body = "Hey %s, thanks for signing up. To activate your account, click this link within 48hours http://127.0.0.1:8000/token/?key=%s" % (user.first_name, activation_key)
+            email_body = get_template('welcomeMail.html').render(Context(ctx))
 
-            send_mail(email_subject, email_body, 'pkyisky@gmail.com',
-                [email], fail_silently=False)
-
+            msg = EmailMessage(email_subject, email_body, to= [email] , from_email= 'pkyisky@gmail.com' )
+            msg.content_subtype = 'html'
+            msg.send()
             content = {'pk' : user.pk , 'username' : user.username , 'email' : user.email}
+            ak.save()
             return Response(content , status = status.HTTP_200_OK)
 
 class fieldViewSet(viewsets.ModelViewSet):
@@ -432,9 +447,7 @@ class mediaViewSet(viewsets.ModelViewSet):
     queryset = media.objects.all()
     serializer_class = mediaSerializer
 
-from django.forms.models import model_to_dict
-
-class listingLiteViewSet(viewsets.ModelViewSet):
+class listingSearchViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly, )
     queryset = listing.objects.all()
     serializer_class = listingLiteSerializer
@@ -449,7 +462,7 @@ class listingLiteViewSet(viewsets.ModelViewSet):
                 p1 = {'lat' : s.address.lat , 'lon' : s.address.lon}
                 p2 = {'lat' : self.request.GET['lat'] , 'lon' : self.request.GET['lon'] }
                 d = geoDistance(p1 , p2)
-                if d<30000:
+                if d<100000:
                     da.append(d)
             la = list() # listings array
             for k in sorted(range(len(da)), key=lambda k: da[k]):
@@ -458,16 +471,27 @@ class listingLiteViewSet(viewsets.ModelViewSet):
                         la.append(l)
             serializer = listingLiteSerializer(la , many = True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            content = {'mode' : 'No location data specified'}
+            raise PermissionDenied(detail=content , status = status.HTTP_400_BAD_REQUEST)
 
-        elif 'mode' in self.request.GET:
+class listingLiteViewSet(viewsets.ModelViewSet):
+    permission_classes = (readOnly, )
+    serializer_class = listingLiteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']
+    def get_queryset(self):
+        u = self.request.user
+        if 'mode' in  self.request.GET:
             if self.request.GET['mode'] == 'vendor':
                 s = service.objects.get(user = u)
                 items = offering.objects.filter( service = s).values_list('item' , flat = True)
-                la = listing.objects.exclude(pk__in = items)
+                return listing.objects.exclude(pk__in = items)
+            elif self.request.GET['mode'] == 'suggest':
+                return listing.objects.all()[:5]
         else:
-            la = listing.objects.all()
-        serializer = listingLiteSerializer(la , many = True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return listing.objects.all()
+
 
 def geoDistance(p1 , p2):
     """
@@ -535,7 +559,7 @@ class orderViewSet(viewsets.ModelViewSet):
             if self.request.GET['mode'] == 'provider':
                 return order.objects.filter(offer__in = u.ecommerceOfferings.all())
             elif self.request.GET['mode'] == 'consumer':
-                return u.ecommerceOrders.all()
+                return order.objects.filter(user = u)
         else:
             content = {'mode' : 'No mode specified , please specified either of mode = provider or consumer'}
             raise PermissionDenied(detail=content)

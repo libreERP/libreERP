@@ -8,8 +8,16 @@
 
 .glassyButton:hover{
 	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
+
 }
 
+.zoomOnHover:hover{
+	transform: scale(1.1);
+	/*box-shadow: 2px 2px 10px rgba(7, 131, 184, 1);*/
+}
+.zoomOnHover{
+	transition: all .2s ease-in-out;
+}
 
 .glassy {
 

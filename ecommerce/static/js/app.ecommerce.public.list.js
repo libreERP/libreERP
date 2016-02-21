@@ -4,7 +4,7 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
   console.log($scope);
 
   $scope.fetchListings = function(){
-    url = '/api/ecommerce/listingLite/?'
+    url = '/api/ecommerce/listingSearch/?'
     $scope.listings = [];
     if ($scope.$parent.params.location != null) {
       l = $scope.$parent.params.location.geometry.location

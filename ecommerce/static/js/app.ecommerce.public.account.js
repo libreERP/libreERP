@@ -54,7 +54,21 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
   }
 })
 
-app.controller('controller.ecommerce.account.orders.item' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){
+app.controller('controller.ecommerce.account.orders.item' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash , $location){
+
+  $scope.showInfo = false;
+
+  $scope.toggleInfo = function() {
+    $scope.showInfo = !$scope.showInfo;
+  }
+
+  $scope.cancelBooking = function(input) {
+    $http({method : 'PATCH' , url : '/api/ecommerce/order/' + $scope.data.id + '/?mode=consumer' , data : {status : input}}).
+    then(function(response) {
+      console.log(response);
+    });
+  }
+
   $scope.getStatusClass = function(input) {
     if (input == 'inProgress') {
       return 'fa-spin fa-spinner';
@@ -64,8 +78,39 @@ app.controller('controller.ecommerce.account.orders.item' , function($scope , $s
       return 'fa-ban';
     }else if (input == 'new') {
       return 'fa-file'
+    }else if (input == 'canceledByCustomer') {
+      return 'fa-close'
     }
   }
+  $scope.bookingTime = function() {
+    return Math.ceil((new Date($scope.data.end)- new Date($scope.data.start))/3600000);
+  }
+  $scope.getBookingAmount = function(){
+    h = $scope.bookingTime()
+    if (h<0){
+      return 0
+    }else {
+      return $scope.data.rate * $scope.data.quantity*h
+    }
+  }
+
+  $scope.getInvoiceLink = function() {
+    return 'api/ecommerce/printInvoice/?id=' + $scope.data.id;
+  }
+
+  $scope.$watch('data.offer' , function(newValue , oldValue){
+    if (typeof $scope.data.offer != 'number') {
+      return;
+    }
+    $http({method : 'GET' , url : '/api/ecommerce/offering/' + $scope.data.offer + '/'}).
+    then(function (response) {
+      $scope.data.offer = response.data;
+      $http({method : 'GET' , url : '/api/ecommerce/listing/' + response.data.item + '/' }).
+      then(function (response) {
+        $scope.data.item = response.data;
+      })
+    })
+  });
 
 });
 
@@ -79,8 +124,7 @@ app.controller('controller.ecommerce.account.orders' , function($scope , $state 
     views : views,
     url : '/api/ecommerce/order/',
     getParams : [{key : 'mode', value : 'consumer'}],
-    searchField: 'name',
-    itemsNumPerView : [4,8,12],
+    searchField: 'id',
   }
 
 });
