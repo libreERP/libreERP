@@ -115,6 +115,53 @@ app.controller('sudo.admin.settings.modulesAndApplications.editor' , function($s
 
 // controller for the inline form in the modal window of the application edit form
 app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , function($scope , $http , $aside , $state , Flash , $users , $filter){
+  $scope.editor = {index : -1};
+
+  $scope.new = function(){
+    $scope.data.push({pk : 0 ,name:'', flag: false ,value:'',description:'' , fieldType:'flag' , new : true});
+    $scope.editor.index = $scope.data.length-1;
+  }
+
+  $scope.cancel = function(input) {
+    if (input == $scope.editor.index && !$scope.data[input].new) {
+      $scope.data[input].flag= $scope.editor.flag;
+      $scope.data[input].description = $scope.editor.description;
+      $scope.data[input].value=$scope.editor.value;
+      $scope.editor.index =-1
+    }else {
+      // $index == editor.index && row.pk==0 && row.new
+      $scope.data[input].flag = $scope.editor.flag;
+      $scope.data[input].description = $scope.editor.description;
+      $scope.data[input].value = $scope.editor.value;
+      $scope.delete(-1,input);
+      $scope.editor.index =-1
+    }
+  }
+
+  $scope.edit = function(input) {
+    $scope.editor.index = input;
+    $scope.editor.flag = $scope.data[input].flag;
+    $scope.editor.description = $scope.data[input].description;
+    $scope.editor.value = $scope.data[input].value;
+  }
+
+  $scope.delete = function(input) {
+    if ($scope.data[input].pk == 0) {
+      $scope.data.splice(input , 1)
+    }else {
+      $http({method : 'DELETE' , url : '/api/ERP/appSettingsAdminMode/' + $scope.data[input].pk + '/'}).
+      then((function(input){
+        return function(response) {
+          $scope.data.splice(input ,1)
+          Flash.create('success', response.status + ' : ' + response.statusText );
+        }
+      })(input) , function(response) {
+        Flash.create('danger', response.status + ' : ' + response.statusText );
+      })
+    }
+  };
+
+
   $scope.save = function(data , app) { // callback function for the inner table directive
     dataToSend = {
       name : data.name,
@@ -129,8 +176,12 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
     $http({method: 'POST' , url : '/api/ERP/appSettingsAdminMode/' , data : dataToSend}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
-      $scope.tableData.push(response.data)
-      $scope.delete(-1,$scope.editor.index);
+      $scope.data.push(response.data)
+      for (var i = 0; i < $scope.data.length; i++) {
+        if ($scope.data[i].pk==0){
+          $scope.data.splice(i,1)
+        }
+      }
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     })

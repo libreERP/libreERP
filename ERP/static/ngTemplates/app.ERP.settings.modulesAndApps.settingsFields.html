@@ -1,4 +1,4 @@
-<table class="table" ng-init="editor=-1;editor = {index : -1};" ng-controller="sudo.admin.settings.modulesAndApplications.appSettings">
+<table class="table" ng-controller="sudo.admin.settings.modulesAndApplications.appSettings">
   <thead>
     <tr>
       <th ng-repeat = "heading in [ 'name' , 'flag' , 'value' , 'description' , 'fieldType']" ng-click="sort($index)" style="cursor:pointer;">{{heading | humanize}}
@@ -53,38 +53,26 @@
           <div ng-if="editor.index != $index">
             {{row.fieldType}}
           </div>
-
         </td>
-
         <td style="width: 80px;">
           <div class="btn-group btn-group-sm">
             <button type="button" class="btn btn-default" ng-show="editor.index== -1"
-              ng-click="editor.index = $index; editor.flag=row.flag;editor.description = row.description;editor.value=row.value;">
+              ng-click="edit($index)">
               <i class="fa fa-pencil"></i>
             </button>
-            <button type="button" class="btn btn-danger" ng-click="delete(row.pk , $index)" ng-show="row.pk != 0 && editor.index == -1">
-              <i class="fa fa-trash-o"></i>
-            </button>
-            <button type="button" class="btn btn-danger" ng-click="delete(-1 , $index)" ng-show="row.pk == 0 && editor.index == -1">
+            <button type="button" class="btn btn-danger" ng-click="delete($index)" ng-show="editor.index == -1">
               <i class="fa fa-trash-o"></i>
             </button>
             <button type="button" class="btn btn-success" ng-click="update(row ); row.pk=(row.pk=='')? 0: row.pk ;"
               ng-show="editor.index == $index && row.pk !=0"><i class="fa fa-floppy-o"></i></button>
-
             <button type="button" class="btn btn-success" ng-click="save(row , getParams[0].value);editor.index=-1;"
               ng-show="editor.index == $index && row.pk == 0"><i class="fa fa-floppy-o"></i></button>
-
-            <button type="button" class="btn btn-default" ng-show="$index == editor.index && !row.new"
-              ng-click="row.flag=editor.flag;row.description = editor.description;row.value=editor.value;editor.index =-1">
-              <i class="fa fa-times"></i>
-            </button>
-            <button type="button" class="btn btn-default" ng-show="$index == editor.index && row.pk==0 && row.new"
-              ng-click="row.flag=editor.flag;row.description = editor.description;row.value=editor.value;delete(-1,$index);editor.index =-1">
+            <button type="button" class="btn btn-default" ng-if="editor.index == $index"
+              ng-click="cancel($index)">
               <i class="fa fa-times"></i>
             </button>
           </div>
         </td>
-
       </tr>
       <tr ng-if="editor.index == -1">
         <td></td>
@@ -94,7 +82,7 @@
         <td></td>
         <td>
           <button type="button"  class="btn btn-sm btn-primary"
-            ng-click="data.push({pk : 0 ,name:'', flag: false ,value:'',description:'' , fieldType:'flag' , new : true});editor.index = data.length-1;">
+            ng-click="new()">
             New <i class="fa fa-plus"></i>
           </button>
         </td>

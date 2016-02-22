@@ -48,8 +48,8 @@ app.controller('controller.ecommerce.account.cart.item' , function($scope , $htt
   })
 
   $scope.view = function(){
-    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.pickUpTime = $scope.data.start;
-    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.dropInTime = $scope.data.end;
+    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.pickUpTime = new Date($scope.data.start);
+    $scope.$parent.$parent.$parent.$parent.$parent.$parent.$parent.$parent.data.dropInTime = new Date($scope.data.end);
     $state.go('details' , {id : $scope.data.pk});
   }
 })
