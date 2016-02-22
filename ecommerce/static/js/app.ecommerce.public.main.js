@@ -4,7 +4,7 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
   $scope.data = {location : null}
   $scope.params = {location : null} // to be used to store different parameter by the users on which the search result will be filtered out
 
-  $scope.mainBackground = '/static/images/ecommerce.wallpaper.jpg';
+
 
   $scope.slide = {banners : [] , active : 0};
 

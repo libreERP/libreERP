@@ -1,5 +1,11 @@
 app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users ,$uibModal){
 
+  $scope.$watch(function() {
+    if (typeof $scope.settings == 'undefined' || Object.keys($scope.settings).length==0) {
+      $scope.settings = $scope.$parent.settings;
+    }
+  });
+
   $scope.openIntroVideo = function() {
     var modalInstance = $uibModal.open({
       template: '<iframe width="100%" style="margin:0px;padding:0px;" height="500" src="https://www.youtube.com/embed/T4IkbcnaeOE" frameborder="0" allowfullscreen></iframe>',

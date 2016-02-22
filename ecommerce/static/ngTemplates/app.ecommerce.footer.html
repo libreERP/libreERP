@@ -1,11 +1,11 @@
 <div class="container-fluid bg-blue" style="position:relative;width:100%;bottom:0px;min-height:200px;padding:20px;">
   <div class="row">
-    <div class="col-md-2 col-md-offset-1">
+    <div class="col-md-2 col-md-offset-1" ng-if="settings.playstoreLink.indexOf('http')!=-1 || settings.appstoreLink.indexOf('http')!=-1">
       <strong>Downloads the apps</strong><br>
-      <img src="/static/images/playStore.png" alt="" /> <br> <br>
-      <img src="/static/images/appStore.png" alt="" />
+      <a ng-if="settings.playstoreLink.indexOf('http')!=-1" ng-href="{{settings.playstoreLink}}"><img src="/static/images/playStore.png" alt="" /> <br> <br></a>
+      <a ng-if="settings.appstoreLink.indexOf('http')!=-1" ng-href="{{settings.appstoreLink}}"><img src="/static/images/appStore.png" alt="" /></a>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 {{settings.playstoreLink.indexOf('http')==-1 && settings.appstoreLink.indexOf('http')==-1 ? 'col-md-offset-2' :''}}">
       <strong style="font-size:15px;">HELP</strong><br>
       <span> Payment </span><br>
       <span>Cancellationa and Returns</span> <br>
@@ -20,21 +20,21 @@
     </div>
     <div class="col-md-2 text-right">
       <div class="row">
-        <span class="fa-stack fa-lg">
+        <a ng-href="{{settings.twitterLink}}" target="_blank" class="fa-stack fa-lg" style="color:white;cursor:pointer;">
           <i class="fa fa-square-o fa-stack-2x"></i>
           <i class="fa fa-twitter fa-stack-1x"></i>
-        </span>
-        <span class="fa-stack fa-lg">
+        </a>
+        <a ng-href="{{settings.linkedInLink}}" target="_blank" class="fa-stack fa-lg" style="color:white;cursor:pointer;">
           <i class="fa fa-square-o fa-stack-2x"></i>
           <i class="fa fa-linkedin fa-stack-1x"></i>
-        </span>
-        <span class="fa-stack fa-lg">
+        </a>
+        <a ng-href="{{settings.facebookLink}}" target="_blank" class="fa-stack fa-lg" style="color:white;cursor:pointer;">
           <i class="fa fa-square-o fa-stack-2x"></i>
           <i class="fa fa-facebook fa-stack-1x"></i>
-        </span>
+        </a>
       </div>
       <div class="row">
-        <span>Copyright &copy; Your Website 2014</span>
+        <span>Copyright &copy; {{settings.copyrightHolder}} {{settings.copyrightYear}}</span>
       </div>
       <div class="row">
         <a href="#" style="color:white;">Privacy Policy</a>

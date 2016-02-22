@@ -127,15 +127,11 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
       $scope.data[input].flag= $scope.editor.flag;
       $scope.data[input].description = $scope.editor.description;
       $scope.data[input].value=$scope.editor.value;
-      $scope.editor.index =-1
     }else {
       // $index == editor.index && row.pk==0 && row.new
-      $scope.data[input].flag = $scope.editor.flag;
-      $scope.data[input].description = $scope.editor.description;
-      $scope.data[input].value = $scope.editor.value;
-      $scope.delete(-1,input);
-      $scope.editor.index =-1
+      $scope.data.splice(input,1);
     }
+    $scope.editor.index =-1
   }
 
   $scope.edit = function(input) {
@@ -182,6 +178,7 @@ app.controller('sudo.admin.settings.modulesAndApplications.appSettings' , functi
           $scope.data.splice(i,1)
         }
       }
+      $scope.editor.index=-1;
     }, function(response){
       Flash.create('danger', response.status + ' : ' + response.statusText );
     })
