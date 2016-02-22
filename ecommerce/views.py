@@ -468,7 +468,7 @@ class listingSearchViewSet(viewsets.ModelViewSet):
                 p1 = {'lat' : s.address.lat , 'lon' : s.address.lon}
                 p2 = {'lat' : self.request.GET['lat'] , 'lon' : self.request.GET['lon'] }
                 d = geoDistance(p1 , p2)
-                if d<100000:
+                if d is not None and d<100000:
                     da.append(d)
             la = list() # listings array
             for k in sorted(range(len(da)), key=lambda k: da[k]):
@@ -503,6 +503,8 @@ def geoDistance(p1 , p2):
     """
     Returns the location distance between two position p1 and p2 p1.lat/lon is the lat lon of the location p1
     """
+    if p1['lat'] is None:
+        return None
     lat1 = float(p1['lat'])*math.pi/180
     lon1 = float(p1['lon'])*math.pi/180
     lat2 = float(p2['lat'])*math.pi/180
