@@ -7,16 +7,16 @@
     </div>
     <div class="col-md-3 {{settings.playstoreLink.indexOf('http')==-1 && settings.appstoreLink.indexOf('http')==-1 ? 'col-md-offset-2' :''}}">
       <strong style="font-size:15px;">HELP</strong><br>
-      <span> Payment </span><br>
-      <span>Cancellationa and Returns</span> <br>
-      <span>FAQ</span>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'payment'})"> Payment </span><br>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'cancellationAndRefund'})">Cancellationa and Returns</span> <br>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'faq'})">FAQ</span>
     </div>
     <div class="col-md-2">
       <strong style="font-size:15px;">ECOMMERCE</strong><br>
-      <span> Contact Us </span><br>
-      <span>About us</span> <br>
-      <span>Careers</span> <br>
-      <span>Press</span>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'contactUs'})"> Contact Us </span><br>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'about'})">About us</span> <br>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'careers'})">Careers</span> <br>
+      <span style="cursor:pointer;" ng-click="$state.go('pages' , {title : 'press'})">Press</span>
     </div>
     <div class="col-md-2 text-right">
       <div class="row">

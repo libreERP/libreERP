@@ -36,7 +36,7 @@
 			  </ul>
 			</li>
     </ul>
-    <div ng-if="!$state.is('ecommerce')">
+    <div ng-if="!($state.is('ecommerce') || $state.is('pages'))">
       <div class="navbar-form navbar-right" style="position:relative;right:10%;">
         <span style="position:relative;">Dropin</span>
         <i class="fa fa-calendar fa-2x {{getDateTimePickerClass()}}" style="cursor:pointer;margin-left:20px;" id="dLabel" data-toggle="dropdown" ></i>

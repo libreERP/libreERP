@@ -479,7 +479,7 @@ class listingSearchViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             content = {'mode' : 'No location data specified'}
-            raise PermissionDenied(detail=content , status = status.HTTP_400_BAD_REQUEST)
+            raise NotAcceptable(detail=content )
 
 class listingLiteViewSet(viewsets.ModelViewSet):
     permission_classes = (readOnly, )

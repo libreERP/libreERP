@@ -110,3 +110,8 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
   }
 
 });
+
+app.controller('controller.ecommerce.pages' , function($scope , $state , $http , $timeout , $uibModal , $users , $interval , Flash , $window){
+  $scope.templateUrl = '/static/ngTemplates/app.ecommerce.pages.'+ $state.params.title + '.html' ;
+  $window.scrollTo(0,0);
+})

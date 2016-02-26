@@ -1,4 +1,4 @@
-app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users){
+app.controller('controller.ecommerce.list' , function($scope , $state , $http , $users , Flash){
   console.log("loaded");
 
   console.log($scope);
@@ -34,6 +34,9 @@ app.controller('controller.ecommerce.list' , function($scope , $state , $http , 
         l.bestOffer = l.providerOptions[index];
         $scope.listings.push(l);
       }
+    } , function(response) {
+      Flash.create('danger' , 'No location provided')
+      $state.go('ecommerce')
     })
   }
 

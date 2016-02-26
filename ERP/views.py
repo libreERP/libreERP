@@ -72,7 +72,7 @@ class applicationAdminViewSet(viewsets.ModelViewSet):
 
 
 class applicationSettingsViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated, readOnly , )
+    permission_classes = (readOnly , )
     queryset = appSettingsField.objects.all()
     serializer_class = applicationSettingsSerializer
     filter_backends = [DjangoFilterBackend]

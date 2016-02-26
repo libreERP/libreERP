@@ -48,6 +48,13 @@ app.config(function($stateProvider ){
   })
 
   $stateProvider
+  .state('pages', {
+    url: "/pages/:title",
+    templateUrl: '/static/ngTemplates/app.ecommerce.pages.html',
+    controller: 'controller.ecommerce.pages'
+  })
+
+  $stateProvider
   .state('account', {
     url: "/account",
     views: {

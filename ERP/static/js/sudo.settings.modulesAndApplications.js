@@ -16,6 +16,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
     searchField : 'name',
     editorTemplate : editorTemplate,
     canCreate : true,
+    itemsNumPerView : [6,12,24]
   };
 
 
