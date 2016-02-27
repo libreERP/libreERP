@@ -5,9 +5,13 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
   $scope.$watch(function(){
     if (typeof $scope.$parent.data.pickUpTime == 'string') {
       $scope.data.pickUpTime = new Date($scope.$parent.data.pickUpTime);
+    }else{
+      $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
     }
     if (typeof $scope.$parent.data.dropInTime == 'string') {
       $scope.data.dropInTime = new Date($scope.$parent.data.dropInTime);
+    }else {
+      $scope.data.dropInTime = $scope.$parent.data.dropInTime;
     }
     $scope.data.location = $scope.$parent.data.location;
   })

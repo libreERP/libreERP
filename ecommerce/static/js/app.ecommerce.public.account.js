@@ -112,6 +112,13 @@ app.controller('controller.ecommerce.account.orders.item' , function($scope , $s
     })
   });
 
+  $scope.requestConfirmation = function(mode) {
+    $http({method : 'GET' , url : '/api/ecommerce/requestConfirmation/?to=customer&mode='+ mode +'&order=' + $scope.data.id}).
+    then(function(response) {
+
+    });
+  }
+
 });
 
 app.controller('controller.ecommerce.account.orders' , function($scope , $state , $http , $timeout , $uibModal , $users , Flash){

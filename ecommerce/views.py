@@ -41,6 +41,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
+# from .helper import *
 from API.permissions import *
 from HR.models import accountsKey
 
@@ -51,6 +52,72 @@ def getBookingAmount(o):
     bookingHrs = o.end-o.start
     bookingHrs = math.ceil((bookingHrs.total_seconds())/(3600))
     return o.quantity*int(o.rate)*bookingHrs , bookingHrs
+
+def sendSMS(o , to ):
+    name = o.offer.item.title[:18]
+    st = o.start
+    et = o.end
+    am , hrs= getBookingAmount(o)
+    msg = 'Booking details: \n Ride : %s \n From: %s \n To: %s \n Amount: %s INR\n Hours: %s' %(name , st.strftime('%a, %d. %b %y, %I:%M%p') , et.strftime('%a, %d. %b %y, %I:%M%p') , am , hrs)
+    if to == 'customer':
+        mob = customerProfile.objects.get(user = o.user).mobile
+    else:
+        s = o.offer.service
+        mob = s.mobile
+        msg += '\nCustomer:%s\nPaid:%s' %(o.user.first_name , 'Yes')
+    r = requests.get( 'http://193.105.74.159/api/v3/sendsms/plain?user=kapsystem&password=kap@user&sender=KAPNFO&SMSText=%s&type=longsms&GSM=91%s' %(msg ,mob))
+
+def sendEmail(o , to):
+    """
+    input : offer objects
+    outout : None
+    """
+    it =  o.offer.item
+    name = it.title[:18]
+    st = o.start
+    et = o.end
+    am , hrs= getBookingAmount(o)
+    u = o.user
+    s = o.offer.service
+    if to == 'customer':
+        topMsg = 'We are pleased to provide you the following details on your booking with us.'
+        toEmail = u.email
+        link = '/#/account/orders'
+    else:
+        link = '/ERP/#/businessManagement/ecommerce/orders'
+        topMsg = 'A new booking has been made against your offer. The details are as follows.'
+        toEmail = s.user.email
+    orderCtx = {
+        'message' : topMsg,
+        'id' : o.pk,
+        'product' : name,
+        'startTime' : st,
+        'endTime' : et,
+        'totalCost' : am,
+        'totalHrs' : hrs,
+    }
+
+    ctx = {
+        'logoUrl' : 'http://design.ubuntu.com/wp-content/uploads/ubuntu-logo32.png',
+        'heading' : 'Thank you!',
+        'recieverName' : u.first_name,
+        'message': get_template('app.ecommerce.email.order.html').render(orderCtx),
+        'linkUrl': 'goryd.in' + link,
+        'linkText' : 'View Online',
+        'sendersAddress' : 'Street 101 , State, City 100001',
+        'sendersPhone' : '129087',
+        'linkedinUrl' : 'linkedin.com',
+        'fbUrl' : 'facebook.com',
+        'twitterUrl' : 'twitter.com',
+    }
+
+    # Send email with activation key
+    email_subject = '[Ecommerce] Booking Details for Order ID: %s' % (o.pk)
+    email_body = get_template('app.ecommerce.email.html').render(ctx)
+    msg = EmailMessage(email_subject, email_body, to= [toEmail] , from_email= 'pkyisky@gmail.com' )
+    msg.content_subtype = 'html'
+    msg.send()
+
 
 class insightApi(APIView):
     renderer_classes = (JSONRenderer,)
@@ -109,6 +176,21 @@ class insightApi(APIView):
         return Response({'NO_STARTING_POINT' : 'you have not provided any object for analysis'} , status=status.HTTP_400_BAD_REQUEST)
 
 
+class requestConfirmationApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        u = self.request.user
+        if 'order' in request.GET and  'mode' in request.GET and 'to' in request.GET:
+            o = order.objects.get(pk = request.GET['order'] , user = u)
+            m = request.GET['mode']
+            to = request.GET['to']
+            if  m == 'sms':
+                sendSMS(o , to )
+            elif m == 'email':
+                sendEmail(o , to )
+            return Response({'OK' , 'OK'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'NO_ORDER_ID_OR_MODE_OR_TO_SPECIFIED' : 'you have not provided order ID'} , status=status.HTTP_400_BAD_REQUEST)
 
 class earningsApi(APIView):
     renderer_classes = (JSONRenderer,)
@@ -407,7 +489,7 @@ class serviceRegistrationApi(APIView):
 
             # Send email with activation key
             email_subject = 'Account confirmation'
-            email_body = get_template('welcomeMail.html').render(Context(ctx))
+            email_body = get_template('app.ecommerce.email.html').render(ctx)
 
             msg = EmailMessage(email_subject, email_body, to= [email] , from_email= 'pkyisky@gmail.com' )
             msg.content_subtype = 'html'

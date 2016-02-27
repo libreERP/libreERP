@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save , pre_delete
 from django.dispatch import receiver
+
 # Create your models here.
 
 def getEcommercePictureUploadPath(instance , filename ):
@@ -232,7 +233,11 @@ class reviewLike(models.Model):
     positive = models.BooleanField(default = True)
 
 
+from .views import sendSMS, sendEmail
+
 @receiver(post_save, sender=order, dispatch_uid="server_post_save")
-def socialCreatedUpdate(sender, instance, **kwargs):
-    print "postsave"
-    print instance
+def orderCreateUpdate(sender, instance, **kwargs):
+    sendSMS(instance , 'customer')
+    sendSMS(instance , 'vendor')
+    sendEmail(instance , 'customer')
+    sendEmail(instance , 'vendor')

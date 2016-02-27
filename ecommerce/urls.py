@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'printInvoice/$' , printInvoiceApi.as_view() ),
     url(r'earnings/$' , earningsApi.as_view() ),
     url(r'insight/$' , insightApi.as_view() ),
+    url(r'requestConfirmation/$' , requestConfirmationApi.as_view() ),
 ]
