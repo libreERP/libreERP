@@ -67,7 +67,7 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
     min = d.providerOptions[0].rate;
     index = 0;
     for (var i =0; i < d.providerOptions.length; i++) {
-      if ($scope.data.pickUpTime == null || $scope.data.dropInTime == null) {
+      if ($scope.data.pickUpTime == null || $scope.data.dropInTime == null || ($scope.data.dropInTime-$scope.data.pickUpTime)<0) {
         d.providerOptions[i].available = 'error';
       } else {
         dataToSend = {

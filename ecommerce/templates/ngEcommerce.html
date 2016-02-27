@@ -39,6 +39,7 @@
     <!-- contains very common ng templates used in the directives -->
     <!-- Stock JS libraries -->
 
+    <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
     {% if useCDN %}
       <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -51,6 +52,7 @@
       <script src="https://cdn.jsdelivr.net/momentjs/2.11.1/moment.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/0.8.8/angular-chart.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/lodash/4.5.1/lodash.min.js"></script>
     {% else %}
       <script src="{% static 'js/Chart.min.js' %}"></script>
       <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
@@ -63,12 +65,15 @@
       <!-- <script src="{% static 'js/autobahn.min.js' %}"></script> -->
       <script src="{% static 'js/moment.js' %}"></script>
       <script src="{% static 'js/angular-chart.min.js' %}"></script>
+      <script src="{% static 'js/lodash.js' %}"></script>
     {% endif %}
-
     <script src="{% static 'js/datetimepicker.js' %}"></script>
     <script src="{% static 'js/angular-flash.js' %}"></script>
     <script src="{% static 'js/ng-tags-input.min.js' %}"></script>
+    <script src="{% static 'js/angular-simple-logger.min.js' %}"></script>
     <script src="{% static 'js/anim-in-out.js' %}"></script>
+    <script src="{% static 'js/angular-google-maps.min.js' %}"></script>
+    <script src="{% static 'js/angular-aside.min.js' %}"></script>
     <!-- Custom JS files -->
     <!-- <script type="text/javascript">
       var wampServer = '{{wampServer}}';

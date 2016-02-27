@@ -10,6 +10,15 @@
 	background: rgba(0, 0, 0, 0.2) none repeat scroll 0% 0%;
 
 }
+.aboutUsMap .angular-google-map-container {
+	height:400px;
+}
+
+.asideModal .angular-google-map-container {
+	position:absolute;
+	height: 100%;
+	width: 100%;
+}
 
 .zoomOnHover:hover{
 	transform: scale(1.1);

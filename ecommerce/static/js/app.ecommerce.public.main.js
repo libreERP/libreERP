@@ -101,6 +101,10 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
   }
 
   $scope.refreshResults = function(){
+    if ($state.is('ecommerce') && $scope.params.location == null) {
+      Flash.create('danger', " No location selected");
+      return;
+    }
     $state.go('list' , {} , {reload : true})
     // if (angular.isDefined($scope.$$childHead.fetchListings)) {
     //   $scope.$$childHead.fetchListings()
@@ -111,7 +115,19 @@ app.controller('ecommerce.main' , function($scope , $state , $http , $timeout , 
 
 });
 
-app.controller('controller.ecommerce.pages' , function($scope , $state , $http , $timeout , $uibModal , $users , $interval , Flash , $window){
+app.controller('controller.ecommerce.pages' , function($scope , $state , $http , $timeout , $uibModal , $users , $interval , Flash , $window , $log){
   $scope.templateUrl = '/static/ngTemplates/app.ecommerce.pages.'+ $state.params.title + '.html' ;
   $window.scrollTo(0,0);
+  $scope.map = {center: {latitude: 40.1451, longitude: -99.6680 }, zoom: 6 };
+  $scope.marker = {
+    id: 0,
+    coords: {
+      latitude: 40.1451,
+      longitude: -99.6680
+    },
+  };
+  $scope.windowOptions = {
+    visible: false,
+  };
+
 })
