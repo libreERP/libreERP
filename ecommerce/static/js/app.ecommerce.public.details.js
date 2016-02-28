@@ -1,4 +1,4 @@
-app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , Flash , $window , $anchorScroll, $location ){
+app.controller('controller.ecommerce.details' , function($scope , $state , $http , $timeout , $uibModal , Flash , $window , $anchorScroll, $location , $aside){
 
   $scope.ratings = { meta : [5,4,3,2,1] , counts : [0,0,0,0,0] , averageRating : 0 };
   $scope.form = {rating : 0 , reviewText : '' , reviewEditor : false , ratable : true}
@@ -14,6 +14,46 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
   }
 
   $scope.$watch($scope.getDateTime)
+
+  $scope.showMap = function(index) {
+    $aside.open({
+      template: '<ui-gmap-google-map center="map.center" class="asideModal" ng-if="render" zoom="map.zoom" draggable="true" events="events" options="options">' +
+        '<ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">' +
+        '</ui-gmap-marker>' +
+        '</ui-gmap-google-map>',
+      controller: function($scope, input) {
+        $scope.events = {
+          tilesloaded: function(map) {
+            $scope.$apply(function() {
+              google.maps.event.trigger(map, "resize");
+            });
+          }
+        }
+        $scope.render = true;
+        $scope.map = {
+          center: {
+            latitude: input.address.lat,
+            longitude: input.address.lon
+          },
+          zoom: 14
+        };
+        $scope.marker = {
+          id: 0,
+          coords: {
+            latitude: input.address.lat,
+            longitude: input.address.lon
+          },
+        };
+      },
+      placement: 'right',
+      size: 'lg',
+      resolve: {
+        input: function() {
+          return $scope.data.providerOptions[index].service;
+        }
+      }
+    });
+  }
 
   $scope.$watch('data.pickUpTime' , function(newValue , oldValue) {
     if ($scope.data.pickUpTime!= null && $scope.data.dropInTime!= null) {

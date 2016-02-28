@@ -151,6 +151,18 @@ class UserSearchViewSet(viewsets.ModelViewSet):
     filter_fields = ['username']
     serializer_class = userSearchSerializer
     queryset = User.objects.all()
+    def get_queryset(self):
+        if 'mode' in self.request.GET:
+            if self.request.GET['mode']=="mySelf":
+                print self.request.user
+                if self.request.user.is_authenticated:
+                    return User.objects.filter(username = self.request.user.username)
+                else:
+                    raise PermissionDenied()
+            else :
+                return User.objects.all().order_by('-date_joined')
+        else:
+            return User.objects.all().order_by('-date_joined')
 
 class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

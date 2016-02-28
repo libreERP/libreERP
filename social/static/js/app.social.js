@@ -787,7 +787,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
     $scope.myProfile = false;
   }
 
-  $http({method:'GET' , url : $scope.user.social}).then(
+  $http({method:'GET' , url : '/api/social/social/' + $scope.user.social}).then(
     function(response){
       $scope.user.socialData = response.data;
       $scope.user.socialData.coverPicFile = emptyFile;
@@ -799,7 +799,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
     }
   )
 
-  $http({method:'GET' , url : $scope.user.designation}).then(
+  $http({method:'GET' , url : '/api/HR/designation/' + $scope.user.designation}).then(
     function(response){
       $scope.user.designationData = response.data;
     }

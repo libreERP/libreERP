@@ -118,6 +118,7 @@ app.controller('controller.ecommerce.account.orders.item', function($scope, $sta
     if (typeof $scope.data.offer != 'number') {
       return;
     }
+    $scope.showInfo = false;
     $http({
       method: 'GET',
       url: '/api/ecommerce/offering/' + $scope.data.offer + '/'

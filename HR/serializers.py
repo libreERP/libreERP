@@ -5,11 +5,19 @@ from rest_framework.exceptions import *
 from .models import *
 from PIM.serializers import *
 
-class userSearchSerializer(serializers.ModelSerializer):
+class userProfileLiteSerializer(serializers.ModelSerializer):
     # to be used in the typehead tag search input, only a small set of fields is responded to reduce the bandwidth requirements
     class Meta:
+        model = profile
+        fields = ('displayPicture' , 'prefix' )
+
+class userSearchSerializer(serializers.ModelSerializer):
+    # to be used in the typehead tag search input, only a small set of fields is responded to reduce the bandwidth requirements
+    profile = userProfileLiteSerializer(many=False , read_only=True)
+    class Meta:
         model = User
-        fields = ( 'pk', 'username' , 'first_name' , 'last_name' )
+        fields = ( 'pk', 'username' , 'first_name' , 'last_name' , 'profile' , 'social' , 'designation')
+
 
 class rankSerializer(serializers.ModelSerializer):
     class Meta:
