@@ -29,6 +29,26 @@
         <label>Send updates on latest offers : </label>
         <input ng-model="customerProfile.sendUpdates" type="checkbox">
       </div>
+      <hr>
+      <div class="form-group">
+        <h5>Driving license</h5>
+        <input type="file" file-model="form.attachment" class="form-control" >
+        <p class="help-block">Browse and upload a copy of your driving license for quick checkout.</p>
+      </div>
+      <hr>
+      <h5>Change password</h5>
+      <div class="form-group">
+        <label >Old Password</label>
+        <input type="password" class="form-control" ng-model="form.oldPassword" placeholder="Old Password">
+      </div>
+      <div class="form-group">
+        <label >New Password</label>
+        <input type="password" class="form-control" ng-model="form.password" placeholder="Password">
+      </div>
+      <div class="form-group" ng-class="{'has-error' : form.password!=form.password2 && form.password!=''}">
+        <label class="control-label">Confirm Password</label>
+        <input type="password" class="form-control" ng-model="form.password2" placeholder="Confirm Password">
+      </div>
     </div>
   </div>
   <div class="row container-fluid">

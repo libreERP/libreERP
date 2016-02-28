@@ -6,6 +6,7 @@ from ecommerce.models import *
 from PIM.serializers import *
 from HR.serializers import userSearchSerializer
 from rest_framework.response import Response
+from API.permissions import has_application_permission
 
 
 class fieldSerializer(serializers.ModelSerializer):
@@ -192,6 +193,9 @@ class orderSerializer(serializers.ModelSerializer):
         fields = ('id' , 'user' , 'created' , 'offer' , 'rate', 'status', 'paymentType' , 'paid' , 'address' , 'mobile' , 'coupon' , 'quantity' , 'shipping' , 'start' , 'end')
     def create(self , validated_data):
         u = self.context['request'].user
+        cp = customerProfile.objects.get(user = u)
+        if cp.attachment == None:
+            raise ValidationError(detail= 'Attachment not found in your account')
         street = self.context['request'].data['street']
         pincode = self.context['request'].data['pincode']
         state = self.context['request'].data['state']
@@ -230,7 +234,7 @@ class customerProfileSerializer(serializers.ModelSerializer):
     address = addressSerializer(read_only = True , many = False)
     class Meta:
         model = customerProfile
-        fields = ('pk' , 'address' , 'sendUpdates' , 'user' , 'mobile')
+        fields = ('pk' , 'address' , 'sendUpdates' , 'user' , 'mobile' , 'attachment')
         read_only_fields = ('user',)
     def create(self ,  validated_data):
         u = self.context['request'].user
@@ -239,6 +243,7 @@ class customerProfileSerializer(serializers.ModelSerializer):
         state = self.context['request'].data['state']
         city = self.context['request'].data['city']
         su = self.context['request'].data['sendUpdates']
+
         cp , new = customerProfile.objects.get_or_create(user = user)
         if new:
             a = address(street = street , city = city , pincode = pincode , state = state)
@@ -250,29 +255,33 @@ class customerProfileSerializer(serializers.ModelSerializer):
     def update (self, instance, validated_data):
         u = self.context['request'].user
         cp = customerProfile.objects.get(user = u)
+
         try:
-            street = self.context['request'].data['street']
-            pincode = self.context['request'].data['pincode']
-            state = self.context['request'].data['state']
-            city = self.context['request'].data['city']
+            street = validated_data.pop('street')
+            pincode = validated_data.pop('pincode')
+            state = validated_data.pop('state')
+            city = validated_data.pop('city')
+            try:
+                a = cp.address
+            except:
+                a = address()
+                a.street = street
+                a.city = city
+                a.pincode = pincode
+                a.state = state
+                a.save()
+
+                cp.address = a
         except:
             pass
-        su = self.context['request'].data['sendUpdates']
-        m = self.context['request'].data['mobile']
 
-        try:
-            a = cp.address
-        except:
-            a = address()
-        a.street = street
-        a.city = city
-        a.pincode = pincode
-        a.state = state
-        a.save()
+        if 'sendUpdates' in self.context['request'].data:
+            cp.sendUpdates = validated_data.pop('sendUpdates')
+        if 'mobile' in self.context['request'].data:
+            cp.mobile = validated_data.pop('mobile')
+        if 'attachment' in self.context['request'].data:
+            cp.attachment = validated_data.pop('attachment')
 
-        cp.address = a
-        cp.sendUpdates = su
-        cp.mobile = m
         cp.save()
         return cp
 
@@ -297,7 +306,6 @@ class offerBannerSerializer(serializers.ModelSerializer):
     def update (self, instance, validated_data):
         u = self.context['request'].user
         has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.configure'])
-        
         instance.title = validated_data.pop('title')
         instance.subtitle = validated_data.pop('subtitle')
         instance.level = validated_data.pop('level')

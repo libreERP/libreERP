@@ -160,6 +160,23 @@
                 <label>Mobile no. : </label>
                 <input ng-model="customerProfile.mobile" type="text" class="form-control">
               </div>
+              <div ng-if="attachment == null" style="padding:0px;">
+                <div class="col-md-8" style="padding:0px;">
+                  <div class="form-group">
+                    <label>Driving license</label>
+                    <input type="file" file-model="data.attachment" class="form-control" >
+                    <p class="help-block">Browse and upload a copy of your driving license.</p>
+                  </div>
+                </div>
+                <div class="col-md-4" style="padding:0px;">
+                  <button type="button" class="btn btn-primary pull-right" ng-click="uploadAttachment()">
+                    Upload
+                  </button>
+                </div>
+              </div>
+              <div ng-if="attachment != null">
+                Attached License : <a target="_blank" ng-href="{{attachment.attachment}}">{{attachment.name}}</a>
+              </div>
             </div>
           </div>
           <div class="row" >

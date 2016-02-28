@@ -117,7 +117,6 @@ function getUser(urlGet , mode){
   httpRequest.send(null);
   if (httpRequest.status == 200) { // successfully
     user = JSON.parse(httpRequest.responseText);
-    console.log(user);
     user.url = '/api/HR/userSearch/'+ user.pk + '/';
     return user
   }

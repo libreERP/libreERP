@@ -155,6 +155,7 @@ class customerProfile(models.Model):
     address = models.ForeignKey(address , null = False , related_name=None )
     sendUpdates = models.BooleanField(default = True)
     mobile = models.PositiveIntegerField( null = True)
+    attachment = models.ForeignKey(media , related_name='files', null = True)
 
 class offering(models.Model):
     user = models.ForeignKey(User , related_name = 'ecommerceOfferings' , null = False)

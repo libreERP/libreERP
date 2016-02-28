@@ -217,7 +217,8 @@ app.controller('controller.ecommerce.account.settings', function($scope, $state,
       city: '',
       state: '',
       mobile: ''
-    }
+    },
+    attachment : emptyFile,
   }
 
   $http({
@@ -231,8 +232,53 @@ app.controller('controller.ecommerce.account.settings', function($scope, $state,
     console.log($scope.customerProfile);
   })
 
+  $scope.uploadAttachment = function() {
+    var fd = new FormData();
+    fd.append( 'mediaType' , 'doc');
+    fd.append( 'attachment' ,$scope.form.attachment);
+
+    url = '/api/ecommerce/media/';
+
+    $http({method : 'POST' , url : url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      dataToSend = {
+        attachment : response.data.pk
+      }
+      $http({method : 'PATCH' , url : '/api/ecommerce/profile/' + $scope.customerProfile.pk + '/', data : dataToSend }).
+      then(function(response) {
+        Flash.create('success', response.status + ' : ' + response.statusText);
+      } , function(response) {
+        Flash.create('danger', response.status + ' : ' + response.statusText);
+      })
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+
+  }
+
+  $scope.me = $users.get('mySelf');
+
+  $scope.changePassword = function() {
+    dataToSend = {
+      oldPassword : $scope.form.oldPassword,
+      password : $scope.form.password,
+    }
+    $http({method : 'PATCH' , url : '/api/HR/users/' + getPK($scope.me.url) + '/' , data : dataToSend}).
+    then(function(response) {
+      Flash.create('success', response.status + ' : ' + response.statusText);
+    } , function(response) {
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    })
+  }
+
 
   $scope.saveAddress = function() {
+    if (emptyFile != $scope.form.attachment) {
+      $scope.uploadAttachment()
+    }
+    if ($scope.form.password.length >0 && $scope.form.password == $scope.form.password2) {
+      $scope.changePassword()
+    }
     dataToSend = $scope.form.address;
     dataToSend.sendUpdates = $scope.customerProfile.sendUpdates;
     dataToSend.mobile = $scope.customerProfile.mobile;

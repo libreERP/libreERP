@@ -1,6 +1,6 @@
 app.controller('controller.ecommerce.checkout' , function($scope , $state, $http , $timeout , $uibModal , $users , Flash){
   $scope.me = $users.get('mySelf');
-  $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' }};
+  $scope.data = {quantity : 1 , shipping :'express', stage : 'review' , address : { street : '' , pincode : '' , city : '' , state : '', mobile :'' , attachment : emptyFile}};
 
   $scope.$watch(function(){
     if (typeof $scope.$parent.data.pickUpTime == 'string') {
@@ -16,12 +16,58 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
     $scope.data.location = $scope.$parent.data.location;
   })
 
+  $scope.uploadAttachment = function() {
+    if ($scope.data.attachment == emptyFile || $scope.data.attachment == null || typeof $scope.data.attachment == 'undefined') {
+      Flash.create('danger' , 'No file selected')
+      return;
+    }
 
-  $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
-  then(function(response){
-    $scope.customerProfile = response.data[0];
-    $scope.data.address = response.data[0].address;
-  })
+    var fd = new FormData();
+    fd.append( 'mediaType' , 'doc');
+    fd.append( 'attachment' ,$scope.data.attachment);
+
+    url = '/api/ecommerce/media/';
+
+    $http({method : 'POST' , url : url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    then(function(response){
+      $scope.attachment = response.data;
+      url =  $scope.attachment.attachment;
+      $scope.attachment.name = url.split('/')[url.split('/').length -1]
+      dataToSend = {
+        attachment : response.data.pk
+      }
+      $http({method : 'PATCH' , url : '/api/ecommerce/profile/' + $scope.customerProfile.pk + '/', data : dataToSend }).
+      then(function(response) {
+        $scope.customerProfile = response.data;
+        $scope.data.address = response.data.address;
+        Flash.create('success', response.status + ' : ' + response.statusText);
+      } , function(response) {
+        Flash.create('danger', response.status + ' : ' + response.statusText);
+      })
+    }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+
+  }
+
+  $scope.retriveProfile = function() {
+    $http({method : 'GET' , url : '/api/ecommerce/profile/'}).
+    then(function(response){
+      $scope.customerProfile = response.data[0];
+      $scope.data.address = response.data[0].address;
+      if (response.data[0].attachment == null || typeof response.data[0].attachment == 'undefined' || response.data[0].attachment.length == 0) {
+        return;
+      }
+      $http({method : 'GET' , url : '/api/ecommerce/media/' + response.data[0].attachment + '/'}).
+      then(function(response) {
+        $scope.attachment = response.data;
+        url =  $scope.attachment.attachment;
+        $scope.attachment.name = url.split('/')[url.split('/').length -1]
+      })
+    })
+  }
+
+  $scope.retriveProfile()
 
   $http({method : 'GET' , url : '/api/ecommerce/offering/' + $state.params.pk + '/'}).
   then(function(response){
@@ -46,6 +92,10 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
     if ($scope.data.stage == 'review') {
       $scope.data.stage = 'shippingDetails';
     } else if ($scope.data.stage == 'shippingDetails') {
+      if ($scope.customerProfile.attachment == null || typeof $scope.customerProfile.attachment == 'undefined' || $scope.customerProfile.attachment.length == 0) {
+        Flash.create('danger' , 'No driving license found')
+        return;
+      }
       $scope.data.stage = 'payment';
     }
   }

@@ -157,8 +157,6 @@ String.prototype.endsWith = function(str){
 getPK = function(input){
   // for any object url like /api/HR/uses/1/  : this can give the pk of the object
   parts = input.match(/\/\d*\//g);
-  console.log(parts);
-  console.log(typeof parts);
   if (parts.length == 1) {
     return parseInt(parts[0].match(/\d+/));
   }
