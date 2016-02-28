@@ -1,4 +1,6 @@
 from rest_framework import permissions
+from ERP.models import application , permission as erp_permission
+from django.core.exceptions import PermissionDenied
 
 class isAdmin(permissions.BasePermission):
     """Allow the Admin only"""
@@ -37,3 +39,11 @@ class isOwnerOrReadOnly(permissions.BasePermission):
         else:
             return obj.user == request.user
             # Check permissions for write request
+
+def has_application_permission(user , apps):
+    a = application.objects.filter(name__in = apps)
+    p = erp_permission.objects.filter(user = user , app__in = a)
+    if p.count() == a.count() or user.is_superuser:
+        return True
+    else:
+        raise PermissionDenied()

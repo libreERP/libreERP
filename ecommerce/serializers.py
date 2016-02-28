@@ -35,6 +35,8 @@ class genericProductSerializer(serializers.ModelSerializer):
         model = genericProduct
         fields = ('pk' , 'fields' , 'name' , 'productType')
     def create(self , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.configure'])
         gp = genericProduct()
         gp.productType = genericType.objects.get(pk = self.context['request'].data['productType'])
         gp.name = validated_data.pop('name')
@@ -44,6 +46,9 @@ class genericProductSerializer(serializers.ModelSerializer):
         gp.save()
         return gp
     def update(self , instance , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.configure'])
+
         instance.name = validated_data.pop('name')
         instance.productType = genericType.objects.get(pk = self.context['request'].data['productType'])
         instance.fields.clear()
@@ -76,11 +81,13 @@ class mediaSerializer(serializers.ModelSerializer):
         model = media
         fields = ('pk' , 'link' , 'attachment' , 'mediaType')
     def create(self ,  validated_data):
-        user =  self.context['request'].user
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.listings'])
         m = media(**validated_data)
-        m.user = user
+        m.user = u
         m.save()
         return m
+
 class offeringLiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = offering
@@ -98,8 +105,9 @@ class offeringAdminSerializer(serializers.ModelSerializer):
         model = offering
         fields = ('pk' , 'created' ,'inStock', 'item' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
     def create(self ,  validated_data):
-        o = offering(**validated_data)
         u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.offerings'])
+        o = offering(**validated_data)
         o.user = u
         o.service = service.objects.get(user = u)
         o.save()
@@ -150,8 +158,10 @@ class listingSerializer(serializers.ModelSerializer):
         fields = ('pk' , 'user' , 'title' , 'description' , 'priceModel'  , 'approved' , 'category' , 'specifications' , 'files' , 'parentType' , 'providerOptions' , 'source' )
         read_only_fields = ('user',)
     def create(self ,  validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.listings'])
         l = listing(**validated_data)
-        l.user =  self.context['request'].user
+        l.user =  u
         l.save()
         if 'files' in self.context['request'].data:
             for m in self.context['request'].data['files']:
@@ -159,7 +169,10 @@ class listingSerializer(serializers.ModelSerializer):
         l.parentType = genericProduct.objects.get(pk = self.context['request'].data['parentType'])
         l.save()
         return l
+
     def update(self , instance , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.listings'])
         for key in ['title' , 'description' , 'priceModel' , 'category' , 'specifications' , 'source' ]:
             try:
                 setattr(instance , key , validated_data[key])
@@ -190,6 +203,13 @@ class orderSerializer(serializers.ModelSerializer):
         o.address = a
         o.save()
         return o
+    def update(self , instance , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.orders'])
+        status = validated_data['status']
+        if (status == 'inProgress' and not instance.status == 'new') or (status == 'complete' and not instance.status == 'inProgress') or \
+            (status == 'canceledByVendor' and not instance.status == 'new') or (status == 'canceledByCustomer' and not instance.status == 'new') :
+            raise ValidationError()
 
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
@@ -268,11 +288,16 @@ class offerBannerSerializer(serializers.ModelSerializer):
         read_only_fields = ('user',)
     def create(self ,  validated_data):
         u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.configure'])
+        u = self.context['request'].user
         b = offerBanner(**validated_data)
         b.user = u
         b.save()
         return b
     def update (self, instance, validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.configure'])
+        
         instance.title = validated_data.pop('title')
         instance.subtitle = validated_data.pop('subtitle')
         instance.level = validated_data.pop('level')

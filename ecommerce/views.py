@@ -519,8 +519,11 @@ class genericProductViewSet(viewsets.ModelViewSet):
 
 class addressViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
-    queryset = address.objects.all()
     serializer_class = addressSerializer
+    def get_queryset(self):
+        u = self.request.user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.orders'])
+        return address.objects.all()
 
 class serviceViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin , )
@@ -569,7 +572,8 @@ class listingLiteViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
     def get_queryset(self):
-        u = self.request.user
+        # u = self.request.user
+        # has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.listings'])
         if 'mode' in  self.request.GET:
             if self.request.GET['mode'] == 'vendor':
                 s = service.objects.get(user = u)
@@ -644,9 +648,10 @@ class orderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
     def get_queryset(self):
+        u = self.request.user
         if 'mode' in self.request.GET:
-            u = self.request.user
             if self.request.GET['mode'] == 'provider':
+                has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.orders'])
                 return order.objects.filter(offer__in = u.ecommerceOfferings.all())
             elif self.request.GET['mode'] == 'consumer':
                 return order.objects.filter(user = u)
@@ -706,22 +711,29 @@ class offeringAdminViewSet(viewsets.ModelViewSet):
     filter_fields = ['item']
     def get_queryset(self):
         u = self.request.user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.offerings'])
         return offering.objects.filter(user = u)
 
 
 class feedbackViewSet(viewsets.ModelViewSet):
-    queryset = feedback.objects.all()
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = feedbackSerializer
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['email']
+    def get_queryset(self):
+        u = self.request.user
+        has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.feedbacks'])
+        return feedback.objects.all()
 
 class reviewViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly , )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly , readOnly )
     serializer_class = reviewSerializer
     def get_queryset(self):
         if 'listing' in self.request.GET:
             return review.objects.filter(item = self.request.GET['listing'])
         else:
+            u = self.request.user
+            has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.reviews'])
             return review.objects.all()
 
 
