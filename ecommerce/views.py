@@ -536,7 +536,7 @@ class serviceViewSet(viewsets.ModelViewSet):
         return service.objects.all()
 
 class mediaViewSet(viewsets.ModelViewSet):
-    permission_classes = (isAdmin , )
+    permission_classes = (isAdminOrReadOnly , )
     queryset = media.objects.all()
     serializer_class = mediaSerializer
 

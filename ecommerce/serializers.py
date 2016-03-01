@@ -257,21 +257,22 @@ class customerProfileSerializer(serializers.ModelSerializer):
         cp = customerProfile.objects.get(user = u)
 
         try:
-            street = validated_data.pop('street')
-            pincode = validated_data.pop('pincode')
-            state = validated_data.pop('state')
-            city = validated_data.pop('city')
+            street = self.context['request'].data['street']
+            pincode = self.context['request'].data['pincode']
+            state = self.context['request'].data['state']
+            city = self.context['request'].data['city']
             try:
                 a = cp.address
             except:
                 a = address()
-                a.street = street
-                a.city = city
-                a.pincode = pincode
-                a.state = state
-                a.save()
+                
+            a.street = street
+            a.city = city
+            a.pincode = pincode
+            a.state = state
+            a.save()
 
-                cp.address = a
+            cp.address = a
         except:
             pass
 

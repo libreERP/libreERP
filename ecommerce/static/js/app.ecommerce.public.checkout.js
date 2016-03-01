@@ -90,6 +90,17 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
 
   $scope.next = function(){
     if ($scope.data.stage == 'review') {
+      if ($scope.data.location == null || $scope.data.pickUpTime == null || $scope.data.dropInTime == null) {
+        if ($scope.data.location == null) {
+          msg = 'Location not selected'
+        }else if ($scope.data.pickUpTime == null) {
+          msg = 'Pickup time not selected'
+        }else if ($scope.data.dropInTime == null) {
+          msg = 'Dropin time not selected'
+        }
+        Flash.create('danger' , msg)
+        return;
+      }
       $scope.data.stage = 'shippingDetails';
     } else if ($scope.data.stage == 'shippingDetails') {
       if ($scope.customerProfile.attachment == null || typeof $scope.customerProfile.attachment == 'undefined' || $scope.customerProfile.attachment.length == 0) {
@@ -108,6 +119,9 @@ app.controller('controller.ecommerce.checkout' , function($scope , $state, $http
   }
 
   $scope.pay = function(){
+
+    $scope.data.stage = 'processing';
+
     $scope.data.pickUpTime = $scope.$parent.data.pickUpTime;
     $scope.data.dropInTime = $scope.$parent.data.dropInTime;
     $scope.data.location = $scope.$parent.data.location;

@@ -1,5 +1,4 @@
 <div class="container-fluid">
-
   <div class="row">
     <div class="col-md-6">
       <h2>Address</h2>
@@ -34,6 +33,7 @@
         <h5>Driving license</h5>
         <input type="file" file-model="form.attachment" class="form-control" >
         <p class="help-block">Browse and upload a copy of your driving license for quick checkout.</p>
+        <img ng-src="{{customerProfile.attachment.attachment}}" style="width:100%;" />
       </div>
       <hr>
       <h5>Change password</h5>
@@ -56,5 +56,4 @@
       Save
     </button>
   </div>
-
 </div>

@@ -219,6 +219,7 @@ app.controller('controller.ecommerce.account.settings', function($scope, $state,
       mobile: ''
     },
     attachment : emptyFile,
+    password : '',
   }
 
   $http({
@@ -229,7 +230,12 @@ app.controller('controller.ecommerce.account.settings', function($scope, $state,
     // for(key in response.data[0])
     $scope.customerProfile = response.data[0];
     $scope.form.address = response.data[0].address;
-    console.log($scope.customerProfile);
+    if (typeof $scope.customerProfile.attachment == 'number') {
+      $http({method :'GET' , url : '/api/ecommerce/media/' + $scope.customerProfile.attachment + '/'}).
+      then(function(response) {
+        $scope.customerProfile.attachment = response.data;
+      })
+    }
   })
 
   $scope.uploadAttachment = function() {
@@ -241,6 +247,7 @@ app.controller('controller.ecommerce.account.settings', function($scope, $state,
 
     $http({method : 'POST' , url : url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
+      $scope.customerProfile.attachment = response.data;
       dataToSend = {
         attachment : response.data.pk
       }
