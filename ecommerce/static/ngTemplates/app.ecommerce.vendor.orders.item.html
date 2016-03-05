@@ -55,7 +55,7 @@
         <i style="cursor:pointer;margin-left:37%;" class="fa fa-ellipsis-h fa-2x" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"></i>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
           <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('progress')"><i class="fa fa-spin fa-spinner"></i> In Progress</a></li>
-          <li ng-if="['inProgress' , 'new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('complete')"><i class="fa fa-check"></i> Mark complete</a></li>
+          <li ng-if="['inProgress'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('complete')"><i class="fa fa-check"></i> Mark complete</a></li>
           <li ng-if="['new'].indexOf(data.status) != -1"><a href="" ng-click = "rowActionClicked('reject')"><i class="fa fa-close"></i> Reject</a></li>
         </ul>
       </span>

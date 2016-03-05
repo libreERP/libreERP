@@ -14,6 +14,7 @@ from django.db.models import Min , Sum , Avg
 import mimetypes
 import hashlib, datetime, random
 from datetime import timedelta , date
+from monthdelta import monthdelta
 from time import time
 import pytz
 import math
@@ -34,7 +35,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
-from rest_framework.exceptions import * 
+from rest_framework.exceptions import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
@@ -58,7 +59,11 @@ def sendSMS(o , to ):
     st = o.start
     et = o.end
     am , hrs= getBookingAmount(o)
-    msg = 'Booking details: \n Ride : %s \n From: %s \n To: %s \n Amount: %s INR\n Hours: %s' %(name , st.strftime('%a, %d. %b %y, %I:%M%p') , et.strftime('%a, %d. %b %y, %I:%M%p') , am , hrs)
+    if o.status == 'new':
+        msg = 'Booking details: \n Ride : %s \n From: %s \n To: %s \n Amount: %s INR\n Hours: %s' %(name , st.strftime('%a, %d. %b %y, %I:%M%p') , et.strftime('%a, %d. %b %y, %I:%M%p') , am , hrs)
+    else:
+        msg = 'Booking Modefied: \n Ride : %s \n From: %s \n To: %s \n Status: %s\n Hours: %s' %(name , st.strftime('%a, %d. %b %y, %I:%M%p') , et.strftime('%a, %d. %b %y, %I:%M%p') , o.status , hrs)
+
     if to == 'customer':
         mob = customerProfile.objects.get(user = o.user).mobile
     else:
@@ -72,6 +77,7 @@ def sendEmail(o , to):
     input : offer objects
     outout : None
     """
+
     it =  o.offer.item
     name = it.title[:18]
     st = o.start
@@ -80,12 +86,18 @@ def sendEmail(o , to):
     u = o.user
     s = o.offer.service
     if to == 'customer':
-        topMsg = 'We are pleased to provide you the following details on your booking with us.'
+        if o.status == 'new':
+            topMsg = 'We are pleased to provide you the following details on your booking with us.'
+        else:
+            topMsg = 'The status of your booking with is now : %s.' %(o.status)
         toEmail = u.email
         link = '/#/account/orders'
     else:
+        if o.status == 'new':
+            topMsg = 'A new booking has been made against your offer. The details are as follows.'
+        else:
+            topMsg = 'The status of the below booking is now : %s.' %(o.status)
         link = '/ERP/#/businessManagement/ecommerce/orders'
-        topMsg = 'A new booking has been made against your offer. The details are as follows.'
         toEmail = s.user.email
     orderCtx = {
         'message' : topMsg,
@@ -219,20 +231,44 @@ class earningsApi(APIView):
             a , _ = getBookingAmount(o)
             last2LastWeekEarnings += a
 
-        tco = order.objects.filter(offer__in = os , status='complete').count() # total completed orders so far
+        monthWiseBookings = []
+        monthWiseRevenue = []
+        months = []
+        for i in range(0,12):
+            acol = order.objects.filter(offer__in = os , status='complete' , end__range= [enddate - monthdelta(1) , enddate]).order_by('-created') # all completed orders in last week
+            enddate = enddate - monthdelta(1)
+            months.append(enddate.strftime('%b'))
+            ta = 0
+            for o in acol:
+                a , _ = getBookingAmount(o)
+                ta += a
+            monthWiseRevenue.append(ta)
+            monthWiseBookings.append(acol.count())
+        print monthWiseRevenue
+        print monthWiseBookings
+
+        tco = order.objects.filter(offer__in = os , status='complete') # total completed orders so far
         ipo = order.objects.filter(offer__in = os , status='inProgress') # inProgress orders
         expectedThisWeek = 0
         for o in ipo:
             a , _ = getBookingAmount(o)
             expectedThisWeek += a
+        totalRevenue = 0
+        for o in tco:
+            a , _ = getBookingAmount(o)
+            totalRevenue += a
         content = {'last2LastWeekEarnings' : last2LastWeekEarnings ,
             'lastWeekEarnings' : lastWeekEarnings ,
             'completeLastWeek': acol.count(),
-            'totalCompletedOrders' : tco ,
+            'totalCompletedOrders' : tco.count() ,
             'inProgressOrders' : ipo.count() ,
             'cancelledThisWeek' : cxo ,
             'completeThisWeek' : cco ,
-            'expectedThisWeek' : expectedThisWeek}
+            'expectedThisWeek' : expectedThisWeek,
+            'monthWiseBookings' : monthWiseBookings,
+            'monthWiseRevenue' : monthWiseRevenue,
+            'totalRevenue' : totalRevenue,
+            'months' : months}
         return Response(content, status=status.HTTP_200_OK)
 
 def ecommerceHome(request):
@@ -721,8 +757,9 @@ class feedbackViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
     serializer_class = feedbackSerializer
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['email']
+    filter_fields = ['mobile']
     def get_queryset(self):
+        print "hey there"
         u = self.request.user
         has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.feedbacks'])
         return feedback.objects.all()

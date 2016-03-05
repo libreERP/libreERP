@@ -212,8 +212,11 @@ class orderSerializer(serializers.ModelSerializer):
         has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.orders'])
         status = validated_data['status']
         if (status == 'inProgress' and not instance.status == 'new') or (status == 'complete' and not instance.status == 'inProgress') or \
-            (status == 'canceledByVendor' and not instance.status == 'new') or (status == 'canceledByCustomer' and not instance.status == 'new') :
-            raise ValidationError()
+            (status == 'canceledByVendor' and not instance.status == 'new') or (status == 'canceledByCustomer' and not instance.status == 'new') or status=='new':
+            raise ValidationError({'NOT_ACCEPTABLE'})
+        instance.status = status
+        instance.save()
+        return instance
 
 class savedSerializer(serializers.ModelSerializer):
     class Meta:
@@ -265,7 +268,7 @@ class customerProfileSerializer(serializers.ModelSerializer):
                 a = cp.address
             except:
                 a = address()
-                
+
             a.street = street
             a.city = city
             a.pincode = pincode

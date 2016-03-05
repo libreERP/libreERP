@@ -8,15 +8,14 @@ app.controller('businessManagement.ecommerce.earnings' , function($scope , $http
     $scope.compareCurrentWeek = Math.ceil(($scope.data.expectedThisWeek-$scope.data.lastWeekEarnings)*100/$scope.data.lastWeekEarnings);
     $scope.labels2 = ["Completed", "On Going", "Cancelled"];
     $scope.data2 = [$scope.data.completeThisWeek, $scope.data.inProgressOrders, $scope.data.cancelledThisWeek];
+    $scope.labels = $scope.data.months;
+    $scope.series = ['Month Wise Bookings'];
+    $scope.data1 = [
+      $scope.data.monthWiseBookings,
+    ];
   });
 
 
-  $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-  $scope.series = ['Series A', 'Series B'];
-  $scope.data = [
-    [65, 59, 80, 81, 56, 55, 40],
-    [28, 48, 40, 19, 86, 27, 90]
-  ];
   $scope.onClick = function (points, evt) {
     console.log(points, evt);
   };
