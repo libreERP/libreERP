@@ -114,7 +114,33 @@
   </div>
 </div> -->
 
-<div class="container-fluid" style="padding:60px;background-color:#eeecec;">
+<div class="container-fluid" style="padding:60px;padding-top:20px;padding-bottom:20px;background-color:#0b8581;min-height:350px;">
+  <div class="row text-center">
+    <h2 style="color:white;">Why ?</h2>
+  </div>
+  <div class="row" style="margin-top:30px;">
+    <div class="col-md-4 text-center" style="color:white;">
+      <div class="zoomEffect {{whyZoomer == 1 ? 'zoomText':''}}">
+        <i class="fa fa-thumbs-up fa-5x"></i> <br>
+        <h4 style="color:white;">Hassel free</h4>
+      </div>
+    </div>
+    <div class="col-md-4 text-center" style="color:white;">
+      <div class="zoomEffect {{whyZoomer == 2 ? 'zoomText':''}}">
+        <i class="fa fa-stethoscope fa-5x"></i> <br>
+        <h4 style="color:white;">Insurance</h4>
+      </div>
+    </div>
+    <div class="col-md-4 text-center" style="color:white;">
+      <div class="zoomEffect {{whyZoomer == 3 ? 'zoomText':''}}">
+        <i class="fa fa-gears fa-5x"></i> <br>
+        <h4 style="color:white;">RSA</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container-fluid" style="padding:60px;background-color:#eeecec;">
   <div ng-repeat="l in listings" >
     <div class="col-md-3 anim-in-out anim-zoom-out" style="margin-bottom:15px;">
       <div class="container-fluid zoomOnHover" style="cursor:pointer;" ng-click="$state.go('details' , {id : l.pk})">
@@ -135,12 +161,12 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <div class="container-fluid" style="min-height:500px;background: url({{settings.banner2ImageLink}}) no-repeat;background-size: 100%;position:relative;">
   <div class="container-fluid col-md-6" style="position:absolute;top:100px;">
     <h3 style="color:white;">{{settings.banner2ImageText1}} </h3>
-    <h5 style="color:white;">{{settings.banner2ImageText2}}</h5>
+    <h5 style="color:white;margin-bottom:60px;">{{settings.banner2ImageText2}}</h5>
     <button type="button" class="btn btn-success col-md-5 btn-lg">
       {{settings.banner2ButtonText}}
     </button>

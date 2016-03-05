@@ -22,6 +22,7 @@ class application(models.Model):
     icon = models.CharField(max_length = 20 , null = True )
     haveCss = models.BooleanField(default = True)
     haveJs = models.BooleanField(default = True)
+    inMenu = models.BooleanField(default = True)
     # only selected users can assign access to the application to other user
     module = models.ForeignKey(module , related_name = "apps" , null=False)
     description = models.CharField(max_length = 500 , null = False)

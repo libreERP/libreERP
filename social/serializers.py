@@ -200,10 +200,10 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
             instance.delete()
         return instance
 
-class socialSerializer(serializers.HyperlinkedModelSerializer):
+class socialSerializer(serializers.ModelSerializer):
     class Meta:
         model = social
-        fields = ('url' , 'status' , 'aboutMe' , 'coverPic' , 'followers')
+        fields = ('pk' , 'status' , 'aboutMe' , 'coverPic' , 'followers')
         read_only_fields = ('followers',)
     def update(self , instance,  validated_data):
         user =  self.context['request'].user

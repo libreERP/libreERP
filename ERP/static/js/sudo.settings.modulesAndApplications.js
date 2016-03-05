@@ -46,6 +46,7 @@ app.controller('admin.settings.modulesAndApps' , function($scope , $http , $asid
         icon : data.icon,
         haveJs : data.haveJs,
         haveCss : data.haveCss,
+        inMenu : data.inMenu,
       },
       url = '/api/ERP/module/' ;
 

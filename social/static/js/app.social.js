@@ -787,7 +787,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
     $scope.myProfile = false;
   }
 
-  $http({method:'GET' , url : '/api/social/social/' + $scope.user.social}).then(
+  $http({method:'GET' , url : '/api/social/social/' + $scope.user.social + '/'}).then(
     function(response){
       $scope.user.socialData = response.data;
       $scope.user.socialData.coverPicFile = emptyFile;
@@ -799,7 +799,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
     }
   )
 
-  $http({method:'GET' , url : '/api/HR/designation/' + $scope.user.designation}).then(
+  $http({method:'GET' , url : '/api/HR/designation/' + $scope.user.designation + '/'}).then(
     function(response){
       $scope.user.designationData = response.data;
     }
@@ -1067,7 +1067,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
       fd.append('coverPic', $scope.user.socialData.coverPicFile);
     }
     fd.append('aboutMe' , $scope.user.socialData.aboutMe);
-    var uploadUrl = $scope.user.social;
+    var uploadUrl = '/api/social/social/' + $scope.user.social + '/';
     $http({method : 'PATCH' , url : uploadUrl, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );

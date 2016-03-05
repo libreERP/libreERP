@@ -28,7 +28,7 @@ class userDesignationSerializer(serializers.ModelSerializer):
     rank = rankSerializer(read_only = True, many = False)
     class Meta:
         model = designation
-        fields = ('url' , 'unitType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
+        fields = ('pk' , 'unitType' , 'domain' , 'rank' , 'unit' , 'department' , 'reportingTo' , 'primaryApprover' , 'secondaryApprover')
 class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:

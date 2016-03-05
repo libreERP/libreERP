@@ -1,4 +1,4 @@
-app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users ,$uibModal){
+app.controller('controller.ecommerce.home' , function($scope , $state , $http , $users ,$uibModal , $interval){
 
   $scope.$watch(function() {
     if (typeof $scope.settings == 'undefined' || Object.keys($scope.settings).length==0) {
@@ -15,6 +15,17 @@ app.controller('controller.ecommerce.home' , function($scope , $state , $http , 
       size: 'lg',
     });
   }
+
+  $scope.whyZoomer = 1;
+  $interval(function () {
+    if ($scope.whyZoomer == 1) {
+      $scope.whyZoomer = 2;
+    }else if ($scope.whyZoomer == 2) {
+      $scope.whyZoomer = 3;
+    }else {
+      $scope.whyZoomer =1;
+    }
+  }, 2000);
 
   $scope.fetchListings = function(){
     url = '/api/ecommerce/listingLite/?mode=suggest'

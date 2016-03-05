@@ -57,7 +57,7 @@ class applicationViewSet(viewsets.ModelViewSet):
         else:
             if 'user' in self.request.GET:
                 return getApps(User.objects.get(username = self.request.GET['user']))
-            return application.objects.all()
+            return application.objects.filter(inMenu = True)
 
 class applicationAdminViewSet(viewsets.ModelViewSet):
     permission_classes = (isAdmin,)

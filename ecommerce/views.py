@@ -34,7 +34,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
-from rest_framework.exceptions import *
+from rest_framework.exceptions import * 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
