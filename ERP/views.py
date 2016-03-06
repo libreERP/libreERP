@@ -12,6 +12,13 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 from django.db.models import Q
+from allauth.account.adapter import DefaultAccountAdapter
+
+
+class AccountAdapter(DefaultAccountAdapter):
+
+  def get_login_redirect_url(self, request):
+      return '/'
 
 def getModules(user):
     if user.is_superuser:

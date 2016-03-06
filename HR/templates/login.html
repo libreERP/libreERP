@@ -1,5 +1,8 @@
 {% load staticfiles%}
 {% load staticfiles %}
+{% load socialaccount %}
+
+
 
 <!DOCTYPE html>
 <html>
@@ -8,8 +11,10 @@
     <title>Login</title>
     {% if useCDN %}
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" charset="utf-8">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" charset="utf-8">
     {% else %}
       <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+      <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
     {% endif %}
     <link rel="stylesheet" href="{% static 'css/signin.css' %}" charset="utf-8">
   </head>
@@ -19,6 +24,7 @@
     <div class="col-md-4" style="background-color:#1f2225;height:100%;position:absolute;right:0px;">
       <form method="post" class="form-signin" action="">{% csrf_token %}
         <h2 class="form-signin-heading" style="color:white;margin-top:200px;">Login</h2>
+
         {% if authStatus.status != 'default' %}
           <div class="alert alert-{{authStatus.status}}">{{authStatus.message}}</div>
         {% endif %}
@@ -26,7 +32,17 @@
         <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
         <label for="password" class="sr-only">Password</label>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button style="margin-bottom:20px;" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+        <a style="color:white;" href="/accounts/password/reset/">Forgot password?</a>
+
+        <a href="/register" class="btn btn-success btn-block" style="margin-top:150px;">Register</a>
+        <a title="Google" class="btn btn-danger btn-block" href="{% provider_login_url "google" method="oauth2" %}">
+          <i class="fa fa-google-plus pull-left"></i>Login with Google
+        </a>
+        <a href="{% provider_login_url "facebook" method="oauth2" %}" class="btn btn-primary btn-block">
+          <i class="fa fa-facebook pull-left"></i> Login with Facebook
+        </a>
       </form>
     </div> <!-- /container -->
     {% if useCDN %}

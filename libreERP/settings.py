@@ -38,8 +38,15 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'corsheaders',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     'API', # uncategorised REST points
     'ERP', # permissions, overall management of the platform
     'HR', # people aspect of the platform
@@ -51,6 +58,36 @@ INSTALLED_APPS = (
     'ecommerce', # ecommerce
 
 )
+
+SITE_ID = 1
+
+ACCOUNT_ADAPTER = 'ERP.views.AccountAdapter'
+
+SOCIALACCOUNT_PROVIDERS = \
+        {'google':
+            { 'SCOPE': ['profile', 'email'],
+            'AUTH_PARAMS': { 'access_type': 'online' } },
+        'facebook':
+            {'METHOD': 'oauth2',
+            'SCOPE': ['email', 'public_profile', 'user_friends'],
+            'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+            'FIELDS': [
+                'id',
+                'email',
+                'name',
+                'first_name',
+                'last_name',
+                'verified',
+                'locale',
+                'timezone',
+                'link',
+                'gender',
+                'updated_time'],
+            'EXCHANGE_TOKEN': True,
+            'LOCALE_FUNC': 'path.to.callable',
+            'VERIFIED_EMAIL': False,
+            'VERSION': 'v2.4'}
+        }
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -81,12 +118,20 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                # 'social.apps.django_app.context_processors.backends',
+                # 'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'libreERP.wsgi.application'
+
+
+AUTHENTICATION_BACKENDS = (
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 
 # Database
