@@ -1,4 +1,4 @@
-django==1.9.2
+django==1.9.3
 djangorestframework==3.3.2
 markdown==2.6
 django-filter==0.11
@@ -8,3 +8,5 @@ pillow==3.1
 requests==2.9
 pytz==2015.7
 reportlab==3.2
+django-allauth==0.24.1
+django-rest-auth==0.7.0
