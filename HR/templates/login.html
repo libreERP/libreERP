@@ -21,9 +21,9 @@
   <body>
     <div class="col-md-8" style="background-image: url('/static/images/login.jpg');height:100%;position:absolute;left:0px;">
     </div>
-    <div class="col-md-4" style="background-color:#1f2225;height:100%;position:absolute;right:0px;">
+    <div class="col-md-4" style="background-color:#eeeeee;height:100%;position:absolute;right:0px;">
       <form method="post" class="form-signin" action="">{% csrf_token %}
-        <h2 class="form-signin-heading" style="color:white;margin-top:200px;">Login</h2>
+        <h2 class="form-signin-heading" style="color:black;margin-top:200px;">Login</h2>
 
         {% if authStatus.status != 'default' %}
           <div class="alert alert-{{authStatus.status}}">{{authStatus.message}}</div>
@@ -34,7 +34,7 @@
         <input name="password" type="password" class="form-control" placeholder="Password" required>
         <button style="margin-bottom:20px;" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 
-        <a style="color:white;" href="/accounts/password/reset/">Forgot password?</a>
+        <a style="color:black;" href="/accounts/password/reset/">Forgot password?</a>
 
         <a href="/register" class="btn btn-success btn-block" style="margin-top:150px;">Register</a>
         <a title="Google" class="btn btn-danger btn-block" href="{% provider_login_url "google" method="oauth2" %}">

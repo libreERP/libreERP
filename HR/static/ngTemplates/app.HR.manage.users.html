@@ -12,8 +12,8 @@
         <uib-tab-heading >
           Search  <i ng-if="tab.cancel" class="fa fa-search"></i>
         </uib-tab-heading>
-        
-        <generic-Table callback-Fn = "tableAction" data="tableData" config-Obj="{{config}}"></generic-Table>
+
+        <generic-Table callback-Fn = "tableAction" data="data.tableData" config-Obj="{{config}}"></generic-Table>
 
       </uib-tab>
       <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">

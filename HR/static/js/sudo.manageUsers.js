@@ -32,6 +32,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
 
   $scope.tabs = [];
   $scope.searchTabActive = true;
+  $scope.data = {tableData : []};
 
   $scope.closeTab = function(index){
     $scope.tabs.splice(index , 1)
@@ -41,9 +42,12 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
     $scope.searchTabActive = false;
     alreadyOpen = false;
     for (var i = 0; i < $scope.tabs.length; i++) {
-      if ($scope.tabs[i].data.url == input.data.url && $scope.tabs[i].app == input.app) {
-        $scope.tabs[i].active = true;
-        alreadyOpen = true;
+
+      if ($scope.tabs[i].app == input.app) {
+        if ((typeof $scope.tabs[i].data.url != 'undefined' && $scope.tabs[i].data.url == input.data.url )|| (typeof $scope.tabs[i].data.pk != 'undefined' && $scope.tabs[i].data.pk == input.data.pk)) {
+          $scope.tabs[i].active = true;
+          alreadyOpen = true;
+        }
       }else{
         $scope.tabs[i].active = false;
       }
@@ -80,23 +84,34 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         $http({method :'options' , url : '/api/HR/profileAdminMode'}).
         then(function(response){
           $scope.profileFormStructure = response.data.actions.POST;
-          $http({method :'GET' , url : target.replace('users' , 'profileAdminMode')}).
-          then(function(response){
-            $scope.profile = response.data;
-            for(key in $scope.profileFormStructure){
-              if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
-                $scope.profile[key] = emptyFile;
-              }
+          console.log(target);
+          console.log($scope.data);
+          for (var i = 0; i < $scope.data.tableData.length; i++) {
+            if ($scope.data.tableData[i].pk == target){
+              url = '/api/HR/profileAdminMode/' + $scope.data.tableData[i].profile.pk + '/';
             }
-            u = $users.get(response.config.url.replace('profileAdminMode' , 'users'))
-            $scope.addTab({title : 'Edit profile of ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editProfile' , data : $scope.profile , active : true})
-          });
+          }
+          $http({method :'GET' , url : url}).
+          then((function(target) {
+            return function(response){
+              $scope.profile = response.data;
+              for(key in $scope.profileFormStructure){
+                if ($scope.profileFormStructure[key].type.indexOf('upload') !=-1) {
+                  $scope.profile[key] = emptyFile;
+                }
+              }
+              console.log(target);
+              u = $users.get(target)
+              $scope.addTab({title : 'Edit profile of ' + u.first_name + ' ' + u.last_name  , cancel : true , app : 'editProfile' , data : $scope.profile , active : true})
+            }
+          })(target));
         });
 
       } else if (action == 'social') {
-        $state.go('home.social' , {id : getPK(target)})
+        $state.go('home.social' , {id : target})
       } else if (action == 'editMaster') {
-        $http({method : 'GET' , url : target.replace('users' , 'usersAdminMode')}).
+        console.log(target);
+        $http({method : 'GET' , url : '/api/HR/usersAdminMode/' + target + '/'}).
         then(function(response){
           $scope.addTab({title : 'Edit master data  for ' + response.data.first_name + ' ' + response.data.last_name , cancel : true , app : 'editMaster' , data : response.data , active : true})
         })
@@ -170,7 +185,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         }
       }
     }
-    $http({method : 'PATCH' , url : userData.url.replace('profile' , 'profileAdminMode'), data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+    $http({method : 'PATCH' , url :'/api/HR/profileAdminMode/' + userData.pk +'/', data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
        Flash.create('success', response.status + ' : ' + response.statusText);
     }, function(response){

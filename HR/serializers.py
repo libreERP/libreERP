@@ -33,24 +33,24 @@ class userProfileSerializer(serializers.ModelSerializer):
     """ allow all the user """
     class Meta:
         model = profile
-        fields = ( 'url' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity' )
+        fields = ( 'pk' , 'mobile' , 'displayPicture' , 'website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity' )
         read_only_fields = ('website' , 'prefix' , 'almaMater', 'pgUniversity' , 'docUniversity' , )
 
-class userProfileAdminModeSerializer(serializers.HyperlinkedModelSerializer):
+class userProfileAdminModeSerializer(serializers.ModelSerializer):
     """ Only admin """
     class Meta:
         model = profile
-        fields = ( 'url', 'empID', 'dateOfBirth' , 'anivarsary' , 'permanentAddressStreet' , 'permanentAddressCity' , 'permanentAddressPin', 'permanentAddressState' , 'permanentAddressCountry',
+        fields = ( 'pk', 'empID', 'dateOfBirth' , 'anivarsary' , 'permanentAddressStreet' , 'permanentAddressCity' , 'permanentAddressPin', 'permanentAddressState' , 'permanentAddressCountry',
         'localAddressStreet' , 'localAddressCity' , 'localAddressPin' , 'localAddressState' , 'localAddressCountry' , 'prefix', 'gender' , 'email', 'email2', 'mobile' , 'emergency' , 'tele' , 'website',
         'sign', 'IDPhoto' , 'TNCandBond' , 'resume' ,  'certificates', 'transcripts' , 'otherDocs' , 'almaMater' , 'pgUniversity' , 'docUniversity' , 'fathersName' , 'mothersName' , 'wifesName' , 'childCSV',
         'note1' , 'note2' , 'note3')
 
 
-class userSerializer(serializers.HyperlinkedModelSerializer):
+class userSerializer(serializers.ModelSerializer):
     profile = userProfileSerializer(many=False , read_only=True)
     class Meta:
         model = User
-        fields = ('url' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' , 'social')
+        fields = ('pk' , 'username' , 'email' , 'first_name' , 'last_name' , 'designation' ,'profile'  ,'settings' , 'password' , 'social')
         read_only_fields = ('designation' , 'profile' , 'settings' ,'social' )
         extra_kwargs = {'password': {'write_only': True} }
     def create(self , validated_data):

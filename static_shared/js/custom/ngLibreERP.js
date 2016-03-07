@@ -48,7 +48,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   });
 
 
-  $http({method : 'GET' , url : $scope.me.settings}).
+  $http({method : 'GET' , url : '/api/PIM/settings/' + $scope.me.settings + '/'}).
   then(function(response){
     for(key in response.data.theme){
       if (key !='url') {
@@ -325,12 +325,11 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
 
   $scope.imWindows = [ ]
 
-  $scope.addIMWindow = function(url){
-    // console.log('url ' + url);
+  $scope.addIMWindow = function(pk){
+    url = $users.get(pk).url;
     for (var i = 0; i < $scope.rawMessages.length; i++) {
       if ($scope.rawMessages[i].originator.cleanUrl() == url.cleanUrl() && $scope.rawMessages[i].read == false){
         $scope.rawMessages[i].read = true;
-        // console.log("read");
       }
     }
     $scope.refreshMessages();
