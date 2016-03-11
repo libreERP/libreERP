@@ -75,7 +75,7 @@ def sendSMS(o , to ):
 def sendEmail(o , to):
     """
     input : offer objects
-    outout : None
+    output : None
     """
 
     it =  o.offer.item

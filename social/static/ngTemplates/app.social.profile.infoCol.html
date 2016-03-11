@@ -5,14 +5,14 @@
     <div class="widget-user-header bg-black" style="background: url({{user.socialData.coverPic}}) no-repeat scroll center center / cover">
     </div>
     <div class="widget-user-image">
-      <img class="img-circle" ng-src="{{user.url | getDP}}">
+      <img class="img-circle" ng-src="{{user.pk | getDP}}">
     </div>
 
   </div><!-- /.widget-user -->
 </div>
 
 <div class="row">
-  <h4 class="profile-username text-center">{{user.url | getName}}</h4>
+  <h4 class="profile-username text-center">{{user.pk | getName}}</h4>
   <ul class="list-group list-group-unbordered">
     <li class="list-group-item">Projects <span class="pull-right badge bg-blue">31</span></li>
     <li class="list-group-item">Tasks <span class="pull-right badge bg-orange">5</span></li>

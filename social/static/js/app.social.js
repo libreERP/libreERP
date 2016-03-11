@@ -12,12 +12,12 @@ app.directive('commentBubble', function () {
       $scope.me = $users.get("mySelf");
       $scope.liked = false;
       for (var i = 0; i < $scope.data.likes.length; i++) {
-        if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+        if ($scope.data.likes[i].user == $scope.me.pk) {
           $scope.liked = true;
           break;
         }
       }
-      if ($scope.data.user.cleanUrl()==$scope.me.url){
+      if ($scope.data.user==$scope.me.pk){
         $scope.iCommented = true;
       } else {
         $scope.iCommented = false;
@@ -25,26 +25,25 @@ app.directive('commentBubble', function () {
       $scope.like = function(){
         if ($scope.liked) {
           for (var i = 0; i < $scope.data.likes.length; i++) {
-            if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+            if ($scope.data.likes[i].user == $scope.me.pk) {
               index = i;
               // console.log($scope.data.likes[i]);
-              $http({method: 'DELETE', url: $scope.data.likes[i].url}).
-                then(function(response , index) {
-                  $scope.data.likes.splice(index, 1);
-                  $scope.liked = false;
-                }, function(response) {
-                  // console.log("failed to sent the comment");
+              console.log($scope.data.pk);
+              $http({method: 'DELETE', url: '/api/PIM/blogCommentLike/' +$scope.data.likes[i].pk + '/'}).
+              then(function(response , index) {
+                $scope.data.likes.splice(index, 1);
+                $scope.liked = false;
               });
             }
           }
         } else {
-          dataToSend = {parent: $scope.data.url.cleanUrl() , user: $scope.data.user};
+          dataToSend = {parent: $scope.data.pk , user: $scope.me.pk};
           // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-          $http({method : 'PATCH' , url : $scope.data.url }).
+          $http({method : 'PATCH' , url : '/api/PIM/blogComment/' + $scope.data.pk + '/' }).
           then(function(response){
             // console.log(response);
             for (var i = 0; i < response.data.likes.length; i++) {
-              if (response.data.likes[i].user.cleanUrl() == $scope.me.url){
+              if (response.data.likes[i].user == $scope.me.pk){
                 $scope.data.likes.push(response.data.likes[i])
               }
             }
@@ -55,7 +54,8 @@ app.directive('commentBubble', function () {
         }
       }
       $scope.delete = function(){
-        $http({method : 'DELETE' , url : $scope.data.url }).
+        console.log($scope.data.pk);
+        $http({method : 'DELETE' , url : '/api/PIM/blogComment/' + $scope.data.pk + '/' }).
         then(function(response){
           $scope.onDelete();
 
@@ -748,16 +748,40 @@ app.directive('socialProfile', function () {
 app.controller('controller.social.profile', function($scope, $state , $http , $timeout , $users , $aside , $interval , $window , Flash) {
   emptyFile = new File([""], "");
   $scope.me = $users.get('mySelf')
-  $scope.user = $users.get($scope.userUrl, true);
-  // console.log($scope.me);
-  var feedsItems = ['picture'];
-  for (var i = 0; i < feedsItems.length; i++){
-    mode = feedsItems[i];
-    $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username}).
-    then(function(response){
-      $scope.user.pictures = response.data;
-    });
+  $scope.username = $users.get($scope.userUrl).username;
+
+  $scope.getDesignationAndSocial = function() {
+    $http({method:'GET' , url : '/api/social/social/' + $scope.user.social + '/'}).then(
+      function(response){
+        $scope.user.socialData = response.data;
+        $scope.user.socialData.coverPicFile = emptyFile;
+        for (var i = 0; i < response.data.followers.length; i++) {
+          if (response.data.followers[i] == $scope.me.pk){
+            $scope.isFollowing = true;
+          }
+        }
+      }
+    )
+    $http({method:'GET' , url : '/api/HR/designation/' + $scope.user.designation + '/'}).then(
+      function(response){
+        $scope.user.designationData = response.data;
+      }
+    )
   };
+  $http({method : 'GET' , url : $scope.userUrl  }).
+  then(function(response) {
+    $scope.user = response.data;
+    var feedsItems = ['picture'];
+    for (var i = 0; i < feedsItems.length; i++){
+      mode = feedsItems[i];
+      $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.username}).
+      then(function(response){
+        $scope.user.pictures = response.data;
+        $scope.getDesignationAndSocial()
+      });
+    };
+  })
+  // console.log($scope.me);
 
   $scope.offset = {post : 0 , album : 0};
   $scope.max = {post : 0 , album : 0};
@@ -781,31 +805,15 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
   $scope.statusMessage = '';
   $scope.picturePost = {photo : {} , tagged : ''};
   $scope.isFollowing = false; // for storing if the user is following the the user whose profile he is visiting
-  if ($scope.user.username == $scope.me.username) {
+  if ($scope.username == $scope.me.username) {
     $scope.myProfile = true;
   }else {
     $scope.myProfile = false;
   }
 
-  $http({method:'GET' , url : '/api/social/social/' + $scope.user.social + '/'}).then(
-    function(response){
-      $scope.user.socialData = response.data;
-      $scope.user.socialData.coverPicFile = emptyFile;
-      for (var i = 0; i < response.data.followers.length; i++) {
-        if (response.data.followers[i].cleanUrl() == $scope.me.url.cleanUrl()){
-          $scope.isFollowing = true;
-        }
-      }
-    }
-  )
 
-  $http({method:'GET' , url : '/api/HR/designation/' + $scope.user.designation + '/'}).then(
-    function(response){
-      $scope.user.designationData = response.data;
-    }
-  )
 
-  $http({method:'GET' , url : '/api/PIM/blog/?user='+$scope.user.username}).then(
+  $http({method:'GET' , url : '/api/PIM/blog/?user='+$scope.username}).then(
     function(response){
       $scope.socialResource.whatsNew = response.data;
     }
@@ -817,7 +825,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
 
 
   var views = [{name : 'drag' , icon : '' , template : '/static/ngTemplates/draggablePhoto.html'} ]; // to be used in the album editor
-  var getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.user.username}];
+  var getParams = [{key : 'albumEditor', value : ''}, {key : 'user' , value : $scope.username}];
   $scope.tempAlbum = {title : '' , photos : [] , tagged : ''};
 
   $scope.config = {
@@ -832,24 +840,24 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
   };
 
   $scope.openChat = function(){
-    $scope.$parent.$parent.$parent.addIMWindow($scope.user.url);
+    $scope.$parent.$parent.$parent.addIMWindow($scope.user.pk);
   };
 
   $scope.follow = function(){
     if ($scope.isFollowing) {
-      dataToSend = {friend : $scope.user.username , mode : 'unfollow'}
-      $http({method : 'PATCH' , url : $scope.me.social , data : dataToSend }).
+      dataToSend = {friend : $scope.username , mode : 'unfollow'}
+      $http({method : 'PATCH' , url : '/api/social/social/' + $scope.me.social +'/' , data : dataToSend }).
       then(function(response){
         $scope.isFollowing = false;
         for (var i = 0; i < $scope.user.socialData.followers.length; i++) {
-          if ($scope.user.socialData.followers[i].cleanUrl() == $scope.me.url.cleanUrl()){
+          if ($scope.user.socialData.followers[i] == $scope.me.pk){
             $scope.user.socialData.followers.splice(i,1);
           }
         }
       })
     } else {
-      dataToSend = {friend : $scope.user.username , mode : 'follow'}
-      $http({method : 'PATCH' , url : $scope.me.social , data : dataToSend }).
+      dataToSend = {friend : $scope.username , mode : 'follow'}
+      $http({method : 'PATCH' , url : '/api/social/social/' + $scope.me.social +'/', data : dataToSend }).
       then(function(response){
         $scope.isFollowing = true;
         $scope.user.socialData.followers.push($scope.me.url);
@@ -859,7 +867,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
 
   $scope.getFive = function(mode){
     // mode is the content type, like posts, albums etc
-    $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.user.username+'&offset=' + $scope.offset[mode] + '&limit='+$scope.limit}).
+    $http({method : 'GET' , url : '/api/social/' + mode +'/?format=json&user='+ $scope.username+'&offset=' + $scope.offset[mode] + '&limit='+$scope.limit}).
     then(function(response){
       $scope.max['post'] = response.data.count;
       if (response.config.url.indexOf('album') != -1) {
@@ -1080,7 +1088,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
 });
 
 app.controller('controller.social', function($scope , $http , $timeout , $users , $aside , $interval , $window , $state) {
-  $scope.user = $users.get('mySelf').url.split('users/')[0]+'users/'+$state.params.id+'/';
+  $scope.user = '/api/HR/users/' + $state.params.id +'/';
   if ($state.params.id == '') {
     $scope.user = $users.get('mySelf').url;
   }

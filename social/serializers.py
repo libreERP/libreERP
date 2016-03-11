@@ -207,6 +207,7 @@ class socialSerializer(serializers.ModelSerializer):
         read_only_fields = ('followers',)
     def update(self , instance,  validated_data):
         user =  self.context['request'].user
+        print 'came to follow'
         if 'friend' in self.context['request'].data:
             toFollow = self.context['request'].data['friend']
             mode = self.context['request'].data['mode']

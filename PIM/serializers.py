@@ -68,20 +68,20 @@ class chatMessageSerializer(serializers.HyperlinkedModelSerializer):
             return im
 
 
-class blogLikeSerializer(serializers.HyperlinkedModelSerializer):
+class blogLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = blogLike
-        fields = ('url' , 'user' , 'created' , 'parent')
+        fields = ('pk' , 'user' , 'created' , 'parent')
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
         l, new = blogLike.objects.get_or_create(parent = parent , user = user)
         return l
 
-class blogCommentLikeSerializer(serializers.HyperlinkedModelSerializer):
+class blogCommentLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = blogCommentLike
-        fields = ('url' , 'user' , 'created' , 'parent')
+        fields = ('pk' , 'user' , 'created' , 'parent')
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
@@ -93,11 +93,11 @@ class blogCategorySerializer(serializers.ModelSerializer):
         model = blogCategory
         fields = ('pk', 'title' )
 
-class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
+class blogCommentsSerializer(serializers.ModelSerializer):
     likes = blogCommentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = blogComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'likes')
+        fields = ('pk' , 'user' , 'parent' , 'created' , 'text' , 'likes')
         read_only_fields = ('tagged', 'likes',)
     def create(self , validated_data):
         text = validated_data.pop('text')
@@ -112,13 +112,13 @@ class blogCommentsSerializer(serializers.HyperlinkedModelSerializer):
         l , new = blogCommentLike.objects.get_or_create(user = user , parent = instance)
         return instance
 
-class blogSerializer(serializers.HyperlinkedModelSerializer):
+class blogSerializer(serializers.ModelSerializer):
     likes = blogLikeSerializer(many = True , read_only = True)
     comments = blogCommentsSerializer(many = True , read_only = True)
     tags = blogCategorySerializer(many = True , read_only = True)
     class Meta:
         model = blogPost
-        fields = ( 'url' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'users' , 'tags' , 'title' , 'header' , 'state' , 'contentType')
+        fields = ( 'pk' , 'source' , 'likes' , 'comments' , 'created' , 'sourceFormat' , 'users' , 'tags' , 'title' , 'header' , 'state' , 'contentType')
         read_only_fields = ('tags',)
     def create(self , validated_data):
         b = blogPost()
@@ -138,10 +138,10 @@ class blogSerializer(serializers.HyperlinkedModelSerializer):
         return b
 
 
-class notebookSerializer(serializers.HyperlinkedModelSerializer):
+class notebookSerializer(serializers.ModelSerializer):
     class Meta:
         model = notebook
-        fields = ('url' , 'user', 'created' , 'pages' , 'title')
+        fields = ('pk' , 'user', 'created' , 'pages' , 'title')
         read_only_fields = ('pages' , )
     def create(self , validated_data):
         n = notebook.objects.create(**validated_data)
@@ -153,10 +153,10 @@ class notebookSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
         return instance
 
-class pageSerializer(serializers.HyperlinkedModelSerializer):
+class pageSerializer(serializers.ModelSerializer):
     class Meta:
         model = page
-        fields = ('url' , 'user', 'source' , 'parent' , 'title')
+        fields = ('pk' , 'user', 'source' , 'parent' , 'title')
     def create(self , validated_data):
         p = page.objects.create(**validated_data)
         p.user = self.context['request'].user

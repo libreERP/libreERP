@@ -119,16 +119,20 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
   $scope.like = function(){
     if ($scope.liked) {
       for (var i = 0; i < $scope.articleInView.likes.length; i++) {
-        if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
-          $scope.articleInView.likes.splice(i,1);
-          $scope.liked = false;
-          $http({method : 'DELETE' , url : $scope.articleInView.likes[i].url});
+        if ($scope.articleInView.likes[i].user == $scope.me.pk){
+          $http({method : 'DELETE' , url : '/api/PIM/blogLike/' + $scope.articleInView.likes[i].pk + '/'}).
+          then((function(i) {
+            return function() {
+              $scope.articleInView.likes.splice(i,1);
+              $scope.liked = false;
+            }
+          })(i));
         }
       }
     } else{
       dataToSend = {
-        user : $scope.me.url,
-        parent : $scope.articleInView.url,
+        user : $scope.me.pk,
+        parent : $scope.articleInView.pk,
       }
       $http({method : 'POST' , url : '/api/PIM/blogLike/' , data : dataToSend}).
       then(function(response){
@@ -162,9 +166,9 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
   $scope.comment = {text :''};
   $scope.comment = function(){
     dataToSend = {
-      user : $scope.me.url,
+      user : $scope.me.pk,
       text : $scope.comment.text,
-      parent : $scope.articleInView.url,
+      parent : $scope.articleInView.pk,
     }
     $http({method : 'POST' , url : '/api/PIM/blogComment/' , data : dataToSend}).
     then(function(response){
@@ -186,7 +190,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
     $scope.mode = 'read'
     $scope.articleInView = $scope.blogs[index];
     for (var i = 0; i < $scope.articleInView.likes.length; i++) {
-      if ($scope.articleInView.likes[i].user.cleanUrl() == $scope.me.url.cleanUrl()){
+      if ($scope.articleInView.likes[i].user == $scope.me.pk){
         $scope.liked = true;
       }
     }
