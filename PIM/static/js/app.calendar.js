@@ -25,7 +25,7 @@ app.controller("controller.home.calendar", function($scope , $http ,$aside, $sta
 
   $scope.toggleToDo = function(input){
     todo = $scope.data.items[input].data;
-    $http({url : todo.url , method : 'PATCH' , data : {completed : todo.completed}})
+    $http({url : '/api/PIM/calendar/'+ todo.pk+'/' , method : 'PATCH' , data : {completed : todo.completed}})
   }
   $scope.deleteToDo = function(input){
     todo = $scope.data.items[input].data;
@@ -131,7 +131,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
     fd.append('level' , $scope.data.level );
 
     if ($scope.editMode) {
-      url = $scope.data.items[$scope.data.editor].data.url;
+      url = $scope.baseUrl + $scope.data.items[$scope.data.editor].data.pk + '/';
       method = 'PATCH';
     } else {
       method = 'POST';
@@ -147,7 +147,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
       })
       if($scope.editMode) {
         for (var i = 0; i < $scope.data.items.length; i++) {
-          if ($scope.data.items[i].data.url.cleanUrl() == response.data.url.cleanUrl()){
+          if ($scope.data.items[i].data.pk == response.data.pk){
             $scope.data.items.splice(i, 1);
             return;
           }
@@ -160,7 +160,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
 
   $scope.saveReminder = function(){
     if ($scope.editMode) {
-      url = $scope.data.items[$scope.data.editor].data.url;
+      url = $scope.baseUrl + $scope.data.items[$scope.data.editor].data.pk +'/';
       method = 'PATCH';
     } else {
       method = 'POST';
@@ -168,7 +168,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
     }
 
 
-    data = { eventType : 'Reminder', user : $scope.me.url , text : $scope.data.text , when : $filter('date')($scope.data.when , "yyyy-MM-dd'T'HH:mm:ssZ")  };
+    data = { eventType : 'Reminder', user : $scope.me.pk , text : $scope.data.text , when : $filter('date')($scope.data.when , "yyyy-MM-dd'T'HH:mm:ssZ")  };
     $http({method : method , url : url , data : data}).
     then(function(response){
       $scope.resetForm();
@@ -178,7 +178,7 @@ app.controller('controller.home.calendar.aside', function($scope, $uibModalInsta
       })
       if($scope.editMode) {
         for (var i = 0; i < $scope.data.items.length; i++) {
-          if ($scope.data.items[i].data.url.cleanUrl() == response.data.url.cleanUrl()){
+          if ($scope.data.items[i].data.pk == response.data.pk){
             $scope.data.items.splice(i, 1);
             return;
           }

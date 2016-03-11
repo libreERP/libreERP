@@ -161,11 +161,11 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
           if (isNumber($scope.settings.mobile)) {
             fdProfile.append('mobile' , $scope.settings.mobile);
           }
-          $http({method : 'PATCH' , url : $scope.me.profile.url , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+          $http({method : 'PATCH' , url : '/api/HR/profile/' +$scope.me.profile.pk + '/' , data : fdProfile , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
           then(function(response){
-            $http({method : 'PATCH' , url : $scope.me.settings, data : {presence : "Busy"  , user : $scope.me.url}}).
+            $http({method : 'PATCH' , url : '/api/PIM/settings/'+ $scope.me.settings + '/', data : {presence : "Busy"  , user : $scope.me.pk}}).
             then(function(response){
-              $http({method : 'PATCH' , url : response.data.theme.url , data : $scope.settings.theme}).
+              $http({method : 'PATCH' , url : '/api/PIM/theme/' +response.data.theme.pk + '/' , data : $scope.settings.theme}).
               then(function(response){
                 $scope.changePassword();
                 Flash.create('success', response.status + ' : ' + response.statusText );
@@ -326,9 +326,10 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   $scope.imWindows = [ ]
 
   $scope.addIMWindow = function(pk){
+    // console.log(pk);
     url = $users.get(pk).url;
     for (var i = 0; i < $scope.rawMessages.length; i++) {
-      if ($scope.rawMessages[i].originator.cleanUrl() == url.cleanUrl() && $scope.rawMessages[i].read == false){
+      if ($scope.rawMessages[i].originator == pk && $scope.rawMessages[i].read == false){
         $scope.rawMessages[i].read = true;
       }
     }
@@ -346,9 +347,9 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
       }
     }
   }
-  $scope.fetchAddIMWindow = function(msgUrl){
-    msgUrl += '?mode='
-    $http({method: 'GET' , url : msgUrl}).
+  $scope.fetchAddIMWindow = function(msgPK){
+    msgPK +=
+    $http({method: 'GET' , url : '/api/PIM/chatMessage/' + msgPK + '/?mode='}).
     then(function(response){
       $scope.addIMWindow(response.data.originator)
       response.data.read = true;

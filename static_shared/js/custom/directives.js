@@ -98,9 +98,16 @@ app.directive('notificationStrip', function () {
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
         then(function(response){
           $scope.friend = response.data.user;
-          $http({method: 'GET' , url : response.data.parent}).then(function(response){
+          console.log(response.data);
+          console.log($scope.notificationType);
+          if ($scope.notificationType == 'postComment') {
+            url = '/api/social/post/' + response.data.parent + '/';
+          }else if ($scope.notificationType == 'pictureComment') {
+            url = '/api/social/picture/' + response.data.parent + '/';
+          }
+          $http({method: 'GET' , url : url}).then(function(response){
             $scope.notificationData = response.data;
-            // console.log($scope.notificationData);
+            console.log($scope.notificationData);
             if ($scope.notificationType == 'pictureComment') {
               $http({method : 'GET' , url : '/api/social/album/' +  $scope.data.shortInfo.split(':')[3] + '/?user=' + $users.get($scope.notificationData.user).username}).
               then(function(response){
@@ -202,12 +209,12 @@ app.directive('chatWindow', function ($users) {
         msg = angular.copy($scope.messageToSend)
         if (msg!="") {
           $scope.status = "M"; // contains message
-          dataToSend = {message:msg , user: $scope.friendUrl , read:false};
+          dataToSend = {message:msg , user: $scope.friend.pk , read:false};
           $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'}).
           then(function(response){
             $scope.ims.push(response.data)
             $scope.senderIsMe.push(true);
-            connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , response.data.message , $scope.me.username , response.data.url], {}, {acknowledge: true}).
+            connection.session.publish('service.chat.'+$scope.friend.username, [$scope.status , response.data.message , $scope.me.username , response.data.pk], {}, {acknowledge: true}).
             then(function (publication) {});
             $scope.messageToSend = "";
           })

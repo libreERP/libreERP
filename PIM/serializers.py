@@ -6,26 +6,26 @@ from .models import *
 from social.serializers import commentLikeSerializer
 from social.models import commentLike
 
-class themeSerializer(serializers.HyperlinkedModelSerializer):
+class themeSerializer(serializers.ModelSerializer):
     class Meta:
         model = theme
-        fields = ( 'url' , 'main' , 'highlight' , 'background' , 'backgroundImg')
+        fields = ( 'pk' , 'main' , 'highlight' , 'background' , 'backgroundImg')
 
-class settingsSerializer(serializers.HyperlinkedModelSerializer):
+class settingsSerializer(serializers.ModelSerializer):
     theme = themeSerializer(many = False , read_only = True)
     class Meta:
         model = settings
-        fields = ('url' , 'user', 'theme', 'presence')
+        fields = ('pk' , 'user', 'theme', 'presence')
 
-class notificationSerializer(serializers.HyperlinkedModelSerializer):
+class notificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = notification
-        fields = ('url' , 'message' ,'shortInfo','domain','onHold', 'link' , 'originator' , 'created' ,'updated' , 'read' , 'user')
+        fields = ('pk' , 'message' ,'shortInfo','domain','onHold', 'link' , 'originator' , 'created' ,'updated' , 'read' , 'user')
 
-class calendarSerializer(serializers.HyperlinkedModelSerializer):
+class calendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = calendar
-        fields = ('url' , 'eventType' , 'followers' ,'originator', 'duration' , 'created', 'updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
+        fields = ('pk' , 'eventType' , 'followers' ,'originator', 'duration' , 'created', 'updated', 'user' , 'text' , 'notification' ,'when' , 'read' , 'deleted' , 'completed' , 'canceled' , 'level' , 'venue' , 'attachment' , 'myNotes')
         read_only_fields = ('followers', 'user' , )
     def create(self , validated_data):
         cal = calendar(**validated_data)
@@ -52,10 +52,10 @@ class calendarSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
         return instance
 
-class chatMessageSerializer(serializers.HyperlinkedModelSerializer):
+class chatMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = chatMessage
-        fields = ('url' , 'message' ,'attachment', 'originator' , 'created' , 'read' , 'user')
+        fields = ('pk' , 'message' ,'attachment', 'originator' , 'created' , 'read' , 'user')
         read_only_fields = ('originator' , )
     def create(self , validated_data):
         im = chatMessage.objects.create(**validated_data)

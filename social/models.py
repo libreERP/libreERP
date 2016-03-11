@@ -161,6 +161,11 @@ def sendNotificationsAndUpdates(sender , instance , mode):
     if instance.parent.user == instance.user or sender == commentLike:
         return
     shortInfo += ':' + str(instance.pk) + ':' + str(instance.parent.pk)
+    # print
+    if sender.__name__ == 'pictureComment' or sender.__name__ == 'pictureLike':
+        print dir(instance.parent)
+        shortInfo += ':' + str(instance.parent.album_id)
+        # print shortInfo
     n , new = notification.objects.get_or_create(user = instance.parent.user , domain = 'APP' , originator = 'social' , shortInfo = shortInfo)
     if new:
         notify('social' , n.pk , mode , instance)
