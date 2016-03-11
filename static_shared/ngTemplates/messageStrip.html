@@ -1,7 +1,7 @@
 <li class="container-fluid navBarInfoList" >
   <a class="row" style="position: relative; top:-7px; text-decoration:none !important;">
     <img ng-if="!checkable" class="img-circle" ng-src="{{friend | getDP}}"  alt="My image" style="width:50px;height:50px;position: relative; top:-8px;"/>
-    <div class="col-md-10 pull-right" style="position: relative; top:-10px" ng-click="openChat(friend)">
+    <div class="col-md-10 pull-right" style="position: relative; top:-10px" ng-click="clicked()">
       <span class="text-muted">{{friend | getName}}</span> {{data.count | decorateCount}}<small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>
       <br>{{data.message | limitTo:35}}
     </div>

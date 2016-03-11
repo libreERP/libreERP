@@ -63,11 +63,16 @@ app.directive('messageStrip', function () {
       openChat :'=',
     },
     controller : function($scope , $users){
+      console.log($scope.data);
       $scope.me = $users.get('mySelf');
       if ($scope.me.url.split('?')[0]==$scope.data.originator) {
         $scope.friend = $scope.data.user;
       }else{
         $scope.friend = $scope.data.originator;
+      }
+      $scope.clicked = function() {
+        $scope.data.count =0;
+        $scope.openChat($scope.friend)
       }
     }
   };
@@ -222,9 +227,12 @@ app.directive('chatWindow', function ($users) {
       }; // send function
 
       $scope.addMessage = function(msg , url){
-        $scope.ims.push({message: msg , originator:$scope.friendUrl})
-        $http({method : 'PATCH' , url : url + '?mode=' , data : {read : true}})
-      }
+        $http({method : 'PATCH' , url : '/api/PIM/chatMessage/' +url + '/?mode=' , data : {read : true}}).
+        then(function(response) {
+          $scope.ims.push(response.data);
+          $scope.senderIsMe.push(false);
+        });
+      };
 
       $scope.fetchMessages = function() {
         $scope.method = 'GET';

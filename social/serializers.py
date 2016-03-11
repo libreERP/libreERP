@@ -164,8 +164,7 @@ class albumSerializer(serializers.ModelSerializer):
                 a.tagged.add( User.objects.get(username = tag))
         count = 0
         for p in photos:
-            pk = only_numerics(p)
-            pic = picture.objects.get(pk = int(pk) , user = user)
+            pic = picture.objects.get(pk = p , user = user)
             pic.album = a
             count +=1
             pic.save()

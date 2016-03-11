@@ -1190,13 +1190,11 @@ app.controller('controller.social.profile', function($scope, $state, $http, $tim
       return;
     }
     for (var i = 0; i < $scope.droppedObjects.length; i++) {
-      uri = $scope.droppedObjects[i].url.split('/?')[0];
       // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
-      pk = uri.split('picture/')[1];
-      $scope.tempAlbum.photos.push(pk);
+      $scope.tempAlbum.photos.push($scope.droppedObjects[i].pk);
     }
     dataToPost = {
-      user: $scope.me.url,
+      user: $scope.me.pk,
       title: $scope.tempAlbum.title,
       photos: $scope.tempAlbum.photos,
     };
@@ -1298,7 +1296,7 @@ app.controller('controller.social.profile', function($scope, $state, $http, $tim
       }
       fd.append('tagged', withStr)
     }
-    fd.append('user', $scope.me.url);
+    fd.append('user', $scope.me.pk);
     var uploadUrl = "/api/social/picture/";
     $http({
       method: 'POST',

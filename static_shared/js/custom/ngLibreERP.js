@@ -273,7 +273,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     peopleInvolved = [];
     for (var i = 0; i < $scope.rawMessages.length; i++) {
       var im = $scope.rawMessages[i];
-      if (im.originator == $scope.me.url) {
+      if (im.originator == $scope.me.pk) {
         if (peopleInvolved.indexOf(im.user)==-1) {
           peopleInvolved.push(im.user)
         }
