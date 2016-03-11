@@ -144,7 +144,7 @@
       <div class="col-md-3">
         <input type="text" class="form-control" style="width:100%" ng-enter = "comment()" placeholder="Comment... " ng-model = "comment.text">
         <div ng-repeat="comment in articleInView.comments">
-          <comment-bubble data = "comment" on-Delete = "onCommentDelete($index)"></comment-bubble>
+          <comment-bubble data = "comment" on-Delete = "onCommentDelete($index)" config-Obj="configObj"></comment-bubble>
         </div>
       </div>
     </div>

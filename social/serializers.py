@@ -3,25 +3,25 @@ from .models import *
 from django.core.exceptions import *
 from django.contrib.auth.models import *
 
-class commentLikeSerializer(serializers.HyperlinkedModelSerializer):
+class commentLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = commentLike
-        fields = ('url' , 'user' , 'created' )
-class postLikeSerializer(serializers.HyperlinkedModelSerializer):
+        fields = ('pk' , 'user' , 'created' )
+class postLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = postLike
-        fields = ('url' , 'user' , 'created' , 'parent')
+        fields = ('pk' , 'user' , 'created' , 'parent')
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
         l , new = postLike.objects.get_or_create(parent = parent , user = user)
         return l
 
-class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
+class postCommentsSerializer(serializers.ModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = postComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        fields = ('pk' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
         read_only_fields = ('tagged', 'likes',)
     def create(self , validated_data):
         text = validated_data.pop('text')
@@ -39,10 +39,10 @@ class postCommentsSerializer(serializers.HyperlinkedModelSerializer):
         l , new = commentLike.objects.get_or_create(user = user , parent = instance)
         return instance
 
-class pictureLikeSerializer(serializers.HyperlinkedModelSerializer):
+class pictureLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = pictureLike
-        fields = ('url' , 'user' , 'created' , 'parent')
+        fields = ('pk' , 'user' , 'created' , 'parent')
     def create(self , validated_data):
         parent = validated_data.pop('parent')
         user =  self.context['request'].user
@@ -53,11 +53,11 @@ class pictureLikeSerializer(serializers.HyperlinkedModelSerializer):
         like.save()
         return like
 
-class pictureCommentsSerializer(serializers.HyperlinkedModelSerializer):
+class pictureCommentsSerializer(serializers.ModelSerializer):
     likes = commentLikeSerializer(many = True , read_only = True)
     class Meta:
         model = pictureComment
-        fields = ('url' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
+        fields = ('pk' , 'user' , 'parent' , 'created' , 'text' , 'attachment' , 'likes', 'tagged')
         read_only_fields = ('tagged',)
     def create(self , validated_data):
         text = validated_data.pop('text')
@@ -79,12 +79,12 @@ class pictureCommentsSerializer(serializers.HyperlinkedModelSerializer):
         like.save()
         return instance
 
-class postSerializer(serializers.HyperlinkedModelSerializer):
+class postSerializer(serializers.ModelSerializer):
     likes = postLikeSerializer(many = True , read_only = True)
     comments = postCommentsSerializer(many = True , read_only = True)
     class Meta:
         model = post
-        fields = ('url' , 'user' , 'created' , 'likes' , 'text' , 'attachment' , 'comments', 'tagged')
+        fields = ('pk' , 'user' , 'created' , 'likes' , 'text' , 'attachment' , 'comments', 'tagged')
         read_only_fields = ('tagged',)
 
     def create(self ,  validated_data):
@@ -123,12 +123,12 @@ class postSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
-class pictureSerializer(serializers.HyperlinkedModelSerializer):
+class pictureSerializer(serializers.ModelSerializer):
     likes = pictureLikeSerializer(many = True)
     comments = pictureCommentsSerializer(many = True)
     class Meta:
 		model = picture
-		fields = ('url' , 'user' , 'created' , 'likes' , 'photo' , 'comments' , 'tagged')
+		fields = ('pk' , 'user' , 'created' , 'likes' , 'photo' , 'comments' , 'tagged')
 		read_only_fields = ('tagged',)
     def create(self ,  validated_data):
         photo = validated_data.pop('photo')
@@ -145,11 +145,11 @@ class pictureSerializer(serializers.HyperlinkedModelSerializer):
 def only_numerics(seq):
     return filter(type(seq).isdigit, seq)
 
-class albumSerializer(serializers.HyperlinkedModelSerializer):
+class albumSerializer(serializers.ModelSerializer):
     photos = pictureSerializer(many = True , read_only = True)
     class Meta:
         model = album
-        fields = ('url' , 'user' , 'created' , 'photos', 'title' , 'tagged')
+        fields = ('pk' , 'user' , 'created' , 'photos', 'title' , 'tagged')
         read_only_fields = ('tagged',)
     def create(self ,  validated_data):
         photos =  self.context['request'].data['photos']
@@ -191,8 +191,7 @@ class albumSerializer(serializers.HyperlinkedModelSerializer):
         photos =  self.context['request'].data['photos']
         count = 0
         for p in photos:
-            pk = only_numerics(p)
-            pic = picture.objects.get(pk = int(pk) , user = user)
+            pic = picture.objects.get(pk = p , user = user)
             pic.album = instance
             count +=1
             pic.save()

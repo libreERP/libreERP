@@ -8,6 +8,9 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
   $scope.liked = false;
   $scope.recommended = [];
 
+  $scope.configObj = {commentUrl : '/api/PIM/blogComment/' , likeUrl : '/api/PIM/blogCommentLike/' }
+
+
   $scope.search = function(){
     tags = '';
     if ($scope.filter.tags.length !=0) {

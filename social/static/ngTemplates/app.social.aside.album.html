@@ -46,7 +46,7 @@
   <div class="container" style="text-align:left;position:absolute;overflow:auto;box-sizing: border-box;display:block; height:{{commentsHeight}}%; width:98%; padding-right:50px;transform: translate(0px,-10px);"  id = "commentsArea">
     <div class="row" ng-if="viewMode == 'comments'">
       <div ng-repeat="comment in data.comments">
-        <comment-bubble data = "comment" on-Delete = "deleteComment($index)"></comment-bubble>
+        <comment-bubble data = "comment" on-Delete = "deleteComment($index)" config-Obj="postCommentConfig"></comment-bubble>
       </div>
     </div>
     <div class="row" ng-if = "viewMode == 'likes'">

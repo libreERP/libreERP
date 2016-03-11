@@ -96,8 +96,7 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
       fontFamily: 'arial black',
       left: e.layerX,
       top: e.layerY ,
-      fontSize:20,
-      fontWeight: 3,
+      fontSize:30,
     });
     // newText.set('selectable', true);
     // console.log(newText);

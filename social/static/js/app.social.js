@@ -7,8 +7,11 @@ app.directive('commentBubble', function () {
     scope:{
       data : '=',
       onDelete : '&',
+      configObj : '=',
     },
     controller : function($scope, $http , $users){
+      // configObj = {commentUrl : '/api/PIM/blogComment/' , likeUrl : '/api/PIM/blogCommentLike/' }
+
       $scope.me = $users.get("mySelf");
       $scope.liked = false;
       for (var i = 0; i < $scope.data.likes.length; i++) {
@@ -29,7 +32,7 @@ app.directive('commentBubble', function () {
               index = i;
               // console.log($scope.data.likes[i]);
               console.log($scope.data.pk);
-              $http({method: 'DELETE', url: '/api/PIM/blogCommentLike/' +$scope.data.likes[i].pk + '/'}).
+              $http({method: 'DELETE', url: $scope.configObj.likeUrl +$scope.data.likes[i].pk + '/'}).
               then(function(response , index) {
                 $scope.data.likes.splice(index, 1);
                 $scope.liked = false;
@@ -39,7 +42,7 @@ app.directive('commentBubble', function () {
         } else {
           dataToSend = {parent: $scope.data.pk , user: $scope.me.pk};
           // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
-          $http({method : 'PATCH' , url : '/api/PIM/blogComment/' + $scope.data.pk + '/' }).
+          $http({method : 'PATCH' , url : $scope.configObj.commentUrl + $scope.data.pk + '/' }).
           then(function(response){
             // console.log(response);
             for (var i = 0; i < response.data.likes.length; i++) {
@@ -55,7 +58,7 @@ app.directive('commentBubble', function () {
       }
       $scope.delete = function(){
         console.log($scope.data.pk);
-        $http({method : 'DELETE' , url : '/api/PIM/blogComment/' + $scope.data.pk + '/' }).
+        $http({method : 'DELETE' , url : $scope.configObj.commentUrl + $scope.data.pk + '/' }).
         then(function(response){
           $scope.onDelete();
 
@@ -108,14 +111,18 @@ app.directive('post', function () {
 app.controller('controller.social.aside.post' , function($scope, $uibModalInstance , $http, $users , input) {
   $scope.content = 'post';
 
+  $scope.postCommentConfig = {commentUrl : '/api/social/postComment/' , likeUrl : '/api/social/commentLike/' }
+
   $scope.me = $users.get("mySelf");
   $scope.data = input.data;
   $scope.onDelete = input.onDelete;
 
-  if (typeof $scope.data.url == 'undefined') {
+  if (typeof $scope.data.url == 'undefined' &&  typeof $scope.data.pk == 'undefined') {
     return;
   }
-  postUrl = $scope.data.url
+  console.log($scope.data);
+  postUrl = '/api/social/post/' + $scope.data.pk
+  $scope.url = postUrl;
   if ($scope.onDelete.length != 0){ // if the post aside is initiated by the notification system then the refreshed data is already fetched by it
     // and passed into input as data but if we are opening it from the feeds list then getting the latest post object
     if (postUrl.indexOf('?')== -1) {
@@ -146,12 +153,12 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
     return;
   }
   for (var i = 0; i < $scope.data.likes.length; i++) {
-    if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+    if ($scope.data.likes[i].user == $scope.me.pk) {
       $scope.liked = true;
       break;
     }
   }
-  if ($scope.data.user.cleanUrl() == $scope.me.url) {
+  if ($scope.data.user == $scope.me.pk) {
     $scope.isOwner = true;
   } else {
     $scope.isOwner = false;
@@ -270,11 +277,13 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
       scroll("#commentsArea");
     }, 1000);
   };
+  console.log($scope.data);
   $scope.comment = function(){
+    console.log($scope);
     if ($scope.textToComment == "") {
       return;
     }
-    dataToSend = {text: $scope.textToComment , parent: $scope.data.url.cleanUrl() , user: $scope.data.user };
+    dataToSend = {text: $scope.textToComment , parent: $scope.data.pk , user: $scope.data.user };
     // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
     $http({method: 'POST', data:dataToSend, url: '/api/social/postComment/'}).
       then(function(response) {
@@ -294,10 +303,10 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
 
   $scope.like = function(){
     if ($scope.liked) {
-      $http({method: 'DELETE', url: $scope.data.likes[i].url}).
+      $http({method: 'DELETE', url: '/api/social/postLike/' +$scope.data.likes[i].pk}).
         then(function(response) {
           for (var i = 0; i < $scope.data.likes.length; i++) {
-            if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+            if ($scope.data.likes[i].user == $scope.me.pk) {
               $scope.data.likes.splice(i, 1);
               $scope.liked = false;
             }
@@ -307,7 +316,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
       });
 
     } else {
-      dataToSend = {parent: $scope.data.url.cleanUrl() , user: $scope.data.user};
+      dataToSend = {parent: $scope.data.pk , user: $scope.data.user};
       // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
       $http({method: 'POST', data:dataToSend, url: '/api/social/postLike/'}).
         then(function(response) {
@@ -331,7 +340,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
   $scope.save = function(){
     var fd = new FormData();
     fd.append('text' , $scope.data.text );
-    fd.append('user' , $scope.me.url);
+    fd.append('user' , $scope.me.pk);
     if ($scope.postEditor.attachment !=emptyFile) {
       fd.append('attachment' , $scope.postEditor.attachment);
     }
@@ -346,7 +355,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
       fd.append('tagged' , tagStr)
     }
 
-    var url = $scope.data.url;
+    var url = '/api/social/post/'+ $scope.data.pk +'/';
     $http({method : 'PATCH' , url : url, data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       $scope.editMode = false;
@@ -361,7 +370,7 @@ app.controller('controller.social.aside.post' , function($scope, $uibModalInstan
   }
 
   $scope.delete = function(){
-    $http({method : 'DELETE' , url : $scope.data.url}).
+    $http({method : 'DELETE' , url : '/api/social/post/' + $scope.data.pk + '/'}).
     then(function(response){
       $scope.onDelete();
       $uibModalInstance.close();
@@ -419,12 +428,17 @@ app.directive('album', function () {
 });
 
 app.controller('controller.social.aside.picture' , function($scope, $uibModalInstance , Flash , $http , $users , input) {
+  $scope.postCommentConfig = {commentUrl : '/api/social/pictureComment/' , likeUrl : '/api/social/commentLike/' }
 
   $scope.content = 'picture';
   $scope.me = $users.get("mySelf");
   $scope.data = input.data;
   $scope.parent = input.parent;
   $scope.albumDelete = input.onDelete;
+  console.log($scope.data);
+  if (typeof $scope.data.url == 'undefined') {
+    $scope.data.url = '/api/social/picture/' + $scope.data.pk;
+  }
   if ($scope.data.url.indexOf('?')==-1) {
     $scope.data.url += '?';
   }
@@ -466,12 +480,12 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
   $scope.viewMode = 'comments';
   $scope.liked = false;
   for (var i = 0; i < $scope.data.likes.length; i++) {
-    if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+    if ($scope.data.likes[i].user == $scope.me.pk) {
       $scope.liked = true;
       break;
     }
   }
-  if ($scope.data.user.cleanUrl() == $scope.me.url && $scope.parent != 'empty') {
+  if ($scope.data.user == $scope.me.pk && $scope.parent != 'empty') {
     $scope.isOwner = true;
   } else {
     $scope.isOwner = false;
@@ -494,7 +508,7 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
     if ($scope.toComment.textToComment == 's') {
       return;
     }
-    dataToSend = {text: $scope.toComment.textToComment , parent: $scope.data.url.cleanUrl() , user: $scope.data.user };
+    dataToSend = {text: $scope.toComment.textToComment , parent: $scope.data.pk , user: $scope.data.user };
     // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
     $http({method: 'POST', data:dataToSend, url: '/api/social/pictureComment/'}).
       then(function(response) {
@@ -560,13 +574,12 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
       return;
     }
     for (var i = 0; i < $scope.droppedObjects.length; i++) {
-      uri = $scope.droppedObjects[i].url.split('/?')[0];
+      console.log($scope.droppedObjects);
       // nested request is not supported by the django rest framework so sending the PKs of the photos to the create function in the serializer
-      pk = uri.split('picture/')[1].split('/')[0];
-      $scope.tempAlbum.photos.push(pk);
+      $scope.tempAlbum.photos.push($scope.droppedObjects[i].pk);
     }
     dataToPost = {
-      user : $scope.me.url,
+      user : $scope.me.pk,
       title : $scope.tempAlbum.title,
       photos : $scope.tempAlbum.photos,
     };
@@ -582,8 +595,8 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
       dataToPost.tagged =  tagStr
     }
 
-    // console.log(dataToPost);
-    $http({method: 'PATCH' , data : dataToPost , url : $scope.parent.url}).
+    console.log($scope.parent);
+    $http({method: 'PATCH' , data : dataToPost , url : '/api/social/album/' + $scope.parent.pk + '/'}).
     then(function(response){
       Flash.create('success', response.status + ' : ' + response.statusText );
       $scope.parent.title = response.data.title;
@@ -604,9 +617,9 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
   $scope.like = function(){
     if ($scope.liked) {
       for (var i = 0; i < $scope.data.likes.length; i++) {
-        if ($scope.data.likes[i].user.cleanUrl() == $scope.me.url) {
+        if ($scope.data.likes[i].user == $scope.me.pk) {
           index = i;
-          $http({method: 'DELETE', url: $scope.data.likes[i].url}).
+          $http({method: 'DELETE', url: '/api/social/pictureLike/' + $scope.data.likes[i].pk + '/'}).
             then(function(response , index) {
               $scope.data.likes.splice(index, 1);
               $scope.liked = false;
@@ -616,7 +629,7 @@ app.controller('controller.social.aside.picture' , function($scope, $uibModalIns
         }
       }
     } else {
-      dataToSend = {parent: $scope.data.url.cleanUrl() , user: $scope.data.user};
+      dataToSend = {parent: $scope.data.pk , user: $scope.data.user};
       // although the api will set the user to the sender of the request a valid user url is needed for the request otherwise 400 error will be trown
       $http({method: 'POST', data:dataToSend, url: '/api/social/pictureLike/'}).
         then(function(response) {
@@ -1015,7 +1028,7 @@ app.controller('controller.social.profile', function($scope, $state , $http , $t
     var fd = new FormData();
     fd.append('attachment', $scope.post.attachment);
     fd.append('text' , $scope.post.text );
-    fd.append('user' , $scope.me.url);
+    fd.append('user' , $scope.me.pk);
 
     if ( typeof $scope.post.tagged !='undefined' && $scope.post.tagged.length != 0 ) {
       tagStr = '';
