@@ -258,9 +258,9 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     }
   };
 
-  $scope.notificationClicked = function(url){
+  $scope.notificationClicked = function(pk){
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
-      if ($scope.rawNotifications[i].url.cleanUrl() == url.cleanUrl()){
+      if ($scope.rawNotifications[i].pk == pk){
         $scope.rawNotifications[i].read = true;
       }
     }

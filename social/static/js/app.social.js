@@ -633,11 +633,11 @@ app.controller('controller.social.aside.picture', function($scope, $uibModalInst
   $scope.deletePhoto = function() {
     $http({
       method: 'DELETE',
-      url: $scope.data.url
+      url: '/api/social/picture/'+$scope.data.pk+'/'
     }).
     then(function(response) {
       for (var i = 0; i < $scope.parent.photos.length; i++) {
-        if ($scope.parent.photos[i].url == $scope.data.url) {
+        if ($scope.parent.photos[i].pk == $scope.data.pk) {
           $scope.parent.photos.splice(i, 1);
           if (i == 0 && $scope.parent.photos.length == 0) {
             $scope.deleteAlbum()
@@ -663,7 +663,7 @@ app.controller('controller.social.aside.picture', function($scope, $uibModalInst
   $scope.deleteAlbum = function() {
     $http({
       method: 'DELETE',
-      url: $scope.parent.url
+      url: '/api/social/album/'+$scope.parent.pk+'/'
     }).
     then(function(response) {
       $scope.albumDelete();

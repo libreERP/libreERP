@@ -49,7 +49,7 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
   })
 
   $scope.getPage = function(){
-    $http({ method : 'GET' , url : $scope.notebooks[$scope.bookInView].pages[$scope.pageInView] }).
+    $http({ method : 'GET' , url : '/api/PIM/page/' +$scope.notebooks[$scope.bookInView].pages[$scope.pageInView] + '/'}).
     then(function(response){
       $scope.data = response.data;
       $scope.canvas.loadFromJSON($scope.data.source , $scope.canvas.renderAll.bind($scope.canvas) );
@@ -66,14 +66,13 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
   }
 
   $scope.save = function(){
-    console.log($scope);
     dataToSend = {
       source : JSON.stringify($scope.canvas),
-      parent : $scope.notebooks[$scope.bookInView].url,
+      parent : $scope.notebooks[$scope.bookInView].pk,
       title : $scope.data.title,
-      user : $scope.me.url,
+      user : $scope.me.pk,
     }
-    $http({ method : 'PATCH' , url : $scope.data.url , data : dataToSend }).
+    $http({ method : 'PATCH' , url : '/api/PIM/page/' + $scope.data.pk + '/', data : dataToSend }).
     then(function(response){
       Flash.create('success' , response.status + ' : ' + response.statusText);
     }, function(response){

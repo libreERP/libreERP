@@ -29,7 +29,7 @@ app.controller("controller.home.calendar", function($scope , $http ,$aside, $sta
   }
   $scope.deleteToDo = function(input){
     todo = $scope.data.items[input].data;
-    $http({url : todo.url , method : 'DELETE' })
+    $http({url : '/api/PIM/calendar/'+todo.pk+'/' , method : 'DELETE' })
     $scope.data.items.splice(input , 1);
   }
 

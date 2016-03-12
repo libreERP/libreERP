@@ -32,7 +32,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   $scope.attach = function(){
     var fd = new FormData();
     fd.append('attachment' , $scope.editorData.file);
-    fd.append('user' , $scope.me.url.cleanUrl());
+    fd.append('user' , $scope.me.pk);
     $http({method : 'POST' , url : '/api/mail/attachment/', data : fd  , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
     then(function(response){
       response.data.filename = response.data.attachment.split('_' + $scope.me.username + '_')[1];
@@ -139,12 +139,9 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
 
   $scope.sendMail = function(){
 
-    attachments = '';
+    attachments = [];
     for (var i = 0; i < $scope.editorData.attachments.length; i++) {
-      attachments += getPK( $scope.editorData.attachments[i].url);
-      if (i<$scope.editorData.attachments.length-1) {
-        attachments += ',';
-      }
+      attachments.push( $scope.editorData.attachments[i].pk);
     }
 
     var fd = new FormData();

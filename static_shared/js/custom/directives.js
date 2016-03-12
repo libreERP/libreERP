@@ -63,7 +63,6 @@ app.directive('messageStrip', function () {
       openChat :'=',
     },
     controller : function($scope , $users){
-      console.log($scope.data);
       $scope.me = $users.get('mySelf');
       if ($scope.me.url.split('?')[0]==$scope.data.originator) {
         $scope.friend = $scope.data.user;
@@ -171,9 +170,9 @@ app.directive('notificationStrip', function () {
         }).result.then(postClose, postClose);
       }
       $scope.openNotification = function(){
-        $http({method: 'PATCH' , url : $scope.data.url , data : {read : true}}).
+        $http({method: 'PATCH' , url : '/api/PIM/notification/'+$scope.data.pk +'/' , data : {read : true}}).
         then(function(response){
-          $scope.$parent.notificationClicked($scope.data.url);
+          $scope.$parent.notificationClicked($scope.data.pk);
           $scope.data.read = true;
         });
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {

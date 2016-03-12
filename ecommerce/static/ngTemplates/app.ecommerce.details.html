@@ -134,7 +134,7 @@
         <div class="row">
           <div class="col-md-4" style="padding-top:20px;">
             <div class="col-md-5 text-center" >
-              <span>{{ratings.averageRating.rating__avg == null ? 0 : ratings.averageRating.rating__avg}}/5</span> <br>
+              <span>{{ratings.averageRating.rating__avg == null ? 0 : ratings.averageRating.rating__avg | limitTo:4}}/5</span> <br>
               <i class="fa fa-star" style="color:#e3bc18;font-size:80px;"></i>
             </div>
             <div class="col-md-7">
@@ -142,10 +142,8 @@
                 <span style="margin-right:10px;">{{ratings.counts[$index]}}</span>
                 <uib-rating ng-model="m" max="m" readonly="true" style="font-size:15px;color:#e2a900;"></uib-rating> <br>
               </div>
-
             </div>
             <div class="col-md-3">
-
             </div>
           </div>
           <div class="col-md-8">

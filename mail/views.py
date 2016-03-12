@@ -86,9 +86,8 @@ def sendMailView(request):
 
     msg.attach(MIMEText(request.data['body'].encode('utf-8'), 'html'))
     if 'attachments' in request.data:
-        for pk in request.data['attachments'].split(','):
-            a = str(mailAttachment.objects.get(pk = pk).attachment)
-            filePath = os.path.join(globalSettings.MEDIA_ROOT , a.replace('/' , '\\'))
+        for pk in request.data['attachments']:
+            filePath = mailAttachment.objects.get(pk = pk).attachment.path
             with open(filePath, "rb") as fil:
                 msg.attach(MIMEApplication(
                     fil.read(),
