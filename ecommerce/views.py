@@ -466,7 +466,37 @@ class supportApi(APIView): # on the support tab of the accounts page , the users
 class serviceRegistrationApi(APIView):
     permission_classes = (permissions.AllowAny ,)
 
+    def get(self, request , format = None):
+        u = request.user
+        if service.objects.filter(user = u).count() == 0:
+            return Response(status = status.HTTP_404_NOT_FOUND)
+        else:
+            print service.objects.get(user = u).pk
+        print self
+        print request
+        return Response(status = status.HTTP_200_OK)
+
+
     def post(self, request, format=None):
+        u = request.user
+        if not u.is_anonymous():
+            if service.objects.filter(user = u).count() == 0:
+                cp = customerProfile.objects.get(user = u)
+                ad = cp.address
+                if cp.mobile is None:
+                    if 'mobile' in request.data:
+                        mob = request.data['mobile']
+                    else:
+                        return Response({'mobile' : 'No contact number found in the account'}, status = status.HTTP_400_BAD_REQUEST)
+                else:
+                    mob = cp.mobile
+                s = service(name = u.get_full_name() , user = u , cin = 0 , tin = 0 , address = ad , mobile = mob, telephone = mob , about = '')
+            else:
+                s = service.objects.get(user = u)
+            s.save()
+            add_application_access(u , ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings'] , u)
+            return Response( status = status.HTTP_200_OK)
+
         first_name = request.data['first_name']
         last_name = request.data['last_name']
         email = request.data['email']

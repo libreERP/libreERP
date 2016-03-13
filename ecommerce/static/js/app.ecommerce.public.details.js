@@ -15,6 +15,20 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
   $scope.$watch($scope.getDateTime)
 
+  $scope.rentOut = function() {
+    $aside.open({
+      templateUrl : '/static/ngTemplates/app.ecommerce.aside.rentOut.html',
+      placement: 'right',
+      size: 'lg',
+      resolve: {
+        input : function() {
+          return {pk : $scope.data.pk}
+        }
+      },
+      controller : 'controller.ecommerce.rentOut'
+    })
+  }
+
   $scope.showMap = function(index) {
     $aside.open({
       template: '<ui-gmap-google-map center="map.center" class="asideModal" ng-if="render" zoom="map.zoom" draggable="true" events="events" options="options">' +
@@ -226,6 +240,125 @@ app.controller('controller.ecommerce.details' , function($scope , $state , $http
 
 
 
+
+
+});
+
+app.controller('controller.ecommerce.rentOut' , function($scope , Flash , $http , input) {
+  $scope.registered = null;
+  $scope.registrationStage = 'location';
+  $scope.data = {agreed : false , location : null , contactRequired : false , mobile : '' , parentPK : input.pk};
+
+  $http({method : 'GET' , url : '/api/ecommerce/providerRegistration/'}).
+  then(function(response) {
+    $scope.registered = true;
+  }, function(response) {
+    $scope.registered = false;
+  })
+
+  $scope.agree = function() {
+    if (!$scope.data.agreed) {
+      Flash.create('danger' , 'Please accept the terms and conditions')
+      return;
+    }
+    $scope.registrationStage = 'location';
+  }
+
+  $scope.map = {center: {latitude: 40.1451, longitude: -99.6680 }, zoom: 8 };
+  $scope.marker = {
+    id: 0,
+    coords: {
+      latitude: 20,
+      longitude: 78
+    },
+  };
+  $scope.windowOptions = {
+    visible: false,
+  };
+
+
+  $scope.getLocationSuggeations = function(query){
+    return $http.get('/api/ecommerce/suggestLocations/?query=' + query).
+    then(function(response){
+      return response.data.predictions;
+    })
+  }
+
+  $scope.$watch('data.location' , function(newValue, oldValue){
+    if (newValue != null && typeof newValue =='object') {
+      $http({method : 'GET' , url : '/api/ecommerce/locationDetails/?id=' + newValue.place_id}).
+      then(function(response){
+        // $scope.params.location = response.data.result;
+        $scope.map.center.latitude = response.data.result.geometry.location.lat;
+        $scope.map.center.longitude = response.data.result.geometry.location.lng;
+      })
+    }else {
+      // $scope.params.location = null;
+    }
+  }, true);
+
+  $scope.register = function() {
+    $http({
+      method: 'GET',
+      url: '/api/ecommerce/profile/'
+    }).
+    then(function(response) {
+      // for(key in response.data[0])
+      dataToSend = {
+        lat : $scope.map.center.latitude,
+        lon : $scope.map.center.longitude
+      }
+      $scope.customerProfile = response.data[0];
+      $http({method : 'PATCH' , url : '/api/ecommerce/profile/' + response.data[0].pk + '/' , data : dataToSend }).
+      then(function(response) {
+        if ($scope.data.contactRequired) {
+          if ($scope.data.mobile.length == 0) {
+            Flash.create('danger' , 'Mobile no. field cannot be empty')
+            return;
+          }else{
+            dataToSend = {mobile : $scope.data.mobile}
+          }
+        }
+        $http({method : 'POST' , url : '/api/ecommerce/providerRegistration/' , data : dataToSend}).
+        then(function(response) {
+
+        } , function(response) {
+          if ('mobile' in response.data){
+            Flash.create('danger' , 'Looks like we dont have your contact number, Please enter one.')
+            $scope.data.contactRequired = true;
+            // $scope.registered = true;
+          }
+        })
+      })
+    })
+
+  }
+
+  $scope.resetForm = function(){
+    $scope.data.form = {
+      shippingOptions : 'pickup',
+      availability : 'local',
+      rate : null,
+      freeReturns : false,
+      replacementPeriod : 0,
+      shippingFee : 0,
+      inStock : 1
+    }
+  }
+
+  $scope.resetForm()
+
+  $scope.offer = function() {
+    dataToSend = $scope.data.form;
+    var post = {method : 'POST' , url : '/api/ecommerce/offeringAdmin/'}
+    dataToSend.item = $scope.data.parentPK;
+    $http({method : post.method , url : post.url , data : $scope.data.form}).
+    then(function(response){
+      Flash.create('success', response.status + ' : ' + response.statusText);
+      }, function(response){
+      Flash.create('danger', response.status + ' : ' + response.statusText);
+    });
+  }
 
 
 });

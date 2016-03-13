@@ -258,26 +258,30 @@ class customerProfileSerializer(serializers.ModelSerializer):
     def update (self, instance, validated_data):
         u = self.context['request'].user
         cp = customerProfile.objects.get(user = u)
-
         try:
-            street = self.context['request'].data['street']
-            pincode = self.context['request'].data['pincode']
-            state = self.context['request'].data['state']
-            city = self.context['request'].data['city']
+            a = cp.address
+        except:
+            a = address()
+        if 'street' in self.context['request'].data:
             try:
-                a = cp.address
+                street = self.context['request'].data['street']
+                pincode = self.context['request'].data['pincode']
+                state = self.context['request'].data['state']
+                city = self.context['request'].data['city']
             except:
-                a = address()
-
+                pass
             a.street = street
             a.city = city
             a.pincode = pincode
             a.state = state
-            a.save()
-
-            cp.address = a
-        except:
-            pass
+        if 'lat' in self.context['request'].data:
+            try:
+                a.lat = self.context['request'].data['lat']
+                a.lon = self.context['request'].data['lon']
+            except:
+                pass
+        a.save()
+        cp.address = a
 
         if 'sendUpdates' in self.context['request'].data:
             cp.sendUpdates = validated_data.pop('sendUpdates')
