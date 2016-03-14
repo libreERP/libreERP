@@ -77,11 +77,34 @@
       <input type="text" class="form-control" ng-model="data.form.rate">
       <p class="help-block">Rate of offer in INR/Hr.</p>
     </div>
+
+    <div class="form-group">
+      <label>From</label>
+      <div class="input-group">
+        <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.form.start" is-open="status.start"  />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="status.start = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Till</label>
+      <div class="input-group">
+        <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.form.end" is-open="status.end"  />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="status.end = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+        </span>
+      </div>
+    </div>
+
     <div class="col-md-6 col-md-offet-3">
       <button ng-click="offer()" type="button" class="btn btn-primary btn-block">
         Submit
       </button>
     </div>
+
+
   </div>
 
 

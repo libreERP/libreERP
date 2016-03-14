@@ -342,7 +342,9 @@ app.controller('controller.ecommerce.rentOut' , function($scope , Flash , $http 
       freeReturns : false,
       replacementPeriod : 0,
       shippingFee : 0,
-      inStock : 1
+      inStock : 1,
+      start : new Date(),
+      end : new Date()
     }
   }
 

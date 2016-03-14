@@ -172,6 +172,8 @@ class offering(models.Model):
     shippingFee = models.PositiveIntegerField(null = True)
     inStock = models.PositiveIntegerField(null = True) # the number of items available with this provider
     active = models.BooleanField(default = True)
+    start = models.DateTimeField(null = True) # available from
+    end = models.DateTimeField(null = True) # available till
     class Meta:
         unique_together = ('service', 'item',)
 

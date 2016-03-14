@@ -104,7 +104,7 @@ class offeringSerializer(serializers.ModelSerializer):
 class offeringAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = offering
-        fields = ('pk' , 'created' ,'inStock', 'item' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
+        fields = ('pk' , 'created' ,'inStock', 'start' , 'end','item' ,'active', 'cod' , 'freeReturns' , 'replacementPeriod' , 'rate' , 'shippingOptions' , 'availability' , 'shippingFee')
     def create(self ,  validated_data):
         u = self.context['request'].user
         has_application_permission(u , ['app.ecommerce' , 'app.ecommerce.offerings'])
