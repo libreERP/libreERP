@@ -799,6 +799,8 @@ class reviewViewSet(viewsets.ModelViewSet):
     serializer_class = reviewSerializer
     def get_queryset(self):
         if 'listing' in self.request.GET:
+            print self.request.GET['variable1']
+            print self.request.GET['variable2']
             return review.objects.filter(item = self.request.GET['listing'])
         else:
             u = self.request.user
@@ -821,3 +823,10 @@ class offerBannerViewSet(viewsets.ModelViewSet):
             if self.request.GET['mode'] == 'configure':
                 return offerBanner.objects.all()
         return offerBanner.objects.filter(active = True)
+
+
+class priceViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdminOrReadOnly, )
+    serializer_class = priceSerializer
+    def get_queryset(self):
+        return price.objects.all()

@@ -93,7 +93,7 @@
             Does this module / app needs a js file.
           </p>
         </div>
-        <div class="form-group">
+        <div class="form-group" ng-if="type!='module'">
           <label>In Menu</label>
           <input type="checkbox" ng-model="data.inMenu" >
           <p class="help-block">

@@ -1,0 +1,53 @@
+app.config(function($stateProvider){
+
+  $stateProvider
+  .state('projectManagement', {
+    url: "/projectManagement",
+    views: {
+       "": {
+          templateUrl: '/static/ngTemplates/businessManagement.html',
+       },
+       "menu@projectManagement": {
+          templateUrl: '/static/ngTemplates/businessManagement.menu.html',
+          controller : 'projectManagement.menu'
+        },
+        "@projectManagement": {
+          templateUrl: '/static/ngTemplates/businessManagement.dash.html',
+          controller : 'projectManagement'
+        }
+    }
+  })
+
+});
+
+app.controller('projectManagement' , function($scope , $users , Flash){
+  // main businessManagement tab default page controller
+});
+
+app.controller('projectManagement.menu' , function($scope , $users , Flash , $permissions){
+  // main businessManagement tab default page controller
+
+  $scope.apps = [];
+
+  $scope.buildMenu = function(apps){
+    for (var i = 0; i < apps.length; i++) {
+      a = apps[i];
+      parts = a.name.split('.');
+      if (a.module != 10 || a.name.indexOf('app') == -1 || parts.length != 2) {
+        continue;
+      }
+      a.state = a.name.replace('app' , 'projectManagement')
+      a.dispName = parts[parts.length -1];
+      $scope.apps.push(a);
+    }
+  }
+
+  as = $permissions.app();
+  if(typeof as.success == 'undefined'){
+    $scope.buildMenu(as);
+  } else {
+    as.success(function(response){
+      $scope.buildMenu(response);
+    });
+  };
+});
