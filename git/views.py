@@ -17,6 +17,10 @@ from ERP.models import application, permission , module
 from ERP.views import getApps, getModules
 from django.db.models import Q
 
+class gitGroupViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = gitGroupSerializer
+    queryset = gitGroup.objects.all()
 
 class repoPermissionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

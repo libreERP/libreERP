@@ -10,11 +10,17 @@ class repoPermission(models.Model):
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
 
-class groupPermission(models.Model):
+class gitGroup(models.Model):
     users = models.ManyToManyField(User)
+    name = models.CharField(max_length = 30 , null = True)
+    description = models.TextField(max_length=500, null = False)
+
+class groupPermission(models.Model):
+    group = models.ForeignKey(gitGroup , null = True)
     canRead = models.BooleanField(default = False)
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
+
 
 class repo(models.Model):
     perms = models.ManyToManyField(repoPermission)

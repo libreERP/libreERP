@@ -6,6 +6,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'repoPermission' , repoPermissionViewSet , base_name = 'repoPermission')
 router.register(r'groupPermission' , groupPermissionViewSet , base_name = 'groupPermission')
+router.register(r'gitGroup' , gitGroupViewSet , base_name = 'gitGroup')
 router.register(r'repo' , repoViewSet , base_name = 'repo')
 
 urlpatterns = [

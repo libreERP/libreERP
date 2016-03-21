@@ -45,6 +45,9 @@ app.filter('timeAgo' , function(){
 app.filter('humanize' , function(){
   return function(input){
     // insert a space before all caps
+    if (input.length<=3) {
+      return input;
+    }
     input = input.replace('_' , ' ');
     input = input.replace(/([A-Z])/g, ' $1');
     // uppercase the first character

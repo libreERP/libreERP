@@ -11,11 +11,16 @@ class repoPermissionSerializer(serializers.ModelSerializer):
         model = repoPermission
         fields = ('pk', 'user' , 'canRead' , 'canWrite' , 'canDelete' )
 
+class gitGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gitGroup
+        fields = ('pk', 'users' , 'name' , 'description')
+
 
 class groupPermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = groupPermission
-        fields = ('pk', 'users' , 'canRead' , 'canWrite' , 'canDelete' )
+        fields = ('pk', 'group' , 'canRead' , 'canWrite' , 'canDelete')
 
 
 class repoSerializer(serializers.ModelSerializer):

@@ -209,6 +209,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
       }, function(response) {
 
     });
+    // $scope.pageNo = 1;
   }
 
   $scope.$watch('getStr' , function(){ // getStr is the search query sent to the server
@@ -364,7 +365,7 @@ app.directive('tableItem', function () {
 });
 
 app.controller('genericTableItem' , function($scope , $uibModal){
-
+  // console.log($scope);
   $scope.config = JSON.parse($scope.configObj);
   $scope.options = $scope.config.options;
   $scope.selectable = angular.isDefined($scope.config.multiselectOptions) ? true:false;
