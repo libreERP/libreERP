@@ -21,6 +21,8 @@ class gitGroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = gitGroupSerializer
     queryset = gitGroup.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class repoPermissionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

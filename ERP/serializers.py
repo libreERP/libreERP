@@ -15,7 +15,7 @@ class moduleSerializer(serializers.ModelSerializer):
 class applicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure'  ,  'haveJs' , 'haveCss')
+        fields = ( 'pk', 'name', 'module' , 'description' , 'icon', 'canConfigure'  ,  'haveJs' , 'haveCss' , 'inMenu')
 
 class applicationSettingsSerializer(serializers.ModelSerializer):
     # non admin mode
@@ -28,7 +28,7 @@ class applicationAdminSerializer(serializers.ModelSerializer):
     owners = userSearchSerializer(read_only = True , many = True)
     class Meta:
         model = application
-        fields = ( 'pk', 'name', 'module' , 'owners' , 'description' , 'created' , 'icon', 'canConfigure')
+        fields = ( 'pk', 'name', 'module' , 'owners' , 'description' , 'created' , 'icon', 'canConfigure', 'haveJs' , 'haveCss' , 'inMenu')
     def create(self , validated_data):
         app =  application(**validated_data)
         app.module = module.objects.get(pk = self.context['request'].data['module']);

@@ -18,13 +18,20 @@ class gitGroupSerializer(serializers.ModelSerializer):
 
 
 class groupPermissionSerializer(serializers.ModelSerializer):
+    group = gitGroupSerializer(many = False , read_only = True)
     class Meta:
         model = groupPermission
         fields = ('pk', 'group' , 'canRead' , 'canWrite' , 'canDelete')
+    def create(self , validated_data):
+        gp = groupPermission(**validated_data)
+        gp.group = gitGroup.objects.get(pk = self.context['request'].data['group'])
+        gp.save()
+        return gp
 
 
 class repoSerializer(serializers.ModelSerializer):
-    # perms = repoPermissionSerializer(many = False)
+    perms = repoPermissionSerializer(many = True , read_only = True)
+    groups = groupPermissionSerializer(many = True , read_only = True)
     class Meta:
         model = repo
         fields = ('pk', 'perms' , 'name' , 'groups' , 'description' )
@@ -33,3 +40,15 @@ class repoSerializer(serializers.ModelSerializer):
         r.creator = self.context['request'].user
         r.save()
         return r
+    def update(self ,instance , validated_data):
+        instance.name = validated_data.pop('name')
+        instance.description = validated_data.pop('description')
+        instance.perms.clear()
+        for p in self.context['request'].data['perms']:
+            instance.perms.add(repoPermission.objects.get(pk = p))
+        instance.save()
+        instance.groups.clear()
+        for p in self.context['request'].data['groups']:
+            instance.groups.add(groupPermission.objects.get(pk = p))
+        instance.save()
+        return instance

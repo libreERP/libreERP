@@ -1,0 +1,132 @@
+<div ng-controller="controller.projectManagement.GIT.repo.modal">
+  <div class="modal-header">
+    <div class="col-md-9">
+      <h3 class="modal-title" ng-if="mode == 'edit'">Edit Repo :
+        <strong>{{data.name}}</strong>
+      </h3>
+      <h3 class="modal-title" ng-if="mode == 'new'">Create a new Repo</h3>
+    </div>
+    <div class="col-md-3">
+      <button type="button" ng-click="save()" class="btn btn-primary pull-right">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-body" >
+    <div class="container-fluid">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" ng-model="data.name" class="form-control" placeholder="Enter groups name">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea ng-model="data.description" rows="3" cols="40" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <label>New permission:</label>
+        <div class="row">
+          <div class="col-md-2">
+            <select class="form-control" ng-model="data.permMode">
+              <option value="individual">User</option>
+              <option value="group">Group</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <div class="checkbox-inline">
+              <label><input type="checkbox" ng-model="data.canRead">read?</label>
+            </div>
+            <div class="checkbox-inline">
+              <label><input type="checkbox" ng-model="data.canWrite">write?</label>
+            </div>
+            <div class="checkbox-inline">
+              <label><input type="checkbox" ng-model="data.canDelete">delete?</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" ng-model = "data.object" uib-typeahead="object as getName(object) for object in objectSearch($viewValue)" placeholder="Search and select a {{data.permMode=='individual'? 'user' : 'group'}} to add in this Repo">
+                <span class="input-group-btn">
+                  <button class="btn btn-success" type="button" ng-click="addPermission()">Add <i class="fa fa-plus"></i></button>
+                </span>
+              </div><!-- /input-group -->
+          </div>
+        </div>
+      </div>
+      <!-- {{data}} -->
+      <strong>Users Permission:</strong> <br>
+      <div class="row" ng-repeat="p in data.perms">
+        <hr>
+        <div class="col-md-4">
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='individual')" ng-model="p.canRead">read?</label>
+          </div>
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='individual')" ng-model="p.canWrite">write?</label>
+          </div>
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='individual')" ng-model="p.canDelete">delete?</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          {{p.user | getName}}
+        </div>
+        <div class="col-md-2">
+          <img ng-src="{{p.user | getDP}}" class="img-circle" width="40" height="40" />
+        </div>
+        <div class="col-md-3">
+          <div class="btn-group btn-group-sm pull-right" >
+            <button type="button" ng-click="editPerm($index)" class="btn btn-default btn-sm"  ng-if="!(data.editorIndex == $index && data.editorMode=='individual')">
+              Edit <i class="fa fa-pencil"></i>
+            </button>
+            <button type="button" ng-click="savePerm($index)" class="btn btn-success btn-sm"  ng-if="(data.editorIndex == $index && data.editorMode=='individual')">
+              Save <i class="fa fa-floppy-o"></i>
+            </button>
+            <button type="button" ng-click="deletePerm($index)" class="btn btn-danger btn-sm">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <strong>Groups Permission:</strong> <br>
+      <div class="row" ng-repeat="p in data.groups">
+        <hr>
+        <div class="col-md-4">
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='group')" ng-model="p.canRead">read?</label>
+          </div>
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='group')" ng-model="p.canWrite">write?</label>
+          </div>
+          <div class="checkbox-inline">
+            <label><input type="checkbox" ng-disabled="!(data.editorIndex == $index && data.editorMode=='group')" ng-model="p.canDelete">delete?</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          {{p.group.name | humanize}}
+        </div>
+        <div class="col-md-2">
+          <strong>{{p.group.users.length}}</strong> Users
+        </div>
+        <div class="col-md-1">
+          <i class="fa fa-users fa-3x"></i>
+        </div>
+        <div class="col-md-3">
+          <div class="btn-group btn-group-sm pull-right" >
+            <button type="button" ng-click="editGroup($index)" class="btn btn-default btn-sm"  ng-if="!(data.editorIndex == $index && data.editorMode=='group')">
+              Edit <i class="fa fa-pencil"></i>
+            </button>
+            <button type="button" ng-click="saveGroup($index)" class="btn btn-success btn-sm"  ng-if="(data.editorIndex == $index && data.editorMode=='group')">
+              Save <i class="fa fa-floppy-o"></i>
+            </button>
+            <button type="button" ng-click="deleteGroup($index)" class="btn btn-danger btn-sm">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

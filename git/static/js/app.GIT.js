@@ -21,6 +21,16 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.GIT.groups.html',
     controller: 'projectManagement.GIT.groups'
   })
+  .state('projectManagement.GIT.repos', {
+    url: "/repos",
+    templateUrl: '/static/ngTemplates/app.GIT.repos.html',
+    controller: 'projectManagement.GIT.repos'
+  })
+  .state('projectManagement.GIT.manage', {
+    url: "/manage",
+    templateUrl: '/static/ngTemplates/app.GIT.manage.html',
+    controller: 'projectManagement.GIT.manage'
+  })
 
 });
 
