@@ -23,9 +23,9 @@ class groupPermission(models.Model):
 
 
 class repo(models.Model):
-    perms = models.ManyToManyField(repoPermission , null = True)
+    perms = models.ManyToManyField(repoPermission )
     created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length = 30)
     creator = models.ForeignKey(User , null = False)
-    groups = models.ManyToManyField(groupPermission , null = True)
+    groups = models.ManyToManyField(groupPermission )
     description = models.TextField(max_length=500, null = False)
