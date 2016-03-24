@@ -12,4 +12,5 @@ router.register(r'repo' , repoViewSet , base_name = 'repo')
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'syncGitolite/$' , syncGitoliteApi.as_view() ),
+    url(r'registerDevice/$' , registerDeviceApi.as_view() ),
 ]

@@ -1,4 +1,4 @@
-django==1.9.3
+django==1.9.4
 djangorestframework==3.3.2
 markdown==2.6
 django-filter==0.11

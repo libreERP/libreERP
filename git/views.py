@@ -42,6 +42,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
+from fabric.api import *
 # from .helper import *
 from API.permissions import *
 from HR.models import accountsKey
@@ -62,7 +63,8 @@ def getPermStr(p):
 class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
-        f = open( os.path.join(globalSettings.BASE_DIR  , 'git' ,'conf.conf') , 'w')
+        gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
+        f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
         for g in gitGroup.objects.all():
             gStr = '@' + g.name
             for u in g.users.all():
@@ -80,7 +82,48 @@ class syncGitoliteApi(APIView):
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
         f.write(rStr)
         f.close()
+        keyDir = os.path.join(gitoliteDir , 'keydir')
+        for p in profile.objects.all():
+            for d in p.devices.all():
+                f = open(os.path.join( keyDir , p.user.username + '.pub') , 'w')
+                f.write(d.sshKey)
+                f.close()
+        # with cd(gitoliteDir):
+        #     local('git add *')
+        #     local('git commit -m "%s"' %(request.user.username))
+            # local('git push')
         # print rStr
+        return Response(status=status.HTTP_200_OK)
+
+class registerDeviceApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.AllowAny ,)
+    def post(self , request , format = None):
+        if 'username' in request.data and 'password' in request.data and 'sshKey' in request.data:
+            sshKey = request.data['sshKey']
+            deviceName =sshKey.split()[2]
+            mode = request.data['mode']
+            # print mode
+            user = authenticate(username =  request.data['username'] , password = request.data['password'])
+            if user is not None:
+                if user.is_active:
+                    d , n = device.objects.get_or_create(name = deviceName)
+                    print sshKey
+                    print d
+                    if mode == 'logout':
+                        d.delete()
+                        return Response(status=status.HTTP_200_OK)
+                    d.sshKey = sshKey
+                    d.save()
+                    gp , n = profile.objects.get_or_create(user = user)
+                    gp.devices.add(d)
+                    gp.save()
+                    # print gp
+            else:
+                raise NotAuthenticated(detail=None)
+
+        else:
+            raise ValidationError(detail={'PARAMS' : 'No data provided'} )
         return Response(status=status.HTTP_200_OK)
 
 
