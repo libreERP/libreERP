@@ -64,6 +64,7 @@ class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
+        print gitoliteDir
         f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
         for g in gitGroup.objects.all():
             gStr = '@' + g.name
@@ -90,8 +91,8 @@ class syncGitoliteApi(APIView):
                 f.close()
         with cd(gitoliteDir):
             local('pwd')
-            local('git add *')
-            local('git commit -m "%s"' %(request.user.username))
+            # local('git add *')
+            # local('git commit -m "%s"' %(request.user.username))
             # local('git push')
         print rStr
         return Response(status=status.HTTP_200_OK)
