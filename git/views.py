@@ -92,7 +92,7 @@ class syncGitoliteApi(APIView):
             local('pwd')
             local('git add *')
             local('git commit -m "%s"' %(request.user.username))
-            local('git push')
+            # local('git push')
         print rStr
         return Response(status=status.HTTP_200_OK)
 
