@@ -11,3 +11,4 @@ reportlab==3.2
 django-allauth==0.24.1
 django-rest-auth==0.7.0
 monthdelta==0.9.1
+fabric==1.10.2
