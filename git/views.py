@@ -89,12 +89,13 @@ class syncGitoliteApi(APIView):
                 f = open(os.path.join( keyDir , p.user.username + '.pub') , 'w')
                 f.write(d.sshKey)
                 f.close()
-        with cd(gitoliteDir):
-            local('pwd')
-            # local('git add *')
-            # local('git commit -m "%s"' %(request.user.username))
-            # local('git push')
-        print rStr
+        with lcd(gitoliteDir):
+            local('git add *')
+            try:
+                local('git commit -m "%s"' %(request.user.username))
+            except:
+                pass
+            local('git push')
         return Response(status=status.HTTP_200_OK)
 
 class registerDeviceApi(APIView):
