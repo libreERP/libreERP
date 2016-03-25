@@ -41,7 +41,6 @@ class repoSerializer(serializers.ModelSerializer):
         r.save()
         return r
     def update(self ,instance , validated_data):
-        instance.name = validated_data.pop('name')
         instance.description = validated_data.pop('description')
         instance.perms.clear()
         for p in self.context['request'].data['perms']:
