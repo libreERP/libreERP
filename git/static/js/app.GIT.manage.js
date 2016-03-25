@@ -3,7 +3,9 @@ app.controller('projectManagement.GIT.manage' , function($scope ,$http, $users ,
   $scope.syncGitolite = function() {
     $http({method : 'GET' , url : '/api/git/syncGitolite/'}).
     then(function(response) {
-      console.log(response.data);
+      Flash.create('success' , response.status + ' : ' + response.statusText);
+    }, function(response){
+      Flash.create('danger' , response.status + ' : ' + response.statusText);
     });
   }
 

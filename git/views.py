@@ -66,13 +66,14 @@ class syncGitoliteApi(APIView):
         gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
         f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
         for g in gitGroup.objects.all():
-            gStr = '@' + g.name
+            gStr = '@' + g.name + ' ='
             for u in g.users.all():
                 gStr += ' ' + u.username
             # print gStr
             f.write('%s\n' %(gStr))
+        rStr = ''
         for r in repo.objects.all():
-            rStr = 'repo %s\n' %(r.name)
+            rStr += 'repo %s\n' %(r.name)
             for p in r.perms.all():
                 rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
             for g in r.groups.all():
@@ -80,8 +81,9 @@ class syncGitoliteApi(APIView):
             # print rStr
         rStr += 'repo CREATOR/[a-z].*\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
         rStr += 'repo gitolite-admin\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'admin')
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'admin cioc')
         rStr += 'repo testing\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
         f.write(rStr)
@@ -93,12 +95,14 @@ class syncGitoliteApi(APIView):
                 f.write(d.sshKey)
                 f.close()
         with lcd(gitoliteDir):
-            local('git add *')
-            try:
-                local('git commit -m "%s"' %(request.user.username))
-            except:
-                pass
-            local('git push')
+            local('dir')
+            print "passed : " , gitoliteDir
+            # local('git add *')
+            # try:
+            #     local('git commit -m "%s"' %(request.user.username))
+            # except:
+            #     pass
+            # local('git push')
         return Response(status=status.HTTP_200_OK)
 
 class registerDeviceApi(APIView):
