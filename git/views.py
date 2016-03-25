@@ -81,9 +81,9 @@ class syncGitoliteApi(APIView):
             # print rStr
         rStr += 'repo CREATOR/[a-z].*\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
-        rStr += 'gitolite-admin\n'
+        rStr += 'repo gitolite-admin\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'admin')
-        rStr += 'testing\n'
+        rStr += 'repo testing\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
         f.write(rStr)
         f.close()
