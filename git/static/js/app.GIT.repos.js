@@ -3,7 +3,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
 
   if (typeof $scope.data.pk == 'undefined') {
     $scope.mode = 'new';
-    $scope.data = {users : [] , name : '' , description : '' , perms : {} , groups : {}}
+    $scope.data = {users : [] , name : '' , description : '' , perms : [] , groups : []}
   }else {
     $scope.mode = 'edit';
   }
