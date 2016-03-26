@@ -50,6 +50,52 @@ from HR.models import accountsKey
 from django.core import serializers
 from django.http import JsonResponse
 
+import os
+import platform
+
+def getFileList(repoName , relPath):
+    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+    for p in relPath.split('/'):
+        fullPath = os.path.join(fullPath , p)
+    if not os.path.exists(os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)):
+        # print 'will fetch now'
+        with lcd(os.path.dirname(fullPath)):
+            local('git clone git@goryd.in:%s' %(repoName))
+    with lcd(fullPath):
+        if platform.system() == 'Windows':
+            return local('dir' , capture=True)
+        else:
+            return local('ls -la' , capture=True)
+def getDiff(repoName , head = 0 , tail = 0):
+    if tail<head:
+        return 'error'
+    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+    with lcd(fullPath):
+        if head == 0 and tail == 0:
+            return local('git diff' , capture=True)
+        else:
+            return local('git diff HEAD~%s HEAD~%s' %(head , tail))
+
+def readFile(repoName , relPath):
+    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+    for p in relPath.split('/'):
+        fullPath = os.path.join(fullPath , p)
+    f = open(fullPath , 'r')
+    return os.path.getsize(fullPath) , f.read()
+
+
+class fileExplorerApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        r = repo.objects.get(pk = request.GET['repo'])
+        relPath = request.GET['relPath']
+        if request.GET['mode'] == 'folder':
+            content = getFileList(r.name , relPath)
+            return Response({'files' :content} , status=status.HTTP_200_OK)
+        elif request.GET['mode'] == 'file':
+            size , content = readFile(r.name , relPath)
+            return Response({'size' :size , 'content' : content} , status=status.HTTP_200_OK)
+
 def getPermStr(p):
     pStr = ''
     if p.canRead:
@@ -71,7 +117,7 @@ class syncGitoliteApi(APIView):
                 gStr += ' ' + u.username
             # print gStr
             f.write('%s\n' %(gStr))
-        rStr = ''
+        rStr = '@administrators =  admin cioc sandeep\n'
         for r in repo.objects.all():
             rStr += 'repo %s\n' %(r.name)
             for p in r.perms.all():
@@ -82,8 +128,10 @@ class syncGitoliteApi(APIView):
         rStr += 'repo CREATOR/[a-z].*\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
         rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
+        rStr += 'repo @all\n'
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'administrators')
         rStr += 'repo gitolite-admin\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'admin cioc')
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'administrators')
         rStr += 'repo testing\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
         f.write(rStr)
@@ -95,14 +143,14 @@ class syncGitoliteApi(APIView):
                 f.write(d.sshKey)
                 f.close()
         with lcd(gitoliteDir):
-            local('dir')
-            print "passed : " , gitoliteDir
-            # local('git add *')
-            # try:
-            #     local('git commit -m "%s"' %(request.user.username))
-            # except:
-            #     pass
-            # local('git push')
+            # local('dir')
+            # print "passed : " , gitoliteDir
+            local('git add *')
+            try:
+                local('git commit -m "%s"' %(request.user.username))
+            except:
+                pass
+            local('git push')
         return Response(status=status.HTTP_200_OK)
 
 class registerDeviceApi(APIView):

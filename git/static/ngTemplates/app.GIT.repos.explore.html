@@ -1,0 +1,26 @@
+<div class="container-fluid" ng-controller="projectManagement.GIT.repos.explore" style="position:relative;">
+  <!-- <div class="row" style="margin-bottom:10px;" ng-if="relPath!=''">
+  </div> -->
+  <div style="position: absolute;height:500px;overflow:auto;width: 100%;padding:30px;">
+    <div class="row" ng-if="mode == 'folder'" >
+      <div ng-repeat="f in files track by $index" ng-if="$index>=5 && $index<=files.length-3">
+        <div class="row fileList" style="padding:5px;border:solid 1px #eeeeee;" ng-click="exploreSpecific(f)">
+          <i class="fa fa-{{f.isDir ? 'folder-o': 'file-o'}}"></i>
+          <span style="{{f.isDir ? 'color:#8f044b;':''}}">{{f.name}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-if="mode == 'file'">
+      <div class="row" style="margin-bottom:10px;">
+        <button type="button" class="btn btn-primary" ng-click="fetchFileList()">
+          <i class="fa fa-arrow-left"></i>  Back
+        </button>
+      </div>
+      <div class="row">
+        <div hljs hljs-source="fileInView.content" style="padding:0px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

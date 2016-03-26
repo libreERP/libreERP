@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'syncGitolite/$' , syncGitoliteApi.as_view() ),
     url(r'registerDevice/$' , registerDeviceApi.as_view() ),
+    url(r'fileExplorer/$' , fileExplorerApi.as_view() ),
 ]

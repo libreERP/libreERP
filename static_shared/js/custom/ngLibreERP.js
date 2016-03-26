@@ -1,6 +1,10 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash'  , 'textAngular' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce' , 'hljs']);
 
-app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide){
+app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide , hljsServiceProvider){
+  hljsServiceProvider.setOptions({
+    // replace tab with 4 spaces
+    tabReplace: '    '
+  });
 
   $urlRouterProvider.otherwise('/home');
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';

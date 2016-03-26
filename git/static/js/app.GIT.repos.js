@@ -1,3 +1,92 @@
+app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
+  $scope.relPath = '';
+  $scope.mode = 'folder';
+
+  $scope.getFileName = function(f) {
+    parts = f.replace( / +/g, ' ' ).split(' ')
+    n = parts[parts.length-1];
+    return  n.substring(0, n.length-1); // in the case of linux OS we might not need to use this
+  }
+
+  $scope.fileInView = {name : '' , content : '' , size : 0}
+
+  $scope.exploreSpecific = function(f) {
+    if (f.isDir) {
+      if ($scope.relPath.length > 0) {
+        $scope.relPath += '/';
+      }
+      $scope.relPath += f.name ;
+      if (f.name == '.') {
+        $scope.relPath = '';
+      }else if (f.name == '..') {
+        parts = $scope.relPath.split('/')
+        $scope.relPath = '';
+        for (var i = 0; i < parts.length-2; i++) {
+          $scope.relPath += parts[i];
+          if (i != parts.length-3) {
+            $scope.relPath += '/';
+          }
+        }
+      }
+      $scope.fetchFileList()
+    }else {
+      $scope.mode = 'file';
+      name = $scope.relPath + '/'+ f.name;
+      dataToSend = {
+        repo : $scope.tab.data.pk,
+        relPath : name,
+        mode : 'file',
+      }
+
+      $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
+      then((function(name) {
+        return function(response) {
+          $scope.fileInView = response.data;
+          $scope.fileInView.name = name;
+        }
+      })(name) , function(response) {
+        console.log(response);
+      })
+    }
+
+  }
+
+  $scope.parseFileList = function(fileList) {
+    $scope.files = [];
+    for (var i = 0; i < fileList.length; i++) {
+      name = $scope.getFileName(fileList[i])
+      if (!((name == '.' || name == '..') && $scope.relPath == '') ){
+        f = {
+          isDir : fileList[i].indexOf('<DIR>')!=-1,
+          name : name,
+        }
+        $scope.files.push(f);
+        // if(!f.isDir){
+        //   $scope.files.push(f)
+        // }else {
+        //   $scope.files.unshift(f)
+        // }
+      }
+    }
+  }
+
+  $scope.fetchFileList = function() {
+    $scope.mode = 'folder';
+    dataToSend = {
+      repo : $scope.tab.data.pk,
+      relPath : $scope.relPath,
+      mode : 'folder',
+    }
+
+    $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
+    then(function(response) {
+      $scope.parseFileList(response.data.files.split('\n'));
+    })
+  }
+
+  $scope.fetchFileList()
+
+});
 
 app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,$http, $users , Flash , $permissions){
 
@@ -186,6 +275,8 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
 
 app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash , $permissions){
 
+  $scope.data = {tableData : []}
+
   views = [{name : 'list' , icon : 'fa-th-large' ,
       template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
       itemTemplate : '/static/ngTemplates/app.GIT.repos.item.html',
@@ -210,8 +301,39 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
   $scope.tableAction = function(target , action , mode){
     console.log(target , action , mode);
     console.log($scope.data.tableData);
-
+    if (action == 'repoBrowser') {
+      console.log('Will open the tab now');
+      for (var i = 0; i < $scope.data.tableData.length; i++) {
+        if ($scope.data.tableData[i].pk == parseInt(target)){
+          $scope.addTab({title : 'Browse Repo : ' + $scope.data.tableData[i].name , cancel : true , app : 'repoBrowser' , data : {pk : target} , active : true})
+        }
+      }
+    }
   }
 
 
+  $scope.tabs = [];
+  $scope.searchTabActive = true;
+
+  $scope.closeTab = function(index){
+    $scope.tabs.splice(index , 1)
+  }
+
+  $scope.addTab = function( input ){
+    $scope.searchTabActive = false;
+    alreadyOpen = false;
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].data.pk == input.data.pk && $scope.tabs[i].app == input.app) {
+        $scope.tabs[i].active = true;
+        alreadyOpen = true;
+      }else{
+        $scope.tabs[i].active = false;
+      }
+    }
+    if (!alreadyOpen) {
+      $scope.tabs.push(input)
+    }
+  }
+
+  $scope.addTab(JSON.parse('{"title":"Browse Repo : mERP","cancel":true,"app":"repoBrowser","data":{"pk":1},"active":true}'))
 });
