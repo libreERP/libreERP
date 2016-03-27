@@ -170,7 +170,7 @@ app.filter('decorateCount' , function(){
 
 app.filter('getDP' , function($users){
   return function(input){
-    if (typeof input == 'undefined' ) {
+    if (typeof input == 'undefined' || input == -1 ) {
       return '/static/images/userIcon.png';
     }
     user = $users.get(input);

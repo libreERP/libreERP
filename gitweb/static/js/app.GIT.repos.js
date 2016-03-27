@@ -1,7 +1,17 @@
 app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
   $scope.relPath = '';
-  $scope.mode = 'folder';
+  $scope.mode = 'logs';
   $scope.logConfig = {page : 0 , pageSize : 10}
+
+  $scope.nextLogs = function() {
+    $scope.logConfig.page += 1;
+    $scope.getLogs()
+  }
+
+  $scope.prevLogs = function() {
+    $scope.logConfig.page -= 1;
+    $scope.getLogs()
+  }
 
   $scope.getLogs = function() {
     params = {
@@ -11,8 +21,11 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     }
     $http({method : 'GET' , url : '/api/git/log/' , params : params }).
     then(function(response) {
-      logs = response.data.content;
-      console.log(logs);
+      $scope.logs = response.data.content;
+      for (var i = 0; i < $scope.logs.length; i++) {
+        $scope.logs[i].date = new Date($scope.logs[i].date)
+      }
+      // console.log(logs);
     }, function(response) {
       // $scope.getLogs()
     })
@@ -33,6 +46,7 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
 
   $scope.getLogs()
   $scope.getDiff()
+
   $scope.navigateViaBreadcrumb = function(i) {
     if (i == -1) {
       $scope.relPath = '';
@@ -101,7 +115,7 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     })
   }
 
-  $scope.fetchFileList()
+  // $scope.fetchFileList()
 
 });
 

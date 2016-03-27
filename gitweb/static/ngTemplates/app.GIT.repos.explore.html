@@ -2,7 +2,7 @@
   <div class="col-md-2" style="padding-left:0px;">
     <ul class="nav nav-sidebar" style="width:100%;">
       <li ng-class="{active: mode == 'folder'}" ng-click="navigateViaBreadcrumb(-1)"><a href="" ><div class="text-center"><i class="fa fa-files-o fa-lg pull-left"></i> Files </div></a></li>
-      <li ng-class="{active: mode == 'log'}"><a href="" ><div class="text-center"><i class="fa fa-clock-o fa-lg pull-left"></i> Commits </div></a></li>
+      <li ng-class="{active: mode == 'logs'}" ng-click="mode = 'logs';"><a href="" ><div class="text-center"><i class="fa fa-clock-o fa-lg pull-left"></i> Commits </div></a></li>
       <li ng-if="mode == 'file'" class="active"><a href="" ><div class="text-center"><i class="fa fa-code fa-lg pull-left"></i> Code </div></a></li>
     </ul>
   </div>
@@ -49,7 +49,45 @@
         </div>
       </div>
     </div>
+    <div class="row container-fluid" ng-if="mode == 'logs'">
+      <div class="row fileList" ng-repeat="l in logs" style="padding:5px;border:solid 1px #eeeeee;">
+        <div class="col-md-1">
+          <img ng-src="{{-1 | getDP}}" class="img-circle" width="40" height="40" />
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            {{l.committer.name}}
+          </div>
+          <div class="row">
+            {{l.committer.email}}
+          </div>
+        </div>
+        <div class="col-md-4">
+          {{l.message}}
+        </div>
+        <div class="col-md-2">
+          {{l.id.substring(l.id.length-10 , l.id.length)}}
+        </div>
+        <div class="col-md-2">
+          <div class="btn-group btn-group-sm pull-right">
+            <button type="button" class="btn btn-default">
+              <i class="fa fa-bar-chart-o fa-lg"></i>
+            </button>
+            <button type="button" class="btn btn-default">
+              <i class="fa fa-code fa-lg"></i>
+            </button>
+          </div>
 
+          <!-- {{l.date}} -->
+        </div>
+      </div>
+      <nav>
+        <ul class="pager">
+          <li ng-click="prevLogs()" ng-class="{disabled : logConfig.page == 0}"><a href="">Previous</a></li>
+          <li ng-click="nextLogs()"><a href="">Next</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 
 </div>

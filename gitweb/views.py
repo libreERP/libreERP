@@ -69,10 +69,13 @@ def getFileList(repoName , relPath):
         files.append(fo)
     return files
 
-def getDiff(repoName , head = 0 ):
+def getDiff(repoName , head = 0 , sha = ''):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
     repo = Repo(fullPath)
-    return repo.git.diff('HEAD~%s' %(head))
+    if sha !='':
+        return repo.git.diff(sha)
+    else:
+        return repo.git.diff('HEAD~%s' %(head))
 
 def getLog(repoName , pageSize = 10 , page = 1):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
@@ -80,7 +83,7 @@ def getLog(repoName , pageSize = 10 , page = 1):
     c_list = list(repo.iter_commits( max_count=pageSize, skip=int(page)*int(pageSize)))
     stats = []
     for c in c_list:
-        stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__()})
+        stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : c.committed_date})
     return stats
 
 class logApi(APIView):
@@ -99,7 +102,9 @@ class diffApi(APIView):
     def get(self , request , format = None):
         r = repo.objects.get(pk = request.GET['repo'])
         if 'head' in request.GET:
-            content = getDiff(r.name , request.GET['head'] )
+            content = getDiff(r.name , request.GET['head'])
+        elif 'sha' in request.GET:
+            content = getDiff(r.name , 0 , request.GET['sha'])
         else:
             content = getDiff(r.name )
         return Response({ 'content' : content} , status=status.HTTP_200_OK)
