@@ -47,11 +47,11 @@ body {
 }
 
 
-.breadcrumb {
+.breadcrumbTheme {
     background-color: var(--themeMain);
     border-radius: 0px;
 }
-.breadcrumb a {
+.breadcrumbTheme a {
   color: white;
 }
 

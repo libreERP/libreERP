@@ -2,10 +2,24 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
   $scope.relPath = '';
   $scope.mode = 'folder';
 
-  $scope.getFileName = function(f) {
-    parts = f.replace( / +/g, ' ' ).split(' ')
-    n = parts[parts.length-1];
-    return  n.substring(0, n.length-1); // in the case of linux OS we might not need to use this
+  $scope.getLogs = function() {
+    $http({method : 'GET' , url : '/api/git/log/' , params : {repo : $scope.tab.data.pk}}).
+    then(function(response) {
+      logs = response.data.content.split('\n')
+      console.log(logs);
+    }, function(response) {
+      $scope.getLogs()
+    })
+  }
+
+  $scope.navigateViaBreadcrumb = function(i) {
+    if (i == -1) {
+      $scope.relPath = '';
+    }else {
+      $scope.relPath = $scope.relPath.split(i)[0] + i;
+      console.log($scope.relPath);
+    }
+    $scope.fetchFileList()
   }
 
   $scope.fileInView = {name : '' , content : '' , size : 0}
@@ -51,25 +65,6 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
 
   }
 
-  $scope.parseFileList = function(fileList) {
-    $scope.files = [];
-    for (var i = 0; i < fileList.length; i++) {
-      name = $scope.getFileName(fileList[i])
-      if (!((name == '.' || name == '..') && $scope.relPath == '') ){
-        f = {
-          isDir : fileList[i].indexOf('<DIR>')!=-1,
-          name : name,
-        }
-        $scope.files.push(f);
-        // if(!f.isDir){
-        //   $scope.files.push(f)
-        // }else {
-        //   $scope.files.unshift(f)
-        // }
-      }
-    }
-  }
-
   $scope.fetchFileList = function() {
     $scope.mode = 'folder';
     dataToSend = {
@@ -80,7 +75,8 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
 
     $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
     then(function(response) {
-      $scope.parseFileList(response.data.files.split('\n'));
+      $scope.files = response.data.files;
+      // console.log($scope.files);
     })
   }
 
@@ -305,7 +301,7 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
       console.log('Will open the tab now');
       for (var i = 0; i < $scope.data.tableData.length; i++) {
         if ($scope.data.tableData[i].pk == parseInt(target)){
-          $scope.addTab({title : 'Browse Repo : ' + $scope.data.tableData[i].name , cancel : true , app : 'repoBrowser' , data : {pk : target} , active : true})
+          $scope.addTab({title : 'Browse Repo : ' + $scope.data.tableData[i].name , cancel : true , app : 'repoBrowser' , data : {pk : target , name : $scope.data.tableData[i].name} , active : true})
         }
       }
     }
@@ -335,5 +331,5 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
     }
   }
 
-  $scope.addTab(JSON.parse('{"title":"Browse Repo : mERP","cancel":true,"app":"repoBrowser","data":{"pk":1},"active":true}'))
+  $scope.addTab(JSON.parse('{"title":"Browse Repo : mERP","cancel":true,"app":"repoBrowser","data":{"pk":1 ,"name":"mERP"},"active":true}'))
 });

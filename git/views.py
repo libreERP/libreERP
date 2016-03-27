@@ -53,6 +53,7 @@ from django.http import JsonResponse
 import os
 import platform
 
+
 def getFileList(repoName , relPath):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
     for p in relPath.split('/'):
@@ -61,11 +62,13 @@ def getFileList(repoName , relPath):
         # print 'will fetch now'
         with lcd(os.path.dirname(fullPath)):
             local('git clone git@goryd.in:%s' %(repoName))
-    with lcd(fullPath):
-        if platform.system() == 'Windows':
-            return local('dir' , capture=True)
-        else:
-            return local('ls -la' , capture=True)
+    files = []
+    for f in os.listdir(fullPath):
+        fPath = os.path.join(fullPath , f)
+        fo = {'isDir' : os.path.isdir(fPath) , 'size' : os.path.getsize(fPath) , 'name' : f}
+        files.append(fo)
+    return files
+
 def getDiff(repoName , head = 0 , tail = 0):
     if tail<head:
         return 'error'
@@ -74,7 +77,11 @@ def getDiff(repoName , head = 0 , tail = 0):
         if head == 0 and tail == 0:
             return local('git diff' , capture=True)
         else:
-            return local('git diff HEAD~%s HEAD~%s' %(head , tail))
+            return local('git diff HEAD~%s HEAD~%s' %(head , tail) , capture=True)
+
+def getLog(repoName):
+    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+    repo =
 
 def readFile(repoName , relPath):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
@@ -82,6 +89,12 @@ def readFile(repoName , relPath):
         fullPath = os.path.join(fullPath , p)
     f = open(fullPath , 'r')
     return os.path.getsize(fullPath) , f.read()
+
+class logApi(APIView):
+    renderer_classes = (JSONRenderer,)
+    def get(self , request , format = None):
+        r = repo.objects.get(pk = request.GET['repo'])
+        return Response({ 'content' : getLog(r.name)} , status=status.HTTP_200_OK)
 
 
 class fileExplorerApi(APIView):

@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'syncGitolite/$' , syncGitoliteApi.as_view() ),
     url(r'registerDevice/$' , registerDeviceApi.as_view() ),
     url(r'fileExplorer/$' , fileExplorerApi.as_view() ),
+    url(r'log/$' , logApi.as_view() ),
 ]
