@@ -1,0 +1,21 @@
+<div class="col-md-6" style="margin-bottom:20px;" ng-controller="controller.projectManagement.GIT.groups.item">
+
+  <div class="container-fluid card" style="padding:30px;padding-top:0px;">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-10">
+          <h3>{{data.name}}</h3>
+        </div>
+        <div class="col-md-2" style="padding-top:20px;">
+          <i style="cursor:pointer;" class="fa fa-pencil pull-right" ng-click="edit();$event.stopPropagation();" ></i>
+          <i class="fa fa-trash-o fa-lg text-muted pull-right" ng-click="delete(data.pk , index);" style="position:relative;top:30px;right:-15px;cursor:pointer;"></i>
+        </div>
+      </div>
+      {{data.description}}
+      <hr>
+    </div>
+    <div class="row">
+      {{data.users.length}} Users
+    </div>
+  </div>
+</div>

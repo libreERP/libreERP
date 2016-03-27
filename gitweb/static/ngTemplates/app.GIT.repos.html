@@ -1,0 +1,27 @@
+<breadcrumb></breadcrumb>
+<div class="container-fluid">
+  <uib-tabset>
+    <uib-tab active="searchTabActive">
+      <uib-tab-heading>
+        Browse
+        <i class="fa fa-list-ul"></i>
+      </uib-tab-heading>
+      <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
+    </uib-tab>
+
+    <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+      <uib-tab-heading >
+        {{tab.title}}
+        <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+      </uib-tab-heading>
+      <div ng-if="tab.app == 'repoBrowser'">
+        <div style="padding-top:20px;">
+          <div ng-include="'/static/ngTemplates/app.GIT.repos.explore.html'"></div>
+        </div>
+      </div>
+    </uib-tab>
+
+  </uib-tabset>
+
+
+</div>

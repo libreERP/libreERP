@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     'mail', # mail application
     'businessManagement', # BM application
     'ecommerce', # ecommerce
-    'git',
+    'gitweb',
 )
 
 SITE_ID = 1
