@@ -1,7 +1,7 @@
 app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
   $scope.relPath = '';
   $scope.mode = 'logs';
-  $scope.logConfig = {page : 0 , pageSize : 10}
+  $scope.logConfig = {page : 0 , pageSize : 10 , summaryInView : -1}
 
   $scope.nextLogs = function() {
     $scope.logConfig.page += 1;
@@ -13,7 +13,23 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     $scope.getLogs()
   }
 
+  $scope.showCommitSummary = function(index) {
+    if ($scope.logConfig.summaryInView == index) {
+      $scope.logConfig.summaryInView = -1;
+      return;
+    }else {
+      $scope.logConfig.summaryInView = index;
+    }
+  }
+  $scope.diffConfig = {sha : ''};
+  $scope.showCommitDiff = function(index){
+    $scope.mode = 'diff'
+    $scope.diffConfig.sha = $scope.logs[index].id;
+    $scope.getDiff(index)
+  }
+
   $scope.getLogs = function() {
+    $scope.logConfig.summaryInView = -1;
     params = {
       repo : $scope.tab.data.pk,
       page : $scope.logConfig.page,
@@ -22,30 +38,34 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     $http({method : 'GET' , url : '/api/git/log/' , params : params }).
     then(function(response) {
       $scope.logs = response.data.content;
+      console.log($scope.logs);
       for (var i = 0; i < $scope.logs.length; i++) {
-        $scope.logs[i].date = new Date($scope.logs[i].date)
+        // $scope.logs[i].date = new Date($scope.logs[i].date)
       }
       // console.log(logs);
     }, function(response) {
       // $scope.getLogs()
     })
   }
-  $scope.getDiff = function() {
+  $scope.getDiff = function(index) {
+    // if ($scope.diffConfig.sha == '') {
+    //   return;
+    // }
     params = {
       repo : $scope.tab.data.pk,
-      head : 0,
+      head : $scope.logConfig.page*$scope.logConfig.pageSize + index,
     }
     $http({method : 'GET' , url : '/api/git/diff/' , params : params }).
     then(function(response) {
-      diffs = response.data.content.split('\n');
-      console.log(diffs);
+      $scope.diffs = response.data.content;
+      console.log($scope.diffs);
     }, function(response) {
       // $scope.getLogs()
     })
   }
 
   $scope.getLogs()
-  $scope.getDiff()
+  $scope.getDiff(0)
 
   $scope.navigateViaBreadcrumb = function(i) {
     if (i == -1) {
