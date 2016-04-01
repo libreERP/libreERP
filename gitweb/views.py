@@ -241,3 +241,14 @@ class repoViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = repoSerializer
     queryset = repo.objects.all()
+
+
+class deviceViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = deviceSerializer
+    queryset = device.objects.all()
+
+class profileViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = profileSerializer
+    queryset = profile.objects.all()

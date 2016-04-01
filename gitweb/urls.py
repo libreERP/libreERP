@@ -8,6 +8,8 @@ router.register(r'repoPermission' , repoPermissionViewSet , base_name = 'repoPer
 router.register(r'groupPermission' , groupPermissionViewSet , base_name = 'groupPermission')
 router.register(r'gitGroup' , gitGroupViewSet , base_name = 'gitGroup')
 router.register(r'repo' , repoViewSet , base_name = 'repo')
+router.register(r'device' , deviceViewSet , base_name = 'device')
+router.register(r'profile' , profileViewSet , base_name = 'profile')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

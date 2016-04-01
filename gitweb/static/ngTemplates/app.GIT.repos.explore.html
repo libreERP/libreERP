@@ -81,7 +81,12 @@
         <div class="row anim-in-out anim-fade" style="border:solid 1px #eeeeee;background-color:#fefefe" ng-if="logConfig.summaryInView == $index">
           <div class="container-fluid anim-in-out anim-fade" style="padding-left:70px;">
             <div ng-repeat="(key , val) in l.files">
-              {{key}}<span class="text-danger">{{val.deletions}} Deletions</span><span class="text-success">{{val.insertions}} Additions</span>
+              <div class="col-md-1">
+                <span class="label label-warning col-md-6">-{{val.deletions}}</span><span class="label label-success col-md-6">+{{val.insertions}}</span>
+              </div>
+              <div class="col-md-11">
+                {{key}}
+              </div>
             </div> <br>
           </div>
         </div>

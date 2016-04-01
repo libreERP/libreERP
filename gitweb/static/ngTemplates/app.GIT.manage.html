@@ -1,9 +1,12 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
 
-  <h3>Sync Gitolite</h3>
-  <button type="button" class="btn btn-default" ng-click="syncGitolite()">
+  <h3>Users Profiles</h3>
+  <!-- <button type="button" class="btn btn-default" ng-click="syncGitolite()">
     Sync <i class="fa fa-refresh"></i>
-  </button>
+  </button> -->
+
+  <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
+
 
 </div>

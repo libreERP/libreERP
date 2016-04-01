@@ -1,0 +1,23 @@
+<div class="container-fluid">
+  <div class="row card">
+    <div class="col-md-2" style="padding-top:15px;">
+      <div class="col-md-9">
+        <div class="row">
+          <img ng-src="{{data.user | getDP}}" class="img-circle" height="40" width="40" />
+        </div>
+        <div class="row">
+          {{data.user | getName}}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <i class="fa fa-desktop fa-2x text-muted"></i>
+      </div>
+    </div>
+    <div class="col-md-10">
+      <span ng-repeat="d in data.devices">
+        <strong>{{d.name}}</strong> <br>
+        <span style="word-wrap:break-word;">{{d.sshKey}}</span>
+      </span>
+    </div>
+  </div>
+</div>

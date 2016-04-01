@@ -3,7 +3,7 @@
   <td ng-if = "selectable" ><input type="checkbox" name="name" ng-model="checkbox.value" ng-disabled = "checkbox.disabled"></td>
   <td ng-repeat = "(key , val) in data" ng-if="key != 'formData' && (fields==false || fields.indexOf(key)!=-1 )"
     ng-click="sort($index)" style="min-width:60px;max-width:450px !important;">
-    <span ng-bind-html="val | explodeObj "></span>
+    <span style="word-wrap:break-word;" ng-bind-html="val | explodeObj "></span>
   </td>
   <td align="center" >
     <div class="input-group-btn">
