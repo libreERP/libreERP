@@ -182,6 +182,7 @@ class syncGitoliteApi(APIView):
         keyDir = os.path.join(gitoliteDir , 'keydir')
         shutil.rmtree(keyDir)
         os.mkdir(keyDir)
+        shutil.copyfile(os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'admin.pub'), os.path.join(keyDir , 'admin.pub'))
         for p in profile.objects.all():
             idx = 0
             for d in p.devices.all():
@@ -195,7 +196,7 @@ class syncGitoliteApi(APIView):
             # local('dir')
             # print "passed : " , gitoliteDir
             try:
-                local('git add *')
+                local('git add -u ./')
                 local('git commit -m "%s"' %(request.user.username))
             except:
                 pass
