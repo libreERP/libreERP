@@ -152,7 +152,7 @@ class syncGitoliteApi(APIView):
                 gStr += ' ' + u.username
             # print gStr
             f.write('%s\n' %(gStr))
-        rStr = '@administrators =  admin cioc sandeep\n'
+        rStr = '@administrators =  admin cioc\n'
         for r in repo.objects.all():
             rStr += 'repo %s\n' %(r.name)
             for p in r.perms.all():
@@ -164,9 +164,9 @@ class syncGitoliteApi(APIView):
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
         rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
         rStr += 'repo @all\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'administrators')
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
         rStr += 'repo gitolite-admin\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'administrators')
+        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
         rStr += 'repo testing\n'
         rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
         f.write(rStr)
@@ -180,8 +180,8 @@ class syncGitoliteApi(APIView):
         with lcd(gitoliteDir):
             # local('dir')
             # print "passed : " , gitoliteDir
-            local('git add *')
             try:
+                local('git add *')
                 local('git commit -m "%s"' %(request.user.username))
             except:
                 pass

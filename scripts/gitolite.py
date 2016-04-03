@@ -1,8 +1,4 @@
 from fabric.api import *
-"""
-A script to create git user and install/setup gitolite server on the same machine
-"""
-
 
 runOn = 1
 
