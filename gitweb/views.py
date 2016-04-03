@@ -180,10 +180,7 @@ class syncGitoliteApi(APIView):
         f.write(rStr)
         f.close()
         keyDir = os.path.join(gitoliteDir , 'keydir')
-        try:
-            shutil.rmtree(keyDir)
-        except:
-            pass
+        shutil.rmtree(keyDir)
         os.mkdir(keyDir)
         for p in profile.objects.all():
             idx = 0
@@ -218,10 +215,12 @@ class registerDeviceApi(APIView):
             if user is not None:
                 if user.is_active:
                     d , n = device.objects.get_or_create(name = deviceName , sshKey = sshKey)
+                    gp , n = profile.objects.get_or_create(user = user)
                     if mode == 'logout':
+                        print "deleted"
+                        gp.remove(d)
                         d.delete()
                         return Response(status=status.HTTP_200_OK)
-                    gp , n = profile.objects.get_or_create(user = user)
                     gp.devices.add(d)
                     gp.save()
                     # print gp
