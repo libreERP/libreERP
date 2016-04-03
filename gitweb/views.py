@@ -60,7 +60,11 @@ def getFileList(repoName , relPath):
         fullPath = os.path.join(fullPath , p)
     if not os.path.isdir(fullPath):
         with lcd(os.path.dirname(globalSettings.BASE_DIR)):
-            local('git clone %s' %(globalSettings.GIT_SERVER + repoName))
+            if '@' in globalSettings.GIT_SERVER:
+                local('git clone %s' %(globalSettings.GIT_SERVER + ':' + repoName))
+            else:
+                local('git clone %s' %(globalSettings.GIT_SERVER + repoName))
+
         # Repo.clone_from('http://github.com/pkyad/libreERP-cli' , os.path.dirname(globalSettings.BASE_DIR) )
     files = []
     for f in os.listdir(fullPath):
