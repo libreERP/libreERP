@@ -1,7 +1,7 @@
 <div style="padding:0px;" ng-controller="projectManagement.GIT.repos.explore">
   <div class="col-md-2" style="padding-left:0px;">
     <ul class="nav nav-sidebar" style="width:100%;">
-      <li ng-class="{active: mode == 'folder'}" ng-click="navigateViaBreadcrumb(-1)"><a href="" ><div class="text-center"><i class="fa fa-files-o fa-lg pull-left"></i> Files </div></a></li>
+      <li ng-class="{active: mode == 'folder'}" ng-click="mode = 'folder'"><a href="" ><div class="text-center"><i class="fa fa-files-o fa-lg pull-left"></i> Files </div></a></li>
       <li ng-class="{active: mode == 'logs'}" ng-click="mode = 'logs';"><a href="" ><div class="text-center"><i class="fa fa-clock-o fa-lg pull-left"></i> Commits </div></a></li>
       <li ng-class="{active: mode == 'diff'}" ng-click="mode = 'diff';"><a href="" ><div class="text-center"><i class="fa fa-clock-o fa-lg pull-left"></i> <i class="fa fa-code pull-left fa-lg"></i> Diff </div></a></li>
       <li ng-if="mode == 'file'" class="active"><a href="" ><div class="text-center"><i class="fa fa-code fa-lg pull-left"></i> Code </div></a></li>
@@ -10,14 +10,18 @@
   <div class="col-md-10">
     <div class="row container-fluid" ng-if="mode == 'folder'" >
       <div class="row">
-        <ol class="breadcrumb">
-          <li><a href="" ng-click="navigateViaBreadcrumb(-1)">{{tab.data.name}}</a></li>
-          <li ng-repeat="p in relPath.split('/')" ng-if="p.length>0" class="{{$last ? 'active' : ''}}">
-            <a href="" ng-click="navigateViaBreadcrumb(p)" ng-if="!$last">{{p}}</a>
-            <span ng-if="$last">{{p}}</span>
-          </li>
-          <!-- <li class="active">{{fileInView.name}}</li> -->
-        </ol>
+        <div class="col-md-11" style="padding:0px;">
+          <ol class="breadcrumb">
+            <li><a href="" ng-click="navigateViaBreadcrumb(-1)">{{tab.data.name}}</a></li>
+            <li ng-repeat="p in relPath.split('/')" ng-if="p.length>0" class="{{$last ? 'active' : ''}}">
+              <a href="" ng-click="navigateViaBreadcrumb(p)" ng-if="!$last">{{p}}</a>
+              <span ng-if="$last">{{p}}</span>
+            </li>
+          </ol>
+        </div>
+        <!-- <div class="col-md-1"> -->
+          <btn class="btn btn-primary pull-righ col-md-1" ng-click="fetchFileList(true)">Git Pull</btn>
+        <!-- </div> -->
       </div>
       <div class="row container-fluid">
         <div ng-repeat="f in files track by $index" ng-if="f.isDir">

@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 USE_CDN = False # when turned on the application will use the cndjs.com and other similar content delivery network for css and jss libraries
-GIT_SERVER = 'http://github.com/pkyad/'
+GIT_SERVER = 'git@goryd.in'
 # Application definition
 
 INSTALLED_APPS = (

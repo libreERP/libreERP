@@ -23,16 +23,6 @@ import shutil
 from StringIO import StringIO
 import math
 import requests
-# related to the invoice generator
-from reportlab import *
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm, mm
-from reportlab.lib import colors
-from reportlab.platypus import Paragraph, Table, TableStyle, Image
-from PIL import Image
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from rest_framework.exceptions import *
@@ -54,8 +44,11 @@ import os
 import platform
 from git import Repo
 
-def getFileList(repoName , relPath):
+def getFileList(repoName , relPath , pull):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+    if pull:
+        with lcd(fullPath):
+            local('git pull')
     for p in relPath.split('/'):
         fullPath = os.path.join(fullPath , p)
     if not os.path.isdir(fullPath):
@@ -93,6 +86,8 @@ def getLog(repoName , pageSize = 10 , page = 1):
 class logApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
+        u = self.request.user
+        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
         r = repo.objects.get(pk = request.GET['repo'])
         if 'page' in request.GET and 'pageSize' in request.GET:
             content = getLog(r.name , request.GET['pageSize'] , request.GET['page'] )
@@ -104,6 +99,8 @@ class logApi(APIView):
 class diffApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
+        u = self.request.user
+        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
         r = repo.objects.get(pk = request.GET['repo'])
         if 'head' in request.GET:
             content = getDiff(r.name , request.GET['head'])
@@ -126,10 +123,12 @@ def readFile(repoName , relPath):
 class fileExplorerApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
+        u = self.request.user
+        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
         r = repo.objects.get(pk = request.GET['repo'])
         relPath = request.GET['relPath']
         if request.GET['mode'] == 'folder':
-            content = getFileList(r.name , relPath)
+            content = getFileList(r.name , relPath , request.GET['pull']=='true')
             return Response({'files' :content} , status=status.HTTP_200_OK)
         elif request.GET['mode'] == 'file':
             size , content = readFile(r.name , relPath)
@@ -148,6 +147,8 @@ def getPermStr(p):
 class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
+        u = self.request.user
+        has_application_permission(u , ['app.GIT' , 'app.GIT.manage'])
         gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
         if not os.path.isdir(gitoliteDir):
             with lcd(os.path.dirname(globalSettings.BASE_DIR)):
@@ -269,3 +270,5 @@ class profileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = profileSerializer
     queryset = profile.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id']

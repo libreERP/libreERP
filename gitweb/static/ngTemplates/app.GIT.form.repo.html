@@ -55,6 +55,9 @@
       </div>
       <!-- {{data}} -->
       <strong>Users Permission:</strong> <br>
+      <div ng-if="data.perms.length == 0">
+        <h4 class="text-center">No permission added</h4>
+      </div>
       <div class="row" ng-repeat="p in data.perms">
         <hr>
         <div class="col-md-4">
@@ -90,6 +93,9 @@
       </div>
 
       <strong>Groups Permission:</strong> <br>
+      <div ng-if="data.groups.length == 0">
+        <h4 class="text-center">No group permission added</h4>
+      </div>
       <div class="row" ng-repeat="p in data.groups">
         <hr>
         <div class="col-md-4">

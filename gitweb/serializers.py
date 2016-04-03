@@ -34,6 +34,8 @@ class groupPermissionSerializer(serializers.ModelSerializer):
         model = groupPermission
         fields = ('pk', 'group' , 'canRead' , 'canWrite' , 'canDelete')
     def create(self , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.GIT' , 'app.ecommerce.groups'])
         gp = groupPermission(**validated_data)
         gp.group = gitGroup.objects.get(pk = self.context['request'].data['group'])
         gp.save()
@@ -47,8 +49,10 @@ class repoSerializer(serializers.ModelSerializer):
         model = repo
         fields = ('pk', 'perms' , 'name' , 'groups' , 'description' )
     def create(self , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.GIT' , 'app.ecommerce.repos'])
         r = repo(**validated_data)
-        r.creator = self.context['request'].user
+        r.creator = u
         r.save()
         for p in self.context['request'].data['perms']:
             r.perms.add(repoPermission.objects.get(pk = p))
@@ -59,6 +63,8 @@ class repoSerializer(serializers.ModelSerializer):
         r.save()
         return r
     def update(self ,instance , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.GIT' , 'app.ecommerce.repos'])
         instance.description = validated_data.pop('description')
         instance.perms.clear()
         for p in self.context['request'].data['perms']:
