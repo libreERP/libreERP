@@ -1,6 +1,6 @@
 app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
   $scope.relPath = '';
-  $scope.mode = 'logs';
+  $scope.mode = 'folder';
   $scope.logConfig = {page : 0 , pageSize : 10 , summaryInView : -1}
 
   $scope.nextLogs = function() {

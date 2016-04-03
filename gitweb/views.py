@@ -153,6 +153,7 @@ class syncGitoliteApi(APIView):
             with lcd(os.path.dirname(globalSettings.BASE_DIR)):
                 local('git clone git@localhost:gitolite-admin')
         f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
+
         for g in gitGroup.objects.all():
             gStr = '@' + g.name + ' ='
             for u in g.users.all():
@@ -179,6 +180,8 @@ class syncGitoliteApi(APIView):
         f.write(rStr)
         f.close()
         keyDir = os.path.join(gitoliteDir , 'keydir')
+        os.rmdir(keyDir)
+        os.mkdir(keyDir)
         for p in profile.objects.all():
             idx = 0
             for d in p.devices.all():
