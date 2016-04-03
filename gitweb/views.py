@@ -19,7 +19,7 @@ from time import time
 import pytz
 import math
 import json
-
+import shutil
 from StringIO import StringIO
 import math
 import requests
@@ -180,7 +180,10 @@ class syncGitoliteApi(APIView):
         f.write(rStr)
         f.close()
         keyDir = os.path.join(gitoliteDir , 'keydir')
-        os.rmdir(keyDir)
+        try:
+            shutil.rmtree(keyDir)
+        except:
+            pass
         os.mkdir(keyDir)
         for p in profile.objects.all():
             idx = 0
