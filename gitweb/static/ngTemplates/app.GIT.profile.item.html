@@ -14,6 +14,9 @@
       </div>
     </div>
     <div class="col-md-10">
+      <div ng-if="data.devices.length == 0">
+        <h4>No device to list</h4>
+      </div>
       <row ng-repeat="d in data.devices">
         <div class="col-md-11">
           <strong>{{d.name}}</strong> <br>

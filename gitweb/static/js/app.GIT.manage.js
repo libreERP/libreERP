@@ -3,13 +3,13 @@ app.controller('projectManagement.GIT.manage.profile' , function($scope ,$http, 
     $http({method : 'DELETE' , url : '/api/git/device/' + pk + '/'}).
     then((function(pk) {
       return function(response) {
+        Flash.create('success' , response.status + ' : ' + response.statusText);
         for (var i = 0; i < $scope.data.devices.length; i++) {
           if($scope.data.devices[i].pk == pk){
             $scope.data.devices.splice(i)
           }
         }
       }
-      Flash.create('success' , response.status + ' : ' + response.statusText);
     })(pk), function(response) {
       Flash.create('danger' , response.status + ' : ' + response.statusText);
     })
