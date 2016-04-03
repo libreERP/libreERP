@@ -1,19 +1,20 @@
-import math
+from fabric.api import *
 
-lat1 = 17.4089051*math.pi/180
-lon1 = 78.3791676*math.pi/180
-lat2 = 17.4092122*math.pi/180
-lon2 = 78.4034147*math.pi/180
+#local('adduser git')
+#local('cat /etc/passwd');
+#local('ls /home/')
+#local('su - git')
+# local('pwd')
+#local('git config --global user.name "git"')
+#local('git config --global user.email "git@libreERP"')
 
-R = 6371000
-psy1 = lat1
-psy2 = lat2
-deltaPsy = (lat2-lat1)
-deltaLambda = (lon2-lon1)
+local('ssh-keygen')
 
-a = math.sin(deltaPsy/2) * math.sin(deltaPsy/2) + math.cos(psy1) * math.cos(psy2) *  math.sin(deltaLambda/2) * math.sin(deltaLambda/2)
-c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+local('mkdir -p ~/bin')
+local('git clone git://github.com/sitaramc/gitolite')
+local('gitolite/install -ln ~/bin')
+local('cp ~/.ssh/id_rsa.pub ~/admin.pub')
+local('~/bin/gitolite setup -pk admin.pub')
 
-d = R * c
-
-print d
+local('ssh git@localhost info')
+local('git clone git@localhost:gitolite-admin')
