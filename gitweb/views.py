@@ -199,7 +199,7 @@ class syncGitoliteApi(APIView):
             # local('dir')
             # print "passed : " , gitoliteDir
             try:
-                local('git add -u ./')
+                local('git add -A .')
                 local('git commit -m "%s"' %(request.user.username))
             except:
                 pass
