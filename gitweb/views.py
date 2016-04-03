@@ -58,10 +58,10 @@ def getFileList(repoName , relPath):
     fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
     for p in relPath.split('/'):
         fullPath = os.path.join(fullPath , p)
-    if not os.path.exists(os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)):
-        # print 'will fetch now'
-        with lcd(os.path.dirname(fullPath)):
-            local('git clone git@goryd.in:%s' %(repoName))
+    if not os.path.isdir(fullPath):
+        with lcd(os.path.dirname(globalSettings.BASE_DIR)):
+            local('git clone %s' %(globalSettings.GIT_SERVER + repoName))
+        # Repo.clone_from('http://github.com/pkyad/libreERP-cli' , os.path.dirname(globalSettings.BASE_DIR) )
     files = []
     for f in os.listdir(fullPath):
         fPath = os.path.join(fullPath , f)
@@ -145,6 +145,9 @@ class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
+        if not os.path.isdir(gitoliteDir):
+            with lcd(os.path.dirname(globalSettings.BASE_DIR)):
+                local('git clone git@localhost:gitolite-admin')
         f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
         for g in gitGroup.objects.all():
             gStr = '@' + g.name + ' ='
@@ -173,9 +176,13 @@ class syncGitoliteApi(APIView):
         f.close()
         keyDir = os.path.join(gitoliteDir , 'keydir')
         for p in profile.objects.all():
+            idx = 0
             for d in p.devices.all():
-                f = open(os.path.join( keyDir , p.user.username + '.pub') , 'w')
+                if not os.path.isdir(os.path.join( keyDir ,str(idx))):
+                    os.mkdir(os.path.join( keyDir ,str(idx)))
+                f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
                 f.write(d.sshKey)
+                idx +=1
                 f.close()
         with lcd(gitoliteDir):
             # local('dir')
@@ -200,14 +207,10 @@ class registerDeviceApi(APIView):
             user = authenticate(username =  request.data['username'] , password = request.data['password'])
             if user is not None:
                 if user.is_active:
-                    d , n = device.objects.get_or_create(name = deviceName)
-                    print sshKey
-                    print d
+                    d , n = device.objects.get_or_create(name = deviceName , sshKey = sshKey)
                     if mode == 'logout':
                         d.delete()
                         return Response(status=status.HTTP_200_OK)
-                    d.sshKey = sshKey
-                    d.save()
                     gp , n = profile.objects.get_or_create(user = user)
                     gp.devices.add(d)
                     gp.save()

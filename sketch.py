@@ -1,27 +1,5 @@
-from fabric.api import *
-"""
-A script to create git user and install/setup gitolite server on the same machine
-"""
+from git import Repo
+import os
 
-
-runOn = 1
-
-if runOn==0:
-    local('userdel git')
-    local('echo "y\n" | rm -r /home/git')
-    local('adduser git')
-    local('cat /etc/passwd');
-    local('ls /home/')
-
-if runOn==1:
-    local('pwd')
-    local('git config --global user.name "git"')
-    local('git config --global user.email "git@libreERP"')
-    local('ssh-keygen')
-    local('mkdir -p ~/bin')
-    local('git clone git://github.com/sitaramc/gitolite')
-    local('gitolite/install -ln ~/bin')
-    local('cp ~/.ssh/id_rsa.pub ~/admin.pub')
-    local('~/bin/gitolite setup -pk ~/admin.pub')
-    local('ssh git@localhost info')
-    local('git clone git@localhost:gitolite-admin')
+dirName = os.path.dirname(os.path.abspath(__file__))
+Repo.clone_from('git@goryd.in:testing' , dirName)
