@@ -14,10 +14,16 @@
       </div>
     </div>
     <div class="col-md-10">
-      <span ng-repeat="d in data.devices">
-        <strong>{{d.name}}</strong> <br>
-        <span style="word-wrap:break-word;">{{d.sshKey}}</span>
-      </span>
+      <row ng-repeat="d in data.devices">
+        <div class="col-md-11">
+          <strong>{{d.name}}</strong> <br>
+          <span style="word-wrap:break-word;">{{d.sshKey}}</span>
+        </div>
+        <div class="col-md-1" style="padding-top:20px;">
+          <i class="fa fa-trash-o fa-lg pull-right"></i><br><br>
+          <i class="fa fa-pencil fa-lg pull-right"></i><br>
+        </div>
+      </row>
     </div>
   </div>
 </div>
