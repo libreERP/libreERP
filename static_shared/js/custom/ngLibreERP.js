@@ -148,7 +148,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
 
         $scope.changePassword = function(){
           if ($scope.settings.password !='' && $scope.settings.password2 == $scope.settings.password && $scope.settings.oldPassword!='') {
-            $http({method : 'PATCH' , url : $scope.me.url , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).
+            $http({method : 'PATCH' , url : '/api/HR/users/'+ $scope.me.pk +'/' , data : {password : $scope.settings.password , oldPassword : $scope.settings.oldPassword}}).
             then(function(response){
               Flash.create('success', response.status + ' : ' + response.statusText );
             }, function(response){

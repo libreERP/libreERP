@@ -21,3 +21,5 @@ if runOn==1:
     local('~/bin/gitolite setup -pk ~/admin.pub')
     local('ssh git@localhost info')
     local('git clone git@localhost:gitolite-admin')
+    local('git clone http://github.com/pkyad/libreERP-main')
+    

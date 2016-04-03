@@ -50,6 +50,13 @@ class repoSerializer(serializers.ModelSerializer):
         r = repo(**validated_data)
         r.creator = self.context['request'].user
         r.save()
+        for p in self.context['request'].data['perms']:
+            r.perms.add(repoPermission.objects.get(pk = p))
+        r.save()
+        r.groups.clear()
+        for p in self.context['request'].data['groups']:
+            r.groups.add(groupPermission.objects.get(pk = p))
+        r.save()
         return r
     def update(self ,instance , validated_data):
         instance.description = validated_data.pop('description')

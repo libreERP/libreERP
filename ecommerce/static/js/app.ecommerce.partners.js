@@ -9,43 +9,7 @@ app.controller('businessManagement.ecommerce.partners.item' , function($scope , 
     }
   })
 
-
-
-
 });
-
-app.controller('controller.ecommerce.priceModel' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-
-  $scope.name = 'sagar'
-
-  $scope.form = {weeklyDiscount  : 0 , perday  : 0 , monthlyDiscount : 0 , weekend : 0}
-
-  $scope.submit = function() {
-
-    if ($scope.form.weeklyDiscount < 0) {
-      Flash.create('danger' , 'Negative input is not accepted')
-      return;
-    }
-
-
-    $http({method : 'POST' , url : '/api/ecommerce/price/' , data : $scope.form}).
-    then(function(response) {
-      $scope.newPrice = response.data;
-      Flash.create('success' , 'Yes')
-    }, function(response) {
-      Flash.create('danger' , 'Ouch , an error occured')
-    })
-
-  }
-
-
-
-
-
-
-
-
-})
 
 app.controller('businessManagement.ecommerce.partners' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 

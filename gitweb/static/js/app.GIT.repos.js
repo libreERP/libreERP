@@ -135,7 +135,7 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     })
   }
 
-  // $scope.fetchFileList()
+  $scope.fetchFileList()
 
 });
 
@@ -242,6 +242,8 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
     $http({method : method , url : url , data : dataToSend}).
     then(function(response) {
       Flash.create('success' , response.status + ' : ' + response.statusText);
+      $scope.mode = 'edit';
+      $scope.data.pk = response.data.pk;
     }, function(response){
       Flash.create('danger' , response.status + ' : ' + response.statusText);
     })

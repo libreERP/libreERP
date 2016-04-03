@@ -1,8 +1,8 @@
-<!-- <breadcrumb></breadcrumb>
+<breadcrumb></breadcrumb>
 <div class="container-fluid">
-  <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table> -->
+  <generic-Table data="data.tableData" config-Obj="{{config}}" callback-Fn="tableAction"></generic-Table>
 
-  <!-- <uib-tabset>
+  <uib-tabset>
     <uib-tab active="searchTabActive">
       <uib-tab-heading>
         Browse  <i class="fa fa-list-ul"></i>
@@ -19,41 +19,5 @@
         </div>
       </div>
     </uib-tab>
-  </uib-tabset> -->
-
-
-<!-- </div> -->
-<div ng-controller="controller.ecommerce.priceModel">
-
-  <div class="container-fluid">
-    <div class="form-group">
-      <div ng-class="{'has-error' : form.perday<0}">
-        <label>perday</label>
-        <input type="number" class="form-control" ng-model="form.perday">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>weeklyDiscount</label>
-      <input type="number" class="form-control" ng-model="form.weeklyDiscount">
-    </div>
-    <div class="form-group">
-      <label>monthlyDiscount</label>
-      <input type="number" class="form-control" ng-model="form.monthlyDiscount">
-    </div>
-    <div class="form-group">
-      <label>weekend</label>
-      <input type="number" class="form-control" ng-model="form.weekend">
-    </div>
-    <button type="button" class="btn btn-primary" ng-click="submit()" ng-disabled="form.perday<0">
-      Submit
-    </button>
-
-    {{newPrice}}
-
-  </div>
-
-
-
-
-
+  </uib-tabset>
 </div>
