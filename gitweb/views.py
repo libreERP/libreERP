@@ -186,6 +186,9 @@ class syncGitoliteApi(APIView):
         for p in profile.objects.all():
             idx = 0
             for d in p.devices.all():
+                print 'writing for ' , d.name
+                print d.sshKey
+                print '========================'
                 if not os.path.isdir(os.path.join( keyDir ,str(idx))):
                     os.mkdir(os.path.join( keyDir ,str(idx)))
                 f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
@@ -211,6 +214,7 @@ class registerDeviceApi(APIView):
             sshKey = request.data['sshKey']
             deviceName =sshKey.split()[2]
             mode = request.data['mode']
+            print sshKey
             # print mode
             user = authenticate(username =  request.data['username'] , password = request.data['password'])
             if user is not None:
@@ -219,7 +223,7 @@ class registerDeviceApi(APIView):
                     gp , n = profile.objects.get_or_create(user = user)
                     if mode == 'logout':
                         print "deleted"
-                        gp.remove(d)
+                        gp.devices.remove(d)
                         d.delete()
                         return Response(status=status.HTTP_200_OK)
                     gp.devices.add(d)
