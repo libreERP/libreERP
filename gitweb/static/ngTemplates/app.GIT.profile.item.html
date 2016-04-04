@@ -15,7 +15,7 @@
     </div>
     <div class="col-md-10">
       <div ng-if="data.devices.length == 0">
-        <h4>No device to list</h4>
+        <h4 class="text-muted">No device to list</h4>
       </div>
       <row ng-repeat="d in data.devices">
         <div class="col-md-11">
@@ -23,7 +23,7 @@
           <span style="word-wrap:break-word;">{{d.sshKey}}</span>
         </div>
         <div class="col-md-1" style="padding-top:20px;">
-          <i class="fa fa-trash-o fa-lg pull-right" ng-click="deleteKey(d.pk)"></i><br><br>
+          <i class="fa fa-trash-o fa-lg pull-right" style="cursor:pointer;" ng-click="deleteKey(d.pk)"></i><br><br>
           <!-- <i class="fa fa-pencil fa-lg pull-right"></i><br> -->
         </div>
       </row>
