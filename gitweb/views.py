@@ -196,7 +196,10 @@ def generateGitoliteConf():
         # local('dir')
         # print "passed : " , gitoliteDir
         try:
-            local('git add -A .')
+            local('git add -A ./')
+        except:
+            pass
+        try:
             local('git commit -m "%s"' %(request.user.username))
         except:
             pass
