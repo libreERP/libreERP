@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
 from PIM.serializers import *
-
+from API.permissions import *
 
 class deviceSerializer(serializers.ModelSerializer):
     class Meta:

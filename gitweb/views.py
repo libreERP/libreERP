@@ -144,67 +144,70 @@ def getPermStr(p):
         pStr += '+'
     return pStr
 
+def generateGitoliteConf():
+    gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
+    if not os.path.isdir(gitoliteDir):
+        with lcd(os.path.dirname(globalSettings.BASE_DIR)):
+            local('git clone git@localhost:gitolite-admin')
+    f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
+
+    for g in gitGroup.objects.all():
+        gStr = '@' + g.name + ' ='
+        for u in g.users.all():
+            gStr += ' ' + u.username
+        # print gStr
+        f.write('%s\n' %(gStr))
+    rStr = '@administrators =  admin cioc\n'
+    for r in repo.objects.all():
+        rStr += 'repo %s\n' %(r.name)
+        for p in r.perms.all():
+            rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
+        for g in r.groups.all():
+            rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
+        # print rStr
+    rStr += 'repo CREATOR/[a-z].*\n'
+    rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
+    rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
+    rStr += 'repo @all\n'
+    rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
+    rStr += 'repo gitolite-admin\n'
+    rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
+    rStr += 'repo testing\n'
+    rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
+    f.write(rStr)
+    f.close()
+    keyDir = os.path.join(gitoliteDir , 'keydir')
+    shutil.rmtree(keyDir)
+    os.mkdir(keyDir)
+    shutil.copyfile(os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'admin.pub'), os.path.join(keyDir , 'admin.pub'))
+    for p in profile.objects.all():
+        idx = 0
+        for d in p.devices.all():
+            print 'writing for ' , d.name
+            print d.sshKey
+            print '========================'
+            if not os.path.isdir(os.path.join( keyDir ,str(idx))):
+                os.mkdir(os.path.join( keyDir ,str(idx)))
+            f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
+            f.write(d.sshKey)
+            idx +=1
+            f.close()
+    with lcd(gitoliteDir):
+        # local('dir')
+        # print "passed : " , gitoliteDir
+        try:
+            local('git add -A .')
+            local('git commit -m "%s"' %(request.user.username))
+        except:
+            pass
+        local('git push')
+
 class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         u = self.request.user
         has_application_permission(u , ['app.GIT' , 'app.GIT.manage'])
-        gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
-        if not os.path.isdir(gitoliteDir):
-            with lcd(os.path.dirname(globalSettings.BASE_DIR)):
-                local('git clone git@localhost:gitolite-admin')
-        f = open( os.path.join( gitoliteDir , 'conf' ,'gitolite.conf') , 'w')
-
-        for g in gitGroup.objects.all():
-            gStr = '@' + g.name + ' ='
-            for u in g.users.all():
-                gStr += ' ' + u.username
-            # print gStr
-            f.write('%s\n' %(gStr))
-        rStr = '@administrators =  admin cioc\n'
-        for r in repo.objects.all():
-            rStr += 'repo %s\n' %(r.name)
-            for p in r.perms.all():
-                rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
-            for g in r.groups.all():
-                rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
-            # print rStr
-        rStr += 'repo CREATOR/[a-z].*\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
-        rStr += 'repo @all\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
-        rStr += 'repo gitolite-admin\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@administrators')
-        rStr += 'repo testing\n'
-        rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , '@all')
-        f.write(rStr)
-        f.close()
-        keyDir = os.path.join(gitoliteDir , 'keydir')
-        shutil.rmtree(keyDir)
-        os.mkdir(keyDir)
-        shutil.copyfile(os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'admin.pub'), os.path.join(keyDir , 'admin.pub'))
-        for p in profile.objects.all():
-            idx = 0
-            for d in p.devices.all():
-                print 'writing for ' , d.name
-                print d.sshKey
-                print '========================'
-                if not os.path.isdir(os.path.join( keyDir ,str(idx))):
-                    os.mkdir(os.path.join( keyDir ,str(idx)))
-                f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
-                f.write(d.sshKey)
-                idx +=1
-                f.close()
-        with lcd(gitoliteDir):
-            # local('dir')
-            # print "passed : " , gitoliteDir
-            try:
-                local('git add -A .')
-                local('git commit -m "%s"' %(request.user.username))
-            except:
-                pass
-            local('git push')
+        generateGitoliteConf()
         return Response(status=status.HTTP_200_OK)
 
 class registerDeviceApi(APIView):
@@ -226,10 +229,12 @@ class registerDeviceApi(APIView):
                         print "deleted"
                         gp.devices.remove(d)
                         d.delete()
+                        generateGitoliteConf()
                         return Response(status=status.HTTP_200_OK)
                     gp.devices.add(d)
                     gp.save()
                     # print gp
+                    generateGitoliteConf()
             else:
                 raise NotAuthenticated(detail=None)
 
