@@ -131,12 +131,15 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
       mode : 'folder',
       pull : pull, // if true , the server will perform a git pull before serving the files
     }
-    console.log(pull);
     $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
-    then(function(response) {
-      $scope.files = response.data.files;
-      // console.log($scope.files);
-    })
+    then((function(pull) {
+      return function(response) {
+        $scope.files = response.data.files;
+        if (pull) {
+          $scope.getLogs();
+        }
+      }
+    })(pull))
   }
 
   $scope.fetchFileList()

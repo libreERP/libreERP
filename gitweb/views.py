@@ -198,11 +198,11 @@ def generateGitoliteConf():
         try:
             local('git add -A ./')
         except:
-            pass
+            print 'Error in git add'
         try:
-            local('git commit -m "%s"' %(request.user.username))
+            local('git commit -m "gitweb"')
         except:
-            pass
+            print 'Error in git commit'
         local('git push')
 
 class syncGitoliteApi(APIView):

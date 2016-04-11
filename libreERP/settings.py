@@ -181,7 +181,7 @@ DEFAULT_FROM_EMAIL = 'ciocpky@gmail.com'
 
 STATIC_URL = '/static/'
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_HEADERS = (
     'x-requested-with',
