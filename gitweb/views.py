@@ -15,7 +15,7 @@ import mimetypes
 import hashlib, datetime, random
 from datetime import timedelta , date
 from monthdelta import monthdelta
-from time import time
+import time
 import pytz
 import math
 import json
@@ -44,95 +44,86 @@ import os
 import platform
 from git import Repo
 
-def getFileList(repoName , relPath , pull):
-    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
-    if pull:
-        with lcd(fullPath):
-            local('git pull')
-    for p in relPath.split('/'):
-        fullPath = os.path.join(fullPath , p)
-    if not os.path.isdir(fullPath):
-        with lcd(os.path.dirname(globalSettings.BASE_DIR)):
-            if '@' in globalSettings.GIT_SERVER:
-                local('git clone %s' %(globalSettings.GIT_SERVER + ':' + repoName))
-            else:
-                local('git clone %s' %(globalSettings.GIT_SERVER + repoName))
+def getOverview(repo):
+    branches = []
+    for b in repo.branches:
+        branches.append(b.name)
+    tags = []
+    for t in repo.tags:
+        tags.append(t.name)
+    return {'branches': branches , 'tags' : tags}
 
-        # Repo.clone_from('http://github.com/pkyad/libreERP-cli' , os.path.dirname(globalSettings.BASE_DIR) )
-    files = []
-    for f in os.listdir(fullPath):
-        fPath = os.path.join(fullPath , f)
-        fo = {'isDir' : os.path.isdir(fPath) , 'size' : os.path.getsize(fPath) , 'name' : f}
-        files.append(fo)
-    return files
-
-def getDiff(repoName , head = 0 , sha = ''):
-    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
-    repo = Repo(fullPath)
-    if sha !='':
-        return repo.git.diff(sha)
-    else:
-        return repo.git.diff('HEAD~%s' %(head))
-
-def getLog(repoName , pageSize = 10 , page = 1):
-    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
-    repo = Repo(fullPath)
-    c_list = list(repo.iter_commits( max_count=pageSize, skip=int(page)*int(pageSize)))
+def getCommits(repo , branch , page , limit):
+    b = repo.branches[branch]
+    c_list = list(repo.iter_commits( b, max_count=limit, skip=int(page)*int(limit)))
     stats = []
     for c in c_list:
-        stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : c.committed_date})
-    return stats
+        stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : time.asctime(time.gmtime(c.committed_date))})
+    return stats , c_list
 
-class logApi(APIView):
-    renderer_classes = (JSONRenderer,)
-    def get(self , request , format = None):
-        u = self.request.user
-        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
-        r = repo.objects.get(pk = request.GET['repo'])
-        if 'page' in request.GET and 'pageSize' in request.GET:
-            content = getLog(r.name , request.GET['pageSize'] , request.GET['page'] )
-        else:
-            content = getLog(r.name )
-        return Response({ 'content' : content} , status=status.HTTP_200_OK)
+def getDiff(repo , sha):
+    c = repo.commit(sha)
+    diffs = []
+    for x in c.diff(c.parents, create_patch=True):
+        diffs.append({'path' : x.a_path , 'diff' : x.diff})
+    return {'summary' : c.summary ,'diffs' : diffs}
 
-
-class diffApi(APIView):
-    renderer_classes = (JSONRenderer,)
-    def get(self , request , format = None):
-        u = self.request.user
-        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
-        r = repo.objects.get(pk = request.GET['repo'])
-        if 'head' in request.GET:
-            content = getDiff(r.name , request.GET['head'])
-        elif 'sha' in request.GET:
-            content = getDiff(r.name , 0 , request.GET['sha'])
-        else:
-            content = getDiff(r.name )
-        return Response({ 'content' : content} , status=status.HTTP_200_OK)
-
-
-def readFile(repoName , relPath):
-    fullPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR), repoName)
+def getFileFromCommit(commit , fileName , relPath = ''):
+    t = commit.tree
     for p in relPath.split('/'):
-        fullPath = os.path.join(fullPath , p)
-    f = open(fullPath , 'r')
-    return os.path.getsize(fullPath) , f.read()
+        if p != '':
+            t = t.__getitem__(p)
+    f = t[fileName]
+    return {'src' : f.data_stream.read() , 'name' : f.name , 'size' : f.size}
 
+def getFiles(commit , relPath = ''):
+    t = commit.tree
+    for p in relPath.split('/'):
+        if p != '':
+            t = t.__getitem__(p)
+    files = []
+    for b in t.blobs:
+        files.append({'name' : b.name , 'size':b.size , 'isDir' : False })
+    for tr in t.trees:
+        files.append({'name' : tr.name , 'size':tr.size , 'isDir' : True })
+    return files
 
+def getRepo(repoName):
+    repoName += '.git'
+    repoPath = os.path.join(os.path.dirname(globalSettings.BASE_DIR) ,'repositories')
+    if '/' in repoName:
+        for p in repoName.split('/'):
+            repoPath = os.path.join(repoPath, p)
+    else:
+        repoPath = os.path.join(repoPath, repoName)
+    return Repo(repoPath)
 
-class fileExplorerApi(APIView):
+class browseRepoApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
-        u = self.request.user
-        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
-        r = repo.objects.get(pk = request.GET['repo'])
-        relPath = request.GET['relPath']
-        if request.GET['mode'] == 'folder':
-            content = getFileList(r.name , relPath , request.GET['pull']=='true')
-            return Response({'files' :content} , status=status.HTTP_200_OK)
-        elif request.GET['mode'] == 'file':
-            size , content = readFile(r.name , relPath)
-            return Response({'size' :size , 'content' : content} , status=status.HTTP_200_OK)
+        if 'mode' in request.GET:
+            print 'in Get'
+            r = getRepo(repo.objects.get(pk = request.GET['repo']).name)
+            mode = request.GET['mode']
+            if mode == 'overview':
+                content = getOverview(r)
+            elif mode == 'commits' and 'branch' in request.GET and 'limit' in request.GET and 'page' in request.GET:
+                branch = request.GET['branch']
+                page = request.GET['page']
+                limit = request.GET['limit']
+                content , commits = getCommits(r , branch , page , limit)
+            elif mode == 'diff' and 'sha' in request.GET:
+                content = getDiff(r , request.GET['sha'])
+            elif mode == 'folder' and 'sha' in request.GET and 'relPath' in request.GET:
+                content = getFiles(r.commit(request.GET['sha']) , request.GET['relPath'])
+            elif mode == 'file' and 'sha' in request.GET and 'relPath' in request.GET and 'name' in request.GET:
+                content = getFileFromCommit(r.commit(request.GET['sha']) , request.GET['name'] ,request.GET['relPath'])
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(content , status=status.HTTP_200_OK)
+        else:
+            content = {'mode' : 'No mode specified'}
+            raise NotAcceptable(detail=content )
 
 def getPermStr(p):
     pStr = ''

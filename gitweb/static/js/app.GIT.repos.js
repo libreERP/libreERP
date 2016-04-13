@@ -1,8 +1,18 @@
 app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
   $scope.relPath = '';
   $scope.mode = 'folder';
-  $scope.logConfig = {page : 0 , pageSize : 10 , summaryInView : -1}
+  $scope.logConfig = {page : 0 , pageSize : 10 , summaryInView : -1};
+  $scope.branchInView = 'master';
+  var dataToSend = {
+    mode : 'overview',
+    repo : $scope.tab.data.pk
+  }
 
+  $http({method : 'GET' , url : '/api/git/browseRepo/' , params : dataToSend}).
+  then(function(response) {
+    $scope.overview = response.data;
+    $scope.getLogs()
+  });
   $scope.nextLogs = function() {
     $scope.logConfig.page += 1;
     $scope.getLogs()
@@ -31,41 +41,35 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
   $scope.getLogs = function() {
     $scope.logConfig.summaryInView = -1;
     params = {
+      mode : 'commits',
       repo : $scope.tab.data.pk,
       page : $scope.logConfig.page,
-      pageSize : $scope.logConfig.pageSize,
+      limit : $scope.logConfig.pageSize,
+      branch : $scope.branchInView
     }
-    $http({method : 'GET' , url : '/api/git/log/' , params : params }).
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
     then(function(response) {
-      $scope.logs = response.data.content;
-      console.log($scope.logs);
-      for (var i = 0; i < $scope.logs.length; i++) {
-        // $scope.logs[i].date = new Date($scope.logs[i].date)
+      $scope.logs = response.data;
+      if ($scope.mode == 'folder') {
+        $scope.shaInView = response.data[0].id;
+        $scope.fetchFileList()
       }
-      // console.log(logs);
-    }, function(response) {
-      // $scope.getLogs()
-    })
+    });
   }
   $scope.getDiff = function(index) {
-    // if ($scope.diffConfig.sha == '') {
-    //   return;
-    // }
     params = {
       repo : $scope.tab.data.pk,
-      head : $scope.logConfig.page*$scope.logConfig.pageSize + index,
+      sha : $scope.logs[index].id,
+      mode : 'diff',
     }
-    $http({method : 'GET' , url : '/api/git/diff/' , params : params }).
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
     then(function(response) {
-      $scope.diffs = response.data.content;
+      $scope.commit = response.data;
       console.log($scope.diffs);
     }, function(response) {
       // $scope.getLogs()
     })
   }
-
-  $scope.getLogs()
-  $scope.getDiff(0)
 
   $scope.navigateViaBreadcrumb = function(i) {
     if (i == -1) {
@@ -103,46 +107,35 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
       name = $scope.relPath + '/'+ f.name;
       dataToSend = {
         repo : $scope.tab.data.pk,
-        relPath : name,
+        relPath : $scope.relPath,
+        name : f.name,
         mode : 'file',
+        sha : $scope.shaInView,
       }
 
-      $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
-      then((function(name) {
-        return function(response) {
-          $scope.fileInView = response.data;
-          $scope.fileInView.name = name;
-        }
-      })(name) , function(response) {
-        console.log(response);
-      })
+      $http({method : 'GET' , url : '/api/git/browseRepo/' , params : dataToSend}).
+      then(function(response) {
+        $scope.fileInView = response.data;
+        console.log($scope.fileInView);
+      });
     }
-
   }
 
-  $scope.fetchFileList = function(pull) {
+  $scope.fetchFileList = function() {
     $scope.mode = 'folder';
-    if (typeof pull == 'undefined') {
-      pull = false;
-    }
     dataToSend = {
       repo : $scope.tab.data.pk,
       relPath : $scope.relPath,
       mode : 'folder',
-      pull : pull, // if true , the server will perform a git pull before serving the files
+      sha : $scope.shaInView ,
     }
-    $http({method : 'GET' , url : '/api/git/fileExplorer/' , params : dataToSend}).
-    then((function(pull) {
-      return function(response) {
-        $scope.files = response.data.files;
-        if (pull) {
-          $scope.getLogs();
-        }
-      }
-    })(pull))
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : dataToSend}).
+    then(function(response) {
+      $scope.files = response.data;
+    })
   }
 
-  $scope.fetchFileList()
+  // $scope.fetchFileList()
 
 });
 
@@ -395,5 +388,5 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
     }
   }
 
-  // $scope.addTab(JSON.parse('{"title":"Browse Repo : libreERP-main","cancel":true,"app":"repoBrowser","data":{"pk":3 ,"name":"mERP"},"active":true}'))
+  $scope.addTab(JSON.parse('{"title":"Browse Repo : libreERP-main","cancel":true,"app":"repoBrowser","data":{"pk":3 ,"name":"libreERP-main"},"active":true}'))
 });
