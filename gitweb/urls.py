@@ -16,4 +16,6 @@ urlpatterns = [
     url(r'syncGitolite/$' , syncGitoliteApi.as_view() ),
     url(r'registerDevice/$' , registerDeviceApi.as_view() ),
     url(r'browseRepo/$' , browseRepoApi.as_view() ),
+    url(r'gitoliteNotification/$' , gitoliteNotificationApi.as_view() ),
+
 ]

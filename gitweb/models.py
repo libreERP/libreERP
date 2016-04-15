@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import *
 from django.db import models
-
+import datetime
+import django.utils.timezone
 # Create your models here.
 
 class repoPermission(models.Model):
@@ -30,7 +31,6 @@ class profile(models.Model):
     user = models.ForeignKey(User , null =False , related_name='gitProfile')
     devices = models.ManyToManyField(device)
 
-
 class repo(models.Model):
     perms = models.ManyToManyField(repoPermission )
     created = models.DateTimeField(auto_now_add=True)
@@ -38,3 +38,12 @@ class repo(models.Model):
     creator = models.ForeignKey(User , null = False)
     groups = models.ManyToManyField(groupPermission )
     description = models.TextField(max_length=500, null = False)
+    lastNotified = models.DateTimeField(default = timezone.now) # used to check the latest commits when gitolite notify the same
+
+class commitNotification(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    sha = models.CharField(max_length = 50 , blank = False)
+    user = models.ForeignKey(User , null = True)
+    message = models.CharField(max_length = 500 , default = '')
+    branch = models.CharField(max_length = 100 , default = 'master')
+    repo = models.ForeignKey(repo , null = False)

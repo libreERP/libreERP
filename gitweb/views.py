@@ -271,3 +271,41 @@ class profileViewSet(viewsets.ModelViewSet):
     queryset = profile.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
+
+def notify(pk ,repoName):
+    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+        json={
+          'topic': 'service.notification.git'+repoName,
+          'args': [{'pk' : pk}]
+        }
+    )
+
+class gitoliteNotificationApi(APIView):
+    """
+    sample request : /api/git/gitoliteNotification/?data=/home/git/gitolite/src/triggers/notify.py,POST_GIT,libreERP-main,cioc,R,any,git-upload-pack,&key=123
+    """
+    renderer_classes = (JSONRenderer,)
+    permission_classes = (permissions.AllowAny ,)
+    def get(self , request , format = None):
+        if request.GET['key'] != globalSettings.GITOLITE_KEY:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        parts = request.GET['data'].split(',')
+        accessType = parts[4]
+        # print accessType
+        repoName = parts[2]
+        if accessType == 'W':
+            r = repo.objects.get(name = repoName) # DB object
+            print repoName
+            if r is None:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            rpo = getRepo(repoName) # git object
+            print rpo
+            print r.lastNotified.strftime('%Y-%m-01 %H:%M:%S')
+            for c in rpo.iter_commits(since = r.lastNotified.strftime('%Y-%m-01 %H:%M:%S')):
+                print c
+                sha = c.__str__()
+                br = rpo.git.branch('--contains' , sha)
+                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary )
+                if new:
+                    notify(cn.pk , repoName)
+        return Response(status=status.HTTP_200_OK)

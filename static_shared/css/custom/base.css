@@ -1,4 +1,6 @@
-
+/*.nav-tabs .active > a{
+  border-top:6px solid var(--themeMain) !important;
+}*/
 
 body {
   background-color: #eee;
