@@ -22,14 +22,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'apfwdssalfeag7)cp4jve5gfb%l8wbn4cyvym(tez^m@z1o#3f'
 
-GITOLITE_KEY = '123'
+GITOLITE_KEY = '123' # the gitolite server push notification secret key, all git operations are
+# computationaly heavy and can be used to overload with git operations. So the server will have
+# to pass this key in the HTTP request
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-USE_CDN = False # when turned on the application will use the cndjs.com and other similar content delivery network for css and jss libraries
+USE_CDN = False # when turned on the application will use the cndjs.com and other similar
+#content delivery network for css and jss libraries
 GIT_SERVER = 'git@goryd.in'
 # Application definition
 
@@ -57,7 +60,7 @@ INSTALLED_APPS = (
     'mail', # mail application
     'businessManagement', # BM application
     'ecommerce', # ecommerce
-    'gitweb',
+    'gitweb', # github.com local server with file browsing and diff viewer
 )
 
 SITE_ID = 1
@@ -119,8 +122,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                # 'social.apps.django_app.context_processors.backends',
-                # 'social.apps.django_app.context_processors.login_redirect',
             ],
         },
     },
@@ -204,7 +205,6 @@ STATICFILES_DIRS = (
 )
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media_root')
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),

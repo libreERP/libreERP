@@ -13,13 +13,6 @@ def getEcommercePictureUploadPath(instance , filename ):
 def getEcommerceBannerUploadPath(instance , filename ):
     return 'ecommerce/bannerUploads/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
 
-class price(models.Model):
-    created = models.DateTimeField(auto_now_add = True)
-    perday = models.PositiveIntegerField(null = True , default = 0)
-    weeklyDiscount = models.PositiveIntegerField(null = True , default = 0)
-    monthlyDiscount = models.PositiveIntegerField(null = True , default = 0)
-    weekend = models.PositiveIntegerField(null = True , default = 0)
-
 class address(models.Model):
     street = models.CharField(max_length=300 , null = True)
     city = models.CharField(max_length=100 , null = True)

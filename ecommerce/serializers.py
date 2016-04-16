@@ -8,18 +8,6 @@ from HR.serializers import userSearchSerializer
 from rest_framework.response import Response
 from API.permissions import has_application_permission
 
-class priceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = price
-        fields = ( 'pk', 'perday' , 'weeklyDiscount' ,'monthlyDiscount' , 'weekend' )
-    def create(self , validated_data):
-        p = price(**validated_data)
-        if p.perday <0 or p.weeklyDiscount< 0 or p.monthlyDiscount < 0 or p.weekend<0:
-            raise ValidationError(detail= 'negative input')
-        else:
-            p.save()
-            return p
-
 class fieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = field

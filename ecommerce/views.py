@@ -823,10 +823,3 @@ class offerBannerViewSet(viewsets.ModelViewSet):
             if self.request.GET['mode'] == 'configure':
                 return offerBanner.objects.all()
         return offerBanner.objects.filter(active = True)
-
-
-class priceViewSet(viewsets.ModelViewSet):
-    permission_classes = (isAdminOrReadOnly, )
-    serializer_class = priceSerializer
-    def get_queryset(self):
-        return price.objects.all()
