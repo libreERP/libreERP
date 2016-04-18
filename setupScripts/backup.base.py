@@ -3,17 +3,17 @@ from fabric.api import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-tablesToBackup = ['ERP.application',
-    'ERP.module',
+tablesToBackup = ['ERP.module',
+    'ERP.application',
     'ERP.appSettingsField',
     'auth.User',
-    'gitolite.repoPermission',
-    'gitolite.gitGroup',
-    'gitolite.groupPermission',
-    'gitolite.device',
-    'gitolite.profile',
-    'gitolite.repo',
-    'gitolite.commitNotification',
+    'gitweb.repo',
+    'gitweb.repoPermission',
+    'gitweb.gitGroup',
+    'gitweb.groupPermission',
+    'gitweb.device',
+    'gitweb.profile',
+    'gitweb.commitNotification',
 ]
 
 mode = 0 # 0 for backup and 1 for load

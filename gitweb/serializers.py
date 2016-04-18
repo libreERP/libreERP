@@ -75,3 +75,15 @@ class repoSerializer(serializers.ModelSerializer):
             instance.groups.add(groupPermission.objects.get(pk = p))
         instance.save()
         return instance
+
+class repoLiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = repo
+        fields = ('name', 'pk')
+        read_only_fields = ('name',)
+
+class commitNotificationSerializer(serializers.ModelSerializer):
+    repo = repoLiteSerializer(many = False , read_only = True)
+    class Meta:
+        model = commitNotification
+        fields = ('pk', 'created' , 'sha' , 'user' , 'message' , 'branch' , 'repo')

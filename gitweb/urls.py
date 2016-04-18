@@ -10,12 +10,12 @@ router.register(r'gitGroup' , gitGroupViewSet , base_name = 'gitGroup')
 router.register(r'repo' , repoViewSet , base_name = 'repo')
 router.register(r'device' , deviceViewSet , base_name = 'device')
 router.register(r'profile' , profileViewSet , base_name = 'profile')
+router.register(r'commitNotification' , commitNotificationViewSet , base_name = 'commitNotification')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'syncGitolite/$' , syncGitoliteApi.as_view() ),
-    url(r'registerDevice/$' , registerDeviceApi.as_view() ),
+    url(r'syncGitolite/$' , syncGitoliteApi.as_view()),
+    url(r'registerDevice/$' , registerDeviceApi.as_view()),
     url(r'browseRepo/$' , browseRepoApi.as_view() ),
-    url(r'gitoliteNotification/$' , gitoliteNotificationApi.as_view() ),
-
+    url(r'gitoliteNotification/$' , gitoliteNotificationApi.as_view()),
 ]

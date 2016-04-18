@@ -13,6 +13,7 @@ app.config(function($stateProvider){
         },
         "@projectManagement.GIT": {
           templateUrl: '/static/ngTemplates/app.GIT.default.html',
+          controller : 'projectManagement.GIT.default',
         }
     }
   })
@@ -31,6 +32,16 @@ app.config(function($stateProvider){
     templateUrl: '/static/ngTemplates/app.GIT.manage.html',
     controller: 'projectManagement.GIT.manage'
   })
+
+});
+
+app.controller('projectManagement.GIT.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+  $http({method : 'GET' , url : '/api/git/commitNotification/'}).
+  then(function(response) {
+    $scope.notifications = response.data;
+  });
+
+  
 
 });
 

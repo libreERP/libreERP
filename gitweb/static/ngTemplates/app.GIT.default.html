@@ -1,11 +1,22 @@
 <div >
   <breadcrumb></breadcrumb>
-  <p style="text-align:center;padding-top:200px;">
-    <i class="fa fa-search-plus fa-5x"></i>
-    <i class="fa fa-git fa-5x "></i>
-    <i class="fa fa-github fa-5x "></i>
-    <br>
-    <h3 class="text-muted" style="text-align:center;"> Dashboard for GIT App</h3>
-  </p>
+  <div class="container-fluid" style="padding-right:30px;padding-left:30px;">
+    <h3>Latest activities</h3>
+    <div ng-repeat="n in notifications" class="row" style="padding-top:10px;">
+      <div class="col-md-2" style="padding-right:40px;">
+        <div class="row">
+          <img ng-src="{{n.user | getDP}}" class="img-circle pull-right" width="50"/>
+        </div>
+        <div class="row">
+          <span class="pull-right">{{n.user | getName}}</span>
+        </div>
+      </div>
+      <div class="col-md-10" style="border-left:solid 5px #bb5d18;padding-top:15px;padding-bottom:15px;">
+        <strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
+        <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
+      </div>
+      <hr>
+    </div>
+  </div>
 
 </div>

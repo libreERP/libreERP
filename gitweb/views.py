@@ -309,3 +309,11 @@ class gitoliteNotificationApi(APIView):
                 if new:
                     notify(cn.pk , repoName)
         return Response(status=status.HTTP_200_OK)
+
+
+class commitNotificationViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = commitNotificationSerializer
+    queryset = commitNotification.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['id']
