@@ -34,16 +34,7 @@ The backend is Django powered so you can install it on either of windows or GNU/
 
 Run the following commands in your console / command prompt with super user privileges or in virtualenv::
 
-    $ pip install django
-    $ pip install djangorestframework
-    $ pip install markdown      
-    $ pip install django-filter
-    $ pip install django-url-filter
-    $ pip install django-cors-headers
-    $ pip install pillow
-    $ pip install requests
-    $ pip install pytz
-    $ pip install reportlab
+    $ pip install -r requirements.pip
 
 in order to install Crossbar.io router server please head to the Crossbar.io website however here are steps which on the day when I wrote this document worked (For installation on windows please refer http://crossbar.io)
 
