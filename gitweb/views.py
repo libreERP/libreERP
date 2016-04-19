@@ -309,12 +309,14 @@ class gitoliteNotificationApi(APIView):
                 cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                 if new:
                     notify(cn.pk , repoName)
+            r.lastNotified = django.utils.timezone.now()
+            r.save()
         return Response(status=status.HTTP_200_OK)
 
 
 class commitNotificationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = commitNotificationSerializer
-    queryset = commitNotification.objects.all()
+    queryset = commitNotification.objects.all().order_by('-time')
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
