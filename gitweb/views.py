@@ -305,7 +305,7 @@ class gitoliteNotificationApi(APIView):
                 print c
                 sha = c.__str__()
                 br = rpo.git.branch('--contains' , sha)
-                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary )
+                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = time.asctime(time.gmtime(c.committed_date)))
                 if new:
                     notify(cn.pk , repoName)
         return Response(status=status.HTTP_200_OK)

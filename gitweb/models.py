@@ -46,4 +46,5 @@ class commitNotification(models.Model):
     user = models.ForeignKey(User , null = True)
     message = models.CharField(max_length = 500 , default = '')
     branch = models.CharField(max_length = 100 , default = 'master')
+    time = models.DateTimeField(default=timezone.now)
     repo = models.ForeignKey(repo , null = False)

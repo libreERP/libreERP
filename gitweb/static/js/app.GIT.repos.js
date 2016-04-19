@@ -50,6 +50,9 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
     $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
     then(function(response) {
       $scope.logs = response.data;
+      for (var i = 0; i < $scope.logs.length; i++) {
+        $scope.logs[i].date = new Date($scope.logs[i].date)
+      }
       if ($scope.mode == 'folder') {
         $scope.shaInView = response.data[0].id;
         $scope.fetchFileList()

@@ -109,7 +109,11 @@
           <div class="col-md-2">
             {{l.id.substring(l.id.length-10 , l.id.length)}}
           </div>
-          <div class="col-md-2">
+          <div class="col-md-1 text-center">
+            <span class="pull-right">{{l.date | date : 'hh:mm:a'}} </span><br>
+            <span class="pull-right">{{l.date | date : 'dd MMM'}}</span>
+          </div>
+          <div class="col-md-1">
             <div class="btn-group btn-group-sm pull-right">
               <button type="button" class="btn btn-default" ng-click="showCommitDiff($index);$event.stopPropagation();">
                 <i class="fa fa-code fa-lg"></i>

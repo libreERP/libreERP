@@ -86,4 +86,4 @@ class commitNotificationSerializer(serializers.ModelSerializer):
     repo = repoLiteSerializer(many = False , read_only = True)
     class Meta:
         model = commitNotification
-        fields = ('pk', 'created' , 'sha' , 'user' , 'message' , 'branch' , 'repo')
+        fields = ('pk', 'created' , 'sha' , 'user' , 'message' , 'branch' , 'repo' , 'time')

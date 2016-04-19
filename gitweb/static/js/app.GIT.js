@@ -36,12 +36,43 @@ app.config(function($stateProvider){
 });
 
 app.controller('projectManagement.GIT.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-  $http({method : 'GET' , url : '/api/git/commitNotification/'}).
-  then(function(response) {
-    $scope.notifications = response.data;
-  });
+  $scope.page = 0;
 
-  
+  $scope.fetchNotifications = function() {
+    $http({method : 'GET' , url : '/api/git/commitNotification/?limit=10&offset=' + $scope.page * 10}).
+    then(function(response) {
+      $scope.count = response.data.count;
+      $scope.notifications = response.data.results;
+      var d = new Date($scope.notifications[0].time);
+      $scope.notifications[0].dateShow = true;
+      $scope.notifications[0].time = d;
+      for (var i = 1; i < $scope.notifications.length; i++) {
+        var d2 = new Date($scope.notifications[i].time);
+        $scope.notifications[i].time = d;
+        if (d.getMonth()!= d2.getMonth() || d.getFullYear() != d2.getFullYear() ) {
+          $scope.notifications[i].showDate = true;
+          d = d2;
+        }else {
+          $scope.notifications[i].showDate = false;
+        }
+      }
+    });
+  }
+
+  $scope.nextPage = function() {
+    $scope.page += 1;
+    $scope.fetchNotifications()
+  }
+  $scope.prevPage = function() {
+    $scope.page -= 1;
+    if ($scope.page < 0) {
+      $scope.page += 1;
+    }
+    $scope.fetchNotifications()
+  };
+
+  $scope.fetchNotifications()
+
 
 });
 

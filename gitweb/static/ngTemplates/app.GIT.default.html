@@ -2,7 +2,11 @@
   <breadcrumb></breadcrumb>
   <div class="container-fluid" style="padding-right:30px;padding-left:30px;">
     <h3>Latest activities</h3>
+    <!-- {{dates}} -->
     <div ng-repeat="n in notifications" class="row" style="padding-top:10px;">
+      <div class="row text-center" ng-if="n.dateShow">
+        <h4>{{n.time | date: 'dd-MMM-yyyy'}}</h4>
+      </div>
       <div class="col-md-2" style="padding-right:40px;">
         <div class="row">
           <img ng-src="{{n.user | getDP}}" class="img-circle pull-right" width="50"/>
@@ -12,11 +16,17 @@
         </div>
       </div>
       <div class="col-md-10" style="border-left:solid 5px #bb5d18;padding-top:15px;padding-bottom:15px;">
-        <strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
+        <span class="text-muted"> {{n.time |  date : 'hh:mm:a'}}</span><br> <strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
         <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
       </div>
       <hr>
     </div>
+    <nav>
+      <ul class="pager">
+        <li ng-click="prevPage()" class="{{page==0 ? 'disabled':''}}"><a href="">Previous</a></li>
+        <li ng-click="nextPage()" class="{{10*(page+1) > count ? 'disabled':''}}"><a href="">Next</a></li>
+      </ul>
+    </nav>
   </div>
 
 </div>
