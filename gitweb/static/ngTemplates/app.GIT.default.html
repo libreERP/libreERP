@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
-        <span class="text-muted"> {{n.time |  date : 'hh:mm:a'}}</span><br> <strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
+        <span class="text-muted"> {{n.time |  date : 'hh:mm:a'}}</span><br><strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
         <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
       </div>
       <hr>

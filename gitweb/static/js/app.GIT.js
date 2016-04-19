@@ -48,12 +48,12 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
       $scope.notifications[0].time = d;
       for (var i = 1; i < $scope.notifications.length; i++) {
         var d2 = new Date($scope.notifications[i].time);
-        $scope.notifications[i].time = d;
-        if (d.getMonth()!= d2.getMonth() || d.getFullYear() != d2.getFullYear() ) {
-          $scope.notifications[i].showDate = true;
+        $scope.notifications[i].time = d2;
+        if (d.getDate()!= d2.getDate() || d.getMonth()!= d2.getMonth() || d.getFullYear() != d2.getFullYear() ) {
+          $scope.notifications[i].dateShow = true;
           d = d2;
         }else {
-          $scope.notifications[i].showDate = false;
+          $scope.notifications[i].dateShow = false;
         }
       }
     });
