@@ -59,6 +59,8 @@ def getCommits(repo , branch , page , limit):
     stats = []
     for c in c_list:
         stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : time.asctime(time.gmtime(c.committed_date))})
+    print time.gmtime(c.committed_date)
+    print dir(time.gmtime(c.committed_date))
     return stats , c_list
 
 def getDiff(repo , sha):
@@ -305,7 +307,8 @@ class gitoliteNotificationApi(APIView):
                 print c
                 sha = c.__str__()
                 br = rpo.git.branch('--contains' , sha)
-                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = time.asctime(time.gmtime(c.committed_date)))
+                t = datetime.fromtimestamp(time.mktime(time.asctime(time.gmtime(c.committed_date))))
+                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                 if new:
                     notify(cn.pk , repoName)
         return Response(status=status.HTTP_200_OK)
