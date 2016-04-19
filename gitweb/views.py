@@ -294,20 +294,18 @@ class gitoliteNotificationApi(APIView):
         parts = request.GET['data'].split(',')
         accessType = parts[4]
         # print accessType
+        utc=pytz.UTC
         repoName = parts[2]
         if accessType == 'W':
             r = repo.objects.get(name = repoName) # DB object
-            print repoName
             if r is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             rpo = getRepo(repoName) # git object
-            print rpo
-            print r.lastNotified.strftime('%Y-%m-01 %H:%M:%S')
             for c in rpo.iter_commits(since = r.lastNotified.strftime('%Y-%m-01 %H:%M:%S')):
-                print c
                 sha = c.__str__()
                 br = rpo.git.branch('--contains' , sha)
-                t = datetime.fromtimestamp(time.mktime(time.asctime(time.gmtime(c.committed_date))))
+                t = datetime.datetime(*time.gmtime(c.committed_date)[:6])
+                t = t.replace(tzinfo=utc)
                 cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                 if new:
                     notify(cn.pk , repoName)
