@@ -59,15 +59,34 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
     });
   }
 
+  $scope.exploreNotification = function(index) {
+    var n = $scope.notifications[index];
+    $aside.open({
+      templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
+      position:'left',
+      size : 'xxl',
+      backdrop : true,
+      resolve : {
+        input : function() {
+          return {sha : n.sha , repo : n.repo}
+        }
+      },
+      controller : 'projectManagement.GIT.exploreNotification',
+    })
+  }
+
   $scope.nextPage = function() {
+    if (($scope.page+1)*10 > $scope.count) {
+      return;
+    }
     $scope.page += 1;
     $scope.fetchNotifications()
   }
   $scope.prevPage = function() {
-    $scope.page -= 1;
-    if ($scope.page < 0) {
-      $scope.page += 1;
+    if ($scope.page == 0) {
+      return;
     }
+    $scope.page -= 1;
     $scope.fetchNotifications()
   };
 
@@ -75,6 +94,30 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 
 
 });
+
+app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input) {
+  $scope.commit = input;
+
+  $scope.getDiff = function(index) {
+    params = {
+      repo : $scope.commit.repo.pk,
+      sha : $scope.commit.sha,
+      mode : 'diff',
+    }
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
+    then(function(response) {
+      $scope.commitData = response.data;
+      console.log($scope.commitData);
+    }, function(response) {
+      // $scope.getLogs()
+    })
+  }
+
+  $scope.getDiff()
+
+
+});
+
 
 app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
   // settings main page controller

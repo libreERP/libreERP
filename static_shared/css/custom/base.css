@@ -1,6 +1,12 @@
 /*.nav-tabs .active > a{
   border-top:6px solid var(--themeMain) !important;
 }*/
+.modal-xl{
+  width:80%;
+}
+.modal-xxl{
+  width:90%;
+}
 
 body {
   background-color: #eee;

@@ -2,3 +2,12 @@
   background-color: #eeeeee;
   cursor: pointer;
 }
+.commitNotification{
+  border-left:solid 5px #bb5d18;
+  padding-top:15px;
+  padding-bottom:15px;
+}
+.commitNotification:hover{
+  background: #f2f2f2;
+  cursor: pointer;
+}
