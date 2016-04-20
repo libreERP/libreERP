@@ -301,19 +301,23 @@ class gitoliteNotificationApi(APIView):
             if r is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             rpo = getRepo(repoName) # git object
-            for c in rpo.iter_commits(since = r.lastNotified.strftime('%Y-%m-01 %H:%M:%S')):
-                sha = c.__str__()
-                br = rpo.git.branch('--contains' , sha)
-                t = datetime.datetime(*time.gmtime(c.committed_date)[:6])
-                t = t.replace(tzinfo=utc)
-                cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
-                if new:
-                    notify(cn.pk , repoName)
+            print rpo
+            dtStr = r.lastNotified.strftime('%Y-%m-%d %H:%M:%S')
+            print dtStr
+            for b in rpo.branches:
+                c_list = list(rpo.iter_commits( b , since = dtStr))
+                for c in c_list:
+                    sha = c.__str__()
+                    br = rpo.git.branch('--contains' , sha)
+                    t = datetime.datetime(*time.gmtime(c.committed_date)[:6])
+                    t = t.replace(tzinfo=utc)
+                    print sha , t , c.summary
+                    cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
+                    if new:
+                        notify(cn.pk , repoName)
             r.lastNotified = django.utils.timezone.now()
             r.save()
         return Response(status=status.HTTP_200_OK)
-
-
 class commitNotificationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = commitNotificationSerializer
