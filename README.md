@@ -16,7 +16,7 @@ The current state of the project is as follows :
 
 Ongoing work
 ------------
-Currently working on the role permission and resource planning modules
+Currently working on real time code review mechanism for GIT app
 
 
 > The best part of the project is that the architecture I designed for this project is absolutely state of the art. Its uses RESTful API interaction, Angular JS bases interactive and responsive frontend makes it fun to work on and more importantly enjoyable to the users.
