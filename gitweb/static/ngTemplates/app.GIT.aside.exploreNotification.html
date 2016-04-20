@@ -1,1 +1,10 @@
-<h2>{{sha}}</h2>
+<h2>{{commit.repo.name}} <small>{{commit.sha}}</small></h2>
+<hr>
+<div class="col-md-12">
+  <div ng-repeat="d in data.diffs">
+    <div class="row bg-aqua container-fluid">
+      {{d.path}}
+    </div>
+    <div hljs hljs-source="d.diff" style="padding:0px;"></div>
+  </div>
+</div>

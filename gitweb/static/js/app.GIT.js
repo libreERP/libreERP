@@ -106,8 +106,8 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     }
     $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
     then(function(response) {
-      $scope.commitData = response.data;
-      console.log($scope.commitData);
+      $scope.data = response.data;
+      console.log($scope.data);
     }, function(response) {
       // $scope.getLogs()
     })

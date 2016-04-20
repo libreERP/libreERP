@@ -66,8 +66,15 @@ def getCommits(repo , branch , page , limit):
 def getDiff(repo , sha):
     c = repo.commit(sha)
     diffs = []
-    for x in c.diff(c.parents, create_patch=True):
-        diffs.append({'path' : x.a_path , 'diff' : x.diff})
+    for p in c.parents:
+        for x in p.diff(c, create_patch=True):
+            cont = False
+            for ex in ['.svg' , '.jpg' , '.png']:
+                if x.a_path.endswith(ex):
+                    cont = True
+                    break
+            if not cont:
+                diffs.append({'path' : x.a_path , 'diff' : x.diff})
     return {'summary' : c.summary ,'diffs' : diffs}
 
 def getFileFromCommit(commit , fileName , relPath = ''):
@@ -274,13 +281,24 @@ class profileViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
 
-def notify(pk ,repoName):
-    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
-        json={
-          'topic': 'service.notification.git'+repoName,
-          'args': [{'pk' : pk}]
-        }
-    )
+def notify(pk ,rpo , typ):
+    """
+    Here the args are : 1. pk , 2. Type : commitNotification or commitComment
+    """
+    users = []
+    for p in rpo.perms.all():
+        users.append(p.user)
+    for g in rpo.groups.all():
+        for u in g.users.all():
+            users.append(u)
+    for u in users:
+        print "will notify to " ,  u.username , 'about:' , typ
+        requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+            json={
+              'topic': 'service.git.'+u.username,
+              'args': [{'pk' : pk , 'type' : typ}]
+            }
+        )
 
 class gitoliteNotificationApi(APIView):
     """
@@ -314,7 +332,7 @@ class gitoliteNotificationApi(APIView):
                     print sha , t , c.summary
                     cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                     if new:
-                        notify(cn.pk , repoName)
+                        notify(cn.pk , r , 'commitNotification')
             r.lastNotified = django.utils.timezone.now()
             r.save()
         return Response(status=status.HTTP_200_OK)
