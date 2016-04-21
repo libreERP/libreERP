@@ -1,7 +1,12 @@
 <div >
   <breadcrumb></breadcrumb>
   <div class="container-fluid" style="padding-right:30px;padding-left:30px;">
-    <h3>Latest activities</h3>
+    <div class="row">
+      <div class="col-md-10">
+        <h3>Latest activities</h3>
+      </div>
+      <button type="button" class="btn btn-default col-md-2" ng-click="page = 0;fetchNotifications()"><i class="fa fa-refresh"></i>  Refresh</button>
+    </div>
     <!-- {{dates}} -->
     <div ng-repeat="n in notifications" class="row" style="padding-top:10px;">
       <div class="row text-center" ng-if="n.dateShow">
