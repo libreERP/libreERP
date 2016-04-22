@@ -1,10 +1,58 @@
-<h2>{{commit.repo.name}} <small>{{commit.sha}}</small></h2>
-<hr>
-<div class="col-md-12">
-  <div ng-repeat="d in data.diffs">
-    <div class="row bg-aqua container-fluid">
-      {{d.path}}
+<div class="modal-header bg-blue" id="aside" style="height:10vh;padding:10px;">
+    <div class="col-md-7">
+        <h3 style="margin-top:8px;">
+            <i class="octicon octicon-package" style="font-size:30px;"></i>
+            {{commit.repo.name}}
+            <small style="color:white;">
+                >
+                {{commit.sha.substring(commit.sha.length-10 , commit.sha.length)}}</small>
+        </h3>
     </div>
-    <div hljs hljs-source="d.diff" style="padding:0px;"></div>
-  </div>
+    <div class="col-md-3 pull-right" style="padding-right:40px;color:white;">
+        <div class="col-md-7" style="padding-top:15px;">
+            <span class="pull-right">{{commit.user | getName}}</span>
+        </div>
+        <div class="col-md-5">
+            <img ng-src="{{commit.user | getDP}}" class="img-circle pull-right" width="50"/>
+        </div>
+    </div>
+</div>
+<div class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:90vh;">
+    <div class="row">
+        <div ng-repeat="(key , val) in commitData.files">
+            <div class="col-md-1">
+                <span class="label label-warning col-md-6">-{{val.deletions}}</span>
+                <span class="label label-success col-md-6">+{{val.insertions}}</span>
+            </div>
+            <div class="col-md-11">
+                {{key}}
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div ng-repeat="d in data.diffs">
+            <table class="codeTable">
+                <tr style="background:#f5f5f5;">
+                    <td style="padding:6px;border-bottom:solid 2px #b5b5b5;"></td>
+                    <td style="padding:6px;border-bottom:solid 2px #b5b5b5;"></td>
+                    <td style="padding:6px;border-bottom:solid 2px #b5b5b5;">
+                        <span>{{d.path}}</span>
+                    </td>
+                </tr>
+                <tr ng-repeat="line in d.diff.split('\n') track by $index" ng-if="$index>1">
+                    <td style=" width:35px;padding:2px;">
+                        {{$index}}
+                    </td>
+                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;">
+                        {{$index}}
+                    </td>
+                    <td class="{{line[0]=='+' ? 'codeAdded':''}} {{line[0]=='-' ?'codeDeleted':''}}" style="margin:0px;">
+                        <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
+                    </td>
+                </tr>
+            </table>
+            <hr>
+        </div>
+    </div>
 </div>

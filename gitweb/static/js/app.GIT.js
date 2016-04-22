@@ -56,6 +56,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
           $scope.notifications[i].dateShow = false;
         }
       }
+      $scope.exploreNotification(0)
     });
   }
 
@@ -68,7 +69,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
       backdrop : true,
       resolve : {
         input : function() {
-          return {sha : n.sha , repo : n.repo}
+          return {sha : n.sha , repo : n.repo , user : n.user}
         }
       },
       controller : 'projectManagement.GIT.exploreNotification',
@@ -98,22 +99,25 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input) {
   $scope.commit = input;
 
-  $scope.getDiff = function(index) {
-    params = {
-      repo : $scope.commit.repo.pk,
-      sha : $scope.commit.sha,
-      mode : 'diff',
-    }
-    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
-    then(function(response) {
-      $scope.data = response.data;
-      console.log($scope.data);
-    }, function(response) {
-      // $scope.getLogs()
-    })
+  var params = {
+    repo : $scope.commit.repo.pk,
+    sha : $scope.commit.sha,
+    mode : 'commit',
   }
+  $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
+  then(function(response) {
+    $scope.commitData = response.data;
+  });
 
-  $scope.getDiff()
+  var params = {
+    repo : $scope.commit.repo.pk,
+    sha : $scope.commit.sha,
+    mode : 'diff',
+  }
+  $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
+  then(function(response) {
+    $scope.data = response.data;
+  });
 
 
 });

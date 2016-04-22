@@ -59,9 +59,11 @@ def getCommits(repo , branch , page , limit):
     stats = []
     for c in c_list:
         stats.append({'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : time.asctime(time.gmtime(c.committed_date))})
-    print time.gmtime(c.committed_date)
-    print dir(time.gmtime(c.committed_date))
     return stats , c_list
+
+def getCommit(repo , sha):
+    c = repo.commit(sha)
+    return {'files' :c.stats.files , 'message' : c.message , 'id' : c.__str__() , 'committer' : {'email' : c.committer.email , 'name' : c.committer.__str__()} , 'date' : time.asctime(time.gmtime(c.committed_date))}
 
 def getDiff(repo , sha):
     c = repo.commit(sha)
@@ -121,6 +123,8 @@ class browseRepoApi(APIView):
                 page = request.GET['page']
                 limit = request.GET['limit']
                 content , commits = getCommits(r , branch , page , limit)
+            elif mode == 'commit' and 'sha' in request.GET:
+                content = getCommit(r , request.GET['sha'])
             elif mode == 'diff' and 'sha' in request.GET:
                 content = getDiff(r , request.GET['sha'])
             elif mode == 'folder' and 'sha' in request.GET and 'relPath' in request.GET:

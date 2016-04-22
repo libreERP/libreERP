@@ -121,8 +121,8 @@
             </div>
           </div>
         </div>
-        <div class="row anim-in-out anim-fade" style="border:solid 1px #eeeeee;background-color:#fefefe" ng-if="logConfig.summaryInView == $index">
-          <div class="container-fluid anim-in-out anim-fade" style="padding-left:70px;">
+        <div class="row" style="border:solid 1px #eeeeee;background-color:#fefefe" ng-if="logConfig.summaryInView == $index">
+          <div class="container-fluid" style="padding-left:70px;">
             <div ng-repeat="(key , val) in l.files">
               <div class="col-md-1">
                 <span class="label label-warning col-md-6">-{{val.deletions}}</span>

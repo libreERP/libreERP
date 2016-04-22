@@ -11,3 +11,28 @@
   background: #f2f2f2;
   cursor: pointer;
 }
+
+pre{
+  background: white;
+  border: none;
+  padding: 0px;
+  margin: 0px;
+  border-radius: 0px;
+}
+code{
+  padding:0px !important;
+}
+.codeAdded .hljs , .codeAdded{
+  background: #c6f0c0;
+}
+.codeDeleted .hljs , .codeDeleted{
+  background: #f0d7c0;
+}
+
+.codeTable{
+  width:96%;
+  margin-left:2%;
+  margin-bottom:10px;
+  border:solid 2px #b5b5b5;
+  margin-bottom: 30px;
+}
