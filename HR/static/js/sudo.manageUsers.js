@@ -139,16 +139,16 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   }
 
   $scope.updateUserPermissions = function(index){
-    userData = $scope.tabs[index].data;
+    var userData = $scope.tabs[index].data;
     if (userData.appsToAdd.length == 0) {
       Flash.create('warning' , 'No new permission to add')
       return;
     }
-    apps = [];
+    var apps = [];
     for (var i = 0; i < userData.appsToAdd.length; i++) {
       apps.push(userData.appsToAdd[i].pk)
     }
-    dataToSend = {
+    var dataToSend = {
       user : getPK(userData.url),
       apps : apps,
     }

@@ -348,7 +348,7 @@ class commitNotificationViewSet(viewsets.ModelViewSet):
     filter_fields = ['id']
 
 class codeCommentViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, isOwnerOrReadOnly)
     serializer_class = codeCommentSerializer
     queryset = codeComment.objects.all().order_by('created')
     filter_backends = [DjangoFilterBackend]

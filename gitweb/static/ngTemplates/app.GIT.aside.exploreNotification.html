@@ -1,12 +1,11 @@
-<div class="modal-header bg-blue" id="aside" style="height:10vh;padding:10px;">
+<div class="modal-header bg-blue" id="aside" style="height:8vh;padding:10px;">
     <div class="col-md-7">
-        <h3 style="margin-top:8px;">
-            <i class="octicon octicon-package" style="font-size:30px;"></i>
-            {{commit.repo.name}}
-            <small style="color:white;">
-                >
-                {{commit.sha.substring(commit.sha.length-10 , commit.sha.length)}}</small>
+      <div class="row">
+        <h3 style="margin-top:5px;">
+          <i class="octicon octicon-package" style="font-size:30px;"></i>
+          {{commit.repo.name}}
         </h3>
+      </div>
     </div>
     <div class="col-md-3 pull-right" style="padding-right:40px;color:white;">
         <div class="col-md-8" style="padding-top:15px;">
@@ -17,17 +16,28 @@
         </div>
     </div>
 </div>
-<div class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:90vh;width:100%;">
-    <div class="row" style="padding:10px;">
+<div class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:92vh;width:100%;">
+    <div class="row">
+      <div class="col-md-6">
         <div ng-repeat="(key , val) in commitData.files">
-            <div class="col-md-1">
-                <span class="label label-warning col-md-6">-{{val.deletions}}</span>
-                <span class="label label-success col-md-6">+{{val.insertions}}</span>
-            </div>
-            <div class="col-md-11">
-                <span ng-click="gotoAnchor(key)" style="cursor:pointer;">{{key}} <span ng-if="comments[key].length>0" style="margin-left:20px;"><i class="fa fa-comment-o"></i> {{comments[key].length}}</span></span>
-            </div>
+          <div class="col-md-1">
+            <span class="label label-warning col-md-6">-{{val.deletions}}</span>
+            <span class="label label-success col-md-6">+{{val.insertions}}</span>
+          </div>
+          <div class="col-md-11">
+            <span ng-click="gotoAnchor(key)" style="cursor:pointer;">{{key}} <span ng-if="comments[key].length>0"
+              style="margin-left:20px;"><i class="fa fa-comment-o"></i> {{comments[key].length}}</span>
+            </span>
+          </div>
         </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row text-right" style="padding-right:20px;">
+          <h3><i class="octicon octicon-git-branch"></i> {{commit.branch}} <br></h3>
+          <span>{{commit.sha.substring(commit.sha.length-10 , commit.sha.length)}}</span> <br>
+          <span><strong>Summary :</strong> {{commit.message}}</span>
+        </div>
+      </div>
     </div>
     <hr>
     <div class="row">
@@ -40,30 +50,54 @@
                         <span>{{d.path}}</span>
                     </td>
                 </tr>
-                <tr ng-repeat="line in d.diff.split('\n') track by $index" ng-if="$index>1">
-                    <td style=" width:35px;padding:2px;position:relative;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
+                <tr ng-repeat="line in d.diff.split('\n') track by $index" ng-if="$index>1" >
+                    <td style=" width:35px;padding:2px;position:relative;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}"
+                      ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)"
+                      ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
                         <span style="padding:5px;background:#0f8a74;position:absolute;left:-30px;color:white;width:30px;height:24px;cursor:pointer;top:0px;"
-                        ng-if="mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)"><i class="fa fa-plus pull-right"></i></span>
+                          ng-if="mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
+                          <i class="fa fa-plus pull-right"></i>
+                        </span>
                         <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][0]}}</span>
                     </td>
-                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
+                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}"
+                      ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
                       <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][1]}}</span>
                     </td>
                     <td class="{{line[0]=='+' ? 'codeAdded':''}} {{line[0]=='-' ?'codeDeleted':''}}" style="margin:0px;">
                       <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
                       <!-- <span style="padding:0px !important;margin:0px !important;">{{line}}</span> -->
                       <div class="row" style="background:#f2f2f2;padding:10px;margin:0px;" ng-repeat="c in comments[d.path]" ng-if="c.line==$parent.$index" >
-                        <div class="container-fluid">
-                          <div class="col-md-1" style="padding-right:40px;">
+                        <div class="container-fluid" ng-init="showOptions = false;">
+                          <div class="col-md-1" style="padding:0px;padding-right:25px;">
                             <div class="row">
-                              <img ng-src="{{c.user | getDP}}" class="img-circle" width="50"/>
+                              <img ng-src="{{c.user | getDP}}" class="img-circle pull-right" width="50"/>
                             </div>
                             <div class="row">
-                              <span class="text-center">{{c.user | getName}}</span>
+                              <span class="pull-right">{{c.user | getName}}{{editComment}}</span>
                             </div>
                           </div>
-                          <div class="col-md-11" >
-                            <span class="col-md-12" style="box-sizing:border-box;background:white !important;border:solid 1px #24ad9f;padding:10px;margin-top:10px;border-radius:3px;min-height:60px;">{{c.text}}</span>
+                          <div class="col-md-11" style="padding:0px;position:relative;" ng-mouseenter="showOptions = true;" ng-mouseleave="showOptions = false;">
+                            <span ng-if="form.editCommentPK != c.pk" class="col-md-12" style="box-sizing:border-box;background:white !important;border:solid 1px #24ad9f;padding:10px;margin-top:10px;border-radius:3px;min-height:60px;">{{c.text}}</span>
+                            <div ng-if="form.editCommentPK == c.pk" >
+                              <div class="col-md-11" style="margin:0px;padding:0px;">
+                                <textarea type="text" class="form-control" ng-model="c.text"></textarea>
+                              </div>
+                              <div class="col-md-1" style="margin:0px;padding:0px;">
+                                <div class="btn-group btn-group-sm pull-right">
+                                  <button type="button" class="btn btn-primary" ng-click="patchComment(c)">
+                                    <i class="fa fa-floppy-o"></i>
+                                  </button>
+                                  <button type="button" class="btn btn-default" ng-click="cancelCommentEditor(c.pk)">
+                                    <i class="fa fa-close"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <div style="position:absolute;right:10px;bottom:10px;cursor:pointer;" class="text-muted" ng-if="showOptions && c.user == me.pk && form.editCommentPK !=c.pk">
+                              <i class="fa fa-trash fa-lg" ng-click="deleteComment(c.pk)"></i>
+                              <i class="fa fa-pencil fa-lg" ng-click="setEditCursor(c)"></i>
+                            </div>
                           </div>
                           <hr>
                         </div>

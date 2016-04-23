@@ -61,7 +61,6 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
   }
 
   $scope.exploreNotification = function(index) {
-    var n = $scope.notifications[index];
     $aside.open({
       templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
       position:'left',
@@ -69,7 +68,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
       backdrop : true,
       resolve : {
         input : function() {
-          return {sha : n.sha , repo : n.repo , user : n.user}
+          return $scope.notifications[index];
         }
       },
       controller : 'projectManagement.GIT.exploreNotification',
@@ -96,17 +95,16 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 
 });
 
-app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input, $anchorScroll, $location) {
+app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input, $anchorScroll, $location , $users) {
   $scope.commit = input;
   $scope.mouseOver = {file  : -1 , line : -1};
   $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'}; // editor for textarea and preview for the preview
   $scope.lineNums = {}
-  $scope.form = {comment : ''};
-
+  $scope.form = {comment : '' , editCommentPK : -1 , backupText : ''};
+  $scope.me = $users.get('mySelf');
 
   $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
   then(function(response) {
-    console.log(response.data);
     $scope.comments = {};
     for (var i = 0; i < response.data.length; i++) {
       var c = response.data[i];
@@ -118,6 +116,8 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
       }
     }
   });
+
+
 
   $scope.addComment = function() {
     if ($scope.commentEditor.text.length == 0) {
@@ -132,6 +132,9 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     $http({method : 'POST' , url : '/api/git/codeComment/' , data : dataToSend}).
     then(function(response) {
       $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'};
+      if (!angular.isDefined($scope.comments[response.data.path])) {
+        $scope.comments[response.data.path] = [];
+      }
       $scope.comments[response.data.path].push(response.data);
     });
   };
@@ -143,6 +146,46 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     } else {
       $anchorScroll();
     }
+  };
+
+  $scope.patchComment = function(c) {
+    $http({method : 'PATCH' , url : '/api/git/codeComment/' + c.pk + '/' , data : c}).
+    then(function(response) {
+      $scope.form.editCommentPK = -1;
+    });
+  };
+
+  $scope.setEditCursor = function(c) {
+    $scope.form.backupText = c.text;
+    $scope.form.editCommentPK = c.pk;
+    $scope.commentEditor.file = -1;
+  };
+  $scope.cancelCommentEditor = function(pk) {
+    for(key in $scope.comments){
+      var cs = $scope.comments[key];
+      for (var i = 0; i < cs.length; i++) {
+        if (cs[i].pk == pk){
+          $scope.comments[key][i].text = $scope.form.backupText;
+        }
+      }
+    }
+    $scope.form.editCommentPK = -1;
+  }
+
+  $scope.deleteComment = function(pk) {
+    $http({method : "DELETE" , url : '/api/git/codeComment/' + pk + '/'}).
+    then((function(pk) {
+      return function(response) {
+        for(key in $scope.comments){
+          var cs = $scope.comments[key];
+          for (var i = 0; i < cs.length; i++) {
+            if (cs[i].pk == pk){
+              $scope.comments[key].splice(i,1);
+            }
+          }
+        }
+      }
+    })(pk));
   };
 
   $scope.mouseOn = function(fileIndex , lineIndex) {
@@ -236,7 +279,7 @@ app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside ,
   // settings main page controller
 
   var getState = function(input){
-    parts = input.name.split('.');
+    var parts = input.name.split('.');
     // console.log(parts);
     return input.name.replace('app' , 'projectManagement')
   }
@@ -245,8 +288,8 @@ app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside ,
 
   $scope.buildMenu = function(apps){
     for (var i = 0; i < apps.length; i++) {
-      a = apps[i];
-      parts = a.name.split('.');
+      var a = apps[i];
+      var parts = a.name.split('.');
       if (a.module != 10 || parts.length != 3 || parts[1] != 'GIT') {
         continue;
       }
@@ -256,7 +299,7 @@ app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside ,
     }
   }
 
-  as = $permissions.app();
+  var as = $permissions.app();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {
@@ -266,7 +309,7 @@ app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside ,
   };
 
   $scope.isActive = function(index){
-    app = $scope.apps[index]
+    var app = $scope.apps[index]
     if (angular.isDefined($state.params.app)) {
       return $state.params.app == app.name.split('.')[2]
     } else {

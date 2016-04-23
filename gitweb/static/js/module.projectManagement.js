@@ -31,8 +31,8 @@ app.controller('projectManagement.menu' , function($scope , $users , Flash , $pe
 
   $scope.buildMenu = function(apps){
     for (var i = 0; i < apps.length; i++) {
-      a = apps[i];
-      parts = a.name.split('.');
+      var a = apps[i];
+      var parts = a.name.split('.');
       if (a.module != 10 || a.name.indexOf('app') == -1 || parts.length != 2) {
         continue;
       }
@@ -42,7 +42,7 @@ app.controller('projectManagement.menu' , function($scope , $users , Flash , $pe
     }
   }
 
-  as = $permissions.app();
+  var as = $permissions.app();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {
