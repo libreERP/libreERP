@@ -23,10 +23,10 @@ code{
   padding:0px !important;
 }
 .codeAdded .hljs , .codeAdded{
-  background: #c6f0c0;
+  background: #ddffdd;
 }
 .codeDeleted .hljs , .codeDeleted{
-  background: #f0d7c0;
+  background: #ffdddd;
 }
 
 .codeTable{

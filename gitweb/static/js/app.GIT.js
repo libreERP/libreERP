@@ -96,6 +96,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 });
 
 app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input, $anchorScroll, $location , $users) {
+  $scope.loading = true;
   $scope.commit = input;
   $scope.mouseOver = {file  : -1 , line : -1};
   $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'}; // editor for textarea and preview for the preview
@@ -103,10 +104,9 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
   $scope.form = {comment : '' , editCommentPK : -1 , backupText : ''};
   $scope.me = $users.get('mySelf');
 
-  $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
-  then(function(response) {
+  $scope.parseComments = function() {
     $scope.comments = {};
-    for (var i = 0; i < response.data.length; i++) {
+    for (var i = 0; i < $scope.rawComments.length; i++) {
       var c = response.data[i];
       if (angular.isDefined($scope.comments[c.path])) {
         $scope.comments[c.path].push(c);
@@ -115,9 +115,13 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
         $scope.comments[c.path].push(c);
       }
     }
+  }
+
+  $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
+  then(function(response) {
+    $scope.rawComments = response.data;
+    $scope.parseComments();
   });
-
-
 
   $scope.addComment = function() {
     if ($scope.commentEditor.text.length == 0) {
@@ -268,6 +272,7 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
         }
       }
       $scope.lineNums[f.path] = lineNums;
+      $scope.loading = false;
     }
   });
 
