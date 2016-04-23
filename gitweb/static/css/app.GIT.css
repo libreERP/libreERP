@@ -31,6 +31,7 @@ code{
 
 .codeTable{
   width:96%;
+  min-width: 1250px;
   margin-left:2%;
   margin-bottom:10px;
   border:solid 2px #b5b5b5;

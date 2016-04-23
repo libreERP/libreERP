@@ -9,16 +9,16 @@
         </h3>
     </div>
     <div class="col-md-3 pull-right" style="padding-right:40px;color:white;">
-        <div class="col-md-7" style="padding-top:15px;">
+        <div class="col-md-8" style="padding-top:15px;">
             <span class="pull-right">{{commit.user | getName}}</span>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <img ng-src="{{commit.user | getDP}}" class="img-circle pull-right" width="50"/>
         </div>
     </div>
 </div>
-<div class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:90vh;">
-    <div class="row">
+<div class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:90vh;width:100%;">
+    <div class="row" style="padding:10px;">
         <div ng-repeat="(key , val) in commitData.files">
             <div class="col-md-1">
                 <span class="label label-warning col-md-6">-{{val.deletions}}</span>
@@ -41,14 +41,34 @@
                     </td>
                 </tr>
                 <tr ng-repeat="line in d.diff.split('\n') track by $index" ng-if="$index>1">
-                    <td style=" width:35px;padding:2px;">
-                        {{$index}}
+                    <td style=" width:35px;padding:2px;position:relative;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="addComment(data.diffs.indexOf(d) , $index)">
+                        <span style="padding:5px;background:#0f8a74;position:absolute;left:-30px;color:white;width:30px;height:24px;cursor:pointer;top:0px;"
+                        ng-if="mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index" ng-click="addComment(data.diffs.indexOf(d) , $index)"><i class="fa fa-plus pull-right"></i></span>
+                        <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][0]}}</span>
                     </td>
-                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;">
-                        {{$index}}
+                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="addComment(data.diffs.indexOf(d) , $index)">
+                      <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][1]}}</span>
                     </td>
                     <td class="{{line[0]=='+' ? 'codeAdded':''}} {{line[0]=='-' ?'codeDeleted':''}}" style="margin:0px;">
                         <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
+                        <div class="row" style="background:#eee;padding:10px;margin:0px;" ng-if="commentEditor.file == data.diffs.indexOf(d) && commentEditor.line == $index">
+                          <div class="col-md-11">
+                            <textarea class="form-control" rows="5" cols="40"></textarea>
+                          </div>
+                          <div class="col-md-1" style="padding:0px;">
+                            <div class="btn-group-vertical">
+                              <button type="button" class="btn btn-default">
+                                Send <i class="fa fa-paper-plane"></i>
+                              </button>
+                              <button type="button" class="btn btn-default">
+                                Preview <i class="fa fa-print"></i>
+                              </button>
+                              <button type="button" class="btn btn-default">
+                                Cancel <i class="fa fa-close"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                     </td>
                 </tr>
             </table>
