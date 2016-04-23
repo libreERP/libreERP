@@ -21,7 +21,7 @@
 </div>
 <div ng-if="!loading" class="modal-body" id="postModalBody" style="position:absolute;overflow:auto;height:92vh;width:100%;">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div ng-repeat="(key , val) in commitData.files">
           <div class="col-md-1">
             <span class="label label-warning col-md-6">-{{val.deletions}}</span>
@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="row text-right" style="padding-right:20px;">
           <h3><i class="octicon octicon-git-branch"></i> {{commit.branch}} <br></h3>
           <span>{{commit.sha.substring(commit.sha.length-10 , commit.sha.length)}}</span> <br>

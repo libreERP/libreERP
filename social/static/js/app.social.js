@@ -136,7 +136,7 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
     return;
   }
   console.log($scope.data);
-  postUrl = '/api/social/post/' + $scope.data.pk
+  var postUrl = '/api/social/post/' + $scope.data.pk
   $scope.url = postUrl;
   if ($scope.onDelete.length != 0) { // if the post aside is initiated by the notification system then the refreshed data is already fetched by it
     // and passed into input as data but if we are opening it from the feeds list then getting the latest post object
@@ -160,7 +160,7 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
   $scope.possibleCommentHeight = 70; // initial height percent setting
   $scope.textToComment = "";
 
-  tagged = [];
+  var tagged = [];
   console.log($scope.data);
   for (var i = 0; i < $scope.data.tagged.length; i++) {
     tagged.push({
@@ -188,10 +188,10 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
     $scope.isOwner = false;
   }
   setTimeout(function() {
-    postBodyHeight = $("#postModalBody").height();
-    inputHeight = $("#commentInput").height();
-    winHeight = $(window).height();
-    defaultHeight = postBodyHeight + 5.7 * inputHeight;
+    var postBodyHeight = $("#postModalBody").height();
+    var sinputHeight = $("#commentInput").height();
+    var winHeight = $(window).height();
+    var defaultHeight = postBodyHeight + 5.7 * inputHeight;
     $scope.commentsHeight = Math.floor(100 * (winHeight - defaultHeight) / winHeight);
     $scope.$apply();
     scroll("#commentsArea");
@@ -202,14 +202,14 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
     var nodeUrl = '/api/social/';
     if (signal.action == 'created') {
       if (typeof signal.parent == 'number') {
-        updateType = signal.type.split('.')[1];
+        var updateType = signal.type.split('.')[1];
 
         if (updateType == 'commentLike') {
-          pk = signal.parent;
-          url = nodeUrl + $scope.content + 'Comment';
+          var pk = signal.parent;
+          var url = nodeUrl + $scope.content + 'Comment';
         } else {
-          pk = signal.id;
-          url = nodeUrl + updateType;
+          var pk = signal.id;
+          var url = nodeUrl + updateType;
         }
         $http({
           method: 'GET',
@@ -231,7 +231,7 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
               }).
               then(function(response) {
                 for (var i = 0; i < $scope.data.comments.length; i++) {
-                  if ($scope.data.comments[i].url.indexOf(url + '/' + pk + '/') != -1) {
+                  if ($scope.data.comments[i].pk == pk) {
                     $scope.data.comments[i].likes.push(response.data);
                   }
                 }
@@ -245,8 +245,8 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
           url: '/api/PIM/notification/' + signal.id + '/'
         }).
         then(function(response) {
-          parts = response.data.shortInfo.split(':');
-          updateType = parts[0];
+          var parts = response.data.shortInfo.split(':');
+          var updateType = parts[0];
           if (updateType == $scope.content + 'Like') {
             $http({
               method: 'GET',
@@ -275,12 +275,12 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
       }
     } else if (signal.action == 'deleted') {
       if (typeof signal.parent == 'number') {
-        id = signal.id;
+        var id = signal.id;
 
       } else {
-        id = signal.objID;
+        var id = signal.objID;
       }
-      updateType = signal.type.split('.')[1];
+      var updateType = signal.type.split('.')[1];
       if (updateType == $scope.content + 'Comment') {
 
         for (var i = 0; i < $scope.data.comments.length; i++) {
@@ -305,7 +305,7 @@ app.controller('controller.social.aside.post', function($scope, $uibModalInstanc
         for (var i = 0; i < $scope.data.comments.length; i++) {
           for (var j = 0; j < $scope.data.comments[i].likes.length; j++) {
             // console.log(nodeUrl + updateType + '/' + signal.id);
-            if ($scope.data.comments[i].likes[j].url.indexOf(nodeUrl + updateType + '/' + signal.id) != -1) {
+            if ($scope.data.comments[i].likes[j].pk == signal.id) {
               $scope.data.comments[i].likes.splice(j, 1);
             }
           }

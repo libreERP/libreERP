@@ -285,24 +285,7 @@ class profileViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
 
-def notify(pk ,rpo , typ):
-    """
-    Here the args are : 1. pk , 2. Type : commitNotification or commitComment
-    """
-    users = []
-    for p in rpo.perms.all():
-        users.append(p.user)
-    for g in rpo.groups.all():
-        for u in g.users.all():
-            users.append(u)
-    for u in users:
-        print "will notify to " ,  u.username , 'about:' , typ
-        requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
-            json={
-              'topic': 'service.git.'+u.username,
-              'args': [{'pk' : pk , 'type' : typ}]
-            }
-        )
+
 
 class gitoliteNotificationApi(APIView):
     """
@@ -345,7 +328,7 @@ class commitNotificationViewSet(viewsets.ModelViewSet):
     serializer_class = commitNotificationSerializer
     queryset = commitNotification.objects.all().order_by('-time')
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['id']
+    filter_fields = ['id' , 'sha']
 
 class codeCommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, isOwnerOrReadOnly)

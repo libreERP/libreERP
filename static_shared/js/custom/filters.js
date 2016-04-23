@@ -68,6 +68,8 @@ app.filter('getIcon' , function(){
         return 'fa-facebook-square';
       case 'payroll':
         return 'fa-money'
+      case 'git':
+        return 'fa-git'
       default:
         return 'fa-bell-o';
     }

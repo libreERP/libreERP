@@ -1,14 +1,17 @@
-<li class="container-fluid navBarInfoList" >
-  <a href="" ng-click="openNotification()" class="row" style="position: relative; top:-7px; text-decoration:none !important;">
+<li class="container-fluid navBarInfoList" ng-click="openNotification()">
+  <a href="" class="row" style="position: relative; top:-7px; text-decoration:none !important;">
     <i class="fa {{data.originator | getIcon:this}} fa-2x"></i>
     <div class="col-md-11 pull-right" style="position: relative; top:-10px">
-      <span class="text-muted">{{data.originator | humanize}}</span><small style="position:absolute;right:0px;" class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>
+      <span ng-if="data.originator == 'social'" class="text-muted">{{data.originator | humanize}}</span>
+      <span ng-if="data.originator == 'git'" class="text-muted">{{commit.repo.name}}</span>
+      <small style="position:absolute;right:0px;"class="pull-right text-muted">{{data.created | timeAgo}} <i class="fa fa-clock-o "></i></small>
       <br>
       <div ng-if="notificationType == 'postLike'"> {{friend | getName}} <span style="color:#676767;"> {{data.multi ? 'also' :''}} Liked your post </span> {{notificationData.text | limitTo:8}}</div>
       <div ng-if="notificationType == 'postComment'"> {{friend | getName}} <span style="color:#676767;"> {{data.multi ? 'also' :''}} commented on your post </span> </div>
       <div ng-if="notificationType == 'pictureLike'"> {{friend | getName}} <span style="color:#676767;">  {{data.multi ? 'also' :''}} Liked your photo </span></div>
       <div ng-if="notificationType == 'pictureComment'"> {{friend | getName}} <span style="color:#676767;">  {{data.multi ? 'also' :''}} commented on your photo </span> </div>
       <div ng-if="notificationType == 'commentLike'"> {{friend | getName}} <span style="color:#676767;">  {{data.multi ? 'also' :''}} Liked your comment </span> </div>
+      <div ng-if="notificationType == 'codeComment'"> {{codeComment.user | getName}} <span style="color:#676767;">  {{data.multi ? 'also' :''}} Made a new comment </span> </div>
       <div ng-if="notificationType == 'default'"> {{data.shortInfo | limitTo:60 }}</div>
     </div>
   </a>

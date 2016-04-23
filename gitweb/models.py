@@ -3,6 +3,11 @@ from django.contrib.auth.models import *
 from django.db import models
 import datetime
 import django.utils.timezone
+from django.db.models.signals import post_save , pre_delete
+from django.dispatch import receiver
+import requests
+from django.conf import settings as globalSettings
+from PIM.models import notification
 # Create your models here.
 
 class repoPermission(models.Model):
@@ -56,3 +61,69 @@ class codeComment(models.Model):
     text = models.CharField(max_length = 1500 , default = '')
     path = models.CharField(max_length = 250 , blank = True)
     line = models.PositiveIntegerField(default=-1)
+    repo = models.ForeignKey(repo , null = True)
+
+
+def notify(type , pk , action , sha , user):
+    """
+        to send the notification object
+    """
+    print "will notify to " + user.username
+    requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+        json={
+          'topic': 'service.notification.' + user.username,
+          'args': [{'type' : type ,'pk': pk , 'action' : action , 'parent' : sha}]
+        }
+    )
+def notifyUpdates(type , action , subscribers , instance):
+    """
+        to send the updates to aside window
+    """
+    for sub in subscribers:
+        if sub != instance.user:
+            print "will update " + sub.username
+            requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+                json={
+                  'topic': 'service.updates.' + sub.username,
+                  'args': [{'type' : type ,'parent': instance.sha , 'action' : action , 'pk' : instance.pk , 'repo'  : instance.repo.pk}]
+                }
+            )
+
+def getSubscribers(rpo):
+    users = []
+    for p in rpo.perms.all():
+        users.append(p.user)
+    for g in rpo.groups.all():
+        for u in g.users.all():
+            users.append(u)
+    return users
+
+
+def sendNotificationsAndUpdates(sender , instance , mode):
+    subscribers = getSubscribers(instance.repo)
+    shortInfo = sender.__name__
+    notifyUpdates( 'git.' + shortInfo , mode , subscribers , instance)
+    shortInfo += ':' + str(instance.pk) + ':' + str(instance.sha)
+    for s in subscribers:
+        if s == instance.user:
+            continue
+        n , new = notification.objects.get_or_create(user = s , domain = 'APP' , originator = 'git' , shortInfo = shortInfo)
+        if new:
+            print "new" , n.pk
+            notify('git' , n.pk , mode , instance.sha , s )
+        if mode == 'deleted':
+            n = notification.objects.filter(user = s ,domain = 'APP' , originator = 'git' , shortInfo = shortInfo)
+            if n.count() != 0:
+                for i in n:
+                    print "deleted" , i.pk
+                    notify('git' , i.pk , mode , instance.sha , s)
+                n.delete()
+
+@receiver(post_save, sender=codeComment, dispatch_uid="server_post_save")
+def gitCreatedUpdate(sender, instance, **kwargs):
+    sendNotificationsAndUpdates(sender , instance , 'created')
+
+
+@receiver(pre_delete, sender=codeComment, dispatch_uid="server_post_save")
+def socialDeletedUpdate(sender, instance, **kwargs):
+    sendNotificationsAndUpdates(sender , instance , 'deleted')

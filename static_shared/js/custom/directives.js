@@ -87,7 +87,7 @@ app.directive('notificationStrip', function () {
       data : '=',
     },
     controller : function($scope , $http , $users , $aside ){
-      parts = $scope.data.shortInfo.split(':');
+      var parts = $scope.data.shortInfo.split(':');
       // console.log(parts);
       if(typeof parts[1] == 'undefined'){
         $scope.notificationType = 'default';
@@ -96,7 +96,7 @@ app.directive('notificationStrip', function () {
       }
       // console.log($scope.data);
       // console.log($scope.notificationType);
-      nodeUrl = '/api/social/' + $scope.notificationType + '/'
+      var nodeUrl = '/api/social/' + $scope.notificationType + '/'
       if(typeof parts[1] != 'undefined' && $scope.data.originator == 'social'){
         // console.log(nodeUrl + parts[1]);
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
@@ -105,9 +105,9 @@ app.directive('notificationStrip', function () {
           console.log(response.data);
           console.log($scope.notificationType);
           if ($scope.notificationType == 'postComment') {
-            url = '/api/social/post/' + response.data.parent + '/';
+            var url = '/api/social/post/' + response.data.parent + '/';
           }else if ($scope.notificationType == 'pictureComment') {
-            url = '/api/social/picture/' + response.data.parent + '/';
+            var url = '/api/social/picture/' + response.data.parent + '/';
           }
           $http({method: 'GET' , url : url}).then(function(response){
             $scope.notificationData = response.data;
@@ -120,6 +120,19 @@ app.directive('notificationStrip', function () {
             };
           });
         });
+      }else if (typeof parts[1] != 'undefined' && $scope.data.originator == 'git') {
+        if (parts[0] == 'codeComment') {
+          var url = '/api/git/commitNotification/?sha=' + parts[2];
+          $http({method : 'GET' , url : url}).
+          then(function(response) {
+            $scope.commit = response.data[0];
+          });
+          var url = '/api/git/codeComment/' + parts[1] + '/';
+          $http({method : 'GET' , url : url}).
+          then(function(response) {
+            $scope.codeComment = response.data;
+          });
+        }
       };
 
       $scope.openAlbum = function(position, backdrop , input) {
@@ -169,6 +182,22 @@ app.directive('notificationStrip', function () {
           }
         }).result.then(postClose, postClose);
       }
+
+      $scope.openCommit = function() {
+        $aside.open({
+          templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
+          position:'left',
+          size : 'xxl',
+          backdrop : true,
+          resolve : {
+            input : function() {
+              return $scope.commit;
+            }
+          },
+          controller : 'projectManagement.GIT.exploreNotification',
+        })
+      }
+
       $scope.openNotification = function(){
         $http({method: 'PATCH' , url : '/api/PIM/notification/'+$scope.data.pk +'/' , data : {read : true}}).
         then(function(response){
@@ -178,9 +207,9 @@ app.directive('notificationStrip', function () {
         if ($scope.notificationType == 'postLike' || $scope.notificationType == 'postComment') {
           $scope.openPost('right', true , {data: $scope.notificationData , onDelete: function(){return;}})
         } else if ($scope.notificationType == 'pictureLike' || $scope.notificationType == 'pictureComment') {
-
-          console.log($scope.objParent);
           $scope.openAlbum('right', true , {data: $scope.notificationData , parent : $scope.objParent , onDelete: ""})
+        }else if ($scope.notificationType == 'codeComment') {
+          $scope.openCommit()
         }
       }
     },

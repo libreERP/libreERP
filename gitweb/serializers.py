@@ -9,7 +9,7 @@ from API.permissions import *
 class codeCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = codeComment
-        fields = ('pk' , 'text' , 'path' , 'created' , 'user' , 'line')
+        fields = ('pk' , 'text' , 'path' , 'created' , 'user' , 'line' , 'repo')
         read_only_fields = ('user')
     def create(self , validated_data):
         c = codeComment(**validated_data)

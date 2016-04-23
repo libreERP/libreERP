@@ -11,7 +11,7 @@ connection.onopen = function (session) {
     var status = args[0];
     var msg = args[1];
     var friend = args[2];
-    console.log(args);
+    // console.log(args);
     // console.log("event for 'onhello' received: " + msg + " and the status is " + status);
     var scope = angular.element(document.getElementById('chatWindow'+friend)).scope();
     if (typeof scope !='undefined' ) {
@@ -50,7 +50,7 @@ connection.onopen = function (session) {
   }
 
   processUpdates = function(args){
-    console.log(args);
+    // console.log(args);
     var scope = angular.element(document.getElementById('aside')).scope();
     if (typeof scope != 'undefined') {
       scope.$apply(function() {

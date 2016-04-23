@@ -190,14 +190,14 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     // signal is passed by the WAMP processor for real time notification delivery.
     // console.log("going to fetch notifications");
     // console.log(toFetch);
-    url = '/api/PIM/notification/';
+    // console.log(signal);
+    var url = '/api/PIM/notification/';
     $scope.method = 'GET';
     if (typeof signal != 'undefined') {
-      url = url + signal.id +'/';
-      // console.log(signal);
+      url = url + signal.pk +'/';
       if (signal.action == 'deleted') {
         for (var i = 0; i < $scope.rawNotifications.length; i++) {
-          if($scope.rawNotifications[i].url.indexOf(url) !=-1){
+          if($scope.rawNotifications[i].pk == signal.pk){
             // console.log("found");
             $scope.rawNotifications.splice(i , 1);
           }
@@ -217,23 +217,20 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     $scope.rawNotifications = [];
     $http({method: $scope.method, url: url}).
     then(function(response) {
-      for (var i = 0; i < response.data.length; i++) {
-        var notification = response.data[i];
-        $scope.rawNotifications.push(notification);
-      }
+      $scope.rawNotifications = response.data;
       $scope.refreshNotification();
     });
   };
 
   $scope.refreshNotification = function(){
-    notificationParent = [];
+    var notificationParent = [];
     $scope.notifications = [];
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
       var notification = $scope.rawNotifications[i];
-      parts = notification.shortInfo.split(':');
-      parentPk = parts[2];
-      notificationType = parts[0];
-      parentNotificationIndex = notificationParent.indexOf(parentPk+':'+notificationType);
+      var parts = notification.shortInfo.split(':');
+      var parentPk = parts[2];
+      var notificationType = parts[0];
+      var parentNotificationIndex = notificationParent.indexOf(parentPk+':'+notificationType);
       if ( parentNotificationIndex == -1){ // this is new notification for this parent of notification type
         $scope.rawNotifications[i].hide = false;
       } else { // there is already a notification for this parent
@@ -242,7 +239,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
       notificationParent.push(parentPk+':'+notificationType);
     }
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
-      notification = $scope.rawNotifications[i];
+      var notification = $scope.rawNotifications[i];
       if (notification.hide == false) {
         notification.multi = false;
         for (var j = i+1; j < $scope.rawNotifications.length; j++) {
@@ -263,6 +260,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   };
 
   $scope.notificationClicked = function(pk){
+    // one the notification was clikced the directive will call this function. here i will mark the notification in the dropdown read
     for (var i = 0; i < $scope.rawNotifications.length; i++) {
       if ($scope.rawNotifications[i].pk == pk){
         $scope.rawNotifications[i].read = true;

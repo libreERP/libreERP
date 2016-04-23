@@ -56,7 +56,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
           $scope.notifications[i].dateShow = false;
         }
       }
-      $scope.exploreNotification(0)
+      //$scope.exploreNotification(0)
     });
   }
 
@@ -103,11 +103,12 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
   $scope.lineNums = {}
   $scope.form = {comment : '' , editCommentPK : -1 , backupText : ''};
   $scope.me = $users.get('mySelf');
+  $scope.rawComments = []
 
   $scope.parseComments = function() {
     $scope.comments = {};
     for (var i = 0; i < $scope.rawComments.length; i++) {
-      var c = response.data[i];
+      var c =  $scope.rawComments[i];
       if (angular.isDefined($scope.comments[c.path])) {
         $scope.comments[c.path].push(c);
       }else {
@@ -123,6 +124,29 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     $scope.parseComments();
   });
 
+  $scope.refreshAside = function(signal) {
+    if (signal.parent == $scope.commit.sha && signal.repo == $scope.commit.repo.pk) {
+      if (signal.type == 'git.codeComment') {
+        if (signal.action == 'created') {
+          $http({method : 'GET' , url : '/api/git/codeComment/'+ signal.pk +'/'}).
+          then(function(response) {
+            $scope.rawComments.push(response.data);
+            $scope.parseComments()
+            return;
+          });
+        }else {
+          for (var i = 0; i < $scope.rawComments.length; i++) {
+            if($scope.rawComments[i].pk == signal.pk){
+              $scope.rawComments.splice(i, 1);
+              $scope.parseComments();
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+
   $scope.addComment = function() {
     if ($scope.commentEditor.text.length == 0) {
       return;
@@ -132,14 +156,13 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
       text : $scope.commentEditor.text,
       path : $scope.data.diffs[$scope.commentEditor.file].path,
       line : $scope.commentEditor.line,
+      repo : $scope.commit.repo.pk,
     }
     $http({method : 'POST' , url : '/api/git/codeComment/' , data : dataToSend}).
     then(function(response) {
       $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'};
-      if (!angular.isDefined($scope.comments[response.data.path])) {
-        $scope.comments[response.data.path] = [];
-      }
-      $scope.comments[response.data.path].push(response.data);
+      $scope.rawComments.push(response.data);
+      $scope.parseComments();
     });
   };
 
@@ -180,12 +203,11 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     $http({method : "DELETE" , url : '/api/git/codeComment/' + pk + '/'}).
     then((function(pk) {
       return function(response) {
-        for(key in $scope.comments){
-          var cs = $scope.comments[key];
-          for (var i = 0; i < cs.length; i++) {
-            if (cs[i].pk == pk){
-              $scope.comments[key].splice(i,1);
-            }
+        for (var i = 0; i < $scope.rawComments.length; i++) {
+          if($scope.rawComments[i].pk == pk){
+            $scope.rawComments.splice(i, 1);
+            $scope.parseComments();
+            return;
           }
         }
       }

@@ -105,12 +105,12 @@ class social(models.Model):
 
 User.social = property(lambda u : social.objects.get_or_create(user = u)[0])
 
-def notify(type , id , action , instance):
+def notify(type , pk , action , instance):
     print "will send to " + instance.parent.user.username
     requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
         json={
           'topic': 'service.notification.' + instance.parent.user.username,
-          'args': [{'type' : type ,'id': id , 'action' : action , 'objID' : instance.pk}]
+          'args': [{'type' : type ,'pk': pk , 'action' : action , 'objID' : instance.pk}]
         }
     )
 def notifyUpdates(type , action , subscribers , instance):
