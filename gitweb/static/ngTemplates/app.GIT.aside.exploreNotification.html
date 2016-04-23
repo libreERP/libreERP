@@ -25,13 +25,13 @@
                 <span class="label label-success col-md-6">+{{val.insertions}}</span>
             </div>
             <div class="col-md-11">
-                {{key}}
+                <span ng-click="gotoAnchor(key)" style="cursor:pointer;">{{key}} <span ng-if="comments[key].length>0" style="margin-left:20px;"><i class="fa fa-comment-o"></i> {{comments[key].length}}</span></span>
             </div>
         </div>
     </div>
     <hr>
     <div class="row">
-        <div ng-repeat="d in data.diffs">
+        <div ng-repeat="d in data.diffs" id="anchor-{{d.path}}">
             <table class="codeTable">
                 <tr style="background:#f5f5f5;">
                     <td style="padding:6px;border-bottom:solid 2px #b5b5b5;"></td>
@@ -41,34 +41,52 @@
                     </td>
                 </tr>
                 <tr ng-repeat="line in d.diff.split('\n') track by $index" ng-if="$index>1">
-                    <td style=" width:35px;padding:2px;position:relative;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="addComment(data.diffs.indexOf(d) , $index)">
+                    <td style=" width:35px;padding:2px;position:relative;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
                         <span style="padding:5px;background:#0f8a74;position:absolute;left:-30px;color:white;width:30px;height:24px;cursor:pointer;top:0px;"
-                        ng-if="mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index" ng-click="addComment(data.diffs.indexOf(d) , $index)"><i class="fa fa-plus pull-right"></i></span>
+                        ng-if="mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)"><i class="fa fa-plus pull-right"></i></span>
                         <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][0]}}</span>
                     </td>
-                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="addComment(data.diffs.indexOf(d) , $index)">
+                    <td style="border-right:solid 2px #b5b5b5; width:35px;padding:2px;cursor:pointer;background:{{mouseOver.file == data.diffs.indexOf(d) && mouseOver.line == $index ? '#eee' :''}}" ng-mouseenter="mouseOn( data.diffs.indexOf(d) , $index)" ng-mouseleave="mouseLeave( data.diffs.indexOf(d) , $index)" ng-click="showCommentBox(data.diffs.indexOf(d) , $index)">
                       <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][1]}}</span>
                     </td>
                     <td class="{{line[0]=='+' ? 'codeAdded':''}} {{line[0]=='-' ?'codeDeleted':''}}" style="margin:0px;">
-                        <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
-                        <div class="row" style="background:#eee;padding:10px;margin:0px;" ng-if="commentEditor.file == data.diffs.indexOf(d) && commentEditor.line == $index">
-                          <div class="col-md-11">
-                            <textarea class="form-control" rows="5" cols="40"></textarea>
-                          </div>
-                          <div class="col-md-1" style="padding:0px;">
-                            <div class="btn-group-vertical">
-                              <button type="button" class="btn btn-default">
-                                Send <i class="fa fa-paper-plane"></i>
-                              </button>
-                              <button type="button" class="btn btn-default">
-                                Preview <i class="fa fa-print"></i>
-                              </button>
-                              <button type="button" class="btn btn-default">
-                                Cancel <i class="fa fa-close"></i>
-                              </button>
+                      <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
+                      <!-- <span style="padding:0px !important;margin:0px !important;">{{line}}</span> -->
+                      <div class="row" style="background:#f2f2f2;padding:10px;margin:0px;" ng-repeat="c in comments[d.path]" ng-if="c.line==$parent.$index" >
+                        <div class="container-fluid">
+                          <div class="col-md-1" style="padding-right:40px;">
+                            <div class="row">
+                              <img ng-src="{{c.user | getDP}}" class="img-circle" width="50"/>
+                            </div>
+                            <div class="row">
+                              <span class="text-center">{{c.user | getName}}</span>
                             </div>
                           </div>
+                          <div class="col-md-11" >
+                            <span class="col-md-12" style="box-sizing:border-box;background:white !important;border:solid 1px #24ad9f;padding:10px;margin-top:10px;border-radius:3px;min-height:60px;">{{c.text}}</span>
+                          </div>
+                          <hr>
                         </div>
+                      </div>
+                      <div class="row" style="background:#eee;padding:10px;margin:0px;" ng-if="commentEditor.file == data.diffs.indexOf(d) && commentEditor.line == $index">
+                        <div class="col-md-11">
+                          <textarea class="form-control" rows="5" cols="40" ng-model="commentEditor.text" ng-if="commentEditor.mode == 'editor'"></textarea>
+                          <span ng-if="commentEditor.mode == 'preview'">{{commentEditor.text}}</span>
+                        </div>
+                        <div class="col-md-1" style="padding:0px;">
+                          <div class="btn-group-vertical">
+                            <button type="button" class="btn btn-default" ng-click="addComment()">
+                              Send <i class="fa fa-paper-plane"></i>
+                            </button>
+                            <!-- <button type="button" class="btn btn-default" ng-click="changeEditorMode()">
+                              {{ commentEditor.mode=='editor' ?'Preview':'Editor'}} <i class="fa fa-{{commentEditor.mode == 'editor'? 'print':'pencil'}}"></i>
+                            </button> -->
+                            <button type="button" class="btn btn-default" ng-click="commentEditor.line = -1">
+                              Cancel <i class="fa fa-close"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </td>
                 </tr>
             </table>

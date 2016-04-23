@@ -6,6 +6,18 @@ from .models import *
 from PIM.serializers import *
 from API.permissions import *
 
+class codeCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = codeComment
+        fields = ('pk' , 'text' , 'path' , 'created' , 'user' , 'line')
+        read_only_fields = ('user')
+    def create(self , validated_data):
+        c = codeComment(**validated_data)
+        c.user = self.context['request'].user
+        c.sha = self.context['request'].data['sha']
+        c.save()
+        return c
+
 class deviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = device

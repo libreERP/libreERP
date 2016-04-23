@@ -48,3 +48,11 @@ class commitNotification(models.Model):
     branch = models.CharField(max_length = 100 , default = 'master')
     time = models.DateTimeField(default=timezone.now)
     repo = models.ForeignKey(repo , null = False)
+
+class codeComment(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    sha = models.CharField(max_length = 50 , blank = False)
+    user = models.ForeignKey(User , null = True)
+    text = models.CharField(max_length = 1500 , default = '')
+    path = models.CharField(max_length = 250 , blank = True)
+    line = models.PositiveIntegerField(default=-1)

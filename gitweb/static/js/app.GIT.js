@@ -96,11 +96,54 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 
 });
 
-app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input) {
+app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input, $anchorScroll, $location) {
   $scope.commit = input;
   $scope.mouseOver = {file  : -1 , line : -1};
-  $scope.commentEditor = {file  : -1 , line : -1};
+  $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'}; // editor for textarea and preview for the preview
   $scope.lineNums = {}
+  $scope.form = {comment : ''};
+
+
+  $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
+  then(function(response) {
+    console.log(response.data);
+    $scope.comments = {};
+    for (var i = 0; i < response.data.length; i++) {
+      var c = response.data[i];
+      if (angular.isDefined($scope.comments[c.path])) {
+        $scope.comments[c.path].push(c);
+      }else {
+        $scope.comments[c.path] = [];
+        $scope.comments[c.path].push(c);
+      }
+    }
+  });
+
+  $scope.addComment = function() {
+    if ($scope.commentEditor.text.length == 0) {
+      return;
+    }
+    var dataToSend = {
+      sha : $scope.commit.sha,
+      text : $scope.commentEditor.text,
+      path : $scope.data.diffs[$scope.commentEditor.file].path,
+      line : $scope.commentEditor.line,
+    }
+    $http({method : 'POST' , url : '/api/git/codeComment/' , data : dataToSend}).
+    then(function(response) {
+      $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'};
+      $scope.comments[response.data.path].push(response.data);
+    });
+  };
+
+  $scope.gotoAnchor = function(x) {
+    var newHash = 'anchor-' + x;
+    if ($location.hash() !== newHash) {
+      $location.hash('anchor-' + x);
+    } else {
+      $anchorScroll();
+    }
+  };
 
   $scope.mouseOn = function(fileIndex , lineIndex) {
     $scope.mouseOver = {file : fileIndex , line : lineIndex};
@@ -112,13 +155,24 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     }
   };
 
-  $scope.addComment = function(fileIndex , lineIndex) {
+  $scope.showCommentBox = function(fileIndex , lineIndex) {
     if ($scope.commentEditor.file == fileIndex && $scope.commentEditor.line == lineIndex) {
-      $scope.commentEditor = {file  : -1 , line : -1};
+      $scope.commentEditor.file = -1;
     }else {
-      $scope.commentEditor = {file : fileIndex , line : lineIndex};
+      $scope.commentEditor.file = fileIndex;
+      $scope.commentEditor.line = lineIndex;
+      $scope.commentEditor.mode = 'editor';
+      $scope.commentEditor.text = '';
     }
   };
+
+  $scope.changeEditorMode = function() {
+    if ($scope.commentEditor.mode == 'preview'){
+      $scope.commentEditor.mode = 'editor';
+    }else {
+      $scope.commentEditor.mode = 'preview';
+    }
+  }
 
   var params = {
     repo : $scope.commit.repo.pk,

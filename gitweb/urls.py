@@ -11,6 +11,7 @@ router.register(r'repo' , repoViewSet , base_name = 'repo')
 router.register(r'device' , deviceViewSet , base_name = 'device')
 router.register(r'profile' , profileViewSet , base_name = 'profile')
 router.register(r'commitNotification' , commitNotificationViewSet , base_name = 'commitNotification')
+router.register(r'codeComment' , codeCommentViewSet , base_name = 'codeComment')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
