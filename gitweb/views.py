@@ -113,7 +113,6 @@ class browseRepoApi(APIView):
     renderer_classes = (JSONRenderer,)
     def get(self , request , format = None):
         if 'mode' in request.GET:
-            print 'in Get'
             r = getRepo(repo.objects.get(pk = request.GET['repo']).name)
             mode = request.GET['mode']
             if mode == 'overview':
@@ -187,9 +186,6 @@ def generateGitoliteConf():
     for p in profile.objects.all():
         idx = 0
         for d in p.devices.all():
-            print 'writing for ' , d.name
-            print d.sshKey
-            print '===================================='
             if not os.path.isdir(os.path.join( keyDir ,str(idx))):
                 os.mkdir(os.path.join( keyDir ,str(idx)))
             f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
@@ -197,8 +193,6 @@ def generateGitoliteConf():
             idx +=1
             f.close()
     with lcd(gitoliteDir):
-        # local('dir')
-        # print "passed : " , gitoliteDir
         try:
             local('git add -A ./')
         except:
@@ -226,7 +220,6 @@ class registerDeviceApi(APIView):
             deviceName =sshKey.split()[2]
             mode = request.data['mode']
             print sshKey
-            # print mode
             user = authenticate(username =  request.data['username'] , password = request.data['password'])
             if user is not None:
                 if user.is_active:
@@ -240,7 +233,6 @@ class registerDeviceApi(APIView):
                         return Response(status=status.HTTP_200_OK)
                     gp.devices.add(d)
                     gp.save()
-                    # print gp
                     generateGitoliteConf()
             else:
                 raise NotAuthenticated(detail=None)

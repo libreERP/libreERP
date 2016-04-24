@@ -79,7 +79,6 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
       $scope.relPath = '';
     }else {
       $scope.relPath = $scope.relPath.split(i)[0] + i;
-      console.log($scope.relPath);
     }
     $scope.fetchFileList()
   }
@@ -119,7 +118,6 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
       $http({method : 'GET' , url : '/api/git/browseRepo/' , params : dataToSend}).
       then(function(response) {
         $scope.fileInView = response.data;
-        console.log($scope.fileInView);
       });
     }
   }
@@ -355,10 +353,7 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
 
 
   $scope.tableAction = function(target , action , mode){
-    console.log(target , action , mode);
-    console.log($scope.data.tableData);
     if (action == 'repoBrowser') {
-      console.log('Will open the tab now');
       for (var i = 0; i < $scope.data.tableData.length; i++) {
         if ($scope.data.tableData[i].pk == parseInt(target)){
           $scope.addTab({title : 'Browse Repo : ' + $scope.data.tableData[i].name , cancel : true , app : 'repoBrowser' , data : {pk : target , name : $scope.data.tableData[i].name} , active : true})

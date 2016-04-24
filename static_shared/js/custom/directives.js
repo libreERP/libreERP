@@ -102,8 +102,6 @@ app.directive('notificationStrip', function () {
         $http({method : 'GET' , url : nodeUrl + parts[1] + '/'}).
         then(function(response){
           $scope.friend = response.data.user;
-          console.log(response.data);
-          console.log($scope.notificationType);
           if ($scope.notificationType == 'postComment') {
             var url = '/api/social/post/' + response.data.parent + '/';
           }else if ($scope.notificationType == 'pictureComment') {
@@ -111,7 +109,6 @@ app.directive('notificationStrip', function () {
           }
           $http({method: 'GET' , url : url}).then(function(response){
             $scope.notificationData = response.data;
-            console.log($scope.notificationData);
             if ($scope.notificationType == 'pictureComment') {
               $http({method : 'GET' , url : '/api/social/album/' +  $scope.data.shortInfo.split(':')[3] + '/?user=' + $users.get($scope.notificationData.user).username}).
               then(function(response){
@@ -238,7 +235,6 @@ app.directive('chatWindow', function ($users) {
       $scope.messageToSend = "";
       $scope.status = "N"; // neutral / No action being performed
       $scope.send = function(){
-        console.log("going to publish" + $scope.messageToSend);
         msg = angular.copy($scope.messageToSend)
         if (msg!="") {
           $scope.status = "M"; // contains message
