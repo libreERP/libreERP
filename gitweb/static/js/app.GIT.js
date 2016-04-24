@@ -57,7 +57,9 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
   };
 
   $scope.refreshDashboard = function(signal) {
+    console.log(signal);
     var parts = signal.type.split(':');
+    console.log(parts);
     if (parts[0] == 'git') {
       if (parts[1] == 'commitNotification') {
         $http({method : 'GET' , url : '/api/git/commitNotification/' + signal.pk + '/'}).
@@ -67,6 +69,7 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
         })
       }
     }
+    console.log(JSON.stringify(signal));
   };
 
   $scope.fetchNotifications = function() {

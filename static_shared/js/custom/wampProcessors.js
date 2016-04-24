@@ -89,7 +89,7 @@ connection.onopen = function (session) {
   session.subscribe('service.dashboard.'+wampBindName, processDashboardUpdates).then(
     // for the various dashboard updates
     function (sub) {
-      console.log("subscribed to topic 'updates'");
+      console.log("subscribed to topic 'dashboard'");
     },
     function (err) {
       console.log("failed to subscribed: " + err);
