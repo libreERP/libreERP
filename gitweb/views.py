@@ -285,7 +285,6 @@ def notifyUpdates(instance,sha,type):
         type : commitNotification,
     """
     for sub in getSubscribers(instance.repo):
-        print "will update " + sub.username
         requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
             json={
               'topic': 'service.dashboard.' + sub.username,
