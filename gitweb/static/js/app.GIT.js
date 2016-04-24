@@ -147,9 +147,15 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
         if (signal.action == 'created') {
           $http({method : 'GET' , url : '/api/git/codeComment/'+ signal.pk +'/'}).
           then(function(response) {
+            for (var i = 0; i < $scope.rawComments.length; i++) {
+              if ($scope.rawComments[i].pk == response.data.pk){
+                $scope.rawComments[i] = response.data;
+                $scope.parseComments()
+                return;
+              }
+            }
             $scope.rawComments.push(response.data);
             $scope.parseComments()
-            return;
           });
         }else {
           for (var i = 0; i < $scope.rawComments.length; i++) {
