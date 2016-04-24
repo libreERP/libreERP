@@ -324,9 +324,9 @@ class gitoliteNotificationApi(APIView):
                     print sha , t , c.summary
                     if parts[3] != 'admin':
                         cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
-                        if new:
-                            notifyUpdates(cn , sha, 'git.commitNotification')
-            r.lastNotified = django.utils.timezone.now()
+                        notifyUpdates(cn , sha, 'git.commitNotification')
+                        # if new:
+            # r.lastNotified = django.utils.timezone.now()
             r.save()
         return Response(status=status.HTTP_200_OK)
 class commitNotificationViewSet(viewsets.ModelViewSet):
