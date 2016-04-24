@@ -54,7 +54,6 @@ connection.onopen = function (session) {
   };
 
   processDashboardUpdates = function(args) {
-    console.log(args);
     var scope = angular.element(document.getElementById('dashboard')).scope();
     if (typeof scope != 'undefined') {
       scope.$apply(function() {
