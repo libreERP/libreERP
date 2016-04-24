@@ -311,9 +311,9 @@ class gitoliteNotificationApi(APIView):
             if r is None:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             rpo = getRepo(repoName) # git object
-            print rpo
+            # print rpo
             dtStr = r.lastNotified.strftime('%Y-%m-%d %H:%M:%S')
-            print dtStr
+            # print dtStr
             for b in rpo.branches:
                 c_list = list(rpo.iter_commits( b , since = dtStr))
                 for c in c_list:
@@ -321,7 +321,7 @@ class gitoliteNotificationApi(APIView):
                     br = rpo.git.branch('--contains' , sha)
                     t = datetime.datetime(*time.gmtime(c.committed_date)[:6])
                     t = t.replace(tzinfo=utc)
-                    print sha , t , c.summary
+                    # print sha , t , c.summary
                     if parts[3] != 'admin':
                         cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                         if new:

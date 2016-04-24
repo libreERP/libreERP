@@ -15,7 +15,6 @@ class postViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = postSerializer
     def get_queryset(self):
-        print 'hey'
         if 'user' in self.request.GET:
             u = User.objects.get(username = self.request.GET['user'] )
             print u

@@ -103,7 +103,6 @@ def home(request):
         apps = getApps(u)
         modules = getModules(u)
     apps = apps.filter(~Q(name__startswith='configure.' )).filter(~Q(name='app.users')).filter(~Q(name__endswith='.public'))
-    # print apps , modules
     return render(request , 'ngBase.html' , {'wampServer' : globalSettings.WAMP_SERVER, 'appsWithJs' : apps.filter(haveJs=True) \
     ,'appsWithCss' : apps.filter(haveCss=True) , 'modules' : modules , 'useCDN' : globalSettings.USE_CDN})
 
@@ -135,7 +134,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if 'mode' in self.request.GET:
             if self.request.GET['mode']=="mySelf":
-                print self.request.user
                 if self.request.user.is_authenticated:
                     return User.objects.filter(username = self.request.user.username)
                 else:
@@ -154,7 +152,6 @@ class UserSearchViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if 'mode' in self.request.GET:
             if self.request.GET['mode']=="mySelf":
-                print self.request.user
                 if self.request.user.is_authenticated:
                     return User.objects.filter(username = self.request.user.username)
                 else:
