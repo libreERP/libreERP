@@ -117,7 +117,6 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     function postClose() {
       $scope.asideState.open = false;
       $scope.me = $users.get('mySelf' , true)
-      console.log($scope);
     }
 
     $aside.open({
