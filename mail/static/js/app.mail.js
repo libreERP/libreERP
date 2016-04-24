@@ -94,6 +94,18 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     });
   }
 
+  $scope.tinymceOptions = {
+    selector: 'textarea',
+    content_css : '/static/css/bootstrap.min.css',
+    inline: false,
+    plugins : 'advlist autolink link image lists charmap preview imagetools paste table insertdatetime code searchreplace ',
+    skin: 'lightgray',
+    theme : 'modern',
+    height : 500,
+    toolbar : 'saveBtn publishBtn cancelBtn headerMode bodyMode | undo redo | bullist numlist | alignleft aligncenter alignright alignjustify | outdent  indent blockquote | bold italic underline | image link',
+  };
+
+
   $scope.reply = function(mode){
     $scope.editor=!$scope.editor;
     mail = angular.copy($scope.emailInView);

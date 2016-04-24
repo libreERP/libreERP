@@ -1,7 +1,5 @@
-<div class="shaddowed card bg-white" style="min-height:750px;">
+<div class="shaddowed card bg-white" style="min-height:850px;">
   <breadcrumb></breadcrumb>
-
-
   <div class="col-md-1" style="padding:0px;">
     <button type="button" ng-click="newMail()" class="btn btn-default" style="width:95%;margin-left:5px;" >Compose <i class="fa fa-pencil-square-o"></i></button>
     <hr>
@@ -15,7 +13,6 @@
   </div>
   <div class="col-md-4">
     <ul class="nav">
-
       <li class="container-fluid" >
         <div class="row">
           <input type="text" class="form-control" placeholder="Search.." ng-model="textToSearch" ng-enter="search()">
@@ -161,8 +158,8 @@
           </div>
         </div>
         <div class="row" style="padding:10px;">
-          <div text-angular="text-angular" ng-model="editorData.body" ng-if="editorData.bodyFormat!='plain'" ></div>
-          <div text-angular="text-angular" ng-model="editorData.plainBody" ng-if="editorData.bodyFormat=='plain'" ></div>
+          <textarea ui-tinymce="tinymceOptions" ng-model="editorData.body" ng-if="editorData.bodyFormat!='plain'" ></textarea>
+          <textarea ui-tinymce="tinymceOptions" ng-model="editorData.plainBody" ng-if="editorData.bodyFormat=='plain'" ></textarea>
         </div>
       </div>
     </div>
