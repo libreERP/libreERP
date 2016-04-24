@@ -285,7 +285,21 @@ class profileViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['id']
 
-
+def notifyUpdates(instance,sha,type):
+    """
+        to send the updates to the dash board of git
+        pk : pk of the commitNotification ,
+        sha : git commit object sha,
+        type : commitNotification,
+    """
+    for sub in getSubscribers(instance.repo):
+        print "will update " + sub.username
+        requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
+            json={
+              'topic': 'service.updates.' + sub.username,
+              'args': [{'type' : type ,'sha': sha , 'action' : 'created' , 'pk' : instance.pk , 'repo'  : instance.repo.pk}]
+            }
+        )
 
 class gitoliteNotificationApi(APIView):
     """
@@ -319,7 +333,7 @@ class gitoliteNotificationApi(APIView):
                     print sha , t , c.summary
                     cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                     if new:
-                        notify(cn.pk , r , 'commitNotification')
+                        notifyUpdates(cn , sha, 'git.commitNotification')
             r.lastNotified = django.utils.timezone.now()
             r.save()
         return Response(status=status.HTTP_200_OK)
