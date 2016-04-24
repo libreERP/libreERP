@@ -288,7 +288,7 @@ def notifyUpdates(instance,sha,type):
         print "will update " + sub.username
         requests.post("http://"+globalSettings.WAMP_SERVER+":8080/notify",
             json={
-              'topic': 'service.updates.' + sub.username,
+              'topic': 'service.dashboard.' + sub.username,
               'args': [{'type' : type ,'sha': sha , 'action' : 'created' , 'pk' : instance.pk , 'repo'  : instance.repo.pk}]
             }
         )

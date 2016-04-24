@@ -6,7 +6,8 @@ app.controller('projectManagement.GIT.manage.profile' , function($scope ,$http, 
         Flash.create('success' , response.status + ' : ' + response.statusText);
         for (var i = 0; i < $scope.data.devices.length; i++) {
           if($scope.data.devices[i].pk == pk){
-            $scope.data.devices.splice(i)
+            $scope.data.devices.splice(i,1)
+            return;
           }
         }
       }
