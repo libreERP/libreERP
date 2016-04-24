@@ -189,7 +189,7 @@ def generateGitoliteConf():
         for d in p.devices.all():
             print 'writing for ' , d.name
             print d.sshKey
-            print '========================'
+            print '===================================='
             if not os.path.isdir(os.path.join( keyDir ,str(idx))):
                 os.mkdir(os.path.join( keyDir ,str(idx)))
             f = open(os.path.join( keyDir ,str(idx), p.user.username + '.pub') , 'w')
