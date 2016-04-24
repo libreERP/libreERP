@@ -35,7 +35,7 @@ DOMAIN_CHOICES = (
 class notification(models.Model):
     message = models.TextField(max_length = 300 , null=True)
     link = models.URLField(max_length = 100 , null = True)
-    shortInfo = models.CharField(max_length = 30 , null = True)
+    shortInfo = models.CharField(max_length = 250 , null = True)
     read = models.BooleanField(default = False)
     user = models.ForeignKey(User)
     domain = models.CharField(null = False , default = 'SYS' , choices = DOMAIN_CHOICES , max_length = 3)
