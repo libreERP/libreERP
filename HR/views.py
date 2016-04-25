@@ -58,7 +58,7 @@ def loginView(request):
                 if request.GET:
                     return redirect(request.GET['next'])
                 else:
-                    return redirect(reverse('home'))
+                    return redirect(reverse('ERP'))
             else:
                 authStatus = {'status' : 'warning' , 'message' : 'Your account is not active.' }
         else:
