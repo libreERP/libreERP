@@ -60,8 +60,10 @@ INSTALLED_APPS = (
     'mail', # mail application
     'businessManagement', # BM application
     'ecommerce', # ecommerce
+    'projectManagement',
     'gitweb', # github.com local server with file browsing and diff viewer
     'taskBoard',
+    'project',
 )
 
 SITE_ID = 1

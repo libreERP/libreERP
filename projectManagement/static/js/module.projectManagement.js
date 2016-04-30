@@ -5,14 +5,14 @@ app.config(function($stateProvider){
     url: "/projectManagement",
     views: {
        "": {
-          templateUrl: '/static/ngTemplates/businessManagement.html',
+          templateUrl: '/static/ngTemplates/projectManagement.html',
        },
        "menu@projectManagement": {
-          templateUrl: '/static/ngTemplates/businessManagement.menu.html',
+          templateUrl: '/static/ngTemplates/projectManagement.menu.html',
           controller : 'projectManagement.menu'
         },
         "@projectManagement": {
-          templateUrl: '/static/ngTemplates/businessManagement.dash.html',
+          templateUrl: '/static/ngTemplates/projectManagement.dash.html',
           controller : 'projectManagement'
         }
     }
