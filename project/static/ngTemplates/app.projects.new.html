@@ -5,24 +5,39 @@
     <button type="button" class="btn btn-primary">
         Save <i class="fa fa-floppy-o"></i>
     </button>
+    <h3 ng-if="form.title.length==0" class="text-muted" style="word-wrap:break-word;">Untitled..</h3>
     <h3 style="word-wrap:break-word;">{{form.title}}</h3>
-    <div class="form-group">
-        Personal :  <input type="checkbox">
-        <button type="button" class="btn btn-default btn-sm pull-right">
-            <i class="fa fa-plus"></i>  Sub task
-        </button>
-    </div>
     <hr>
-    <div class="row" ng-repeat="t in [1,2,4]">
-        <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}">
-            <i class="fa fa-check-circle-o fa-2x pull-right" style="color:#d65e72;"></i> <span style="font-size:18px;">Task {{t}}</span>
-            <i></i>
+    <div class="form-group">
+        <label>Team</label>
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model = "data.user" uib-typeahead="user as getName(user) for user in userSearch($viewValue)" placeholder="Search and select a user to add him/her in this group">
+          <span class="input-group-btn">
+            <button class="btn btn-success" type="button" ng-click="addUser()">Add <i class="fa fa-plus"></i></button>
+          </span>
+        </div>
+    </div>
+
+    <div class="row" style="padding-bottom:20px;">
+        <div class="col-md-6" ng-repeat="i in [2,3,5,6]" style="padding-top:10px;">
+            <div class="card container-fluid" style="padding-left:0px;position:relative;">
+                <div style="position:absolute;right:0px;top:0px;padding:5px;cursor:pointer;">
+                  <i class="fa fa-times" ng-click="removeUser($index)"></i>
+                </div>
+                <div class="col-md-4" style="padding-top:5px;">
+                  <img ng-src="{{1 | getDP}}" class="img-circle" alt="DP" height="50" width="50" />
+                </div>
+                <div class="col-md-8">
+                  {{1 | getName}} <br>
+                  ID : <strong>{{u}}</strong>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="col-md-8" style="position:relative;margin:0px;display:block;box-sizing: border-box;padding:0px;bottom:-10px;border-left:solid 2px #eee;">
-    <div style="overflow:auto;position: absolute; box-sizing: border-box; display: block;top:-10px;bottom:17%; width: 100%;padding-left:20px;padding-right:20px;padding-top:20px;">
-        <div class="form-group">
+<div class="col-md-8" style="position:absolute; height:100%;top:0px;right:0px;padding:0px;">
+    <div style="overflow:auto;height:80%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;">
+        <div class="form-group" style="margin-top:10px;">
           <label>Title</label>
           <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
         </div>
@@ -46,30 +61,10 @@
           <label>Description</label>
           <textarea class="form-control" rows="5" cols="40" placeholder="Description"></textarea>
         </div>
-        <div class="form-group">
-            <label>Followers</label>
-            <input type="text" class="form-control">
-        </div>
 
-        <div class="row" style="padding-bottom:20px;">
-            <div class="col-md-4" ng-repeat="i in [2,3,5,6]" style="padding-top:10px;">
-                <div class="card container-fluid" style="padding-left:0px;position:relative;">
-                    <div style="position:absolute;right:0px;top:0px;padding:5px;cursor:pointer;">
-                      <i class="fa fa-times" ng-click="removeUser($index)"></i>
-                    </div>
-                    <div class="col-md-4" style="padding-top:5px;">
-                      <img ng-src="{{1 | getDP}}" class="img-circle" alt="DP" height="50" width="50" />
-                    </div>
-                    <div class="col-md-8">
-                      {{1 | getName}} <br>
-                      ID : <strong>{{u}}</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="form-group">
-            <label>Followers</label>
-            <div class="row">
+            <label>Attachments</label>
+            <div class="container-fluid" style="padding:0px;">
                 <div class="col-md-10">
                     <input type="file" >
                 </div>
@@ -103,42 +98,33 @@
                     <span class="text-primary">SomeTextFileName.pdf</span>
                 </div>
             </div>
-        </div>
-        <hr>
-        <div class="col-md-12" style="margin-top:10px;border-top:solid 3px #eee;padding-top:20px;">
-            <ul class="timeline timeline-inverse">
-                <li ng-repeat="i in [32,5,6,4]"><i class="fa fa-commenting-o bg-blue"></i>
-                  <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> dsd ago</span>
-                    <h3 class="timeline-header" style="height:41px;">
-                        <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{1 | getDP}}" height="40px" width="40px"/>
-                        {{1 | getName}}
-                    </h3>
-                    <div class="timeline-body">
-                        fasfsdf
-                    </div>
-                    <div class="timeline-footer" >
-                        <a style="text-decoration: none;" href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                          {{data.likes.length==0? '':data.likes.length}} {{data.likes.length<=1? 'Like':'likes'}} <i class="fa fa-thumbs-o-up"></i>
-                        </a>
-                        <a href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                          {{data.comments.length==0? '' :data.comments.length}} {{data.comments.length<=1? 'Comment':'Comments'}} <i class="fa fa-comment-o"></i>
-                        </a>
-                        <span class="pull-right" ng-if="data.attachment!=null" style="margin-left:10px;">
-                          <a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a>
-                        </span>
-                        <div class="pull-right" style="display:inline;">
-                          <div ng-repeat = "user in data.tagged" class="postTags">
-                            {{1 | getName:'short'}}
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-              </li>
-            </ul>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-2">
+                    <i class="fa fa-file-text-o fa-3x"></i>
+                </div>
+                <div class="col-md-10">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-2">
+                    <i class="fa fa-file-pdf-o fa-3x"></i>
+                </div>
+                <div class="col-md-10">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-2">
+                    <i class="fa fa-file-word-o fa-3x"></i>
+                </div>
+                <div class="col-md-10">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+            </div>
         </div>
     </div>
-    <div style="margin-top:80%;display:block;padding:20px;box-sizing: border-box;padding-top:10px;background:#eee;">
+    <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;">
         <div class="row">
             <div class="col-md-10">
                 <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
