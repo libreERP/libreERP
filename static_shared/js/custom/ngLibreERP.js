@@ -130,7 +130,9 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
         $scope.settings.displayPicture = emptyFile;
         $scope.me = $users.get('mySelf');
         $scope.statusMessage = '';
+        $scope.settings.oldPassword = '';
         $scope.settings.password='';
+        $scope.settings.password2='';
         $scope.cancel = function(e) {
           $uibModalInstance.dismiss();
           // e.stopPropagation();

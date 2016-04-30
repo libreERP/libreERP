@@ -70,7 +70,7 @@ class permissionSerializer(serializers.ModelSerializer):
         if not user.is_superuser and user not in app.owners.all():
             raise PermissionDenied(detail=None)
         u = validated_data['user']
-        u.accessibleApps.all().delete()
+        permission.objects.filter(user = u).all().delete()
         for a in self.context['request'].data['apps']:
             app = application.objects.get(pk = a)
             p = permission.objects.create(app =  app, user = u , givenBy = user)

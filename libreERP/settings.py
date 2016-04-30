@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-USE_CDN = True # when turned on the application will use the cndjs.com and other similar
+USE_CDN = False # when turned on the application will use the cndjs.com and other similar
 #content delivery network for css and jss libraries
 GIT_SERVER = 'git@goryd.in'
 # Application definition
@@ -61,6 +61,7 @@ INSTALLED_APPS = (
     'businessManagement', # BM application
     'ecommerce', # ecommerce
     'gitweb', # github.com local server with file browsing and diff viewer
+    'taskBoard',
 )
 
 SITE_ID = 1

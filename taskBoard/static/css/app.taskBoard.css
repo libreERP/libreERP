@@ -1,0 +1,9 @@
+.subTask{
+    padding:15px;
+    border-left: solid 6px white;
+    cursor:pointer;
+}
+.subTask:hover, .activeTask{
+    border-left: solid 6px #aa9124;
+    background-color: #f9f9f9;
+}

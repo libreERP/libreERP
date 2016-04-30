@@ -72,7 +72,6 @@ Once setup you can run::
     $ python manage.py runserver
 
 
-test text
 this will host the app on localhost and can be browsed at http://localhost:8000/login
 
 login with id : "pradeep" , password : "123"
