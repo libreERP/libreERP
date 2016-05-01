@@ -1,0 +1,48 @@
+<div class="col-md-4" style="margin-top:10px;">
+    <button type="button" class="btn btn-default">
+        Reset
+    </button>
+    <button type="button" class="btn btn-primary" ng-click="postProject()">
+        Save <i class="fa fa-floppy-o"></i>
+    </button>
+    <h3 ng-if="form.title.length==0" class="text-muted" style="word-wrap:break-word;">Untitled..</h3>
+    <h3 style="word-wrap:break-word;">{{form.title}}</h3>
+    <hr>
+    <users-Field data="form.team" url="/api/HR/userSearch/" col="6" label="team"></users-Field>
+</div>
+<div class="col-md-8" style="position:absolute; height:100%;top:0px;right:0px;padding:0px;">
+    <div style="overflow:auto;height:80%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;">
+        <div class="form-group" style="margin-top:10px;">
+          <label>Title</label>
+          <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
+        </div>
+        <div class= "form-group col-md-12" style="padding:0px;">
+          <label class="control-label col-sm-2" style="margin-top:35px;padding:0px;">Due date</label>
+          <div class="col-md-4">
+            <div class="input-group" style="margin-top:35px;">
+              <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="form.dueDate" is-open="status.opened"  />
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control" rows="5" cols="40" placeholder="Description" ng-model="form.description"></textarea>
+        </div>
+        <media-Field data="data.files" url="/api/project/media/"></media-Field>
+    </div>
+    <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;">
+        <div class="row">
+            <div class="col-md-10">
+                <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-default col-md-12">
+                    Send <i class="fa fa-paper-plane-o"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

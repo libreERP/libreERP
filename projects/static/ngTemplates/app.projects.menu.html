@@ -1,0 +1,17 @@
+<div class="row text-center" style="padding-top:20px;">
+  <i style="cursor:pointer;" ng-click="$state.go('projectManagement.projects')" class="fa fa-archive fa-4x"></i>
+</div>
+<h4 style="text-align:center;">
+  Projects
+</h4>
+<hr>
+<div style="position:absolute;left:0px;width:100%;">
+  <ul class="nav nav-sidebar-inverse padded" style="width:100%;">
+    <li ng-repeat="app in apps" ng-class="{active: isActive($index)}">
+      <a ui-sref="{{app.state}}" class="text-center">
+          <i class="fa {{app.icon}} fa-2x pull-left"></i>
+          {{app.name.split('.')[2] | humanize}}
+      </a>
+    </li>
+  </ul>
+</div>

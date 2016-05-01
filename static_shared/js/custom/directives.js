@@ -17,7 +17,103 @@ app.directive('breadcrumb', function () {
   };
 });
 
+app.directive('usersField', function () {
+  return {
+    templateUrl: '/static/ngTemplates/usersInputField.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data :'=',
+      url : '@',
+      col : '@',
+      label : '@',
+    },
+    controller : function($scope , $state , $http , Flash){
+        if (typeof $scope.col != 'undefined') {
+            $scope.showResults = true;
+        }else{
+            $scope.showResults = false;
+        }
+        $scope.user = undefined;
+        $scope.userSearch = function(query) {
+          return $http.get( $scope.url +'?username__contains=' + query).
+          then(function(response){
+            return response.data;
+          })
+        };
+        $scope.getName = function(u) {
+          if (typeof u == 'undefined') {
+            return '';
+          }
+          return u.first_name + '  ' +u.last_name;
+        }
 
+        $scope.addUser = function() {
+          for (var i = 0; i < $scope.data.length; i++) {
+            if ($scope.data[i] == $scope.user.pk){
+              Flash.create('danger' , 'User already a member of this group')
+              return;
+            }
+          }
+          $scope.data.push($scope.user.pk);
+          $scope.user = undefined;
+        }
+    },
+  };
+});
+
+app.directive('mediaField', function () {
+  return {
+    templateUrl: '/static/ngTemplates/mediaInputField.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      data :'=',
+      url : '@',
+    },
+    controller : function($scope , $state , $http , Flash){
+        $scope.form = {mediaType : '' , url : ''}
+        $scope.switchMediaMode = function(mode) {
+            $scope.form.mediaType = mode;
+        }
+
+        $scope.getFileName = function(f) {
+            var parts = f.split('/');
+            return parts[parts.length-1];
+        }
+
+        $scope.removeMedia = function(index) {
+            $http({
+                method : 'DELETE',
+                url : $scope.url  + $scope.data[index].pk + '/'
+            }).
+            then(function(response) {
+                $scope.data.splice(index,1);
+            })
+        }
+        $scope.postMedia = function(){
+            var fd = new FormData();
+            fd.append( 'mediaType' , $scope.form.mediaType);
+            fd.append( 'link' , $scope.form.url);
+            if (['doc' , 'image' , 'video'].indexOf($scope.form.mediaType) != -1 && $scope.form.file != emptyFile) {
+                fd.append( 'attachment' ,$scope.form.file);
+            }else if ($scope.form.url == '') {
+                Flash.create('danger' , 'No file to attach');
+                return;
+            }
+            url = $scope.url;
+            $http({method : 'POST' , url : url , data : fd , transformRequest: angular.identity, headers: {'Content-Type': undefined}}).
+            then(function(response){
+                $scope.data.push(response.data);
+                $scope.form.file = emptyFile;
+                Flash.create('success', response.status + ' : ' + response.statusText);
+            }, function(response){
+                Flash.create('danger', response.status + ' : ' + response.statusText);
+            });
+        }
+    },
+  };
+});
 
 app.directive('genericForm', function () {
   return {

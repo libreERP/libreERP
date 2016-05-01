@@ -63,7 +63,7 @@ INSTALLED_APPS = (
     'projectManagement',
     'gitweb', # github.com local server with file browsing and diff viewer
     'taskBoard',
-    'project',
+    'projects',
 )
 
 SITE_ID = 1

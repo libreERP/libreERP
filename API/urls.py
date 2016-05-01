@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^PIM/', include('PIM.urls')),
     url(r'^ecommerce/', include('ecommerce.urls')),
     url(r'^git/', include('gitweb.urls')),
+    url(r'^projects/', include('projects.urls')),
 ]
