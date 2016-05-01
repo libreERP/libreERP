@@ -37,7 +37,7 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
     $scope.projectsConfig = {
       views: views,
       url: '/api/projects/project/',
-      searchField: 'pk',
+      searchField: 'title',
     }
 });
 

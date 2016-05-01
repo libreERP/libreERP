@@ -23,4 +23,4 @@ class projectViewSet(viewsets.ModelViewSet):
     serializer_class = projectSerializer
     queryset = project.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['name']
+    filter_fields = ['title']
