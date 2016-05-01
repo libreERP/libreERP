@@ -1,3 +1,23 @@
-<div class="card col-md-6">
-    {{data}}
+<div class="col-md-6" style="margin-bottom:20px;" ng-controller="projectManagement.project.item">
+  <div class="container-fluid card" style="padding:30px;padding-top:0px;">
+    <div class="row">
+      <div class="row">
+        <div class="col-md-10">
+          <h3>{{data.title}}</h3>
+        </div>
+        <div class="col-md-2" style="padding-top:20px;">
+          <i style="cursor:pointer;" class="fa fa-pencil pull-right" ng-click="edit();$event.stopPropagation();" ></i>
+          <!-- <i class="fa fa-trash-o fa-lg text-muted pull-right" ng-click="delete(data.pk , index);" style="position:relative;top:30px;right:-15px;cursor:pointer;"></i> -->
+        </div>
+      </div>
+      {{data.description}}
+      <hr>
+    </div>
+    <div class="row" style="position:relative;">
+        <strong>{{data.team.length}}</strong> Team members <br>
+        <strong>{{data.files.length}}</strong> files <br>
+        <strong>{{data.repos.length}}</strong> Repos <br>
+        <i class="fa fa-info-circle fa-4x text-primary" ng-click="rowActionClicked('projectBrowser')" style="position:absolute;right:20px;bottom:-10px;cursor:pointer;"></i>
+    </div>
+  </div>
 </div>

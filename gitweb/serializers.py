@@ -59,7 +59,7 @@ class repoSerializer(serializers.ModelSerializer):
     groups = groupPermissionSerializer(many = True , read_only = True)
     class Meta:
         model = repo
-        fields = ('pk', 'perms' , 'name' , 'groups' , 'description' )
+        fields = ('pk', 'perms' , 'name' , 'groups' , 'description' , 'project')
     def create(self , validated_data):
         u = self.context['request'].user
         has_application_permission(u , ['app.GIT' , 'app.ecommerce.repos'])

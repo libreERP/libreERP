@@ -144,9 +144,13 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
 
   if (typeof $scope.data.pk == 'undefined') {
     $scope.mode = 'new';
-    $scope.data = {users : [] , name : '' , description : '' , perms : [] , groups : []}
+    $scope.data = {users : [] , name : '' , description : '' , perms : [] , groups : [], project : undefined}
   }else {
     $scope.mode = 'edit';
+    $http({method : 'GET' , url : '/api/projects/project/' + $scope.data.project + '/'}).
+    then(function(response) {
+        $scope.data.project = response.data;
+    });
   }
 
   $scope.objectSearch = function(query) {
@@ -217,6 +221,13 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
     })
   }
 
+  $scope.projectSearch = function(query) {
+    return $http.get('/api/projects/project/?title__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  }
+
   $scope.save = function() {
     url = '/api/git/repo/'
     if ($scope.mode == 'new') {
@@ -239,6 +250,9 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       description : $scope.data.description,
       perms : perms,
       groups : groups,
+    }
+    if (typeof $scope.data.project != 'undefined' && $scope.data.project != null) {
+        dataToSend.project = $scope.data.project.pk;
     }
     $http({method : method , url : url , data : dataToSend}).
     then(function(response) {

@@ -26,7 +26,13 @@ app.config(function($stateProvider){
 
 });
 
+app.controller('projectManagement.project.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+
+});
+
 app.controller('projectManagement.projects.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+    $scope.data = {tableData : []};
     views = [{
       name: 'list',
       icon: 'fa-bars',
@@ -39,6 +45,41 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
       url: '/api/projects/project/',
       searchField: 'title',
     }
+
+    $scope.tableAction = function(target , action , mode){
+      if (action == 'projectBrowser') {
+        for (var i = 0; i < $scope.data.tableData.length; i++) {
+          if ($scope.data.tableData[i].pk == parseInt(target)){
+            $scope.addTab({title : 'Browse project : ' + $scope.data.tableData[i].title , cancel : true , app : 'projectBrowser' , data : {pk : target , name : $scope.data.tableData[i].title} , active : true})
+          }
+        }
+      }
+    }
+
+    $scope.tabs = [];
+    $scope.searchTabActive = true;
+
+    $scope.closeTab = function(index){
+      $scope.tabs.splice(index , 1)
+    }
+
+    $scope.addTab = function( input ){
+      $scope.searchTabActive = false;
+      alreadyOpen = false;
+      for (var i = 0; i < $scope.tabs.length; i++) {
+        if ($scope.tabs[i].data.pk == input.data.pk && $scope.tabs[i].app == input.app) {
+          $scope.tabs[i].active = true;
+          alreadyOpen = true;
+        }else{
+          $scope.tabs[i].active = false;
+        }
+      }
+      if (!alreadyOpen) {
+        $scope.tabs.push(input)
+      }
+    }
+
+
 });
 
 

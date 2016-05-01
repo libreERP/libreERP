@@ -38,6 +38,11 @@ app.directive('usersField', function () {
         $scope.userSearch = function(query) {
           return $http.get( $scope.url +'?username__contains=' + query).
           then(function(response){
+              for (var i = 0; i < response.data.length; i++) {
+                  if ($scope.data.indexOf(response.data[i]) != -1){
+                      response.data.splice(i,1);
+                  }
+              }
             return response.data;
           })
         };

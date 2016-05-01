@@ -26,7 +26,7 @@ class projectSerializer(serializers.ModelSerializer):
     comments = projectCommentSerializer(many = True , read_only = True)
     class Meta:
         model = project
-        fields = ('pk','dueDate', 'created' , 'title' , 'description' , 'files' , 'team', 'repos', 'comments')
+        fields = ('pk','dueDate', 'created' , 'title' , 'description' , 'files' , 'team', 'comments', 'repos')
         read_only_fields = ('user', 'team',)
     def create(self , validated_data):
         p = project(**validated_data)

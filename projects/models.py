@@ -9,7 +9,6 @@ from django.dispatch import receiver
 import requests
 from django.conf import settings as globalSettings
 # Create your models here.
-from gitweb.models import repo
 from time import time
 
 def getProjectsUploadsPath(instance , filename ):
@@ -44,7 +43,6 @@ class project(models.Model):
     description = models.TextField(max_length=2000 , blank=False)
     files = models.ManyToManyField(media , related_name='projects')
     team = models.ManyToManyField(User , related_name = 'projectsFollowing')
-    repos = models.ManyToManyField(repo , related_name='projects')
 
 class projectComment(comment):
     project = models.ForeignKey(project , null= False , related_name='comments')
