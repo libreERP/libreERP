@@ -345,7 +345,7 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
 
   $scope.data = {tableData : []}
 
-  views = [{name : 'list' , icon : 'fa-th-large' ,
+  var views = [{name : 'list' , icon : 'fa-th-large' ,
       template : '/static/ngTemplates/genericTable/genericSearchList.html' ,
       itemTemplate : '/static/ngTemplates/app.GIT.repos.item.html',
     },

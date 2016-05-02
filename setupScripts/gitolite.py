@@ -1,15 +1,18 @@
 from fabric.api import *
+import sys
 
-runOn = 1
+print sys.argv
+mode = sys.argv[1]
 
-if runOn==0:
+
+if mode='root':
     local('userdel git')
     local('echo "y\n" | rm -r /home/git')
     local('adduser git')
     local('cat /etc/passwd');
     local('ls /home/')
 
-if runOn==1:
+elif mode=='git':
     local('pwd')
     local('git config --global user.name "git"')
     local('git config --global user.email "git@libreERP"')
@@ -22,4 +25,3 @@ if runOn==1:
     local('ssh git@localhost info')
     local('git clone git@localhost:gitolite-admin')
     local('git clone http://github.com/pkyad/libreERP-main')
-    

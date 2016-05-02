@@ -26,14 +26,40 @@ app.config(function($stateProvider){
 
 });
 
+app.controller('projectManagement.projects.project.explore' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+    $http({method : 'GET' , url : '/api/projects/project/' + $scope.tab.data.pk + '/'}).
+    then(function(response) {
+        $scope.project = response.data;
+    })
+
+});
+
+
 app.controller('projectManagement.project.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
 
 });
 
+app.controller('projectManagement.project.modal.project' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+    $scope.save = function() {
+        var dataToSend = {
+            description : $scope.data.description,
+            dueDate : $scope.data.dueDate,
+            team : $scope.data.team,
+        }
+        $http({method : 'PATCH' , url : '/api/projects/project/' + $scope.data.pk + '/' , data : dataToSend}).
+        then(function(response) {
+            Flash.create('success' , 'Saved');
+        })
+    }
+
+});
+
+
 app.controller('projectManagement.projects.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
     $scope.data = {tableData : []};
-    views = [{
+    var views = [{
       name: 'list',
       icon: 'fa-bars',
       template: '/static/ngTemplates/genericTable/genericSearchList.html',
@@ -43,6 +69,7 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
     $scope.projectsConfig = {
       views: views,
       url: '/api/projects/project/',
+      editorTemplate : '/static/ngTemplates/app.projects.form.project.html',
       searchField: 'title',
     }
 
@@ -64,6 +91,7 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
     }
 
     $scope.addTab = function( input ){
+        console.log(JSON.stringify(input));
       $scope.searchTabActive = false;
       alreadyOpen = false;
       for (var i = 0; i < $scope.tabs.length; i++) {
@@ -79,6 +107,7 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
       }
     }
 
+    $scope.addTab(JSON.parse('{"title":"Browse project : Project 1","cancel":true,"app":"projectBrowser","data":{"pk":1,"name":"Project 1"},"active":true}'))
 
 });
 

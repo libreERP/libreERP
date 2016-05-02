@@ -1,0 +1,34 @@
+<div ng-controller="projectManagement.project.modal.project">
+  <div class="modal-header">
+    <div class="col-md-9">
+      <h3 class="modal-title" >Edit Repo :
+        <strong>{{data.title}}</strong>
+      </h3>
+    </div>
+    <div class="col-md-3">
+      <button type="button" ng-click="save()" class="btn btn-primary pull-right">
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-body">
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" rows="5" cols="40" placeholder="Description" ng-model="data.description"></textarea>
+      </div>
+      <div class= "form-group col-md-12" style="padding:0px;">
+        <label class="control-label col-sm-2" style="margin-top:35px;padding:0px;">Due date</label>
+        <div class="col-md-4">
+          <div class="input-group" style="margin-top:35px;">
+            <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="data.dueDate" is-open="status.opened"  />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+      <users-Field data="data.team" url="/api/HR/userSearch/" col="4" label="team"></users-Field>
+  </div>
+
+</div>

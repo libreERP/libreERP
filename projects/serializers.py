@@ -38,3 +38,10 @@ class projectSerializer(serializers.ModelSerializer):
             p.files.add(media.objects.get(pk = f))
         p.save()
         return p
+    def update(self, instance , validated_data):
+        instance.dueDate = validated_data['dueDate']
+        instance.description = validated_data['description']
+        for u in self.context['request'].data['team']:
+            instance.team.add(User.objects.get(pk=u))
+        instance.save()
+        return instance
