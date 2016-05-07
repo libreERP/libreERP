@@ -41,10 +41,10 @@
       </div>
       <div class="row" style="padding:10px;" ng-repeat= "f in data" ng-if="f.mediaType == 'doc'">
           <div class="col-md-2">
-              <i class="fa fa-file-word-o fa-3x"></i>
+              <i class="fa {{f.attachment | fileTypeIcon}} fa-3x"></i>
           </div>
           <div class="col-md-9">
-              <a ng-href="{{f.attachment}}">{{getFileName(f.attachment)}}</a>
+              <a ng-href="{{f.attachment}}">{{f.name? f.name:getFileName(f.attachment)}}</a>
           </div>
           <div class="col-md-1">
               <i class="fa fa-trash-o" ng-click="removeMedia($index)" style="cursor:pointer;"></i>

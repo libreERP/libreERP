@@ -8,9 +8,11 @@ from gitweb.serializers import repoLiteSerializer
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = media
-        fields = ( 'pk', 'link' , 'attachment' , 'mediaType')
+        fields = ( 'pk', 'link' , 'attachment' , 'mediaType', 'name', 'user' , 'created')
+        read_only_fields = ('fileName' ,'user',)
     def create(self , validated_data):
         m = media(**validated_data)
+        m.name = validated_data['attachment'].name
         m.user = self.context['request'].user
         m.save()
         return m
@@ -39,9 +41,14 @@ class projectSerializer(serializers.ModelSerializer):
         p.save()
         return p
     def update(self, instance , validated_data):
-        instance.dueDate = validated_data['dueDate']
-        instance.description = validated_data['description']
-        for u in self.context['request'].data['team']:
-            instance.team.add(User.objects.get(pk=u))
+        if 'files' in self.context['request'].data:
+            instance.files.clear()
+            for f in self.context['request'].data['files']:
+                instance.files.add(media.objects.get(pk = f))
+        if 'dueDate' in validated_data:
+            instance.dueDate = validated_data['dueDate']
+            instance.description = validated_data['description']
+            for u in self.context['request'].data['team']:
+                instance.team.add(User.objects.get(pk=u))
         instance.save()
         return instance

@@ -32,7 +32,24 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
         $scope.project = response.data;
     })
 
-    $scope.explore = {mode : 'timeline'};
+    $scope.explore = {mode : 'files' , addFile : false};
+
+    $scope.updateFiles = function() {
+        if (!$scope.explore.addFile) {
+            return;
+        }
+        var pks = [];
+        for (var i = 0; i < $scope.project.files.length; i++) {
+            pks.push($scope.project.files[i].pk);
+        }
+        var dataToSend = {
+            files : pks
+        }
+        $http({method : 'PATCH' , url : '/api/projects/project/'+ $scope.project.pk + '/' , data : dataToSend}).
+        then(function(response) {
+            Flash.create('success' , 'Saved');
+        });
+    }
 
     $scope.changeExploreMode = function(mode) {
         $scope.explore.mode = mode;

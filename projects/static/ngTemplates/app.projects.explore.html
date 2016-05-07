@@ -117,32 +117,47 @@
             </div>
         </div>
         <div class="col-md-12" ng-if="explore.mode == 'files'">
-            <h3 class="text-muted">Files</h3>
-            <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
-                <div class="col-md-1">
-                </div>
-                <div class="col-md-4">
-                    <span class="text-primary">File Name</span>
-                </div>
-                <div class="col-md-3">
-                    <span>Uploader</span>
-                </div>
-                <div class="col-md-4">
-                    <span>When</span>
+            <div class="row container-fluid">
+                <h3 class="text-muted">Files</h3>
+                <div style="margin:10px;" class="btn-group btn-group-sm pull-right">
+                    <button type="button" class="btn btn-default"  ng-click="updateFiles();explore.addFile = !explore.addFile;">
+                        <i class="fa fa-{{explore.addFile? 'mail-reply':'plus'}}"></i> {{explore.addFile ? 'Back' : 'Edit'}}
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="updateFiles()" ng-if="explore.addFile">
+                        Save
+                    </button>
                 </div>
             </div>
-            <div class="row" style="padding:10px;"  ng-repeat="t in [1,2,3,4]">
-                <div class="col-md-1">
-                    <i class="fa fa-file-text-o fa-3x"></i>
+            <div ng-if="explore.addFile">
+                <media-Field data="project.files" url="/api/projects/media/"></media-Field>
+            </div>
+            <div ng-if="!explore.addFile">
+                <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-primary">File Name</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span>Uploader</span>
+                    </div>
+                    <div class="col-md-2">
+                        <span>When</span>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
-                </div>
-                <div class="col-md-3">
-                    <span>{{1 | getName}}</span>
-                </div>
-                <div class="col-md-4">
-                    <span>21 days ago</span>
+                <div class="row" style="padding:10px;"  ng-repeat="f in project.files">
+                    <div class="col-md-1">
+                        <i class="fa {{f.name | fileTypeIcon}} fa-3x"></i>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-primary">{{f.name}}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span>{{f.user | getName}}</span>
+                    </div>
+                    <div class="col-md-2">
+                        <span>{{f.created | timeAgo}}</span>
+                    </div>
                 </div>
             </div>
         </div>

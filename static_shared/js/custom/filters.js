@@ -27,6 +27,21 @@ app.filter('rainbow' , function(){
 })
 
 
+app.filter('fileTypeIcon' , function(){
+  return function(input){
+    var ext = input.split('.')[input.split('.').length -1]
+    if (['doc', 'docx', 'odt'].indexOf(ext) != -1) {
+        return 'fa-file-word-o';
+    }else if (ext == 'pdf') {
+        return 'fa-file-pdf-o';
+    }else if (['jpg', 'jpeg', 'png'].indexOf(ext) != -1) {
+        return 'fa-file-image-o';
+    }else{
+        return 'fa-file-o';
+    }
+  }
+})
+
 app.filter('timeAgo' , function(){
   return function(input){
     t = new Date(input);

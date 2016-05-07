@@ -28,6 +28,7 @@ class media(models.Model):
     link = models.TextField(null = True , max_length = 300) # can be youtube link or an image link
     attachment = models.FileField(upload_to = getProjectsUploadsPath , null = True ) # can be image , video or document
     mediaType = models.CharField(choices = MEDIA_TYPE_CHOICES , max_length = 10 , default = 'image')
+    name = models.CharField(max_length = 100 , null = True)
 
 class comment(models.Model):
     created = models.DateTimeField (auto_now_add = True,null = True)
