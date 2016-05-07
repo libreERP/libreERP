@@ -1,53 +1,146 @@
 <div style="position:relative; min-height:90vh;top:0px;right:0px;padding:0px;" ng-controller="projectManagement.projects.project.explore">
-    <div class="col-md-4">
-        <div class="card" ng-repeat="u in project.team" style="margin-bottom:20px;">
-            <div class="container-fluid" style="padding-top:15px;">
-                <div class="col-md-5">
-                    <div class="row">
-                        <img ng-src="{{u | getDP}}" width="60" height="60"/>
+    <div class="col-md-4" style="padding:0px;">
+        <div class="col-md-10" style="padding-top:25px;">
+            <div class="card" ng-repeat="u in project.team" style="margin-bottom:20px;">
+                <div class="container-fluid" style="padding-top:15px;">
+                    <div class="col-md-5">
+                        <div class="row">
+                            <img ng-src="{{u | getDP}}" width="60" height="60"/>
+                        </div>
+                        <div class="row">
+                            {{u | getName}}
+                        </div>
                     </div>
-                    <div class="row">
-                        {{u | getName}}
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="row">
-                        <strong>5</strong> Commits <br>
-                        <strong>2</strong> Documents <br>
+                    <div class="col-md-7">
+                        <div class="row">
+                            <strong>5</strong> Commits <br>
+                            <strong>2</strong> Documents <br>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-md-2" style="padding:0px;background: -moz-linear-gradient(bottom,rgba(255,0,0,0),rgba(212, 212, 212, 1));min-height:300px;">
+            <ul class="nav nav-sidebar" style="width:100%;">
+                <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
+                <li class="{{explore.mode == 'tasks' ? 'active':''}} text-center" ng-click="changeExploreMode('tasks')"><a href=""><i class="fa fa-check-square-o fa-2x"></i></a></li>
+                <li class="{{explore.mode == 'timeline' ? 'active':''}} text-center" ng-click="changeExploreMode('timeline')"><a href=""><i class="fa fa-commenting fa-2x"></i></a></li>
+                <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-file-o fa-2x"></i></a></li>
+            </ul>
         </div>
     </div>
+
     <div class="col-md-8 col-md-offset-4" style="overflow:auto;height:80%;position:absolute;">
-        <div class="col-md-12">
-            <div class="row" style="padding:10px;">
-                <div class="col-md-2">
-                    <i class="fa fa-file-text-o fa-3x"></i>
+
+        <div class="col-md-12" ng-if="explore.mode == 'git'" style="padding-top:20px;">
+            <div ng-repeat="n in [1,2,3,5,4,12,6,7,8,10]" class="row" style="padding-top:10px;">
+              <div class="row text-center" ng-if="n.dateShow">
+                <h4>2nd may</h4>
+              </div>
+              <div class="col-md-2" style="padding-right:40px;">
+                <div class="row">
+                  <img ng-src="{{1 | getDP}}" class="img-circle pull-right" width="50"/>
                 </div>
-                <div class="col-md-10">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
+                <div class="row">
+                  <span class="pull-right">{{1 | getName}}</span>
                 </div>
+              </div>
+              <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
+                <span class="text-muted"> 2nd may</span><br><strong>[project 1/ branch 1] :</strong> 1 new commit <br>
+                <code>dasdasdas</code> : Minor changes
+              </div>
+              <hr>
             </div>
-            <div class="row" style="padding:10px;">
+        </div>
+
+        <div class="col-md-12" ng-if="explore.mode == 'tasks'" style="padding-top:20px;">
+            <div class="row hoverList" ng-repeat="t in [1,2,3,4]" style="padding:20px;">
+                <div class="col-md-1">
+                    <i class="fa fa-check-circle-o fa-2x pull-right" style="color:#d65e72;"></i>
+                </div>
+                <div class="col-md-5">
+                    <span style="font-size:18px;">Task 1</span>
+                </div>
+                <div class="col-md-4">
+                    {{1 | getName}}
+                </div>
                 <div class="col-md-2">
-                    <i class="fa fa-file-pdf-o fa-3x"></i>
-                </div>
-                <div class="col-md-10">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
-                </div>
-            </div>
-            <div class="row" style="padding:10px;">
-                <div class="col-md-2">
-                    <i class="fa fa-file-word-o fa-3x"></i>
-                </div>
-                <div class="col-md-10">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
+                    3 days
                 </div>
             </div>
         </div>
-        <hr>
-        <div class="col-md-12" style="margin-top:10px;border-top:solid 3px #eee;padding-top:20px;">
+        <div class="col-md-12" ng-if="explore.mode == 'files'">
+            <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-4">
+                    <span class="text-primary">File Name</span>
+                </div>
+                <div class="col-md-3">
+                    <span>Uploader</span>
+                </div>
+                <div class="col-md-4">
+                    <span>When</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-1">
+                    <i class="fa fa-file-text-o fa-3x"></i>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+                <div class="col-md-3">
+                    <span>{{1 | getName}}</span>
+                </div>
+                <div class="col-md-4">
+                    <span>21 days ago</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-1">
+                    <i class="fa fa-file-text-o fa-3x"></i>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+                <div class="col-md-3">
+                    <span>{{1 | getName}}</span>
+                </div>
+                <div class="col-md-4">
+                    <span>21 days ago</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-1">
+                    <i class="fa fa-file-text-o fa-3x"></i>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+                <div class="col-md-3">
+                    <span>{{1 | getName}}</span>
+                </div>
+                <div class="col-md-4">
+                    <span>21 days ago</span>
+                </div>
+            </div>
+            <div class="row" style="padding:10px;">
+                <div class="col-md-1">
+                    <i class="fa fa-file-text-o fa-3x"></i>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-primary">SomeTextFileName.pdf</span>
+                </div>
+                <div class="col-md-3">
+                    <span>{{1 | getName}}</span>
+                </div>
+                <div class="col-md-4">
+                    <span>21 days ago</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top:10px;padding-top:20px;" ng-if="explore.mode == 'timeline'">
             <ul class="timeline timeline-inverse">
                 <li ng-repeat="i in [32,5,6,4]">
                     <i class="fa fa-commenting-o bg-blue"></i>
@@ -90,7 +183,7 @@
         </div>
 
     </div>
-    <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;width:100%;height:20%;border-top:solid 2px #eee;">
+    <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;width:100%;height:20%;border-top:solid 2px #eee;background:#eee;">
         <div class="row">
             <div class="col-md-10">
                 <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
