@@ -35,26 +35,30 @@ app.config(function($stateProvider){
 
 });
 
+var parseNotifications = function(notifications) {
+  var d = new Date(notifications[0].time);
+  notifications[0].dateShow = true;
+  notifications[0].time = d;
+  for (var i = 1; i < notifications.length; i++) {
+    var d2 = new Date(notifications[i].time);
+    notifications[i].time = d2;
+    if (d.getDate()!= d2.getDate() || d.getMonth()!= d2.getMonth() || d.getFullYear() != d2.getFullYear() ) {
+      notifications[i].dateShow = true;
+      d = d2;
+    }else {
+      notifications[i].dateShow = false;
+    }
+  }
+  return notifications;
+};
+
 app.controller('projectManagement.GIT.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
   $scope.page = 0;
 
   $scope.parseNotifications = function() {
-    $scope.notifications = angular.copy($scope.rawNotifications);
-    $scope.count = $scope.notifications.count;
-    var d = new Date($scope.notifications[0].time);
-    $scope.notifications[0].dateShow = true;
-    $scope.notifications[0].time = d;
-    for (var i = 1; i < $scope.notifications.length; i++) {
-      var d2 = new Date($scope.notifications[i].time);
-      $scope.notifications[i].time = d2;
-      if (d.getDate()!= d2.getDate() || d.getMonth()!= d2.getMonth() || d.getFullYear() != d2.getFullYear() ) {
-        $scope.notifications[i].dateShow = true;
-        d = d2;
-      }else {
-        $scope.notifications[i].dateShow = false;
-      }
-    }
-  };
+      $scope.notifications = parseNotifications($scope.rawNotifications)
+      $scope.count = $scope.notifications.count;
+  }
 
   $scope.refreshDashboard = function(signal) {
     var parts = signal.type.split(':');

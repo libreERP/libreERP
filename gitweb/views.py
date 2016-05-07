@@ -334,7 +334,7 @@ class commitNotificationViewSet(viewsets.ModelViewSet):
     serializer_class = commitNotificationSerializer
     queryset = commitNotification.objects.all().order_by('-time')
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['id' , 'sha']
+    filter_fields = ['repo' , 'sha']
 
 class codeCommentViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, isOwnerOrReadOnly)

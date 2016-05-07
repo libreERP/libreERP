@@ -27,12 +27,35 @@ app.config(function($stateProvider){
 });
 
 app.controller('projectManagement.projects.project.explore' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+    $scope.fetchNotifications = function(index) {
+        // takes the index of the repo for which the notifications is to be fetched
+        $http({method : 'GET' , url : '/api/git/commitNotification/?limit=10&offset='+ $scope.project.repos[index].page*5 +'&repo=' + $scope.project.repos[index].pk}).
+        then((function(index) {
+            return function(response) {
+                $scope.project.repos[index].commitCount = response.data.count;
+                $scope.project.repos[index].rawCommitNotifications = $scope.project.repos[index].rawCommitNotifications.concat(response.data.results);
+                $scope.project.repos[index].commitNotifications = parseNotifications($scope.project.repos[index].rawCommitNotifications);
+            }
+        })(index));
+    }
+
     $http({method : 'GET' , url : '/api/projects/project/' + $scope.tab.data.pk + '/'}).
     then(function(response) {
         $scope.project = response.data;
+        for (var i = 0; i < $scope.project.repos.length; i++) {
+            $scope.project.repos[i].page = 0;
+            $scope.project.repos[i].rawCommitNotifications = []
+            $scope.fetchNotifications(i);
+        }
     })
 
-    $scope.explore = {mode : 'files' , addFile : false};
+    $scope.loadMore = function(index) {
+        $scope.project.repos[index].page += 1;
+        $scope.fetchNotifications(index);
+    }
+
+    $scope.explore = {mode : 'git' , addFile : false};
 
     $scope.updateFiles = function() {
         if (!$scope.explore.addFile) {

@@ -25,7 +25,7 @@
                 <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
                 <li class="{{explore.mode == 'tasks' ? 'active':''}} text-center" ng-click="changeExploreMode('tasks')"><a href=""><i class="fa fa-check-square-o fa-2x"></i></a></li>
                 <li class="{{explore.mode == 'timeline' ? 'active':''}} text-center" ng-click="changeExploreMode('timeline')"><a href=""><i class="fa fa-commenting fa-2x"></i></a></li>
-                <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-file-o fa-2x"></i></a></li>
+                <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-files-o fa-2x"></i></a></li>
                 <li class="{{explore.mode == 'issues' ? 'active':''}} text-center" ng-click="changeExploreMode('issues')"><a href=""><i class="mega-octicon octicon-list-unordered"></i></a></li>
             </ul>
         </div>
@@ -74,23 +74,29 @@
 
         <div class="col-md-12" ng-if="explore.mode == 'git'">
             <h3 class="text-muted">Commits</h3>
-            <div ng-repeat="n in [1,2,3,5,4,12,6,7,8,10]" class="row" style="padding-top:10px;">
-              <div class="row text-center" ng-if="n.dateShow">
-                <h4>2nd may</h4>
-              </div>
-              <div class="col-md-2" style="padding-right:40px;">
-                <div class="row">
-                  <img ng-src="{{1 | getDP}}" class="img-circle pull-right" width="50"/>
+            <div ng-repeat="r in project.repos" style="border-bottom:solid 3px #eee;padding-bottom:{{!(r.commitNotifications.length< r.commitCount)? '20px':'0px'}};">
+                <div class="row text-center">
+                  <h4><span class="octicon octicon-repo"></span> {{r.name}}</h4>
                 </div>
-                <div class="row">
-                  <span class="pull-right">{{1 | getName}}</span>
+                <div ng-repeat="n in r.commitNotifications" class="row" style="padding-top:10px;">
+                    <div class="col-md-2" style="padding-right:40px;">
+                      <div class="row">
+                        <img ng-src="{{n.user | getDP}}" class="img-circle pull-right" width="50"/>
+                      </div>
+                      <div class="row">
+                        <span class="pull-right">{{n.user | getName}}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
+                      <span class="text-muted"> {{n.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
+                      <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
+                    </div>
                 </div>
-              </div>
-              <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
-                <span class="text-muted"> 2nd may</span><br><strong>[project 1/ branch 1] :</strong> 1 new commit <br>
-                <code>dasdasdas</code> : Minor changes
-              </div>
-              <hr>
+                <nav ng-if="r.commitNotifications.length< r.commitCount">
+                  <ul class="pager">
+                    <li ng-click="loadMore($index)"><a href="">More</a></li>
+                  </ul>
+                </nav>
             </div>
         </div>
 
