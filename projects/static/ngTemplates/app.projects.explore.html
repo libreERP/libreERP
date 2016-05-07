@@ -20,19 +20,60 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2" style="padding:0px;background: -moz-linear-gradient(bottom,rgba(255,0,0,0),rgba(212, 212, 212, 1));min-height:300px;">
+        <div class="col-md-2" style="padding:0px;background: -moz-linear-gradient(bottom,rgba(255,0,0,0),rgba(212, 212, 212, 1));min-height:400px;">
             <ul class="nav nav-sidebar" style="width:100%;">
                 <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
                 <li class="{{explore.mode == 'tasks' ? 'active':''}} text-center" ng-click="changeExploreMode('tasks')"><a href=""><i class="fa fa-check-square-o fa-2x"></i></a></li>
                 <li class="{{explore.mode == 'timeline' ? 'active':''}} text-center" ng-click="changeExploreMode('timeline')"><a href=""><i class="fa fa-commenting fa-2x"></i></a></li>
                 <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-file-o fa-2x"></i></a></li>
+                <li class="{{explore.mode == 'issues' ? 'active':''}} text-center" ng-click="changeExploreMode('issues')"><a href=""><i class="mega-octicon octicon-list-unordered"></i></a></li>
             </ul>
         </div>
     </div>
 
     <div class="col-md-8 col-md-offset-4" style="overflow:auto;height:80%;position:absolute;">
 
-        <div class="col-md-12" ng-if="explore.mode == 'git'" style="padding-top:20px;">
+        <div class="col-md-12" ng-if="explore.mode == 'issues'">
+            <h3 class="text-muted">Issues</h3>
+            <div class="row">
+                <div class="col-md-1">
+                    Priority
+                </div>
+                <div class="col-md-5">
+                    Summary
+                </div>
+                <div class="col-md-2">
+                    Created
+                </div>
+                <div class="col-md-2">
+                    Result
+                </div>
+                <div class="col-md-2">
+                    Status
+                </div>
+            </div>
+            <hr>
+            <div class="row hoverList" ng-repeat="i in [2,5,7,3,1]" style="padding-top:10px;padding-bottom:10px;">
+                <div class="col-md-1">
+                    <label class="label label-success">N</label>
+                </div>
+                <div class="col-md-5">
+                    Something not working
+                </div>
+                <div class="col-md-2">
+                    4 days ago
+                </div>
+                <div class="col-md-2">
+                    <label class="label label-success">Resolved</label>
+                </div>
+                <div class="col-md-2">
+                    <label class="label label-success">Complete</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" ng-if="explore.mode == 'git'">
+            <h3 class="text-muted">Commits</h3>
             <div ng-repeat="n in [1,2,3,5,4,12,6,7,8,10]" class="row" style="padding-top:10px;">
               <div class="row text-center" ng-if="n.dateShow">
                 <h4>2nd may</h4>
@@ -53,8 +94,14 @@
             </div>
         </div>
 
-        <div class="col-md-12" ng-if="explore.mode == 'tasks'" style="padding-top:20px;">
-            <div class="row hoverList" ng-repeat="t in [1,2,3,4]" style="padding:20px;">
+        <div class="col-md-12" ng-if="explore.mode == 'tasks'">
+            <h3 class="text-muted">Tasks</h3>
+            <div class="row container-fluid">
+              <button type="button" class="btn btn-default pull-right" style="margin:10px;">
+                + Add
+              </button>
+            </div>
+            <div class="row hoverList" ng-repeat="t in [1,2,3,4]" style="padding-top:10px;padding-bottom:10px;">
                 <div class="col-md-1">
                     <i class="fa fa-check-circle-o fa-2x pull-right" style="color:#d65e72;"></i>
                 </div>
@@ -70,6 +117,7 @@
             </div>
         </div>
         <div class="col-md-12" ng-if="explore.mode == 'files'">
+            <h3 class="text-muted">Files</h3>
             <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
                 <div class="col-md-1">
                 </div>
@@ -83,49 +131,7 @@
                     <span>When</span>
                 </div>
             </div>
-            <div class="row" style="padding:10px;">
-                <div class="col-md-1">
-                    <i class="fa fa-file-text-o fa-3x"></i>
-                </div>
-                <div class="col-md-4">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
-                </div>
-                <div class="col-md-3">
-                    <span>{{1 | getName}}</span>
-                </div>
-                <div class="col-md-4">
-                    <span>21 days ago</span>
-                </div>
-            </div>
-            <div class="row" style="padding:10px;">
-                <div class="col-md-1">
-                    <i class="fa fa-file-text-o fa-3x"></i>
-                </div>
-                <div class="col-md-4">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
-                </div>
-                <div class="col-md-3">
-                    <span>{{1 | getName}}</span>
-                </div>
-                <div class="col-md-4">
-                    <span>21 days ago</span>
-                </div>
-            </div>
-            <div class="row" style="padding:10px;">
-                <div class="col-md-1">
-                    <i class="fa fa-file-text-o fa-3x"></i>
-                </div>
-                <div class="col-md-4">
-                    <span class="text-primary">SomeTextFileName.pdf</span>
-                </div>
-                <div class="col-md-3">
-                    <span>{{1 | getName}}</span>
-                </div>
-                <div class="col-md-4">
-                    <span>21 days ago</span>
-                </div>
-            </div>
-            <div class="row" style="padding:10px;">
+            <div class="row" style="padding:10px;"  ng-repeat="t in [1,2,3,4]">
                 <div class="col-md-1">
                     <i class="fa fa-file-text-o fa-3x"></i>
                 </div>
@@ -140,7 +146,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12" style="margin-top:10px;padding-top:20px;" ng-if="explore.mode == 'timeline'">
+        <div class="col-md-12" ng-if="explore.mode == 'timeline'">
+            <h3 class="text-muted">Timeline</h3>
             <ul class="timeline timeline-inverse">
                 <li ng-repeat="i in [32,5,6,4]">
                     <i class="fa fa-commenting-o bg-blue"></i>
@@ -181,7 +188,6 @@
                 </li>
             </ul>
         </div>
-
     </div>
     <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;width:100%;height:20%;border-top:solid 2px #eee;background:#eee;">
         <div class="row">

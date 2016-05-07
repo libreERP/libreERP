@@ -32,7 +32,7 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
         $scope.project = response.data;
     })
 
-    $scope.explore = {mode : 'git'};
+    $scope.explore = {mode : 'timeline'};
 
     $scope.changeExploreMode = function(mode) {
         $scope.explore.mode = mode;
