@@ -1,0 +1,4 @@
+<div class="form-group">
+    <label>{{label | humanize}}</label>
+      <input type="text" class="form-control" ng-model = "user" uib-typeahead="user as getName(user) for user in userSearch($viewValue)" placeholder="Search and select a user">
+</div>

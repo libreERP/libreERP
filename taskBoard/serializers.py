@@ -35,17 +35,30 @@ class subTasksSerializer(serializers.ModelSerializer):
 
 class taskSerializer(serializers.ModelSerializer):
     subTasks = subTasksSerializer(many = True , read_only = True)
+    files = mediaSerializer(many = True , read_only = True)
     class Meta:
         model = task
         fields = ( 'pk', 'title' , 'description' , 'files', 'followers', 'user' , 'created', 'dueDate', 'to', 'subTasks', 'project', 'personal')
-        read_only_fields = ('user',)
+        read_only_fields = ('user','followers',)
     def create(self , validated_data):
         t = task(**validated_data)
-        t.user = self.context['request'].user
+        req = self.context['request']
+        t.user = req.user
         t.save()
-        for u in self.context['request'].data['followers']:
-            t.team.add(User.objects.get(pk=u))
-        for f in self.context['request'].data['files']:
+        for u in req.data['followers']:
+            t.followers.add(User.objects.get(pk=u))
+        for f in req.data['files']:
             t.files.add(media.objects.get(pk = f))
-        p.save()
+        t.save()
         return t
+    def update(self , instance , validated_data):
+        for u in self.context['request'].data['followers']:
+            instance.followers.add(User.objects.get(pk=u))
+        for f in self.context['request'].data['files']:
+            instance.files.add(media.objects.get(pk = f))
+        instance.title = validated_data['title']
+        instance.description = validated_data['description']
+        instance.dueDate = validated_data['dueDate']
+        instance.to = validated_data['to']
+        instance.save()
+        return instance

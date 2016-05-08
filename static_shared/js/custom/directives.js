@@ -17,6 +17,33 @@ app.directive('breadcrumb', function () {
   };
 });
 
+app.directive('userField', function () {
+  return {
+    templateUrl: '/static/ngTemplates/userInputField.html',
+    restrict: 'E',
+    replace: true,
+    scope: {
+      user :'=',
+      url : '@',
+      label : '@',
+    },
+    controller : function($scope , $state , $http , Flash){
+        $scope.userSearch = function(query) {
+          return $http.get( $scope.url +'?username__contains=' + query).
+          then(function(response){
+            return response.data;
+          })
+        };
+        $scope.getName = function(u) {
+          if (typeof u == 'undefined' || u== null) {
+            return '';
+          }
+          return u.first_name + '  ' +u.last_name;
+        }
+    },
+  };
+});
+
 app.directive('usersField', function () {
   return {
     templateUrl: '/static/ngTemplates/usersInputField.html',

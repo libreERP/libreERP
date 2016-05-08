@@ -3,7 +3,7 @@
         <button type="button" class="btn btn-default">
             Reset
         </button>
-        <button type="button" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" ng-click="save()">
             Save <i class="fa fa-floppy-o"></i>
         </button>
     </div>
@@ -11,7 +11,7 @@
     <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
     <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title}}</h3>
     <div class="form-group">
-        Personal :  <input type="checkbox" ng-model="form.personal">
+        Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null">
         <button type="button" class="btn btn-default btn-sm pull-right" ng-click="addSubTask()">
             <i class="fa fa-plus"></i>  Sub task
         </button>
@@ -20,7 +20,23 @@
     <div class="row" ng-repeat="st in form.subTasks">
         <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}">
             <div  ng-if="!st.inEditor">
-                <i class="fa fa-check-circle-o fa-2x pull-right" style="color:#d65e72;"></i> <span style="font-size:18px;">{{st.title}}</span>
+                <i ng-if="st.status == 'notStarted'" class="fa fa-square-o fa-2x" style="color:#4881d6;"></i>
+                <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
+                <i ng-if="st.status == 'stuck'" class="fa fa-wheelchair fa-2x" style="color:#de6915;"></i>
+                <i ng-if="st.status == 'complete'" class="fa fa-check fa-2x" style="color:#099c0a;"></i>
+                <div class="btn-group pull-right">
+                  <button type="button" class="btn btn-default btn-sm" ng-click="editSubTask($index)"><i class="fa fa-pencil pull-right"></i> Edit</button>
+                  <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="" ng-click="changeSubTaskStatus('inProgress' , $index)">In Progress</a></li>
+                    <li><a href="" ng-click="changeSubTaskStatus('stuck' , $index)">Stuck</a></li>
+                    <li><a href="" ng-click="changeSubTaskStatus('complete' , $index)">Complete</a></li>
+                  </ul>
+                </div>
+                <span style="font-size:18px;margin-left:10px;">{{st.title}}</span>
             </div>
             <div class="input-group" ng-if="st.inEditor">
               <input type="text" class="form-control" placeholder="Title..." ng-model="st.title">
@@ -33,34 +49,41 @@
     </div>
 </div>
 <div class="col-md-8" style="position:absolute; height:100%;top:0px;right:0px;padding:0px;">
-    <div style="overflow:auto;height:100%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;">
-        <div class="form-group" style="margin-top:20px;">
-          <label>Title</label>
-          <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
-        </div>
-        <div class= "form-group">
-          <label class="control-label col-sm-2" style="margin-top:35px;padding:0px;">Due date :</label>
-          <div class="col-md-6">
-            <div class="input-group" style="margin-top:35px;">
-              <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="form.dueDate" is-open="status.opened"  />
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
+    <div style="overflow:auto;height:20%;position:absolute;width:100%;border-left:solid 3px #eee;border-bottom:3px solid #eee;padding-left:10px;padding-right:10px;">
+        <h3>{{form.title | humanize}}</h3>
+        <strong>Due Date : </strong> {{form.dueDate | date:'hh:mm:a , dd MMM'}} <br>
+        <strong>Description : </strong> {{form.description | humanize}} <br> {{form.mode}}
+    </div>
+    <div style="overflow:auto;height:60%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:20%;">
+        <div ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
+            <div class="form-group" style="margin-top:20px;" >
+                <label>Title</label>
+                <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="row container-fluid">
-              <uib-timepicker ng-model="form.dueDate" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+            <div class= "form-group">
+                <label class="control-label col-sm-2" style="margin-top:35px;padding:0px;">Due date :</label>
+                <div class="col-md-6">
+                    <div class="input-group" style="margin-top:35px;">
+                        <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="form.dueDate" is-open="status.opened"  />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row container-fluid">
+                        <uib-timepicker ng-model="form.dueDate" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" rows="5" cols="40" placeholder="Description" ng-model="form.description"></textarea>
+            </div>
+            <user-Field user="form.to" url="/api/HR/userSearch/" label="To"></user-Field>
+            <users-Field data="form.followers" url="/api/HR/userSearch/" col="4" label="Followers"></users-Field>
+            <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
         </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea class="form-control" rows="5" cols="40" placeholder="Description" ng-model="form.description"></textarea>
-        </div>
-        <users-Field data="form.followers" url="/api/HR/userSearch/" col="4" label="Followers"></users-Field>
-        <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
-
         <!-- <button
             class="btn btn-default"
             mwl-confirm
@@ -75,7 +98,7 @@
             Click me!
         </button> -->
 
-        <!-- <div class="col-md-12" style="margin-top:10px;border-top:solid 3px #eee;padding-top:20px;">
+        <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view'">
             <ul class="timeline timeline-inverse">
                 <li ng-repeat="i in [32,5,6,4]"><i class="fa fa-commenting-o bg-blue"></i>
                   <div class="timeline-item">
@@ -106,9 +129,9 @@
                   </div>
               </li>
             </ul>
-        </div> -->
+        </div>
     </div>
-    <!-- <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;">
+    <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;" ng-if="form.mode == 'view'">
         <div class="row">
             <div class="col-md-10">
                 <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
@@ -117,5 +140,5 @@
                 Send <i class="fa fa-paper-plane-o"></i>
             </button>
         </div>
-    </div> -->
+    </div>
 </div>
