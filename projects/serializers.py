@@ -45,9 +45,10 @@ class projectSerializer(serializers.ModelSerializer):
             instance.files.clear()
             for f in self.context['request'].data['files']:
                 instance.files.add(media.objects.get(pk = f))
-        if 'dueDate' in validated_data:
+        else:
             instance.dueDate = validated_data['dueDate']
             instance.description = validated_data['description']
+            instance.team.clear()
             for u in self.context['request'].data['team']:
                 instance.team.add(User.objects.get(pk=u))
         instance.save()

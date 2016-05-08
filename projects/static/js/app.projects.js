@@ -55,6 +55,21 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
         $scope.fetchNotifications(index);
     }
 
+    $scope.exploreNotification = function(repo, commit) {
+      $aside.open({
+        templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
+        position:'left',
+        size : 'xxl',
+        backdrop : true,
+        resolve : {
+          input : function() {
+            return $scope.project.repos[repo].commitNotifications[commit];
+          }
+        },
+        controller : 'projectManagement.GIT.exploreNotification',
+      })
+    }
+
     $scope.explore = {mode : 'git' , addFile : false};
 
     $scope.updateFiles = function() {

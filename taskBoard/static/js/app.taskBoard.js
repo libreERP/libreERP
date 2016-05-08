@@ -17,61 +17,60 @@ app.config(function($stateProvider){
         }
     }
   })
-  .state('projectManagement.taskBoard.createTask', {
-    url: "/createTask",
-    templateUrl: '/static/ngTemplates/app.taskBoard.createTask.html',
-    controller: 'projectManagement.taskBoard.createTask'
-  })
 
 
 });
+
+app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions){
+
+    $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : null}
+
+    $scope.addSubTask = function() {
+        $scope.form.subTasks.push({title : '' , status : 'notStarted', inEditor : true});
+    }
+
+    $scope.saveSubTask = function(index) {
+        if ($scope.form.pk == null || typeof $scope.form.pk == 'undefined') {
+            Flash.create('success' , 'Please save the parent Task before before this can be saved');
+            return;
+        }
+        var st = $scope.form.subTasks[index]
+        var dataToSend = {
+            title : st.title,
+            status : 'notStarted',
+        }
+        var method = 'POST';
+        var url ='/api/taskBoard/';
+        if (st.pk != null && typeof st.pk == 'undefined') {
+            // its a new task
+            dataToSend.task = $scope.form.pk;
+        }else {
+            method = 'PATCH';
+            url += st.pk + '/'
+        }
+        $http({method : method , url : url , data : dataToSend}).
+        then((function(index) {
+            return function(response) {
+                $scope.form.subTasks[index] = response.data;
+            }
+        })(index))
+    };
+
+});
+
 
 app.controller('projectManagement.taskBoard.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
-
-});
-
-
-app.controller('projectManagement.taskBoard.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-  // settings main page controller
-
-  var getState = function(input){
-    var parts = input.name.split('.');
-    // console.log(parts);
-    return input.name.replace('app' , 'projectManagement')
-  }
-
-  $scope.apps = [];
-
-  $scope.buildMenu = function(apps){
-    for (var i = 0; i < apps.length; i++) {
-      var a = apps[i];
-      var parts = a.name.split('.');
-      if (a.module != 10 || parts.length != 3 || parts[1] != 'taskBoard') {
-        continue;
-      }
-      a.state = getState(a)
-      a.dispName = parts[parts.length -1];
-      $scope.apps.push(a);
+    $scope.createTask = function() {
+        $aside.open({
+            templateUrl : '/static/ngTemplates/app.taskBoard.createTask.html',
+            controller : 'projectManagement.taskBoard.createTask',
+            position:'left',
+            size : 'xl',
+            backdrop : true,
+        })
     }
-  }
 
-  var as = $permissions.app();
-  if(typeof as.success == 'undefined'){
-    $scope.buildMenu(as);
-  } else {
-    as.success(function(response){
-      $scope.buildMenu(response);
-    });
-  };
-
-  $scope.isActive = function(index){
-    var app = $scope.apps[index]
-    if (angular.isDefined($state.params.app)) {
-      return $state.params.app == app.name.split('.')[2]
-    } else {
-      return  $state.is(app.name.replace('app' , 'projectManagement'))
-    }
-  }
+    $scope.createTask();
 
 });

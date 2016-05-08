@@ -17,7 +17,6 @@ class projectCommentViewSet(viewsets.ModelViewSet):
     serializer_class = projectCommentSerializer
     queryset = projectComment.objects.all()
 
-
 class projectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = projectSerializer

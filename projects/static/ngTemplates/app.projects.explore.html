@@ -1,6 +1,6 @@
 <div style="position:relative; min-height:90vh;top:0px;right:0px;padding:0px;" ng-controller="projectManagement.projects.project.explore">
-    <div class="col-md-4" style="padding:0px;">
-        <div class="col-md-10" style="padding-top:25px;">
+    <div class="col-md-4" style="padding:0px;overflow:auto;height:100%;position:absolute;">
+        <div class="col-md-10" style="padding-top:25px;overflow:auto;height:100%;position:absolute;">
             <div class="card" ng-repeat="u in project.team" style="margin-bottom:20px;">
                 <div class="container-fluid" style="padding-top:15px;">
                     <div class="col-md-5">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2" style="padding:0px;background: -moz-linear-gradient(bottom,rgba(255,0,0,0),rgba(212, 212, 212, 1));min-height:400px;">
+        <div class="col-md-2 col-md-offset-10" style="padding:0px;background: -moz-linear-gradient(bottom,rgba(255,0,0,0),rgba(212, 212, 212, 1));min-height:400px;">
             <ul class="nav nav-sidebar" style="width:100%;">
                 <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
                 <li class="{{explore.mode == 'tasks' ? 'active':''}} text-center" ng-click="changeExploreMode('tasks')"><a href=""><i class="fa fa-check-square-o fa-2x"></i></a></li>
@@ -87,7 +87,7 @@
                         <span class="pull-right">{{n.user | getName}}</span>
                       </div>
                     </div>
-                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
+                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($parent.$index , $index)">
                       <span class="text-muted"> {{n.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
                       <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
                     </div>
@@ -210,7 +210,7 @@
             </ul>
         </div>
     </div>
-    <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;width:100%;height:20%;border-top:solid 2px #eee;background:#eee;">
+    <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;height:20%;border-top:solid 2px #eee;" class="col-md-8 col-md-offset-4">
         <div class="row">
             <div class="col-md-10">
                 <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>

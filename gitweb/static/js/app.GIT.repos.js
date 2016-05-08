@@ -266,10 +266,6 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
 
   }
 
-  $scope.removeUser = function(index) {
-    $scope.data.users.splice(index,1);
-  }
-
   $scope.deletePerm = function(index) {
     $http({method : 'DELETE' , url : '/api/git/repoPermission/' + $scope.data.perms[index].pk + '/' }).
     then((function(index) {

@@ -53,6 +53,10 @@ app.directive('usersField', function () {
           return u.first_name + '  ' +u.last_name;
         }
 
+        $scope.removeUser = function(index) {
+          $scope.data.splice(index,1);
+        }
+
         $scope.addUser = function() {
           for (var i = 0; i < $scope.data.length; i++) {
             if ($scope.data[i] == $scope.user.pk){
