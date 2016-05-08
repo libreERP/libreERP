@@ -1,15 +1,18 @@
 <div class="col-md-4" style="margin-top:10px;">
     <div class="btn-group btn-group-sm">
-        <button type="button" class="btn btn-default">
+        <button type="button" class="btn btn-default" ng-if="form.mode == 'new'">
             Reset
         </button>
-        <button type="button" class="btn btn-primary" ng-click="save()">
+        <button type="button" class="btn btn-primary" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
             Save <i class="fa fa-floppy-o"></i>
+        </button>
+        <button type="button" class="btn btn-primary" ng-click="edit()" ng-if="form.mode=='view'">
+            Edit <i class="fa fa-pencil"></i>
         </button>
     </div>
 
     <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
-    <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title}}</h3>
+    <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
     <div class="form-group">
         Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null">
         <button type="button" class="btn btn-default btn-sm pull-right" ng-click="addSubTask()">
@@ -49,13 +52,25 @@
     </div>
 </div>
 <div class="col-md-8" style="position:absolute; height:100%;top:0px;right:0px;padding:0px;">
-    <div style="overflow:auto;height:20%;position:absolute;width:100%;border-left:solid 3px #eee;border-bottom:3px solid #eee;padding-left:10px;padding-right:10px;">
-        <h3>{{form.title | humanize}}</h3>
-        <strong>Due Date : </strong> {{form.dueDate | date:'hh:mm:a , dd MMM'}} <br>
-        <strong>Description : </strong> {{form.description | humanize}} <br> {{form.mode}}
+    <div style="overflow:hidden;height:20%;position:absolute;width:100%;border-left:solid 3px #eee;" ng-if="form.mode=='view'">
+        <div class="container-fluid">
+            {{form.description | humanize}} <br>
+        </div>
+        <div class="row" style="margin:0px;padding:0px;bottom:0px;position:absolute;width:100%;border-bottom:3px solid #eee;">
+            <div class="col-md-8" style="padding:0px;">
+                <ul class="nav-horizontal">
+                    <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
+                    <li class="{{explore.mode == 'timeline' ? 'active':''}} text-center" ng-click="changeExploreMode('timeline')"><a href=""><i class="fa fa-commenting fa-2x"></i></a></li>
+                    <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-files-o fa-2x"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <span class="pull-right" style="font-size:18px;padding:5px;"><strong>Due Date : </strong> {{form.dueDate | date:'hh:mm:a , dd MMM'}} <br></span>
+            </div>
+        </div>
     </div>
-    <div style="overflow:auto;height:60%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:20%;">
-        <div ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
+    <div style="overflow:auto;height:{{ form.mode=='view' ?'60':'100'}}%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:{{ form.mode=='view' ?'20':'0'}}%;transition: all .1s ease-in-out;">
+        <div ng-if="form.mode!='view'">
             <div class="form-group" style="margin-top:20px;" >
                 <label>Title</label>
                 <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
@@ -98,7 +113,81 @@
             Click me!
         </button> -->
 
-        <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view'">
+        <div class="col-md-12" ng-if="explore.mode == 'git'">
+            <h3 class="text-muted">Commits</h3>
+            <div ng-repeat="r in project.repos" style="border-bottom:solid 3px #eee;padding-bottom:{{!(r.commitNotifications.length< r.commitCount)? '20px':'0px'}};">
+                <div class="row text-center">
+                  <h4><span class="octicon octicon-repo"></span> {{r.name}}</h4>
+                </div>
+                <div ng-repeat="n in r.commitNotifications" class="row" style="padding-top:10px;">
+                    <div class="col-md-2" style="padding-right:40px;">
+                      <div class="row">
+                        <img ng-src="{{n.user | getDP}}" class="img-circle pull-right" width="50"/>
+                      </div>
+                      <div class="row">
+                        <span class="pull-right">{{n.user | getName}}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($parent.$index , $index)">
+                      <span class="text-muted"> {{n.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
+                      <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
+                    </div>
+                </div>
+                <nav ng-if="r.commitNotifications.length< r.commitCount">
+                  <ul class="pager">
+                    <li ng-click="loadMore($index)"><a href="">More</a></li>
+                  </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="col-md-12" ng-if="explore.mode == 'files'">
+            <div class="row container-fluid">
+                <h3 class="text-muted">Files</h3>
+                <div style="margin:10px;" class="btn-group btn-group-sm pull-right">
+                    <button type="button" class="btn btn-default"  ng-click="updateFiles();explore.addFile = !explore.addFile;">
+                        <i class="fa fa-{{explore.addFile? 'mail-reply':'plus'}}"></i> {{explore.addFile ? 'Back' : 'Edit'}}
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="updateFiles()" ng-if="explore.addFile">
+                        Save
+                    </button>
+                </div>
+            </div>
+            <div ng-if="explore.addFile">
+                <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
+            </div>
+            <div ng-if="!explore.addFile">
+                <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-primary">File Name</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span>Uploader</span>
+                    </div>
+                    <div class="col-md-2">
+                        <span>When</span>
+                    </div>
+                </div>
+                <div class="row" style="padding:10px;"  ng-repeat="f in form.files">
+                    <div class="col-md-1">
+                        <i class="fa {{f.name | fileTypeIcon}} fa-2x"></i>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-primary">{{f.name}}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span>{{f.user | getName}}</span>
+                    </div>
+                    <div class="col-md-2">
+                        <span>{{f.created | timeAgo}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view' && explore.mode == 'timeline'">
             <ul class="timeline timeline-inverse">
                 <li ng-repeat="i in [32,5,6,4]"><i class="fa fa-commenting-o bg-blue"></i>
                   <div class="timeline-item">

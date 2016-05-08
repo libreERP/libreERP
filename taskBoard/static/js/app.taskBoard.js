@@ -32,6 +32,15 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         $scope.form.mode = 'view';
     });
 
+    $scope.explore = {mode :'git'};
+    $scope.changeExploreMode = function(mode) {
+        $scope.explore.mode = mode;
+    }
+
+    $scope.edit = function() {
+        $scope.form.mode = 'edit';
+    }
+
     $scope.addSubTask = function(){
         for (var i = 0; i < $scope.form.subTasks.length; i++) {
             if($scope.form.subTasks[i].inEditor){
@@ -82,6 +91,7 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         $http({method : method , url : url , data : dataToSend}).
         then(function(response) {
             Flash.create('success' , 'Saved');
+            $scope.form.mode = 'view';
             // $scope.form = response.data;
         })
     }

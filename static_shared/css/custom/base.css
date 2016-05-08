@@ -70,7 +70,6 @@
 .timeline li > .timeline-item > .time {
     color: #999;
     float: right;
-    padding: 10px;
     font-size: 12px;
     box-sizing: border-box;
 }
@@ -135,6 +134,37 @@ body {
 .padded > li > a {
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+.nav-horizontal{
+    list-style: none;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    background: -moz-linear-gradient(right,rgba(255,0,0,0),#eee);
+}
+.nav-horizontal > li{
+    position: relative;
+    display: table-cell;
+    border-spacing: 0px 0px;
+    border-collapse: collapse;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    right: 0;
+    margin: 0px;
+}
+.nav-horizontal > li a{
+    color:  var(--themeMain);
+}
+
+.nav-horizontal> li > a:hover, .nav-horizontal > li >a:focus ,
+.nav-horizontal> .active, .nav-horizontal> .active a ,
+.nav-horizontal> li:hover a, .nav-horizontal > li:focus a,
+.nav-horizontal> li:hover, .nav-horizontal > li:focus{
+	background-color: var(--themeMain);
+	color: #fff;
 }
 
 .navbar {

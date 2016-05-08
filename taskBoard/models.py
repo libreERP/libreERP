@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from projects.models import MEDIA_TYPE_CHOICES, project
+from gitweb.models import commitNotification
 # Create your models here.
 from time import time
 
@@ -40,3 +41,18 @@ class subTask(models.Model):
     task = models.ForeignKey(task , null = False, related_name='subTasks')
     title = models.CharField(blank = False , max_length = 200)
     status = models.CharField(choices = TASK_STATUS_CHOICES , default = 'notStarted' , max_length = 30)
+
+TIMELINE_ITEM_CATEGORIES = (
+    ('message' , 'message'),
+    ('git' , 'git'),
+    ('file' , 'file'),
+    ('system' , 'system'),
+)
+
+class timelineItem(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    user =  models.ForeignKey(User , null = True)
+    category = models.CharField(choices = TIMELINE_ITEM_CATEGORIES , max_length = 50 , default = 'message')
+    task = models.ForeignKey(task , null = False)
+    text = models.TextField(max_length=1000 , null=True)
+    commit = models.ManyToManyRel(commitNotification, blank = True)
