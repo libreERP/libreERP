@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
 from gitweb.serializers import repoLiteSerializer
+from gitweb.models import commitNotification
 
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,3 +63,16 @@ class taskSerializer(serializers.ModelSerializer):
         instance.to = validated_data['to']
         instance.save()
         return instance
+
+class timelineItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = timelineItem
+        fields = ('created' , 'user' , 'category' , 'text' , 'commit')
+        read_only_fields = ('user',)
+    def create(self , validated_data):
+        i = timelineItem(**validated_data)
+        req = self.context['request']
+        i.user = req.user
+        return i
+    def update(self , instance , validated_data):
+        raise PermissionDenied({'NOT_ALLOWED'})

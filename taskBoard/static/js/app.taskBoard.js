@@ -25,6 +25,41 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
 
     $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : null , mode : 'new'}
 
+    $scope.commentEditor = {text : 'C#e52d734522e3'};
+
+    $scope.addTimelineItem = function() {
+        if ($scope.commentEditor.text.length ==0) {
+            Flash.create('warning' , 'Nothing to add!');
+            return;
+        }else {
+            if ($scope.commentEditor.text.startsWith('C#')) {
+                // its a commit to be added
+                var sha = $scope.commentEditor.text.split('C#')[1];
+                if (sha.length == 0) {
+                    Flash.create('warning' , 'Plaase provide the HASH value of the commit');
+                    return;
+                }
+                $http({method : 'GET' , url : '/api/git/commitNotification/?sha__contains=' + sha }).
+                then(function(response) {
+                    if (response.data.count >1) {
+                        Flash.create('warning' , 'More then one commit found for this commit HASH');
+                        return;
+                    }
+                    var dataToSend = {
+                        task : $scope.form.pk,
+                        commit : response.data.result[0].pk,
+                    }
+                    $http({method : 'POST' , url : '/api/taskBoard/'})
+                });
+            }else{
+                var dataToSend = {
+                    task : $scope.form.pk,
+                    commit : response.data.result[0].pk,
+                }
+            }
+        }
+    }
+
     $http.get('/api/taskBoard/task/6/').
     then(function(response) {
         $scope.form = response.data;

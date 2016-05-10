@@ -54,5 +54,5 @@ class timelineItem(models.Model):
     user =  models.ForeignKey(User , null = True)
     category = models.CharField(choices = TIMELINE_ITEM_CATEGORIES , max_length = 50 , default = 'message')
     task = models.ForeignKey(task , null = False)
-    text = models.TextField(max_length=1000 , null=True)
-    commit = models.ManyToManyRel(commitNotification, blank = True)
+    text = models.TextField(max_length=2000 , null=True)
+    commit = models.ManyToManyField(commitNotification, related_name="tasks", blank = True)

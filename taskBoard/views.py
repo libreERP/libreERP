@@ -23,3 +23,10 @@ class subTaskViewSet(viewsets.ModelViewSet):
     queryset = subTask.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+
+class timelineItemViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = timelineItemSerializer
+    queryset = timelineItem.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['task']
