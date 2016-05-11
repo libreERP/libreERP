@@ -29,4 +29,4 @@ class timelineItemViewSet(viewsets.ModelViewSet):
     serializer_class = timelineItemSerializer
     queryset = timelineItem.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['task']
+    filter_fields = ['task', 'category']

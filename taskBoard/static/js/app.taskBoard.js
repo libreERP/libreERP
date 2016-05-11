@@ -25,7 +25,7 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
 
     $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : null , mode : 'new'}
 
-    $scope.commentEditor = {text : 'C#e52d734522e3'};
+    $scope.commentEditor = {text : ''};
 
     $scope.addTimelineItem = function() {
         if ($scope.commentEditor.text.length ==0) {
@@ -47,24 +47,64 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
                     }
                     var dataToSend = {
                         task : $scope.form.pk,
-                        commit : response.data.result[0].pk,
+                        commit : response.data[0].pk,
+                        category : 'git',
                     }
-                    $http({method : 'POST' , url : '/api/taskBoard/'})
+                    $http({method : 'POST' , url : '/api/taskBoard/timelineItem/' , data : dataToSend}).
+                    then(function(response) {
+                        $scope.data.commitNotifications.push(response.data);
+                        $scope.commentEditor.text = '';
+                    });
                 });
             }else{
                 var dataToSend = {
                     task : $scope.form.pk,
-                    commit : response.data.result[0].pk,
+                    text : $scope.commentEditor.text,
+                    category : 'message',
                 }
+                $http({method : 'POST' , url : '/api/taskBoard/timelineItem/' , data : dataToSend}).
+                then(function(response) {
+                    $scope.data.messages.push(response.data);
+                    $scope.commentEditor.text = '';
+                });
             }
         }
     }
 
-    $http.get('/api/taskBoard/task/6/').
+    $scope.updateFiles = function() {
+        if (!$scope.explore.addFile) {
+            return;
+        }
+        var pks = [];
+        for (var i = 0; i < $scope.form.files.length; i++) {
+            pks.push($scope.form.files[i].pk);
+        }
+        var dataToSend = {
+            files : pks
+        }
+        $http({method : 'PATCH' , url : '/api/taskBoard/task/'+ $scope.form.pk + '/' , data : dataToSend}).
+        then(function(response) {
+            Flash.create('success' , 'Saved');
+        });
+    }
+
+
+
+    $scope.data = {pk : 6 , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
+
+    $http.get('/api/taskBoard/task/'+ $scope.data.pk +'/').
     then(function(response) {
         $scope.form = response.data;
         $scope.form.to = $users.get($scope.form.to);
         $scope.form.mode = 'view';
+        $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=git&limit=5&task=' + $scope.data.pk + '&offset=' + $scope.data.gitPage }).
+        then(function(response) {
+            $scope.data.commitNotifications = response.data.results;
+        });
+        $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=message&limit=5&task=' + $scope.data.pk + '&offset=' + $scope.data.messagePage }).
+        then(function(response) {
+            $scope.data.messages = response.data.results;
+        });
     });
 
     $scope.explore = {mode :'git'};
@@ -92,12 +132,13 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         if (st.title.length ==0 && typeof st.pk == 'undefined') {
             $scope.form.subTasks.splice(index,1);
         }else{
-            $scope.form.subTasks.title = $scope.subTaskBackup.title;
-            $scope.form.subTasks.status = $scope.subTaskBackup.status;
+            $scope.form.subTasks[index] = $scope.subTaskBackup;
+            $scope.form.subTasks[index].inEditor = false;
         }
     }
 
     $scope.editSubTask = function(index) {
+        $scope.subTaskBackup = angular.copy($scope.form.subTasks[index]);
         $scope.form.subTasks[index].inEditor = true;
     }
 
@@ -141,11 +182,22 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
     }
 
     $scope.saveSubTask = function(index) {
+        var url ='/api/taskBoard/subTask/';
         if ($scope.form.pk == null || typeof $scope.form.pk == 'undefined') {
             Flash.create('warning' , 'Please save the parent Task before before this can be saved');
             return;
         }
         var st = $scope.form.subTasks[index]
+        if (typeof st.pk!='undefined' && st.title.length == 0) {
+            $http({method : 'DELETE', url : url + st.pk + '/' }).
+            then((function(index) {
+                return function(response) {
+                    $scope.form.subTasks.splice(index , 1);
+                    Flash.create('success' , 'Sub Task deleted');
+                }
+            })(index))
+            return;
+        }
         if (st.title.length == 0) {
             Flash.create('warning' , 'Title can not be left blank');
             return;
@@ -154,7 +206,6 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
             title : st.title,
         }
         var method = 'POST';
-        var url ='/api/taskBoard/subTask/';
         if (typeof st.pk == 'undefined') {
             // its a new task
             dataToSend.status = 'notStarted';
@@ -187,6 +238,6 @@ app.controller('projectManagement.taskBoard.default' , function($scope , $http ,
         })
     }
 
-    $scope.createTask();
+    // $scope.createTask();
 
 });

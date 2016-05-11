@@ -1,6 +1,6 @@
 <div class="col-md-4" style="margin-top:10px;">
     <div class="btn-group btn-group-sm">
-        <button type="button" class="btn btn-default" ng-if="form.mode == 'new'">
+        <button type="button" class="btn btn-default">
             Reset
         </button>
         <button type="button" class="btn btn-primary" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
@@ -69,7 +69,7 @@
             </div>
         </div>
     </div>
-    <div style="overflow:auto;height:{{ form.mode=='view' ?'60':'100'}}%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:{{ form.mode=='view' ?'20':'0'}}%;transition: all .1s ease-in-out;">
+    <div style="overflow:auto;height:{{ form.mode=='view' ?'60':'100'}}%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:{{ form.mode=='view' ?'20':'0'}}%;">
         <div ng-if="form.mode!='view'">
             <div class="form-group" style="margin-top:20px;" >
                 <label>Title</label>
@@ -113,24 +113,82 @@
             Click me!
         </button> -->
 
-        <div class="col-md-12" ng-if="explore.mode == 'git'">
-            <h3 class="text-muted">Commits</h3>
-            <div ng-repeat="r in project.repos" style="border-bottom:solid 3px #eee;padding-bottom:{{!(r.commitNotifications.length< r.commitCount)? '20px':'0px'}};">
-                <div class="row text-center">
-                  <h4><span class="octicon octicon-repo"></span> {{r.name}}</h4>
+        <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view'">
+            <ul class="timeline timeline-inverse" ng-if="explore.mode == 'timeline'">
+                <li ng-repeat="m in data.messages"><i class="fa fa-commenting-o bg-blue"></i>
+                  <div class="timeline-item">
+                    <span class="time" style="margin-right:10px;"><i class="fa fa-clock-o"></i> {{m.created | timeAgo}}</span>
+                    <h3 class="timeline-header" style="height:41px;">
+                        <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{m.user | getDP}}" height="40px" width="40px"/>
+                        {{m.user | getName}}
+                    </h3>
+                    <div class="timeline-body">
+                        {{m.text}}
+                    </div>
+                  </div>
+              </li>
+            </ul>
+
+            <div class="col-md-12" ng-if="explore.mode == 'files'">
+                <div class="row container-fluid">
+                    <h3 class="text-muted">Files</h3>
+                    <div style="margin:10px;" class="btn-group btn-group-sm pull-right">
+                        <button type="button" class="btn btn-default"  ng-click="updateFiles();explore.addFile = !explore.addFile;">
+                            <i class="fa fa-{{explore.addFile? 'mail-reply':'plus'}}"></i> {{explore.addFile ? 'Back' : 'Edit'}}
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="updateFiles()" ng-if="explore.addFile">
+                            Save
+                        </button>
+                    </div>
                 </div>
-                <div ng-repeat="n in r.commitNotifications" class="row" style="padding-top:10px;">
+                <div ng-if="explore.addFile">
+                    <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
+                </div>
+                <div ng-if="!explore.addFile">
+                    <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-primary">File Name</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span>Uploader</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span>When</span>
+                        </div>
+                    </div>
+                    <div class="row" style="padding:10px;"  ng-repeat="f in form.files">
+                        <div class="col-md-1">
+                            <i class="fa {{f.name | fileTypeIcon}} fa-3x"></i>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text-primary">{{f.name}}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span>{{f.user | getName}}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span>{{f.created | timeAgo}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-if="explore.mode == 'git'">
+                <h3 class="text-muted">Commits</h3>
+                <div ng-repeat="n in data.commitNotifications" class="row" style="padding-top:10px;">
                     <div class="col-md-2" style="padding-right:40px;">
                       <div class="row">
-                        <img ng-src="{{n.user | getDP}}" class="img-circle pull-right" width="50"/>
+                        <img ng-src="{{n.commit.user | getDP}}" class="img-circle pull-right" width="50"/>
                       </div>
                       <div class="row">
-                        <span class="pull-right">{{n.user | getName}}</span>
+                        <span class="pull-right">{{n.commit.user | getName}}</span>
                       </div>
                     </div>
-                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($parent.$index , $index)">
-                      <span class="text-muted"> {{n.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.repo.name}} / {{n.branch}}] :</strong> 1 new commit <br>
-                      <code>{{n.sha.substring(n.sha.length-10 , n.sha.length)}}</code> : {{n.message}}
+                    <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
+                      <span class="text-muted"> {{n.commit.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.commit.repo.name}} / {{n.commit.branch}}] :</strong> 1 new commit <br>
+                      <code>{{n.commit.sha.substring(n.commit.sha.length-10 , n.commit.sha.length)}}</code> : {{n.commit.message}}
                     </div>
                 </div>
                 <nav ng-if="r.commitNotifications.length< r.commitCount">
@@ -139,93 +197,16 @@
                   </ul>
                 </nav>
             </div>
-        </div>
 
-        <div class="col-md-12" ng-if="explore.mode == 'files'">
-            <div class="row container-fluid">
-                <h3 class="text-muted">Files</h3>
-                <div style="margin:10px;" class="btn-group btn-group-sm pull-right">
-                    <button type="button" class="btn btn-default"  ng-click="updateFiles();explore.addFile = !explore.addFile;">
-                        <i class="fa fa-{{explore.addFile? 'mail-reply':'plus'}}"></i> {{explore.addFile ? 'Back' : 'Edit'}}
-                    </button>
-                    <button type="button" class="btn btn-primary" ng-click="updateFiles()" ng-if="explore.addFile">
-                        Save
-                    </button>
-                </div>
-            </div>
-            <div ng-if="explore.addFile">
-                <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
-            </div>
-            <div ng-if="!explore.addFile">
-                <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
-                    <div class="col-md-1">
-                    </div>
-                    <div class="col-md-6">
-                        <span class="text-primary">File Name</span>
-                    </div>
-                    <div class="col-md-3">
-                        <span>Uploader</span>
-                    </div>
-                    <div class="col-md-2">
-                        <span>When</span>
-                    </div>
-                </div>
-                <div class="row" style="padding:10px;"  ng-repeat="f in form.files">
-                    <div class="col-md-1">
-                        <i class="fa {{f.name | fileTypeIcon}} fa-2x"></i>
-                    </div>
-                    <div class="col-md-6">
-                        <span class="text-primary">{{f.name}}</span>
-                    </div>
-                    <div class="col-md-3">
-                        <span>{{f.user | getName}}</span>
-                    </div>
-                    <div class="col-md-2">
-                        <span>{{f.created | timeAgo}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view' && explore.mode == 'timeline'">
-            <ul class="timeline timeline-inverse">
-                <li ng-repeat="i in [32,5,6,4]"><i class="fa fa-commenting-o bg-blue"></i>
-                  <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> dsd ago</span>
-                    <h3 class="timeline-header" style="height:41px;">
-                        <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{1 | getDP}}" height="40px" width="40px"/>
-                        {{1 | getName}}
-                    </h3>
-                    <div class="timeline-body">
-                        fasfsdf
-                    </div>
-                    <div class="timeline-footer" >
-                        <a style="text-decoration: none;" href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                          {{data.likes.length==0? '':data.likes.length}} {{data.likes.length<=1? 'Like':'likes'}} <i class="fa fa-thumbs-o-up"></i>
-                        </a>
-                        <a href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                          {{data.comments.length==0? '' :data.comments.length}} {{data.comments.length<=1? 'Comment':'Comments'}} <i class="fa fa-comment-o"></i>
-                        </a>
-                        <span class="pull-right" ng-if="data.attachment!=null" style="margin-left:10px;">
-                          <a ng-href="{{data.attachment}}"><i class="fa fa-link"></i></a>
-                        </span>
-                        <div class="pull-right" style="display:inline;">
-                          <div ng-repeat = "user in data.tagged" class="postTags">
-                            {{1 | getName:'short'}}
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-              </li>
-            </ul>
         </div>
     </div>
     <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;" ng-if="form.mode == 'view'">
         <div class="row">
             <div class="col-md-10">
-                <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
+                <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment" ng-model="commentEditor.text"></textarea>
             </div>
-            <button type="button" class="btn btn-default col-md-2">
+            <button type="button" class="btn btn-default col-md-2" ng-click="addTimelineItem()">
                 Send <i class="fa fa-paper-plane-o"></i>
             </button>
         </div>

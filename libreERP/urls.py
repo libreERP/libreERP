@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^partners', partnerRegistration , name ='partnerRegistration'),
     url(r'^token', tokenAuthentication , name ='tokenAuthentication'),
     url(r'^logout/', logoutView , name ='logout'),
-    url(r'^corporate/', index , name ='home'),
+    url(r'^corporate/', index , name ='index'),
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
     url(r'^accounts/', include('allauth.urls')),
 ]

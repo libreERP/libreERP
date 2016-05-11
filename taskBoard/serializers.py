@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
-from gitweb.serializers import repoLiteSerializer
+from gitweb.serializers import repoLiteSerializer, commitNotificationSerializer
 from gitweb.models import commitNotification
 
 class mediaSerializer(serializers.ModelSerializer):
@@ -53,26 +53,36 @@ class taskSerializer(serializers.ModelSerializer):
         t.save()
         return t
     def update(self , instance , validated_data):
-        for u in self.context['request'].data['followers']:
-            instance.followers.add(User.objects.get(pk=u))
-        for f in self.context['request'].data['files']:
-            instance.files.add(media.objects.get(pk = f))
-        instance.title = validated_data['title']
-        instance.description = validated_data['description']
-        instance.dueDate = validated_data['dueDate']
-        instance.to = validated_data['to']
+        data = self.context['request'].data
+        if 'followers' in data:
+            for u in data['followers']:
+                instance.followers.add(User.objects.get(pk=u))
+        if 'files' in data:
+            for f in data['files']:
+                instance.files.add(media.objects.get(pk = f))
+        try:
+            instance.title = validated_data['title']
+            instance.description = validated_data['description']
+            instance.dueDate = validated_data['dueDate']
+            instance.to = validated_data['to']
+        except:
+            pass
         instance.save()
         return instance
 
 class timelineItemSerializer(serializers.ModelSerializer):
+    commit = commitNotificationSerializer(many = False , read_only = True)
     class Meta:
         model = timelineItem
-        fields = ('created' , 'user' , 'category' , 'text' , 'commit')
+        fields = ('pk','created' , 'user' , 'category' , 'text' , 'commit' , 'task')
         read_only_fields = ('user',)
     def create(self , validated_data):
         i = timelineItem(**validated_data)
         req = self.context['request']
+        if i.category == 'git':
+            i.commit = commitNotification.objects.get(pk = req.data['commit'])
         i.user = req.user
+        i.save()
         return i
     def update(self , instance , validated_data):
         raise PermissionDenied({'NOT_ALLOWED'})
