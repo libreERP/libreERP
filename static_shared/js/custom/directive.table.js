@@ -119,26 +119,26 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   };
 
   $scope.fullTextSearch = function(str){
-    rowsContaining = [];
-    str = str.toLowerCase();
+    var rowsContaining = [];
+    var str = str.toLowerCase();
     // console.log(str);
     for (var i = 0; i < $scope.originalTable.length; i++) {
 
-      row = $scope.originalTable[i];
+      var row = $scope.originalTable[i];
       for (key in row){
         if (row[key] == null) {
           continue;
         }
-        val = row[key].toString().toLowerCase();
+        var val = row[key].toString().toLowerCase();
         if ( val.indexOf(str) !=-1){
           rowsContaining.push(i)
           break;
         };
-        rowNested = row[key];
+        var rowNested = row[key];
         if (typeof rowNested == 'object') {
           for (keyNested in rowNested){
             if (rowNested[keyNested] != null) {
-              valNested = rowNested[keyNested].toString().toLowerCase();
+              var valNested = rowNested[keyNested].toString().toLowerCase();
               if (valNested.indexOf(str) !=-1){
                 if (rowsContaining.indexOf(i) == -1) {
                   rowsContaining.push(i)
@@ -158,6 +158,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.fetchData = function(){
+    var fetch = {method : '' , url : ''};
     // getting the data from the server based on the state of the filter params
     if (typeof $scope.getStr == 'undefined' && $scope.searchField!='') {
       return;
@@ -227,9 +228,9 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.updateData = function(){ // at any point of time forcing to refresh data
-    parts = $scope.searchText.split('>');
+    var parts = $scope.searchText.split('>');
     if (typeof $scope.searchField == 'undefined' || $scope.searchField == '') {
-      searchStr = $scope.searchText;
+      var searchStr = $scope.searchText;
     } else {
       $scope.getStr = parts[0].trim();
       if (typeof parts[1] == 'undefined'){
@@ -290,8 +291,8 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     }
 
     // console.log("will sort according to col " + col);
-    colData = [];
-    len =$scope.data.length;
+    var colData = [];
+    var len =$scope.data.length;
     var indices = new Array(len);
     for (var i = 0; i < len; i++) {
       colData.push($scope.data[i][$scope.tableHeading[col]]);
