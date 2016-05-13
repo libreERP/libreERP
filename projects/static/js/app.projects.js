@@ -28,6 +28,25 @@ app.config(function($stateProvider){
 
 app.controller('projectManagement.projects.project.explore' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
+    $scope.getPercentageComplete = function(index) {
+      var percentage = 0;
+      var t = $scope.project.tasks[index];
+      for (var i = 0; i < t.subTasks.length; i++) {
+        if(t.subTasks[i].status == 'complete'){
+          percentage += 100;
+        }else if (t.subTasks[i].status == 'inProgress') {
+          percentage += 50;
+        }else if (t.subTasks[i].status == 'stuck') {
+          percentage += 25;
+        }
+      }
+      if (t.subTasks.length >0) {
+        return percentage/t.subTasks.length;
+      }else {
+        return 100;
+      }
+    }
+
     $scope.sendMessage = function() {
       if ($scope.commentEditor.text.length == 0) {
         return;

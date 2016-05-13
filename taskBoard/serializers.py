@@ -6,6 +6,7 @@ from .models import *
 from gitweb.serializers import repoLiteSerializer, commitNotificationSerializer
 from gitweb.models import commitNotification
 from projects.serializers import projectLiteSerializer
+from projects.models import project
 
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,6 +48,7 @@ class taskSerializer(serializers.ModelSerializer):
         t = task(**validated_data)
         req = self.context['request']
         t.user = req.user
+        t.project = project.objects.get(pk = req.data['project'])
         t.save()
         for u in req.data['followers']:
             t.followers.add(User.objects.get(pk=u))
