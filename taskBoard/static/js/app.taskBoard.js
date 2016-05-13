@@ -269,7 +269,7 @@ app.controller('projectManagement.taskBoard.task.item' , function($scope , $http
       }
     }
     if ($scope.data.subTasks.length >0) {
-      return percentage/$scope.data.subTasks.length;
+      return Math.floor(percentage/$scope.data.subTasks.length);
     }else {
       return 100;
     }
