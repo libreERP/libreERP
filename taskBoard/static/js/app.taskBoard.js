@@ -21,7 +21,7 @@ app.config(function($stateProvider){
 
 });
 
-app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions){
+app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions, $aside){
     $scope.reset = function() {
       $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined}
       $scope.commentEditor = {text : ''};
@@ -82,6 +82,22 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
                 });
             }
         }
+    }
+
+    $scope.exploreNotification = function(index) {
+      console.log($scope.data.commitNotifications[index]);
+      $aside.open({
+        templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
+        position:'left',
+        size : 'xxl',
+        backdrop : true,
+        resolve : {
+          input : function() {
+            return $scope.data.commitNotifications[index].commit;
+          }
+        },
+        controller : 'projectManagement.GIT.exploreNotification',
+      })
     }
 
     $scope.updateFiles = function() {
