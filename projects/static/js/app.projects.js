@@ -168,8 +168,6 @@ app.controller('projectManagement.projects.default' , function($scope , $http , 
       }
     }
 
-    $scope.addTab(JSON.parse('{"title":"Browse project : Project 1","cancel":true,"app":"projectBrowser","data":{"pk":1,"name":"Project 1"},"active":true}'))
-
 });
 
 

@@ -23,3 +23,10 @@ class projectViewSet(viewsets.ModelViewSet):
     queryset = project.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+
+class projectLiteViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissionsOrAnonReadOnly)
+    serializer_class = projectLiteSerializer
+    queryset = project.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['title']

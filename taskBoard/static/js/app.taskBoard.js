@@ -23,9 +23,18 @@ app.config(function($stateProvider){
 
 app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions){
 
-    $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : null , mode : 'new'}
+    $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined}
 
     $scope.commentEditor = {text : ''};
+
+    $scope.projectSearch = function(query) {
+      return $http.get('/api/projects/projectSearch/?title__contains=' + query).
+      then(function(response){
+        return response.data;
+      })
+    }
+
+
 
     $scope.addTimelineItem = function() {
         if ($scope.commentEditor.text.length ==0) {
@@ -88,24 +97,24 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         });
     }
 
+    $scope.data = {pk : undefined , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
 
-
-    $scope.data = {pk : 6 , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
-
-    $http.get('/api/taskBoard/task/'+ $scope.data.pk +'/').
-    then(function(response) {
-        $scope.form = response.data;
-        $scope.form.to = $users.get($scope.form.to);
-        $scope.form.mode = 'view';
-        $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=git&limit=5&task=' + $scope.data.pk + '&offset=' + $scope.data.gitPage }).
-        then(function(response) {
-            $scope.data.commitNotifications = response.data.results;
-        });
-        $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=message&limit=5&task=' + $scope.data.pk + '&offset=' + $scope.data.messagePage }).
-        then(function(response) {
-            $scope.data.messages = response.data.results;
-        });
-    });
+    if (typeof $scope.tab.data.pk != 'undefined') {
+      $http.get('/api/taskBoard/task/'+ $scope.tab.data.pk +'/').
+      then(function(response) {
+          $scope.form = response.data;
+          $scope.form.to = $users.get($scope.form.to);
+          $scope.form.mode = 'view';
+          $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=git&limit=5&task=' + $scope.form.pk + '&offset=' + $scope.data.gitPage }).
+          then(function(response) {
+              $scope.data.commitNotifications = response.data.results;
+          });
+          $http({method : 'GET' , url : '/api/taskBoard/timelineItem/?category=message&limit=5&task=' + $scope.form.pk + '&offset=' + $scope.data.messagePage }).
+          then(function(response) {
+              $scope.data.messages = response.data.results;
+          });
+      });
+    }
 
     $scope.explore = {mode :'git'};
     $scope.changeExploreMode = function(mode) {
@@ -150,7 +159,12 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
             description : $scope.form.description,
             dueDate : $scope.form.dueDate,
             followers : $scope.form.followers,
-            to : $scope.form.to.pk,
+        }
+        if (typeof $scope.form.to != 'undefined') {
+          dataToSend.to = $scope.form.to.pk;
+        }
+        if (typeof $scope.form.project != 'undefined' && $scope.form.project != null) {
+          dataToSend.project = $scope.form.project.pk;
         }
 
         dataToSend.files = []
@@ -168,7 +182,7 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         then(function(response) {
             Flash.create('success' , 'Saved');
             $scope.form.mode = 'view';
-            // $scope.form = response.data;
+            $scope.form.pk = response.data.pk;
         })
     }
 
@@ -225,19 +239,102 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
 
 });
 
+app.controller('projectManagement.taskBoard.task.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+
+  $scope.getPercentageComplete = function() {
+    var percentage = 0;
+    for (var i = 0; i < $scope.data.subTasks.length; i++) {
+      if($scope.data.subTasks[i].status == 'complete'){
+        percentage += 100;
+      }else if ($scope.data.subTasks[i].status == 'inProgress') {
+        percentage += 50;
+      }else if ($scope.data.subTasks[i].status == 'stuck') {
+        percentage += 25;
+      }
+    }
+    if ($scope.data.subTasks.length >0) {
+      return percentage/$scope.data.subTasks.length;
+    }else {
+      return 100;
+    }
+  }
+
+});
 
 app.controller('projectManagement.taskBoard.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
-    $scope.createTask = function() {
-        $aside.open({
-            templateUrl : '/static/ngTemplates/app.taskBoard.createTask.html',
-            controller : 'projectManagement.taskBoard.createTask',
-            position:'left',
-            size : 'xl',
-            backdrop : true,
-        })
-    }
+  $scope.data = {tableData : []};
 
-    // $scope.createTask();
+  $scope.me = $users.get('mySelf');
+  $http({method : 'GET' , url : '/api/taskBoard/task/?user=' + $scope.me.pk}).
+  then(function(response) {
+    $scope.tasks = response.data;
+  });
+
+
+
+  $scope.createTask = function() {
+      $aside.open({
+          templateUrl : '/static/ngTemplates/app.taskBoard.createTask.html',
+          controller : 'projectManagement.taskBoard.createTask',
+          position:'left',
+          size : 'xl',
+          backdrop : true,
+      })
+  }
+
+  var views = [{
+    name: 'list',
+    icon: 'fa-bars',
+    template: '/static/ngTemplates/genericTable/genericSearchList.html',
+    itemTemplate: '/static/ngTemplates/app.taskBoard.item.html',
+  }, ];
+
+  $scope.tasksConfig = {
+    views: views,
+    url: '/api/taskBoard/task/',
+    searchField: 'title',
+    getParams : [{key : 'user' , value : $scope.me.pk},],
+    multiselectOptions : [{icon : 'fa fa-plus' , text : 'Add' },]
+  }
+
+  $scope.tableAction = function(target , action , mode){
+    console.log(target);
+    if (mode == 'multi') {
+      $scope.createTask();
+    }else{
+      if (action == 'taskBrowser') {
+        for (var i = 0; i < $scope.data.tableData.length; i++) {
+          if ($scope.data.tableData[i].pk == parseInt(target)){
+            $scope.addTab({title : 'Browse task : ' + $scope.data.tableData[i].title , cancel : true , app : 'taskBrowser' , data : {pk : target , name : $scope.data.tableData[i].title} , active : true})
+          }
+        }
+      }
+    }
+  }
+
+  $scope.tabs = [];
+  $scope.searchTabActive = true;
+
+  $scope.closeTab = function(index){
+    $scope.tabs.splice(index , 1)
+  }
+
+  $scope.addTab = function( input ){
+      console.log(JSON.stringify(input));
+    $scope.searchTabActive = false;
+    alreadyOpen = false;
+    for (var i = 0; i < $scope.tabs.length; i++) {
+      if ($scope.tabs[i].data.pk == input.data.pk && $scope.tabs[i].app == input.app) {
+        $scope.tabs[i].active = true;
+        alreadyOpen = true;
+      }else{
+        $scope.tabs[i].active = false;
+      }
+    }
+    if (!alreadyOpen) {
+      $scope.tabs.push(input)
+    }
+  }
 
 });

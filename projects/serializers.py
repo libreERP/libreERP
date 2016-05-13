@@ -53,3 +53,9 @@ class projectSerializer(serializers.ModelSerializer):
                 instance.team.add(User.objects.get(pk=u))
         instance.save()
         return instance
+
+
+class projectLiteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = project
+        fields = ('pk' , 'title')

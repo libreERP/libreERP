@@ -1,8 +1,24 @@
 <div id="dashboard">
   <breadcrumb></breadcrumb>
-  <div class="row" style="padding-right:30px;padding-left:30px;">
-    <button ng-click="createTask()" type="button" class="btn btn-default pull-right">
-      + New
-    </button>
-  </div>
+  <uib-tabset>
+      <uib-tab active="searchTabActive">
+          <uib-tab-heading>
+              Browse
+              <i class="fa fa-list-ul"></i>
+          </uib-tab-heading>
+          <div class="container-fluid">
+              <generic-Table data="data.tableData" config-Obj="{{tasksConfig}}" callback-Fn="tableAction"></generic-Table>
+          </div>
+      </uib-tab>
+
+      <uib-tab ng-repeat="tab in tabs" active="tab.active" disable="tab.disabled">
+          <uib-tab-heading >
+              {{tab.title}}
+              <i ng-if="tab.cancel" class="fa fa-close" ng-click="closeTab($index);"></i>
+          </uib-tab-heading>
+          <div ng-if="tab.app == 'taskBrowser'">
+              <div ng-include="'/static/ngTemplates/app.taskBoard.explore.html'"></div>
+          </div>
+      </uib-tab>
+  </uib-tabset>
 </div>

@@ -5,6 +5,7 @@ from rest_framework.exceptions import *
 from .models import *
 from gitweb.serializers import repoLiteSerializer, commitNotificationSerializer
 from gitweb.models import commitNotification
+from projects.serializers import projectLiteSerializer
 
 class mediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,6 +38,7 @@ class subTasksSerializer(serializers.ModelSerializer):
 class taskSerializer(serializers.ModelSerializer):
     subTasks = subTasksSerializer(many = True , read_only = True)
     files = mediaSerializer(many = True , read_only = True)
+    project = projectLiteSerializer(many = False , read_only = True)
     class Meta:
         model = task
         fields = ( 'pk', 'title' , 'description' , 'files', 'followers', 'user' , 'created', 'dueDate', 'to', 'subTasks', 'project', 'personal')

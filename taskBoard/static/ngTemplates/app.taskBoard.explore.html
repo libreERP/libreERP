@@ -1,0 +1,221 @@
+<div style="position:relative; min-height:90vh;top:0px;right:0px;padding:0px;" ng-controller="projectManagement.taskBoard.createTask">
+    <div class="col-md-4" style="padding:10px;height:100%;position:absolute;">
+      <div class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-default">
+              Reset
+          </button>
+          <button type="button" class="btn btn-primary" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
+              Save <i class="fa fa-floppy-o"></i>
+          </button>
+          <button type="button" class="btn btn-primary" ng-click="edit()" ng-if="form.mode=='view'">
+              Edit <i class="fa fa-pencil"></i>
+          </button>
+      </div>
+
+      <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
+      <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
+      <div class="form-group">
+          Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null">
+          <button type="button" class="btn btn-default btn-sm pull-right" ng-click="addSubTask()">
+              <i class="fa fa-plus"></i>  Sub task
+          </button>
+      </div>
+      <hr>
+      <div class="row" ng-repeat="st in form.subTasks">
+          <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}">
+              <div  ng-if="!st.inEditor">
+                  <i ng-if="st.status == 'notStarted'" class="fa fa-square-o fa-2x" style="color:#4881d6;"></i>
+                  <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
+                  <i ng-if="st.status == 'stuck'" class="fa fa-wheelchair fa-2x" style="color:#de6915;"></i>
+                  <i ng-if="st.status == 'complete'" class="fa fa-check fa-2x" style="color:#099c0a;"></i>
+                  <div class="btn-group pull-right">
+                    <button type="button" class="btn btn-default btn-sm" ng-click="editSubTask($index)"><i class="fa fa-pencil pull-right"></i> Edit</button>
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="caret"></span>
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="" ng-click="changeSubTaskStatus('inProgress' , $index)">In Progress</a></li>
+                      <li><a href="" ng-click="changeSubTaskStatus('stuck' , $index)">Stuck</a></li>
+                      <li><a href="" ng-click="changeSubTaskStatus('complete' , $index)">Complete</a></li>
+                    </ul>
+                  </div>
+                  <span style="font-size:18px;margin-left:10px;">{{st.title}}</span>
+              </div>
+              <div class="input-group" ng-if="st.inEditor">
+                <input type="text" class="form-control" placeholder="Title..." ng-model="st.title">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" ng-click="saveSubTask($index)"><i class="fa fa-floppy-o"></i></button>
+                    <button class="btn btn-default" type="button" ng-click="closeEditor($index)"><i class="fa fa-times"></i></button>
+                </span>
+              </div><!-- /input-group -->
+          </div>
+      </div>
+  </div>
+  <div class="col-md-8" style="position:absolute; height:100%;top:0px;right:0px;padding:0px;">
+      <div style="overflow:hidden;height:20%;position:absolute;width:100%;border-left:solid 3px #eee;" ng-if="form.mode=='view'">
+          <div class="container-fluid">
+              {{form.description | humanize}} <br>
+          </div>
+          <div class="row" style="margin:0px;padding:0px;bottom:0px;position:absolute;width:100%;border-bottom:3px solid #eee;">
+              <div class="col-md-8" style="padding:0px;">
+                  <ul class="nav-horizontal">
+                      <li class="{{explore.mode == 'git' ? 'active':''}} text-center" ng-click="changeExploreMode('git')"><a href=""><i class="octicon octicon-repo-push mega-octicon"></i></a></li>
+                      <li class="{{explore.mode == 'timeline' ? 'active':''}} text-center" ng-click="changeExploreMode('timeline')"><a href=""><i class="fa fa-commenting fa-2x"></i></a></li>
+                      <li class="{{explore.mode == 'files' ? 'active':''}} text-center" ng-click="changeExploreMode('files')"><a href=""><i class="fa fa-files-o fa-2x"></i></a></li>
+                  </ul>
+              </div>
+              <div class="col-md-4">
+                  <span class="pull-right" style="font-size:18px;padding:5px;"><strong>Due Date : </strong> {{form.dueDate | date:'hh:mm:a , dd MMM'}} <br></span>
+              </div>
+          </div>
+      </div>
+      <div style="overflow:auto;height:{{ form.mode=='view' ?'60':'100'}}%;position:absolute;width:100%;border-left:solid 3px #eee;padding:20px;top:{{ form.mode=='view' ?'20':'0'}}%;">
+          <div ng-if="form.mode!='view'">
+              <div class="form-group" style="margin-top:20px;" >
+                  <label>Title</label>
+                  <input type="text" ng-model="form.title" class="form-control" placeholder="Title..">
+              </div>
+              <div class= "form-group">
+                  <label class="control-label col-sm-2" style="margin-top:35px;padding:0px;">Due date :</label>
+                  <div class="col-md-6">
+                      <div class="input-group" style="margin-top:35px;">
+                          <input type="text" class="form-control" show-weeks="false" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="form.dueDate" is-open="status.opened"  />
+                          <span class="input-group-btn">
+                              <button type="button" class="btn btn-default" ng-click="status.opened = true;"><i class="glyphicon glyphicon-calendar"></i></button>
+                          </span>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="row container-fluid">
+                          <uib-timepicker ng-model="form.dueDate" hour-step="1" minute-step="30" show-meridian="true"></uib-timepicker>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <label> Project</label>
+                <input ng-disabled="mode == 'edit'" uib-typeahead="p as p.title for p in projectSearch($viewValue)" ng-model="form.project" type="text" class="form-control" placeholder="Select the project">
+              </div>
+              <div class="form-group">
+                  <label>Description</label>
+                  <textarea class="form-control" rows="5" cols="40" placeholder="Description" ng-model="form.description"></textarea>
+              </div>
+              <user-Field user="form.to" url="/api/HR/userSearch/" label="To"></user-Field>
+              <users-Field data="form.followers" url="/api/HR/userSearch/" col="4" label="Followers"></users-Field>
+              <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
+          </div>
+          <!-- <button
+              class="btn btn-default"
+              mwl-confirm
+              title="Confirm"
+              message="Are you sure?"
+              confirm-text="Yes <i class='fa fa-check'></i>"
+              cancel-text="No"
+              on-confirm="confirmClicked = true"
+              on-cancel="cancelClicked = true"
+              confirm-button-type="danger"
+              cancel-button-type="default">
+              Click me!
+          </button> -->
+
+          <div class="col-md-12" style="margin-top:10px;" ng-if="form.mode == 'view'">
+              <ul class="timeline timeline-inverse" ng-if="explore.mode == 'timeline'">
+                  <li ng-repeat="m in data.messages"><i class="fa fa-commenting-o bg-blue"></i>
+                    <div class="timeline-item">
+                      <span class="time" style="margin-right:10px;"><i class="fa fa-clock-o"></i> {{m.created | timeAgo}}</span>
+                      <h3 class="timeline-header" style="height:41px;">
+                          <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{m.user | getDP}}" height="40px" width="40px"/>
+                          {{m.user | getName}}
+                      </h3>
+                      <div class="timeline-body">
+                          {{m.text}}
+                      </div>
+                    </div>
+                </li>
+              </ul>
+
+              <div class="col-md-12" ng-if="explore.mode == 'files'">
+                  <div class="row container-fluid">
+                      <h3 class="text-muted">Files</h3>
+                      <div style="margin:10px;" class="btn-group btn-group-sm pull-right">
+                          <button type="button" class="btn btn-default"  ng-click="updateFiles();explore.addFile = !explore.addFile;">
+                              <i class="fa fa-{{explore.addFile? 'mail-reply':'plus'}}"></i> {{explore.addFile ? 'Back' : 'Edit'}}
+                          </button>
+                          <button type="button" class="btn btn-primary" ng-click="updateFiles()" ng-if="explore.addFile">
+                              Save
+                          </button>
+                      </div>
+                  </div>
+                  <div ng-if="explore.addFile">
+                      <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
+                  </div>
+                  <div ng-if="!explore.addFile">
+                      <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
+                          <div class="col-md-1">
+                          </div>
+                          <div class="col-md-6">
+                              <span class="text-primary">File Name</span>
+                          </div>
+                          <div class="col-md-3">
+                              <span>Uploader</span>
+                          </div>
+                          <div class="col-md-2">
+                              <span>When</span>
+                          </div>
+                      </div>
+                      <div class="row" style="padding:10px;"  ng-repeat="f in form.files">
+                          <div class="col-md-1">
+                              <i class="fa {{f.name | fileTypeIcon}} fa-3x"></i>
+                          </div>
+                          <div class="col-md-6">
+                              <span class="text-primary">{{f.name}}</span>
+                          </div>
+                          <div class="col-md-3">
+                              <span>{{f.user | getName}}</span>
+                          </div>
+                          <div class="col-md-2">
+                              <span>{{f.created | timeAgo}}</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-md-12" ng-if="explore.mode == 'git'">
+                  <h3 class="text-muted">Commits</h3>
+                  <div ng-repeat="n in data.commitNotifications" class="row" style="padding-top:10px;">
+                      <div class="col-md-2" style="padding-right:40px;">
+                        <div class="row">
+                          <img ng-src="{{n.commit.user | getDP}}" class="img-circle pull-right" width="50"/>
+                        </div>
+                        <div class="row">
+                          <span class="pull-right">{{n.commit.user | getName}}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-10 commitNotification" ng-click="exploreNotification($index)">
+                        <span class="text-muted"> {{n.commit.time |  date : 'hh:mm:a , dd MMM'}}</span><br><strong>[{{n.commit.repo.name}} / {{n.commit.branch}}] :</strong> 1 new commit <br>
+                        <code>{{n.commit.sha.substring(n.commit.sha.length-10 , n.commit.sha.length)}}</code> : {{n.commit.message}}
+                      </div>
+                  </div>
+                  <nav ng-if="r.commitNotifications.length< r.commitCount">
+                    <ul class="pager">
+                      <li ng-click="loadMore($index)"><a href="">More</a></li>
+                    </ul>
+                  </nav>
+              </div>
+
+
+          </div>
+      </div>
+      <div style="position:absolute;padding:20px;padding-top:10px;background:#eee;bottom:0px;width:100%;height:20%;" ng-if="form.mode == 'view'">
+          <div class="row">
+              <div class="col-md-10">
+                  <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment" ng-model="commentEditor.text"></textarea>
+              </div>
+              <button type="button" class="btn btn-default col-md-2" ng-click="addTimelineItem()">
+                  Send <i class="fa fa-paper-plane-o"></i>
+              </button>
+          </div>
+      </div>
+  </div>
+</div>
