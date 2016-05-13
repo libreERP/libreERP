@@ -21,8 +21,8 @@
           </button>
       </div>
       <hr>
-      <div class="row" ng-repeat="st in form.subTasks">
-          <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}">
+      <div class="row" ng-repeat="st in form.subTasks" style="margin-left:-10px;margin-right:-10px;">
+          <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}" >
               <div  ng-if="!st.inEditor">
                   <i ng-if="st.status == 'notStarted'" class="fa fa-square-o fa-2x" style="color:#4881d6;"></i>
                   <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
@@ -95,7 +95,7 @@
 
               <div class="form-group">
                 <label> Project</label>
-                <input ng-disabled="mode == 'edit'" uib-typeahead="p as p.title for p in projectSearch($viewValue)" ng-model="form.project" type="text" class="form-control" placeholder="Select the project">
+                <input ng-disabled="mode == 'view'" uib-typeahead="p as p.title for p in projectSearch($viewValue)" ng-model="form.project" type="text" class="form-control" placeholder="Select the project">
               </div>
               <div class="form-group">
                   <label>Description</label>

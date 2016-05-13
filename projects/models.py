@@ -47,3 +47,17 @@ class project(models.Model):
 
 class projectComment(comment):
     project = models.ForeignKey(project , null= False , related_name='comments')
+
+
+TIMELINE_ITEM_CATEGORIES = (
+    ('message' , 'message'),
+    ('file' , 'file'),
+    ('system' , 'system'),
+)
+
+class timelineItem(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    user =  models.ForeignKey(User , null = True, related_name='projectsTimelineItems')
+    category = models.CharField(choices = TIMELINE_ITEM_CATEGORIES , max_length = 50 , default = 'message')
+    project = models.ForeignKey(project , null = False)
+    text = models.TextField(max_length=2000 , null=True)

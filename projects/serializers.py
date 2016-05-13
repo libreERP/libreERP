@@ -59,3 +59,18 @@ class projectLiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = project
         fields = ('pk' , 'title')
+
+
+class timelineItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = timelineItem
+        fields = ('pk','created' , 'user' , 'category' , 'text' , 'project' )
+        read_only_fields = ('user',)
+    def create(self , validated_data):
+        i = timelineItem(**validated_data)
+        req = self.context['request']
+        i.user = req.user
+        i.save()
+        return i
+    def update(self , instance , validated_data):
+        raise PermissionDenied({'NOT_ALLOWED'})

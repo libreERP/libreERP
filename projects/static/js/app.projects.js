@@ -28,6 +28,22 @@ app.config(function($stateProvider){
 
 app.controller('projectManagement.projects.project.explore' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
+    $scope.sendMessage = function() {
+      if ($scope.commentEditor.text.length == 0) {
+        return;
+      }
+      var dataToSend = {
+        project : $scope.project.pk,
+        text : $scope.commentEditor.text,
+        category : 'message',
+      }
+      $http({method : 'POST' , url : '/api/projects/timelineItem/' , data : dataToSend}).
+      then(function(response) {
+        $scope.project.messages.push(response.data);
+        $scope.commentEditor.text = '';
+      });
+    }
+
     $scope.fetchNotifications = function(index) {
         // takes the index of the repo for which the notifications is to be fetched
         $http({method : 'GET' , url : '/api/git/commitNotification/?limit=10&offset='+ $scope.project.repos[index].page*5 +'&repo=' + $scope.project.repos[index].pk}).
@@ -40,15 +56,37 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
         })(index));
     }
 
+    $scope.mode = 'new';
+
     $http({method : 'GET' , url : '/api/projects/project/' + $scope.tab.data.pk + '/'}).
     then(function(response) {
         $scope.project = response.data;
+        $scope.project.messages = [];
         for (var i = 0; i < $scope.project.repos.length; i++) {
             $scope.project.repos[i].page = 0;
             $scope.project.repos[i].rawCommitNotifications = []
             $scope.fetchNotifications(i);
         }
-    })
+        $http({method : 'GET' , url : '/api/taskBoard/task/?project=' + $scope.tab.data.pk }).
+        then(function(response) {
+          $scope.project.tasks = response.data;
+        })
+        $http({method : 'GET' , url : '/api/projects/timelineItem/?category=message&project=' + $scope.tab.data.pk }).
+        then(function(response) {
+          $scope.project.messages = response.data;
+        })
+        $scope.mode = 'view';
+    });
+
+    $scope.createTask = function() {
+        $aside.open({
+            templateUrl : '/static/ngTemplates/app.taskBoard.createTask.html',
+            controller : 'projectManagement.taskBoard.createTask',
+            position:'left',
+            size : 'xl',
+            backdrop : true,
+        })
+    }
 
     $scope.loadMore = function(index) {
         $scope.project.repos[index].page += 1;

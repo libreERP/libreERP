@@ -103,22 +103,22 @@
         <div class="col-md-12" ng-if="explore.mode == 'tasks'">
             <h3 class="text-muted">Tasks</h3>
             <div class="row container-fluid">
-              <button type="button" class="btn btn-default pull-right" style="margin:10px;">
+              <button type="button" class="btn btn-default pull-right" style="margin:10px;" ng-click="createTask()">
                 + Add
               </button>
             </div>
-            <div class="row hoverList" ng-repeat="t in [1,2,3,4]" style="padding-top:10px;padding-bottom:10px;">
+            <div class="row hoverList" ng-repeat="t in project.tasks" style="padding-top:10px;padding-bottom:10px;">
                 <div class="col-md-1">
                     <i class="fa fa-check-circle-o fa-2x pull-right" style="color:#d65e72;"></i>
                 </div>
                 <div class="col-md-5">
-                    <span style="font-size:18px;">Task 1</span>
+                    <span style="font-size:18px;">{{t.title}}</span>
                 </div>
                 <div class="col-md-4">
-                    {{1 | getName}}
+                    {{t.to | getName}}
                 </div>
                 <div class="col-md-2">
-                    3 days
+                    {{t.dueDate | timeAgo}}
                 </div>
             </div>
         </div>
@@ -170,40 +170,18 @@
         <div class="col-md-12" ng-if="explore.mode == 'timeline'">
             <h3 class="text-muted">Timeline</h3>
             <ul class="timeline timeline-inverse">
-                <li ng-repeat="i in [32,5,6,4]">
+                <li ng-repeat="i in project.messages">
                     <i class="fa fa-commenting-o bg-blue"></i>
                     <div class="timeline-item">
                         <span class="time">
                             <i class="fa fa-clock-o"></i>
-                            dsd ago</span>
+                            {{i.created | timeAgo}}</span>
                         <h3 class="timeline-header" style="height:41px;">
                             <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{1 | getDP}}" height="40px" width="40px"/>
-                            {{1 | getName}}
+                            {{i.user | getName}}
                         </h3>
                         <div class="timeline-body">
-                            fasfsdf
-                        </div>
-                        <div class="timeline-footer">
-                            <a style="text-decoration: none;" href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                                {{data.likes.length==0? '':data.likes.length}}
-                                {{data.likes.length<=1? 'Like':'likes'}}
-                                <i class="fa fa-thumbs-o-up"></i>
-                            </a>
-                            <a href="" ng-click="openPost('right', true , {data: data , onDelete: onDelete})">
-                                {{data.comments.length==0? '' :data.comments.length}}
-                                {{data.comments.length<=1? 'Comment':'Comments'}}
-                                <i class="fa fa-comment-o"></i>
-                            </a>
-                            <span class="pull-right" ng-if="data.attachment!=null" style="margin-left:10px;">
-                                <a ng-href="{{data.attachment}}">
-                                    <i class="fa fa-link"></i>
-                                </a>
-                            </span>
-                            <div class="pull-right" style="display:inline;">
-                                <div ng-repeat="user in data.tagged" class="postTags">
-                                    {{1 | getName:'short'}}
-                                </div>
-                            </div>
+                            {{i.text}}
                         </div>
                     </div>
                 </li>
@@ -213,10 +191,10 @@
     <div style="position:absolute;padding:20px;padding-top:10px;bottom:0px;height:20%;border-top:solid 2px #eee;" class="col-md-8 col-md-offset-4">
         <div class="row">
             <div class="col-md-10">
-                <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment"></textarea>
+                <textarea class="form-control " rows="3" cols="40" placeholder="Add a comment" ng-model="commentEditor.text"></textarea>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-default col-md-12">
+                <button type="button" class="btn btn-default col-md-12" ng-click="sendMessage()">
                     Send
                     <i class="fa fa-paper-plane-o"></i>
                 </button>

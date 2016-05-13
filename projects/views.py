@@ -30,3 +30,10 @@ class projectLiteViewSet(viewsets.ModelViewSet):
     queryset = project.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+
+class timelineItemViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = timelineItemSerializer
+    queryset = timelineItem.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['project', 'category']

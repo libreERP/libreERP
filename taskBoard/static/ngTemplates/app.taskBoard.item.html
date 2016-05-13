@@ -1,5 +1,5 @@
 <div class="col-md-4" style="margin-bottom:10px;">
-  <div class="card " style="padding:10px;min-height:150px;" ng-controller="projectManagement.taskBoard.task.item">
+  <div class="card" style="padding:10px;min-height:150px;background:{{getStatusColor()}};" ng-controller="projectManagement.taskBoard.task.item">
     <h4>{{data.title}}</h4>
     <small>Due date : {{data.dueDate | date:'dd-MMM'}}</small>
     <div class="pull-right">

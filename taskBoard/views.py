@@ -17,7 +17,7 @@ class taskViewSet(viewsets.ModelViewSet):
     serializer_class = taskSerializer
     queryset = task.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['title', 'project' , 'user']
+    filter_fields = ['title', 'project' , 'user', 'to']
 
 class subTaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

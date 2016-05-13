@@ -22,10 +22,16 @@ app.config(function($stateProvider){
 });
 
 app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions){
+    $scope.reset = function() {
+      $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined}
+      $scope.commentEditor = {text : ''};
+      $scope.data = {pk : undefined , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
+      $scope.explore = {mode :'git'};
+      $scope.subTaskBackup = {title : '' , status : 'notStarted'};
+      $scope.mode = 'new';
+    }
 
-    $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined}
-
-    $scope.commentEditor = {text : ''};
+    $scope.reset();
 
     $scope.projectSearch = function(query) {
       return $http.get('/api/projects/projectSearch/?title__contains=' + query).
@@ -33,8 +39,6 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         return response.data;
       })
     }
-
-
 
     $scope.addTimelineItem = function() {
         if ($scope.commentEditor.text.length ==0) {
@@ -97,9 +101,7 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         });
     }
 
-    $scope.data = {pk : undefined , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
-
-    if (typeof $scope.tab.data.pk != 'undefined') {
+    if (typeof $scope.tab != 'undefined' && typeof $scope.tab.data.pk != 'undefined') {
       $http.get('/api/taskBoard/task/'+ $scope.tab.data.pk +'/').
       then(function(response) {
           $scope.form = response.data;
@@ -113,10 +115,10 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
           then(function(response) {
               $scope.data.messages = response.data.results;
           });
+          $scope.mode = 'view';
       });
     }
 
-    $scope.explore = {mode :'git'};
     $scope.changeExploreMode = function(mode) {
         $scope.explore.mode = mode;
     }
@@ -133,8 +135,6 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
         }
         $scope.form.subTasks.push({title : '' , status : 'notStarted', inEditor : true});
     }
-
-    $scope.subTaskBackup = {title : '' , status : 'notStarted'};
 
     $scope.closeEditor = function(index){
         var st = $scope.form.subTasks[index];
@@ -259,6 +259,17 @@ app.controller('projectManagement.taskBoard.task.item' , function($scope , $http
     }
   }
 
+  $scope.getStatusColor = function() {
+    var percentage = $scope.getPercentageComplete();
+    if (percentage<=20) {
+      return 'rgba(#f9eadb, 1)';
+    }else if (percentage>20 && percentage <50) {
+      return 'rgba(#e7ebd0, 1)';
+    }else if (percentage >=50 && percentage<75) {
+      return '#dde9bd';
+    }
+  }
+
 });
 
 app.controller('projectManagement.taskBoard.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
@@ -294,7 +305,7 @@ app.controller('projectManagement.taskBoard.default' , function($scope , $http ,
     views: views,
     url: '/api/taskBoard/task/',
     searchField: 'title',
-    getParams : [{key : 'user' , value : $scope.me.pk},],
+    getParams : [{key : 'to' , value : $scope.me.pk},],
     multiselectOptions : [{icon : 'fa fa-plus' , text : 'Add' },]
   }
 
