@@ -22,7 +22,8 @@
       </div>
       <hr>
       <div class="row" ng-repeat="st in form.subTasks" style="margin-left:-10px;margin-right:-10px;">
-          <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}" >
+        <!-- <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}" > -->
+          <div class="container-fluid subTask" >
               <div  ng-if="!st.inEditor">
                   <i ng-if="st.status == 'notStarted'" class="fa fa-square-o fa-2x" style="color:#4881d6;"></i>
                   <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
