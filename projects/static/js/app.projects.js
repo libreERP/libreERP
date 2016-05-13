@@ -28,6 +28,11 @@ app.config(function($stateProvider){
 
 app.controller('projectManagement.projects.project.explore' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
 
+  $scope.openTask = function(index) {
+    var t = $scope.project.tasks[index];
+    $scope.addTab({title : 'Browse task : ' + t.title , cancel : true , app : 'taskBrowser' , data : {pk : t.pk , name : t.title} , active : true})
+  }
+
     $scope.getPercentageComplete = function(index) {
       var percentage = 0;
       var t = $scope.project.tasks[index];
@@ -41,7 +46,7 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
         }
       }
       if (t.subTasks.length >0) {
-        return percentage/t.subTasks.length;
+        return Math.floor(percentage/t.subTasks.length);
       }else {
         return 100;
       }

@@ -19,6 +19,9 @@
           <div ng-if="tab.app == 'projectBrowser'">
               <div ng-include="'/static/ngTemplates/app.projects.explore.html'"></div>
           </div>
+          <div ng-if="tab.app == 'taskBrowser'">
+              <div ng-include="'/static/ngTemplates/app.taskBoard.explore.html'"></div>
+          </div>
       </uib-tab>
   </uib-tabset>
 </div>

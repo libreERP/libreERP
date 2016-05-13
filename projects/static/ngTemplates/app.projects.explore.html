@@ -108,7 +108,7 @@
                 + Add
               </button>
             </div>
-            <div class="row hoverList" ng-repeat="t in project.tasks" style="padding-top:10px;padding-bottom:10px;">
+            <div class="row hoverList" ng-repeat="t in project.tasks" style="padding-top:10px;padding-bottom:10px;" ng-click="openTask($index)">
                 <div class="col-md-1">
                     <i class="fa fa-check-circle-o fa-2x pull-right" style="color:{{ getPercentageComplete($index)>70 ?'#569a23':'#d94f66'}};"></i>
                 </div>
@@ -181,7 +181,7 @@
                             <i class="fa fa-clock-o"></i>
                             {{i.created | timeAgo}}</span>
                         <h3 class="timeline-header" style="height:41px;">
-                            <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{1 | getDP}}" height="40px" width="40px"/>
+                            <img style="position:relative; float:left; top:-10px;left:-10px;" ng-src="{{i.user | getDP}}" height="40px" width="40px"/>
                             {{i.user | getName}}
                         </h3>
                         <div class="timeline-body">
