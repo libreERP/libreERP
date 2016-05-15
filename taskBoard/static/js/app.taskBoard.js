@@ -278,11 +278,13 @@ app.controller('projectManagement.taskBoard.task.item' , function($scope , $http
   $scope.getStatusColor = function() {
     var percentage = $scope.getPercentageComplete();
     if (percentage<=20) {
-      return 'rgba(#f9eadb, 1)';
+      return 'bg-red';
     }else if (percentage>20 && percentage <50) {
-      return 'rgba(#e7ebd0, 1)';
+      return 'bg-yellow';
     }else if (percentage >=50 && percentage<75) {
-      return '#dde9bd';
+      return 'bg-aqua';
+    }else{
+      return 'bg-green';
     }
   }
 

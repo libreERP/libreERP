@@ -27,7 +27,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
   $scope.dashboardAccess = false;
-
+  $scope.brandLogo = BRAND_LOGO;
   $permissions.module().
   success(function(response){
     // console.log(response);

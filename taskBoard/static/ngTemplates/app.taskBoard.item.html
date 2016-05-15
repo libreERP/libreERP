@@ -1,5 +1,5 @@
-<div class="col-md-4" style="margin-bottom:10px;">
-  <div class="card" style="padding:10px;min-height:150px;background:{{getStatusColor()}};" ng-controller="projectManagement.taskBoard.task.item">
+<div class="col-md-4 " style="margin-bottom:10px;">
+  <div class="card {{getStatusColor()}}" style="padding:10px;min-height:150px;" ng-controller="projectManagement.taskBoard.task.item">
     <h4>{{data.title}}</h4>
     <small>Due date : {{data.dueDate | date:'dd-MMM'}}</small>
     <div class="pull-right">
@@ -9,6 +9,6 @@
       <hr>
       <strong>Project :</strong> {{data.project.title}} <br>
     </div>
-    <i class="fa fa-info-circle fa-4x text-primary" ng-click="rowActionClicked('taskBrowser')" style="position:absolute;right:20px;bottom:10px;cursor:pointer;"></i>
+    <i class="fa fa-info-circle fa-4x" ng-click="rowActionClicked('taskBrowser')" style="position:absolute;right:20px;bottom:10px;cursor:pointer;"></i>
   </div>
 </div>

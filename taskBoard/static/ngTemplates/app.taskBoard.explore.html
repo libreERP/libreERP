@@ -41,7 +41,7 @@
                       <li><a href="" ng-click="changeSubTaskStatus('complete' , $index)">Complete</a></li>
                     </ul>
                   </div>
-                  <span style="font-size:18px;margin-left:10px;">{{st.title}}</span>
+                  <span style="font-size:14px;margin-left:10px;">{{st.title}}</span>
               </div>
               <div class="input-group" ng-if="st.inEditor">
                 <input type="text" class="form-control" placeholder="Title..." ng-model="st.title">
@@ -67,7 +67,7 @@
                   </ul>
               </div>
               <div class="col-md-4">
-                  <span class="pull-right" style="font-size:18px;padding:5px;"><strong>Due Date : </strong> {{form.dueDate | date:'hh:mm:a , dd MMM'}} <br></span>
+                  <span class="pull-right" style="font-size:18px;padding:5px;"><strong>Due Date : </strong> {{form.dueDate | date:'dd MMM'}} <br></span>
               </div>
           </div>
       </div>
@@ -151,7 +151,10 @@
                   <div ng-if="explore.addFile">
                       <media-Field data="form.files" url="/api/taskBoard/media/"></media-Field>
                   </div>
-                  <div ng-if="!explore.addFile">
+                  <div ng-if="!explore.addFile && form.files.length==0" class="text-center">
+                    No files added yet!
+                  </div>
+                  <div ng-if="!explore.addFile && form.files.length>0">
                       <div class="row" style="padding:10px;border-bottom:#eee solid 2px;">
                           <div class="col-md-1">
                           </div>

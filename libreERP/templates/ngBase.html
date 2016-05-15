@@ -4,7 +4,7 @@
 <html ng-app="app" ng-controller="main" id="main">
   <head>
     <meta charset="utf-8">
-    <title>LibreERP</title>
+    <title>{{BRAND_NAME}} - ERP</title>
     <meta name="viewport" content="initial-scale=1">
     <!-- stock css libraries -->
 
@@ -90,6 +90,7 @@
     <script type="text/javascript">
       var wampServer = '{{wampServer}}';
       var wampBindName = "{{user.username}}";
+      var BRAND_LOGO = "{{BRAND_LOGO}}";
     </script>
     <script src="{% static 'js/custom/wampProcessors.js' %}"></script>
     <script src="{% static 'js/custom/nativeJS.js' %}"></script>

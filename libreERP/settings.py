@@ -35,6 +35,9 @@ USE_CDN = False # when turned on the application will use the cndjs.com and othe
 #content delivery network for css and jss libraries
 GIT_SERVER = 'git@goryd.in'
 # Application definition
+BRAND_NAME = 'Goryd'
+
+BRAND_LOGO = '/static/images/brandLogo.svg'
 
 INSTALLED_APPS = (
     'django.contrib.admin',
