@@ -357,11 +357,13 @@ app.directive('chatWindow', function ($users) {
       pos : '=',
       cancel :'&',
     },
-    controller : function($scope ,$location,  $anchorScroll, $http, $templateCache, $timeout){
+    controller : function($scope ,$location,  $anchorScroll, $http, $templateCache, $timeout, ngAudio){
       // console.log($scope.pos);
       $scope.me = $users.get("mySelf");
       $scope.friend = $users.get($scope.friendUrl);
       // console.log($scope.friend);
+      $scope.sound = ngAudio.load("static/audio/notification.mp3");
+
       $scope.isTyping = false;
       $scope.toggle = true;
       $scope.messageToSend = "";
@@ -383,6 +385,7 @@ app.directive('chatWindow', function ($users) {
       }; // send function
 
       $scope.addMessage = function(msg , url){
+        $scope.sound.play();
         $http({method : 'PATCH' , url : '/api/PIM/chatMessage/' +url + '/?mode=' , data : {read : true}}).
         then(function(response) {
           $scope.ims.push(response.data);

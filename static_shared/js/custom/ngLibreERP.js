@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce' , 'hljs', 'mwl.confirm']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce' , 'hljs', 'mwl.confirm', 'ngAudio']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide , hljsServiceProvider){
   hljsServiceProvider.setOptions({
@@ -22,7 +22,7 @@ app.run([ '$rootScope', '$state', '$stateParams' , '$permissions', function ($ro
 ]);
 
 // Main controller is mainly for the Navbar and also contains some common components such as clipboad etc
-app.controller('main' , function($scope , $state , $users , $aside , $http , $timeout , $uibModal , $permissions){
+app.controller('main' , function($scope , $state , $users , $aside , $http , $timeout , $uibModal , $permissions, ngAudio){
   $scope.me = $users.get('mySelf');
   $scope.headerUrl = '/static/ngTemplates/header.html',
   $scope.themeObj = {main : '#005173' , highlight :'#04414f'};
@@ -53,6 +53,8 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
       }
     }
   } , function(response){});
+
+  $scope.sound = ngAudio.load("static/audio/notification.mp3");
 
   $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   $scope.$watchGroup(['themeObj.main' , 'themeObj.highlight'] , function(newValue , oldValue){
@@ -185,6 +187,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     // console.log(signal);
     var url = '/api/PIM/notification/';
     $scope.method = 'GET';
+    $scope.sound.play();
     if (typeof signal != 'undefined') {
       url = url + signal.pk +'/';
       if (signal.action == 'deleted') {
@@ -342,7 +345,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     }
   }
   $scope.fetchAddIMWindow = function(msgPK){
-    msgPK +=
+    $scope.sound.play();
     $http({method: 'GET' , url : '/api/PIM/chatMessage/' + msgPK + '/?mode='}).
     then(function(response){
       $scope.addIMWindow(response.data.originator)
