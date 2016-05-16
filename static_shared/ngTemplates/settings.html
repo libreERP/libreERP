@@ -4,7 +4,6 @@
   </div>
 </div>
 <div class="modal-body">
-
   <form ng-submit="saveSettings()">
     <div class="form-group">
       <label>Display Picture :</label>
@@ -18,23 +17,22 @@
     </div>
     <div class="form-group">
       <label>Mobile :</label>
-      <input class="form-control"  type="number" ng-model="settings.mobile">
+      <input class="form-control"  type="text" ng-model="settings.mobile">
     </div>
     <hr>
     <h4>Change password</h4>
     <div class="form-group">
       <label >Old Password</label>
-      <input type="password" class="form-control" ng-model="settings.oldPassword" placeholder="Old Password">
+      <input type="password" class="form-control" ng-model="settings.oldPassword" placeholder="Old Password" autocomplete="off">
     </div>
     <div class="form-group">
       <label >New Password</label>
-      <input type="password" class="form-control" ng-model="settings.password" placeholder="Password">
+      <input type="password" class="form-control" ng-model="settings.password" placeholder="Password" autocomplete="off">
     </div>
     <div class="form-group" ng-class="{'has-error' : settings.password!=settings.password2 && settings.password!=''}">
       <label class="control-label">Confirm Password</label>
-      <input type="password" class="form-control" ng-model="settings.password2" placeholder="Confirm Password">
+      <input type="password" class="form-control" ng-model="settings.password2" placeholder="Confirm Password" autocomplete="off">
     </div>
-
     <button type="submit" name="button" class="btn btn-success">Save</button>
   </form>
 </div>

@@ -64,7 +64,7 @@ class profile(models.Model):
     email = models.EmailField(max_length = 50)
     email2 = models.EmailField(max_length = 50, blank = True)
 
-    mobile = models.PositiveIntegerField( null = True)
+    mobile = models.CharField(null = True , max_length = 14)
     emergency = models.PositiveIntegerField(null = True)
     tele = models.PositiveIntegerField(null = True , blank = True)
     website = models.URLField(max_length = 100 , null = True , blank = True)

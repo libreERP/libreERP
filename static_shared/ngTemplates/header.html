@@ -52,7 +52,7 @@
                 </div>
               </ul>
             </li>
-            <a href="#"><i class = "fa fa-external-link"></i> See All Messages</a>
+            <a href="" ng-click="openAllMessages()"><i class = "fa fa-external-link"></i> See All Messages</a>
           </ul>
         </li>
         <li class="dropdown">
@@ -69,15 +69,22 @@
                 </div>
               </ul>
             </li>
-            <a href="#"><i class = "fa fa-external-link"></i> See All Notifications</a>
+            <a href="" ng-click="openAllNotifications()"><i class = "fa fa-external-link"></i> See All Notifications</a>
           </ul>
         </li>
       </ul> <!-- /. notification icons group -->
-      <!-- <form  class="navbar-form navbar-right" role="search">
-        <i style="margin:10px;" ng-click="terminal.show = !terminal.show;" class="fa fa-terminal noselect"></i>
-        <input ng-if="terminal.show" focus-me="terminal.show" type="text" class="form-control animated fadeIn" placeholder="Enter command" ng-enter="parseCommand()"
-        ng-model="selected"  ng-blur="closeTerminal()" ng-model = "terminal.command" style="width:500px;">
-      </form> -->
+      <div style="position:relative;">
+        <form  class="navbar-form navbar-right" role="search" style="position:absolute;right:270px;">
+          <i style="margin:10px;" ng-click="terminal.show = !terminal.show;" class="fa fa-terminal noselect"></i>
+          <input ng-if="terminal.show" focus-me="terminal.show" type="text" class="form-control animated fadeIn" placeholder="Enter command" ng-enter="parseCommand()" ng-blur="closeTerminal()" ng-model = "terminal.command" style="width:500px;" uib-typeahead="user as getName(user) for user in userSearch($viewValue)">
+          <div style="position:absolute;top:45px;background:white;width:87%;left:10%;padding:0px;" ng-if="terminal.showCommandOptions && terminal.show" class="card" >
+            <ul class="nav-horizontal" style="background:white;">
+              <li style="padding:10px;" class="text-center" ng-click="commandOptionsClicked('im')"><i class="fa fa-whatsapp fa-2x"></i> <br> Chat</li>
+              <li style="padding:10px;" class="text-center" ng-click="commandOptionsClicked('social')"><i class="fa fa-facebook fa-2x"></i> <br> Social</li>
+            </ul>
+          </div>
+        </form>
+      </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>

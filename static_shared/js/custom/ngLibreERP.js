@@ -61,7 +61,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   })
 
-  $scope.terminal = {command : '' , show : false};
+  $scope.terminal = {command : '' , show : false , showCommandOptions : false};
 
   $scope.about = function () {
     var modalInstance = $uibModal.open({
@@ -72,9 +72,44 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     });
   };
 
+  $scope.commandOptionsClicked = function(action) {
+    if (action == 'im') {
+      $scope.addIMWindow($scope.terminal.command.pk)
+    }else if (action == 'social') {
+      $state.go('home.social' , {id : $scope.terminal.command.pk})
+    }
+    $scope.terminal = {command : '' , show : false , showCommandOptions : false};
+  }
+
+  $scope.userSearch = function(query) {
+    if (!query.startsWith('@')) {
+      return;
+    }
+    var searchQuery = query.split('@')[1]
+    if (searchQuery.length==0) {
+      return;
+    }
+    return $http.get( '/api/HR/userSearch/?username__contains=' + searchQuery).
+    then(function(response){
+      return response.data;
+    })
+  };
+  $scope.getName = function(u) {
+    if (typeof u == 'undefined' || u== null || u.username== null || typeof u.first_name== 'undefined') {
+      return '';
+    }
+    return '@ '+u.first_name + '  ' +u.last_name;
+  }
+
+  $scope.$watch('terminal.command.username' , function(newValue , oldValue) {
+    console.log(newValue);
+    if (typeof newValue != 'undefined') {
+      $scope.terminal.showCommandOptions = true;
+    }
+  });
 
   $scope.parseCommand = function(){
-    if ($scope.command == '') {
+    if ($scope.terminal.command == '') {
       $scope.terminal.show = false;
       return;
     }
@@ -83,7 +118,13 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     // 'remind me to ask bill for the report on the project'
     // arrange a meeting with @team ELMS at 2 pm on alternate working day
     // todo code review by EOD
+    var cmd = $scope.terminal.command;
+    if (typeof cmd == 'string' && cmd.startsWith('@')) {
+      // user is searching for a user
 
+
+
+    }
 
   };
 

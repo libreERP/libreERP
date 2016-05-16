@@ -137,6 +137,7 @@ body {
 }
 
 .nav-horizontal{
+
     list-style: none;
     position: relative;
     margin: 0px;
@@ -145,6 +146,7 @@ body {
     background: -moz-linear-gradient(right,rgba(255,0,0,0),#eee);
 }
 .nav-horizontal > li{
+    cursor: pointer;
     position: relative;
     display: table-cell;
     border-spacing: 0px 0px;
