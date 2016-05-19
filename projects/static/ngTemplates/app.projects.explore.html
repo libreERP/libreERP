@@ -160,7 +160,7 @@
                         <i class="fa {{f.name | fileTypeIcon}} fa-3x"></i>
                     </div>
                     <div class="col-md-6">
-                        <span class="text-primary">{{f.name}}</span>
+                        <a ng-href="{{f.attachment}}" target="_blank">{{f.name}}</a>
                     </div>
                     <div class="col-md-3">
                         <span>{{f.user | getName}}</span>

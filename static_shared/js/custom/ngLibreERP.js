@@ -54,7 +54,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     }
   } , function(response){});
 
-  $scope.sound = ngAudio.load("static/audio/notification.mp3");
+  $scope.sound = ngAudio.load("static/audio/notification.ogg");
 
   $scope.theme = ":root { --themeMain: " + $scope.themeObj.main +";--headerNavbarHighlight:"+ $scope.themeObj.highlight +"; }";
   $scope.$watchGroup(['themeObj.main' , 'themeObj.highlight'] , function(newValue , oldValue){

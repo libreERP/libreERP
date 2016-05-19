@@ -1,6 +1,6 @@
 <div class="col-md-4" style="margin-top:10px;">
     <div class="btn-group btn-group-sm">
-        <button type="button" class="btn btn-default" ng-click="reset()">
+        <button type="button" class="btn btn-default" ng-click="reset()" ng-if="['new'].indexOf(form.mode) != -1">
             Reset
         </button>
         <button type="button" class="btn btn-primary" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
@@ -21,7 +21,7 @@
     </div>
     <hr>
     <div class="row" ng-repeat="st in form.subTasks">
-        <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}">
+        <div class="container-fluid subTask">
             <div  ng-if="!st.inEditor">
                 <i ng-if="st.status == 'notStarted'" class="fa fa-square-o fa-2x" style="color:#4881d6;"></i>
                 <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
@@ -168,7 +168,7 @@
                             <i class="fa {{f.name | fileTypeIcon}} fa-3x"></i>
                         </div>
                         <div class="col-md-6">
-                            <span class="text-primary">{{f.name}}</span>
+                            <a ng-href="{{f.attachment}}" target="_blank">{{f.name}}</a>
                         </div>
                         <div class="col-md-3">
                             <span>{{f.user | getName}}</span>
