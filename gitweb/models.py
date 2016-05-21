@@ -49,6 +49,9 @@ class repo(models.Model):
     description = models.TextField(max_length=500, null = False)
     lastNotified = models.DateTimeField(default = timezone.now) # used to check the latest commits when gitolite notify the same
     project = models.ForeignKey(project,null = True , related_name='repos')
+    def __unicode__(self):
+        return self.name
+
 
 class commitNotification(models.Model):
     created = models.DateTimeField(auto_now_add=True)

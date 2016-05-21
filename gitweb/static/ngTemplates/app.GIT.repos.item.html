@@ -1,20 +1,21 @@
-<div class="col-md-6" style="margin-bottom:20px;" ng-controller="controller.projectManagement.GIT.groups.item">
+<div class="col-md-6" style="margin-bottom:20px;" ng-controller="controller.projectManagement.GIT.repos.item">
   <div class="container-fluid card" style="padding:30px;padding-top:0px;">
     <div class="row">
       <div class="row">
         <div class="col-md-10">
           <h3>{{data.name}}</h3>
         </div>
-        <div class="col-md-2" style="padding-top:20px;">
+        <div class="col-md-2" style="padding-top:20px;" ng-if="me.pk == data.creator">
           <i style="cursor:pointer;" class="fa fa-pencil pull-right" ng-click="edit();$event.stopPropagation();" ></i>
           <i class="fa fa-trash-o fa-lg text-muted pull-right" mwl-confirm
-          title="Confirm"
-          message="Are you sure?"
-          confirm-text="Yes <i class='fa fa-check'></i>"
-          cancel-text="No"
-          on-confirm="delete(data.pk , index)"
-          confirm-button-type="danger"
-          cancel-button-type="default" style="position:relative;top:30px;right:-15px;cursor:pointer;"></i>
+            title="Confirm"
+            message="Are you sure?"
+            confirm-text="Yes <i class='fa fa-check'></i>"
+            cancel-text="No"
+            on-confirm="delete(data.pk , index)"
+            confirm-button-type="danger"
+            cancel-button-type="default" style="position:relative;top:30px;right:-15px;cursor:pointer;">
+          </i>
         </div>
       </div>
       {{data.description}}

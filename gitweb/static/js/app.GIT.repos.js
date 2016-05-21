@@ -1,3 +1,15 @@
+app.config(function($stateProvider){
+  $stateProvider.state('projectManagement.GIT.repos', {
+    url: "/repos",
+    templateUrl: '/static/ngTemplates/app.GIT.repos.html',
+    controller: 'projectManagement.GIT.repos'
+  });
+});
+
+app.controller('controller.projectManagement.GIT.repos.item' , function($scope ,$http, $users , Flash , $permissions){
+  $scope.me = $users.get('mySelf');
+});
+
 app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http, $aside){
   $scope.relPath = '';
   $scope.mode = 'folder';
@@ -229,20 +241,20 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
   }
 
   $scope.saveGroup = function(index) {
-    dataToSend = {
+    var dataToSend = {
       canRead : $scope.data.groups[index].canRead,
       canWrite : $scope.data.groups[index].canWrite,
       canDelete : $scope.data.groups[index].canDelete,
       limited : $scope.data.groups[index].limited,
-    }
+    };
     $http({method : 'PATCH' , url : '/api/git/groupPermission/' + $scope.data.groups[index].pk + '/' , data : dataToSend}).
     then(function(response) {
       Flash.create('success' , response.status + ' : ' + response.statusText);
       $scope.data.editorIndex = -1;
     }, function(response){
       Flash.create('danger' , response.status + ' : ' + response.statusText);
-    })
-  }
+    });
+  };
 
   $scope.projectSearch = function(query) {
     return $http.get('/api/projects/project/?title__contains=' + query).
@@ -252,31 +264,31 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
   }
 
   $scope.save = function() {
-    url = '/api/git/repo/'
+    var url = '/api/git/repo/'
     if ($scope.mode == 'new') {
       method = 'POST';
     }else {
       method = 'PATCH';
       url += $scope.data.pk + '/';
     }
-    perms = []
+    var perms = []
     for (var i = 0; i < $scope.data.perms.length; i++) {
       perms.push($scope.data.perms[i].pk)
     }
-    groups = []
+    var groups = []
     for (var i = 0; i < $scope.data.groups.length; i++) {
       groups.push($scope.data.groups[i].pk)
     }
 
-    dataToSend = {
+    var dataToSend = {
       name : $scope.data.name,
       description : $scope.data.description,
       perms : perms,
       groups : groups,
-    }
+    };
     if (typeof $scope.data.project != 'undefined' && $scope.data.project != null) {
         dataToSend.project = $scope.data.project.pk;
-    }
+    };
     $http({method : method , url : url , data : dataToSend}).
     then(function(response) {
       Flash.create('success' , response.status + ' : ' + response.statusText);
@@ -307,7 +319,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
   }
 
   $scope.addPermission = function() {
-    dataToSend = {
+    var dataToSend = {
       user : $scope.data.object.pk,
       canRead : $scope.data.canRead,
       canWrite : $scope.data.canWrite,
@@ -334,28 +346,24 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
           Flash.create('danger' , 'Group already a member of this Repo')
           return;
         }
-      }
-
-      dataToSend = {
+      };
+      var dataToSend = {
         group : $scope.data.object.pk,
         canRead : $scope.data.canRead,
         canWrite : $scope.data.canWrite,
         canDelete : $scope.data.canDelete,
-      }
+      };
       $http({method : 'POST' , url : '/api/git/groupPermission/' , data : dataToSend}).
       then(function(response) {
         $scope.data.groups.push(response.data);
         $scope.data.object = undefined;
         $scope.resetCheckboxes();
         $scope.save();
-      })
+      });
 
     }
   }
-
-})
-
-
+});
 
 app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash , $permissions){
 
@@ -380,8 +388,6 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
     canCreate : true,
     itemsNumPerView : [12,24,48],
   }
-
-
   $scope.tableAction = function(target , action , mode){
     if (action == 'repoBrowser') {
       for (var i = 0; i < $scope.data.tableData.length; i++) {
@@ -391,8 +397,6 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
       }
     }
   }
-
-
   $scope.tabs = [];
   $scope.searchTabActive = true;
 

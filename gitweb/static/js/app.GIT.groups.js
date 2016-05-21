@@ -1,3 +1,11 @@
+app.config(function($stateProvider){
+  $stateProvider.state('projectManagement.GIT.groups', {
+    url: "/groups",
+    templateUrl: '/static/ngTemplates/app.GIT.groups.html',
+    controller: 'projectManagement.GIT.groups'
+  });
+});
+
 app.controller('controller.projectManagement.GIT.groups.item' , function($scope ,$http, $users , Flash , $permissions){
   // console.log($scope.edit);
   // console.log($scope.delete);

@@ -1,3 +1,12 @@
+app.config(function($stateProvider){
+  $stateProvider.state('projectManagement.GIT.manage', {
+    url: "/manage",
+    templateUrl: '/static/ngTemplates/app.GIT.manage.html',
+    controller: 'projectManagement.GIT.manage'
+  });
+});
+
+
 app.controller('projectManagement.GIT.manage.profile' , function($scope ,$http, $users , Flash , $permissions){
   $scope.deleteKey = function(pk) {
     $http({method : 'DELETE' , url : '/api/git/device/' + pk + '/'}).

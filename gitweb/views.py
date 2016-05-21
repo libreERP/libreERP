@@ -173,8 +173,8 @@ def generateGitoliteConf():
             if p.limited:
                 if p.canRead:
                     rStr += '\t\t%s\t\t=\t\t%s\n' %('R' , p.user.username)
-                rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(p) , p.user.username , p.user.username)
-                rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(p) , getBranchAlias(p.user) , p.user.username)
+                rStr += '\t\t%s\tdev-%s\t=\t\t%s\n' %(getPermStr(p) , p.user.username , p.user.username)
+                rStr += '\t\t%s\tdev-%s\t=\t\t%s\n' %(getPermStr(p) , getBranchAlias(p.user) , p.user.username)
             else:
                 rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
         for g in r.groups.all():
@@ -182,8 +182,8 @@ def generateGitoliteConf():
                 if g.canRead:
                     rStr += '\t\t%s\t\t=\t\t%s\n' %('R' , '@' + g.group.name)
                 for u in g.group.users.all():
-                    rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(g) , u.username, u.username)
-                    rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(g) , getBranchAlias(u), u.username)
+                    rStr += '\t\t%s\tdev-%s\t=\t\t%s\n' %(getPermStr(g) , u.username, u.username)
+                    rStr += '\t\t%s\tdev-%s\t=\t\t%s\n' %(getPermStr(g) , getBranchAlias(u), u.username)
             else:
                 rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
 
@@ -288,7 +288,8 @@ class repoViewSet(viewsets.ModelViewSet):
         qs1 = repo.objects.filter(perms__in = u.repoPermissions.all())
         qs2 = repo.objects.filter(groups__in = groupPermission.objects.filter(group__in = u.gitGroups.all()))
         qs3 = repo.objects.filter(creator = u)
-        return qs1 | qs2 | qs3
+        print qs1 , qs2 , qs3
+        return (qs1 | qs2 )|  qs3
 
 class deviceViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
