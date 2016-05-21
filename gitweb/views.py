@@ -263,9 +263,12 @@ class repoViewSet(viewsets.ModelViewSet):
     serializer_class = repoSerializer
     def get_queryset(self):
         u = self.request.user
+        if u.is_superuser:
+            return repo.objects.all()
         qs1 = repo.objects.filter(perms__in = u.repoPermissions.all())
         qs2 = repo.objects.filter(groups__in = groupPermission.objects.filter(group__in = u.gitGroups.all()))
-        return qs1 | qs2
+        qs3 = repo.objects.filter(creator = u)
+        return qs1 | qs2 | qs3
 
 class deviceViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

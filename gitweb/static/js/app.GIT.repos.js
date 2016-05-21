@@ -411,5 +411,4 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
     }
   }
 
-  $scope.addTab(JSON.parse('{"title":"Browse Repo : libreERP-main","cancel":true,"app":"repoBrowser","data":{"pk":3,"name":"goryd-backend"},"active":true}'))
 });
