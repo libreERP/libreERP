@@ -42,6 +42,10 @@ app.filter('fileTypeIcon' , function(){
   }
 })
 
+app.filter('fileType' , function(){
+  return fileType;
+})
+
 app.filter('timeAgo' , function(){
   return function(input){
     t = new Date(input);

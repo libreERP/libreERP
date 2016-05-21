@@ -13,18 +13,18 @@ from projects.models import project
 
 
 class repoPermission(models.Model):
-    user = models.ForeignKey(User , null = False)
+    user = models.ForeignKey(User , null = False , related_name = 'repoPermissions')
     canRead = models.BooleanField(default = False)
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
 
 class gitGroup(models.Model):
-    users = models.ManyToManyField(User)
+    users = models.ManyToManyField(User , related_name = 'gitGroups')
     name = models.CharField(max_length = 30 , null = True)
     description = models.TextField(max_length=500, null = False)
 
 class groupPermission(models.Model):
-    group = models.ForeignKey(gitGroup , null = True)
+    group = models.ForeignKey(gitGroup , null = True , related_name = 'repoGroupPermissions')
     canRead = models.BooleanField(default = False)
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
@@ -39,11 +39,11 @@ class profile(models.Model):
     devices = models.ManyToManyField(device)
 
 class repo(models.Model):
-    perms = models.ManyToManyField(repoPermission )
+    perms = models.ManyToManyField(repoPermission , related_name = 'repos')
     created = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length = 30)
     creator = models.ForeignKey(User , null = False)
-    groups = models.ManyToManyField(groupPermission )
+    groups = models.ManyToManyField(groupPermission , related_name = 'repos')
     description = models.TextField(max_length=500, null = False)
     lastNotified = models.DateTimeField(default = timezone.now) # used to check the latest commits when gitolite notify the same
     project = models.ForeignKey(project,null = True , related_name='repos')

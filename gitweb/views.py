@@ -241,7 +241,6 @@ class registerDeviceApi(APIView):
             raise ValidationError(detail={'PARAMS' : 'No data provided'} )
         return Response(status=status.HTTP_200_OK)
 
-
 class gitGroupViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = gitGroupSerializer
@@ -262,8 +261,11 @@ class groupPermissionViewSet(viewsets.ModelViewSet):
 class repoViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = repoSerializer
-    queryset = repo.objects.all()
-
+    def get_queryset(self):
+        u = self.request.user
+        qs1 = repo.objects.filter(perms__in = u.repoPermissions.all())
+        qs2 = repo.objects.filter(groups__in = groupPermission.objects.filter(group__in = u.gitGroups.all()))
+        return qs1 | qs2
 
 class deviceViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

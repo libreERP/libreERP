@@ -15,9 +15,14 @@ class mediaViewSet(viewsets.ModelViewSet):
 class taskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = taskSerializer
-    queryset = task.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title', 'project' , 'user', 'to']
+    def get_queryset(self):
+        u = self.request.user
+        qs1 = task.objects.filter(to = u) # someone assigned to me
+        qs2 = task.objects.filter(followers__in = [u,]) # I am one of the followers
+        qs3 = task.objects.filter(user = u) # i assigned to sometone
+        return qs1 | qs2 | qs3
 
 class subTaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

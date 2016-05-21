@@ -1,3 +1,32 @@
+app.directive('ngPrism', ['$compile','$filter', '$sce', function($compile , $filter, $sce) {
+    return {
+        restrict: 'A',
+        transclude: true,
+        scope: {
+          source: '@'
+        },
+        link: function(scope, element, attrs, controller, transclude) {
+            // scope.$watch('source', function(v) {
+            //   // element.addClass('language-' + fileType(attrs.filename));
+            //   element.addClass('language-html');
+            //   console.log(v);
+            //   element.find("code").html(v);
+            //   Prism.highlightElement(element.find("code")[0]);
+            // });
+
+            transclude(function(clone) {
+              if (clone.html() !== undefined) {
+                element.find("code").html(clone.html());
+                $compile(element.contents())(scope.$parent);
+              }
+            });
+            element.ready(function() {
+               Prism.highlightElement(element[0]);
+           });
+        },
+        template: "<code class='language-html'></code>"
+    };
+}]);
 
 app.directive('breadcrumb', function () {
   return {

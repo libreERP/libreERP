@@ -121,7 +121,6 @@ app.controller('projectManagement.GIT.default' , function($scope , $http , $asid
 
 app.controller('projectManagement.GIT.exploreNotification' , function($scope, $http , input, $anchorScroll, $location , $users) {
   $scope.loading = true;
-  $scope.commit = input;
   $scope.mouseOver = {file  : -1 , line : -1};
   $scope.commentEditor = {file  : -1 , line : -1 , text :'' , mode : 'editor'}; // editor for textarea and preview for the preview
   $scope.lineNums = {}
@@ -141,12 +140,6 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
       }
     }
   }
-
-  $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
-  then(function(response) {
-    $scope.rawComments = response.data;
-    $scope.parseComments();
-  });
 
   $scope.refreshAside = function(signal) {
     if (signal.parent == $scope.commit.sha && signal.repo == $scope.commit.repo.pk) {
@@ -273,61 +266,75 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
     }
   }
 
-  var params = {
-    repo : $scope.commit.repo.pk,
-    sha : $scope.commit.sha,
-    mode : 'commit',
-  }
-  $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
-  then(function(response) {
-    $scope.commitData = response.data;
-  });
+  $scope.getCommitAndDiffData = function() {
+    var params = {
+      repo : $scope.commit.repo.pk,
+      sha : $scope.commit.sha,
+      mode : 'commit',
+    }
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
+    then(function(response) {
+      $scope.commitData = response.data;
+    });
 
-  var params = {
-    repo : $scope.commit.repo.pk,
-    sha : $scope.commit.sha,
-    mode : 'diff',
-  }
-  $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
-  then(function(response) {
-    $scope.data = response.data;
-    for (var i = 0; i < $scope.data.diffs.length; i++) {
-      var f = $scope.data.diffs[i]; // file
-      var lines = f.diff.split('\n');
-      var leftStartsWith;
-      var leftLineNums;
-      var rightStartsWith;
-      var rightLineNums;
-      var lineNums = [['' , ''],['' , '']];
-      for (var j = 2; j < lines.length; j++) {
-        var l = lines[j];
-        if ((l.match(/@@/g)||[]).length == 2){
-          l = l.replace(/@@/g,'').replace(/-/g,'').replace(/\+/g,'');
-          var parts = l.split(' ');
-          leftStartsWith = parseInt(parts[1].split(',')[0]);
-          leftLineNums = parseInt(parts[1].split(',')[1]);
-          rightStartsWith = parseInt(parts[2].split(',')[0]);
-          rightLineNums = parseInt(parts[2].split(',')[1]);
-          lineNums.push(['' , ''])
-        }else {
-          if (l[0]=='-') {
-            lineNums.push([leftStartsWith , ''])
-            leftStartsWith += 1;
-          }else if (l[0] == '+') {
-            lineNums.push(['' , rightStartsWith])
-            rightStartsWith += 1;
-          }else  {
-            lineNums.push([leftStartsWith , rightStartsWith])
-            rightStartsWith += 1;
-            leftStartsWith += 1;
+    var params = {
+      repo : $scope.commit.repo.pk,
+      sha : $scope.commit.sha,
+      mode : 'diff',
+    }
+    $http({method : 'GET' , url : '/api/git/browseRepo/' , params : params }).
+    then(function(response) {
+      $scope.data = response.data;
+      for (var i = 0; i < $scope.data.diffs.length; i++) {
+        var f = $scope.data.diffs[i]; // file
+        var lines = f.diff.split('\n');
+        var leftStartsWith;
+        var leftLineNums;
+        var rightStartsWith;
+        var rightLineNums;
+        var lineNums = [['' , ''],['' , '']];
+        for (var j = 2; j < lines.length; j++) {
+          var l = lines[j];
+          if ((l.match(/@@/g)||[]).length == 2){
+            l = l.replace(/@@/g,'').replace(/-/g,'').replace(/\+/g,'');
+            var parts = l.split(' ');
+            leftStartsWith = parseInt(parts[1].split(',')[0]);
+            leftLineNums = parseInt(parts[1].split(',')[1]);
+            rightStartsWith = parseInt(parts[2].split(',')[0]);
+            rightLineNums = parseInt(parts[2].split(',')[1]);
+            lineNums.push(['' , ''])
+          }else {
+            if (l[0]=='-') {
+              lineNums.push([leftStartsWith , ''])
+              leftStartsWith += 1;
+            }else if (l[0] == '+') {
+              lineNums.push(['' , rightStartsWith])
+              rightStartsWith += 1;
+            }else  {
+              lineNums.push([leftStartsWith , rightStartsWith])
+              rightStartsWith += 1;
+              leftStartsWith += 1;
+            }
           }
         }
+        $scope.lineNums[f.path] = lineNums;
+        $scope.loading = false;
       }
-      $scope.lineNums[f.path] = lineNums;
-      $scope.loading = false;
-    }
-  });
+    });
+  };
 
+  $scope.getCodeComments = function() {
+    $http({method : 'GET' , url : '/api/git/codeComment/?sha=' + $scope.commit.sha}).
+    then(function(response) {
+      $scope.rawComments = response.data;
+      $scope.parseComments();
+    });
+  };
+
+  $scope.commit = input; // this is basically a commit notification
+  $scope.getCodeComments();
+  $scope.getCommitAndDiffData();
+  console.log(input);
 
 });
 

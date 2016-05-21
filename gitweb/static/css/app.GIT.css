@@ -22,10 +22,10 @@ pre{
 code{
   padding:0px !important;
 }
-.codeAdded .hljs , .codeAdded{
+.codeAdded pre , .codeAdded{
   background: #ddffdd;
 }
-.codeDeleted .hljs , .codeDeleted{
+.codeDeleted pre , .codeDeleted{
   background: #ffdddd;
 }
 

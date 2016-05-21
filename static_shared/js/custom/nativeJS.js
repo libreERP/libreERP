@@ -1,4 +1,19 @@
 // This file is to store the native JS custom functions , This should be included in the top of the imports
+function fileType(input){
+  var ext = input.split('.')[input.split('.').length -1]
+  switch (ext) {
+    case 'py':
+      return 'python';
+    case 'css':
+      return 'css';
+    case 'html':
+        return 'html';
+    case 'js':
+        return 'javascript';
+    default:
+      return ''
+  }
+}
 
 function isEmail(email) {
     var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

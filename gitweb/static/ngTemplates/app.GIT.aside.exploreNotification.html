@@ -9,7 +9,8 @@
     </div>
     <div class="col-md-3 pull-right" style="padding-right:40px;color:white;">
         <div class="col-md-8" style="padding-top:15px;">
-            <span class="pull-right">{{commit.user | getName}}</span>
+            <span class="pull-right" ng-if="commit.user">{{commit.user | getName}}</span>
+            <span class="pull-right" ng-if="!commit.user">{{commit.committer.name}}</span>
         </div>
         <div class="col-md-4">
             <img ng-src="{{commit.user | getDP}}" class="img-circle pull-right" width="50"/>
@@ -68,8 +69,7 @@
                       <span class="text-muted" ng-if="!$last">{{lineNums[d.path][$index][1]}}</span>
                     </td>
                     <td class="{{line[0]=='+' ? 'codeAdded':''}} {{line[0]=='-' ?'codeDeleted':''}}" style="margin:0px;">
-                      <span hljs hljs-source="line" style="padding:0px !important;margin:0px !important;"></span>
-                      <!-- <span style="padding:0px !important;margin:0px !important;">{{line}}</span> -->
+                      <pre style="padding:0px !important;margin:0px !important;"><code>{{line}}</code></pre>
                       <div class="row" style="background:#f2f2f2;padding:10px;margin:0px;" ng-repeat="c in comments[d.path]" ng-if="c.line==$parent.$index" >
                         <div class="container-fluid" ng-init="showOptions = false;">
                           <div class="col-md-1" style="padding:0px;padding-right:25px;">

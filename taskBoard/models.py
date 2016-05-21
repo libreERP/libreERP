@@ -24,7 +24,7 @@ class task(models.Model):
     files = models.ManyToManyField(media , related_name='tasks', blank = True)
     followers = models.ManyToManyField(User , related_name = 'taskFollowing', blank = True)
     dueDate = models.DateTimeField(null = False)
-    user = models.ForeignKey(User , null = True)
+    user = models.ForeignKey(User , null = True) # the one who created it
     to = models.ForeignKey(User , null = True , related_name='tasks')
     personal = models.BooleanField(default = False)
     project = models.ForeignKey(project , null = True)

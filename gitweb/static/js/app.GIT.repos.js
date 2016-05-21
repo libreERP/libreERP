@@ -1,4 +1,4 @@
-app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http){
+app.controller('projectManagement.GIT.repos.explore' , function($scope , $users , Flash , $permissions , $http, $aside){
   $scope.relPath = '';
   $scope.mode = 'folder';
   $scope.logConfig = {page : 0 , pageSize : 10 , summaryInView : -1};
@@ -33,9 +33,24 @@ app.controller('projectManagement.GIT.repos.explore' , function($scope , $users 
   }
   $scope.diffConfig = {sha : ''};
   $scope.showCommitDiff = function(index){
-    $scope.mode = 'diff'
-    $scope.diffConfig.sha = $scope.logs[index].id;
-    $scope.getDiff(index)
+    $aside.open({
+      templateUrl : '/static/ngTemplates/app.GIT.aside.exploreNotification.html',
+      position:'left',
+      size : 'xxl',
+      backdrop : true,
+      resolve : {
+        input : function() {
+          var toReturn = $scope.logs[index];
+          toReturn.repo = $scope.tab.data;
+          toReturn.sha = toReturn.id;
+          toReturn.branch = $scope.branchInView;
+          return toReturn;
+        }
+      },
+      controller : 'projectManagement.GIT.exploreNotification',
+    })
+
+
   }
 
   $scope.getLogs = function() {
@@ -396,5 +411,5 @@ app.controller('projectManagement.GIT.repos' , function($scope , $users , Flash 
     }
   }
 
-  //$scope.addTab(JSON.parse('{"title":"Browse Repo : libreERP-main","cancel":true,"app":"repoBrowser","data":{"pk":3 ,"name":"libreERP-main"},"active":true}'))
+  $scope.addTab(JSON.parse('{"title":"Browse Repo : libreERP-main","cancel":true,"app":"repoBrowser","data":{"pk":3,"name":"goryd-backend"},"active":true}'))
 });
