@@ -17,6 +17,7 @@ class repoPermission(models.Model):
     canRead = models.BooleanField(default = False)
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
+    limited = models.BooleanField(default = False)
 
 class gitGroup(models.Model):
     users = models.ManyToManyField(User , related_name = 'gitGroups')
@@ -28,6 +29,7 @@ class groupPermission(models.Model):
     canRead = models.BooleanField(default = False)
     canWrite = models.BooleanField(default = False)
     canDelete = models.BooleanField(default = False)
+    limited = models.BooleanField(default = False)
 
 class device(models.Model):
     sshKey = models.CharField(max_length = 500 , null = True)

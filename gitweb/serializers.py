@@ -32,7 +32,17 @@ class profileSerializer(serializers.ModelSerializer):
 class repoPermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = repoPermission
-        fields = ('pk', 'user' , 'canRead' , 'canWrite' , 'canDelete' )
+        fields = ('pk', 'user' , 'canRead' , 'canWrite' , 'canDelete' , 'limited' )
+    def create(self , validated_data):
+        u = self.context['request'].user
+        has_application_permission(u , ['app.GIT' , 'app.GIT.repos'])
+        rp = repoPermission(**validated_data)
+        if rp.canDelete:
+            rp.canWrite = True
+        if rp.canWrite or rp.canDelete:
+            rp.canRead = True
+        rp.save()
+        return rp
 
 class gitGroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,10 +54,10 @@ class groupPermissionSerializer(serializers.ModelSerializer):
     group = gitGroupSerializer(many = False , read_only = True)
     class Meta:
         model = groupPermission
-        fields = ('pk', 'group' , 'canRead' , 'canWrite' , 'canDelete')
+        fields = ('pk', 'group' , 'canRead' , 'canWrite' , 'canDelete' , 'limited')
     def create(self , validated_data):
         u = self.context['request'].user
-        has_application_permission(u , ['app.GIT' , 'app.ecommerce.groups'])
+        has_application_permission(u , ['app.GIT' , 'app.GIT.groups', 'app.GIT.repos'])
         gp = groupPermission(**validated_data)
         gp.group = gitGroup.objects.get(pk = self.context['request'].data['group'])
         gp.save()

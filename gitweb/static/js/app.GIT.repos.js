@@ -190,9 +190,15 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
     }
   }
   $scope.data.permMode = 'individual';
-  $scope.data.canRead = false;
-  $scope.data.canWrite = false;
-  $scope.data.canDelete = false;
+  $scope.resetCheckboxes = function() {
+    $scope.data.canRead = false;
+    $scope.data.canWrite = false;
+    $scope.data.canDelete = false;
+    $scope.data.limited = false;
+  };
+
+  $scope.resetCheckboxes();
+
   $scope.data.editorIndex = -1;
   $scope.data.editorMode = 'individual';
 
@@ -206,6 +212,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       canRead : $scope.data.perms[index].canRead,
       canWrite : $scope.data.perms[index].canWrite,
       canDelete : $scope.data.perms[index].canDelete,
+      limited : $scope.data.perms[index].limited,
     }
     $http({method : 'PATCH' , url : '/api/git/repoPermission/' + $scope.data.perms[index].pk + '/' , data : dataToSend}).
     then(function(response) {
@@ -226,6 +233,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       canRead : $scope.data.groups[index].canRead,
       canWrite : $scope.data.groups[index].canWrite,
       canDelete : $scope.data.groups[index].canDelete,
+      limited : $scope.data.groups[index].limited,
     }
     $http({method : 'PATCH' , url : '/api/git/groupPermission/' + $scope.data.groups[index].pk + '/' , data : dataToSend}).
     then(function(response) {
@@ -304,6 +312,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       canRead : $scope.data.canRead,
       canWrite : $scope.data.canWrite,
       canDelete : $scope.data.canDelete,
+      limited : $scope.data.limited,
     }
     if ($scope.data.permMode == 'individual') {
       for (var i = 0; i < $scope.data.perms.length; i++) {
@@ -316,9 +325,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       then(function(response) {
         $scope.data.perms.push(response.data);
         $scope.data.object = undefined;
-        $scope.data.canRead = false;
-        $scope.data.canWrite = false;
-        $scope.data.canDelete = false;
+        $scope.resetCheckboxes();
         $scope.save();
       })
     }else {
@@ -339,9 +346,7 @@ app.controller('controller.projectManagement.GIT.repo.modal' , function($scope ,
       then(function(response) {
         $scope.data.groups.push(response.data);
         $scope.data.object = undefined;
-        $scope.data.canRead = false;
-        $scope.data.canWrite = false;
-        $scope.data.canDelete = false;
+        $scope.resetCheckboxes();
         $scope.save();
       })
 

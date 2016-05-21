@@ -147,6 +147,12 @@ def getPermStr(p):
         pStr += '+'
     return pStr
 
+def getBranchAlias(u):
+    """
+    this simply returns the first name + last name , for example for user Pradeep Yadav , it will return dev-py
+    """
+    return (u.first_name[0] + u.last_name[0]).lower()
+
 def generateGitoliteConf():
     gitoliteDir = os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'gitolite-admin')
     if not os.path.isdir(gitoliteDir):
@@ -164,9 +170,23 @@ def generateGitoliteConf():
     for r in repo.objects.all():
         rStr += 'repo %s\n' %(r.name)
         for p in r.perms.all():
-            rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
+            if p.limited:
+                if p.canRead:
+                    rStr += '\t\t%s\t\t=\t\t%s\n' %('R' , p.user.username)
+                rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(p) , p.user.username , p.user.username)
+                rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(p) , getBranchAlias(p.user) , p.user.username)
+            else:
+                rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(p) , p.user.username)
         for g in r.groups.all():
-            rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
+            if g.limited:
+                if g.canRead:
+                    rStr += '\t\t%s\t\t=\t\t%s\n' %('R' , '@' + g.group.name)
+                for u in g.group.users.all():
+                    rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(g) , u.username, u.username)
+                    rStr += '\t\t%s\tdev-%s\t\t=\t\t%s\n' %(getPermStr(g) , getBranchAlias(u), u.username)
+            else:
+                rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
+
         # print rStr
     rStr += 'repo CREATOR/[a-z].*\n'
     rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
@@ -201,7 +221,7 @@ def generateGitoliteConf():
             local('git commit -m "gitweb"')
         except:
             print 'Error in git commit'
-        local('git push')
+        # local('git push')
 
 class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
