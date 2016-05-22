@@ -37,13 +37,13 @@ class comment(models.Model):
     media = models.ForeignKey(media , null = True)
 
 class project(models.Model):
-    user = models.ForeignKey(User , null = False ) # the creator
+    user = models.ForeignKey(User , null = False , related_name='projectsInitiated') # the creator
     dueDate = models.DateTimeField(null = False)
     created = models.DateTimeField (auto_now_add = True)
     title = models.CharField(blank = False , max_length = 200)
     description = models.TextField(max_length=2000 , blank=False)
     files = models.ManyToManyField(media , related_name='projects')
-    team = models.ManyToManyField(User , related_name = 'projectsFollowing')
+    team = models.ManyToManyField(User , related_name = 'projectsInvolvedIn')
 
 class projectComment(comment):
     project = models.ForeignKey(project , null= False , related_name='comments')

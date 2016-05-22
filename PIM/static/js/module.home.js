@@ -19,7 +19,7 @@ app.config(function($stateProvider ){
     }
   })
   .state('home.mail', {
-    url: "/mail/{folder}?action",
+    url: "/mail",
     templateUrl: '/static/ngTemplates/app.mail.html',
     controller: 'controller.mail'
   })

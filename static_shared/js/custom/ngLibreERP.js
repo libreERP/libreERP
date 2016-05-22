@@ -228,7 +228,7 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
     // console.log(signal);
     var url = '/api/PIM/notification/';
     $scope.method = 'GET';
-    $scope.sound.play();
+    // $scope.sound.play();
     if (typeof signal != 'undefined') {
       url = url + signal.pk +'/';
       if (signal.action == 'deleted') {

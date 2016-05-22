@@ -20,9 +20,14 @@ class projectCommentViewSet(viewsets.ModelViewSet):
 class projectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = projectSerializer
-    queryset = project.objects.all()
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['title']
+    def get_queryset(self):
+        u = self.request.user
+        if u.is_superuser:
+            return project.objects.all()
+        else:
+            return u.projectsInitiated.all() | u.projectsInvolvedIn.all()
 
 class projectLiteViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissionsOrAnonReadOnly)

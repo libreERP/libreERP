@@ -164,7 +164,6 @@ def generateGitoliteConf():
         gStr = '@' + g.name + ' ='
         for u in g.users.all():
             gStr += ' ' + u.username
-        # print gStr
         f.write('%s\n' %(gStr))
     rStr = '@administrators =  admin cioc\n'
     for r in repo.objects.all():
@@ -186,8 +185,6 @@ def generateGitoliteConf():
                     rStr += '\t\t%s\tdev-%s\t=\t\t%s\n' %(getPermStr(g) , getBranchAlias(u), u.username)
             else:
                 rStr += '\t\t%s\t\t=\t\t%s\n' %( getPermStr(g) , '@' + g.group.name)
-
-        # print rStr
     rStr += 'repo CREATOR/[a-z].*\n'
     rStr += '\t\t%s\t\t=\t\t%s\n' %('RW+' , 'CREATOR')
     rStr += '\t\t%s\t\t=\t\t%s\n' %('C' , '@all')
@@ -221,7 +218,7 @@ def generateGitoliteConf():
             local('git commit -m "gitweb"')
         except:
             print 'Error in git commit'
-        # local('git push')
+        local('git push')
 
 class syncGitoliteApi(APIView):
     renderer_classes = (JSONRenderer,)
@@ -329,7 +326,6 @@ class gitoliteNotificationApi(APIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
         parts = request.GET['data'].split(',')
         accessType = parts[4]
-        # print accessType
         utc=pytz.UTC
         repoName = parts[2]
         if accessType == 'W':

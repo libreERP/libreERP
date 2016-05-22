@@ -16,19 +16,15 @@ parseEmailFlags = function(raw){
 }
 
 app.controller('controller.mail' , function($scope , $http , $timeout , $users , $aside , $interval , $window , Flash , $sanitize , $sce , removeHtmlTags , $stateParams , $state){
-  console.log($stateParams);
 
   if ($stateParams.folder == '') {
     $state.transitionTo('home.mail' , {folder:'inbox'})
   }
-
   $scope.me = $users.get('mySelf');
   $scope.viewerMail = -1;
   $scope.folders = [];
   $scope.folderSelected = 'INBOX'; // name of the folder on the server, for mail its something like [GMAIL]/Sent Items
   $scope.page = 0;
-
-
   $scope.attach = function(){
     var fd = new FormData();
     fd.append('attachment' , $scope.editorData.file);
@@ -40,7 +36,6 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
       $scope.editorData.file = new File([""], "");
     });
   };
-
   $scope.resetEditor = function(){
     $scope.showCC = false;
     $scope.editor = false;
@@ -66,18 +61,18 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     $scope.editor = false;
 
     if (typeof query == 'undefined') {
-      query = 'ALL'
+      var query = 'ALL'
     };
     $scope.emails = [];
-    url = '/api/mail/mailbox/' ;
-    dataToSend = {folder : $scope.folderSelected , page : $scope.page , query : query}
+    var url = '/api/mail/mailbox/' ;
+    var dataToSend = {folder : $scope.folderSelected , page : $scope.page , query : query}
     $http({method : 'GET' , url : url , params : dataToSend}).
     then(function(response){
       for (var i = 0; i < response.data.length; i++) {
-        tempEmail = response.data[i];
+        var tempEmail = response.data[i];
         for (key in tempEmail) {
           if (key == 'date') {
-            date = new Date(tempEmail.date);
+            var date = new Date(tempEmail.date);
             tempEmail[key] = date;
           }
         }
@@ -105,14 +100,12 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     toolbar : 'saveBtn publishBtn cancelBtn headerMode bodyMode | undo redo | bullist numlist | alignleft aligncenter alignright alignjustify | outdent  indent blockquote | bold italic underline | image link',
   };
 
-
   $scope.reply = function(mode){
     $scope.editor=!$scope.editor;
-    mail = angular.copy($scope.emailInView);
-    parts = mail.subject.split(':');
+    var mail = angular.copy($scope.emailInView);
+    var parts = mail.subject.split(':');
     mail.subject = parts[parts.length-1];
-
-
+    var replyStr;
     if (typeof mode == 'undefined' ) {
       mail.to = mail.sender;
       mail.cc = '';
@@ -131,8 +124,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
       replyStr = '<br><br><div>-----------Forwarded message---------------<br>'
 
     }
-    frm =mail.sender.match(/\w*@\w*.\w*/)[0];
-    to = $scope.emailInView.to.match(/\w*@\w*.\w*/)[0];
+    var frm =mail.sender.match(/\w*@\w*.\w*/)[0];
+    var to = $scope.emailInView.to.match(/\w*@\w*.\w*/)[0];
     replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong><<a href="mailto:'+ frm + '">'+ frm +'</a>><br>'
     replyStr += 'Date : '+ mail.date.toISOString().slice(0,10).replace(/-/g,"-") + '<br>'
     replyStr += 'subject : '+ mail.subject.split(':')[1] + '<br>'
@@ -150,8 +143,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   }
 
   $scope.sendMail = function(){
-
-    attachments = [];
+    var attachments = [];
     for (var i = 0; i < $scope.editorData.attachments.length; i++) {
       attachments.push( $scope.editorData.attachments[i].pk);
     }
@@ -199,7 +191,6 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     $scope.getMailbox(query)
   };
 
-
   // getting the list of folders and status
   $http({method : 'GET' , url : '/api/mail/folders/'}).
   then(function(response){
@@ -210,11 +201,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
         // i dont know why but if you call the parseMailboxStatus function seperately and assign the outout to a
         // variable and then push that into the folders its not working
         $scope.folders.push(parseMailboxStatus(rawString))
-        var folder = $scope.folders[$scope.folders.length-1];
-        if (folder.onServer.split('/')[1] == $stateParams.folder ) {
-          $scope.folderSelected = folder.onServer;
-        }
       }
+      $scope.folderSelected = 'INBOX';
     }
     $scope.getMailbox();
   });
@@ -325,14 +313,16 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     then(function(response){
       for (var i = 0; i < $scope.emails.length; i++) {
         if ($scope.emails[i].uid == response.data.uid){
-          if (response.data.body.indexOf('</body>') != -1) {
-            $scope.emails[i].body = $sce.trustAsHtml(response.data.body);
+          if (response.data.body == null) {
             $scope.getMailBody(response.data.uid , response.data.folder , 'plain')
           }else {
             if (response.config.params.mode == 'plain') {
-              $scope.emails[i].plainBody = removeHtmlTags(response.data.body);
+              // $scope.emails[i].plainBody = removeHtmlTags(response.data.body);
+              $scope.emails[i].plainBody = response.data.body;
               $scope.emails[i].bodyFormat = 'plain';
             } else {
+              $scope.emails[i].body = $sce.trustAsHtml(response.data.body);
+              $scope.emails[i].bodyFormat = 'html';
               $scope.emails[i].body = response.data.body;
             }
           }
@@ -360,8 +350,9 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   }
 
   $scope.changeFolder = function(to){
-    $state.go('home.mail' , {folder : to.split('/')[1]} )
-    $stateParams.folder = to.split('/')[1];
+    console.log(to);
+    // $state.go('home.mail' , {folder : to} )
+    // $stateParams.folder = to.split('/')[1];
     $scope.page = 0;
     $scope.folderSelected = to;
     $scope.getMailbox();

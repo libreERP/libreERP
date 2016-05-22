@@ -1,10 +1,5 @@
 app.controller('projectManagement.projects.new' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-    $scope.form = {title : '' , dueDate : new Date() , description : '' , team : []};
-
-    $scope.data = {files : []};
-
     $scope.postProject = function() {
-
         var dataToSend = $scope.form;
         dataToSend.files = []
         for (var i = 0; i < $scope.data.files.length; i++) {
@@ -15,10 +10,11 @@ app.controller('projectManagement.projects.new' , function($scope , $http , $asi
             Flash.create('success' , 'Project created')
             $scope.data.files = [];
             $scope.form = {title : '' , dueDate : new Date() , description : '' , files : [], team : []};
-        })
-    }
-
-
-
-
+        });
+    };
+    $scope.reset = function() {
+      $scope.form = {title : '' , dueDate : new Date() , description : '' , team : []};
+      $scope.data = {files : []};
+    };
+    $scope.reset();
 });

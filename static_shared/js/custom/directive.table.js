@@ -43,6 +43,13 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
   $scope.views = $scope.config.views;
   $scope.multiselectOptions = $scope.config.multiselectOptions;
+  $scope.drills = angular.isDefined($scope.config.drills) ? $scope.config.drills : [];
+  $scope.filters = angular.isDefined($scope.config.filters) ? $scope.config.filters : [];
+  for (var i = 0; i < $scope.filters.length; i++) {
+    $scope.filters[i].active = 0;
+    $scope.filters[i].ascend = true; // true for ascending and false for descenting
+  };
+
   $scope.getParams = $scope.config.getParams;
 
   $scope.$watch('data' , function(newValue , oldValue){
@@ -174,7 +181,20 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
         fetch.url += '&'+$scope.getParams[i].key + '='+ $scope.getParams[i].value;
       }
     }
-    $http({method: fetch.method, url: fetch.url}).
+    var paramToSend = {};
+    for (var i = 0; i < $scope.drills.length; i++) {
+      for (var j = 0; j < $scope.drills[i].options.length; j++) {
+        var o = $scope.drills[i].options[j];
+        paramToSend[o.key] = o.value ? 1 : 0;
+      };
+    };
+
+    for (var i = 0; i < $scope.filters.length; i++) {
+      var f = $scope.filters[i];
+      paramToSend[f.key] = f.options[f.active].value ;
+    };
+
+    $http({method: fetch.method, url: fetch.url , params : paramToSend }).
       then(function(response) {
         // console.log(response);
         $scope.pageCount = Math.floor(response.data.count/$scope.itemsPerView)+(response.data.count%$scope.itemsPerView == 0 ? 0 : 1);

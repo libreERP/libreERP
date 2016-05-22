@@ -159,7 +159,7 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
 
 
 app.controller('projectManagement.project.item' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
-
+  $scope.me = $users.get('mySelf');
 
 });
 

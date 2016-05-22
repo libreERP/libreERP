@@ -160,7 +160,7 @@ app.filter('explodeObj' , function($filter){
   }
 })
 
-app.filter('emailAddress' , function(){
+app.filter('emailAddress' , function($filter){
   return function(input){
     if (typeof input == 'undefined') {
       return '';
@@ -173,7 +173,7 @@ app.filter('emailAddress' , function(){
         toReturn += ' , ';
       }
     }
-    return toReturn;
+    return $filter('limitTo')(toReturn , 35);
   }
 })
 

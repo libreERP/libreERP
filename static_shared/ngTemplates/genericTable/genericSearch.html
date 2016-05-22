@@ -23,7 +23,30 @@
     <li ng-repeat = "option in multiselectOptions" ng-click = "multiSelectAction(option.text)"><a href="" style="color: #6f6f6f;"><i class = "{{option.icon}}">  {{option.text | humanize}}</i></a></li>
   </ul>
   <ul class="pagination pull-right" style="margin-right: 10px;">
-    <li ng-click = "create()" ng-if="canCreate"><a href="" style="color: #6f6f6f;">New  <i class = "fa fa-plus"></i></a></li>
+    <li  class="dropdown" ng-repeat="f in filters">
+      <div class="btn-group">
+        <button type="button" ng-if="f.orderable" class="btn btn-primary" ng-click="f.ascend = !f.ascend">{{f.ascend ? 'Ascending' : 'Descending'}}</button>
+        <button class="btn btn-{{f.btnClass}} dropdown-toggle" type="button" data-toggle="dropdown" > <i class="{{f.icon}}"></i> {{f.key | humanize}} : {{f.options[f.active].value}}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" style="right:0px;">
+          <li ng-repeat="o in f.options" ng-click="f.active = $index;"><a href="">{{o.value | humanize}}</a></li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  <ul class="pagination pull-right" style="margin-right: 10px;">
+    <li class="dropdown" ng-repeat="d in drills">
+        <button class="btn btn-{{d.btnClass}} dropdown-toggle" style="min-width:200px;" type="button" data-toggle="dropdown" ><i class="{{d.icon}}"></i> {{d.name | humanize}}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" style="right:0px;padding:10px;margin-top:10px;">
+          <li style="cursor:pointer;padding:5px;position:relative;" ng-repeat="o in d.options" ng-click="o.value = !o.value;$event.stopPropagation();"><i class="fa fa-{{o.value ? 'check-':''}}square-o fa-lg"></i><span style="left:30px;position:absolute;">{{o.key | humanize}}</span></li>
+        </ul>
+    </li>
+  </ul>
+  <ul class="pagination pull-right" style="margin-right: 10px;" ng-if="canCreate">
+    <li ng-click = "create()"><a href="" style="color: #6f6f6f;">New  <i class = "fa fa-plus"></i></a></li>
   </ul>
   <ul class="pagination">
     <li ng-click="loadPrevSetPages()" class="{{pageList.indexOf(1) != -1 ? 'disabled' : ''}}">

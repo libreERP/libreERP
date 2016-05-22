@@ -67,14 +67,14 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    if request.user.username != 'pradeep':
-        raise PermissionDenied()
-    EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    EMAIL_PASSWORD = 'pradeepyadav'
+    # if request.user.username != 'pradeep':
+        # raise PermissionDenied()
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    EMAIL_PASSWORD = '01812440042'
 
     toAddr = request.data['to']
     msg = MIMEMultipart()
-    msg['From'] = "Pradeep <ciocpky@gmail.com>"
+    msg['From'] = "Pradeep <pradeep.yadav@goryd.in>"
     msg['To'] = toAddr
     if 'subject' in request.data:
         msg['Subject'] = request.data['subject']
@@ -97,8 +97,8 @@ def sendMailView(request):
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
-    S = smtplib.SMTP('smtp.gmail.com', 587)
-    S.starttls()
+    S = smtplib.SMTP_SSL('mail.goryd.in', 465)
+    # S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     text = msg.as_string()
     for address in toAddr.split(','):
@@ -113,11 +113,11 @@ def mailBoxView(request):
     View to get the mailbox selected, ideally 10 at a time.
     """
 
-    if request.user.username != 'pradeep':
-        raise PermissionDenied()
+    # if request.user.username != 'pradeep':
+    #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    EMAIL_PASSWORD = 'pradeepyadav'
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    EMAIL_PASSWORD = '01812440042'
 
     EMAIL_FOLDER = str(request.GET['folder'])
     try:
@@ -128,7 +128,7 @@ def mailBoxView(request):
         query = str(request.GET['query']).replace('/' , '"')
     except:
         query = "ALL"
-    M = imaplib.IMAP4_SSL('imap.gmail.com')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -168,6 +168,7 @@ def getMailBody(M , id , mode):
     if rv == 'OK':
         msg = email.message_from_string(data[0][1])
         for part in msg.walk():
+            print part.get_content_type()
             if part.get_content_type()=='text/'+mode:
                 return part.get_payload(decode = True)
 
@@ -177,15 +178,15 @@ def emailView(request):
     get a perticular mail
     """
 
-    if request.user.username != 'pradeep':
-        raise PermissionDenied()
+    # if request.user.username != 'pradeep':
+    #     raise PermissionDenied()
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    EMAIL_PASSWORD = 'pradeepyadav'
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    EMAIL_PASSWORD = '01812440042'
 
-    M = imaplib.IMAP4_SSL('imap.gmail.com')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -237,13 +238,13 @@ def foldersDetailsView(request):
     """
 
 
-    if request.user.username != 'pradeep':
-        raise PermissionDenied()
+    # if request.user.username != 'pradeep':
+    #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "ciocpky@gmail.com"
-    M = imaplib.IMAP4_SSL('imap.gmail.com')
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
-        rv, data = M.login(EMAIL_ACCOUNT, 'pradeepyadav')
+        rv, data = M.login(EMAIL_ACCOUNT, '01812440042')
     except imaplib.IMAP4.error:
         print "LOGIN FAILED!!! "
 
