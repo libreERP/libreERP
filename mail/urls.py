@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'folders/$' , foldersDetailsView ),
     url(r'email/$' , emailView ), # for modifying flags of the mails ,
     url(r'send/$' , sendMailView ),
+    url(r'mailAttachment/$' , mailAttachmentView ),
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)

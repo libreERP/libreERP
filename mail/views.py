@@ -20,7 +20,7 @@ from os.path import basename
 import mimetypes
 import re
 from django.conf import settings as globalSettings
-
+from django.http import HttpResponse
 # Create your views here.
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -186,7 +186,6 @@ def getMailBody(M , id , mode):
                         attachments.append({'content_type' : part.get_content_type() ,'name' : part.get_filename()})
         return body , attachments
 
-
 @api_view(['GET','PATCH'])
 def emailView(request):
     """
@@ -269,3 +268,36 @@ class mailAttachmentViewSet(viewsets.ModelViewSet):
     permission_classes = (isOwnerOrReadOnly,)
     serializer_class = mailAttachmentSerializer
     queryset = mailAttachment.objects.all()
+
+
+@api_view(['GET'])
+def mailAttachmentView(request):
+    EMAIL_FOLDER = str(request.GET['folder'])
+    uid = int(request.GET['uid'])
+
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    EMAIL_PASSWORD = '01812440042'
+
+    M = imaplib.IMAP4_SSL('103.195.184.68')
+    try:
+        rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+    except imaplib.IMAP4.error:
+        print "LOGIN FAILED!!! "
+
+    rv, data = M.select(EMAIL_FOLDER)
+    if rv == 'OK':
+        rv, data = M.uid('FETCH', uid, '(RFC822)')
+        if rv == 'OK':
+            msg = email.message_from_string(data[0][1])
+            if msg.is_multipart():
+                for part in msg.walk():
+                    content_disposition = part.get("Content-Disposition", None);
+                    if content_disposition:
+                        dispositions = content_disposition.strip().split(";")
+                        if bool(content_disposition and dispositions[0].lower() == "attachment") and part.get_filename() == request.GET['file']:
+                            print part.get_filename()
+                            response = HttpResponse(content_type= part.get("Content-Type" , None) )
+                            response['Content-Disposition'] = 'attachment; filename=' + part.get_filename()
+                            response.write(part.get_payload(decode = True))
+                            return response
+    return Response(status=status.HTTP_404_NOT_FOUND)

@@ -305,7 +305,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   }
 
   $scope.downloadFile = function(filename) {
-    $window.open('/api/mail/attachment/?folder=' + $scope.folderSelected + '&uid' + $scope.emailInView.uid + '&file=' + filename);
+    $window.open('/api/mail/mailAttachment/?folder=' + $scope.folderSelected + '&uid=' + $scope.emailInView.uid + '&file=' + filename);
   };
 
   $scope.getMailBody = function(uid , folder , format){

@@ -120,9 +120,9 @@
         </div>
         <div class="row" ng-if="emailInView.attachments.length >0" style="border-bottom:solid 2px #e4e1e1;">
           <div class="container-fluid" style="padding:0px;">
-            <span ng-repeat="f in emailInView.attachments" class="col-md-3" style="margin-right:5px;">
+            <span ng-repeat="f in emailInView.attachments" class="col-md-4" style="margin-right:5px;">
               <div class="card bg-white" style="padding:10px;margin:5px;cursor:pointer;position:relative;" ng-click="downloadFile(f.name)">
-                <i class="fa {{f.name | fileTypeIcon}} fa-2x" ></i> <span style="margin-bottom:10px;position:relative;bottom:5px;left:10px;">{{f.name}}</span>
+                <i class="fa {{f.name | fileTypeIcon}} fa-lg" ></i> <span style="margin-bottom:10px;position:relative;bottom:1px;left:10px;">{{f.name}}</span>
               </div>
             </span>
           </div>
