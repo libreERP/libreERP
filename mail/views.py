@@ -166,11 +166,26 @@ def mailBoxView(request):
 def getMailBody(M , id , mode):
     rv, data = M.uid('FETCH', id, '(RFC822)')
     if rv == 'OK':
+        attachments = list();
         msg = email.message_from_string(data[0][1])
         for part in msg.walk():
-            print part.get_content_type()
             if part.get_content_type()=='text/'+mode:
-                return part.get_payload(decode = True)
+                body = part.get_payload(decode = True)
+        if msg.is_multipart() and mode == 'html' :
+            for part in msg.walk():
+                content_disposition = part.get("Content-Disposition", None);
+                cid = part.get("Content-ID", None);
+                if cid:
+                    encoding = part.get("Content-Transfer-Encoding" , None)
+                    contentType = part.get("Content-Type" , None)
+                    parts = body.split('cid:' + cid.strip("<").strip(">"))
+                    body = parts[0] + 'data:%s;%s,%s' %(contentType , encoding , part.get_payload(decode = False)) + parts[1]
+                if content_disposition:
+                    dispositions = content_disposition.strip().split(";")
+                    if bool(content_disposition and dispositions[0].lower() == "attachment"):
+                        attachments.append({'content_type' : part.get_content_type() ,'name' : part.get_filename()})
+        return body , attachments
+
 
 @api_view(['GET','PATCH'])
 def emailView(request):
@@ -195,8 +210,8 @@ def emailView(request):
     rv, data = M.select(EMAIL_FOLDER)
     if rv == 'OK':
         if request.method=='GET':
-            body = getMailBody(M, uid , request.GET['mode'])
-            return Response({'body' : body , 'uid' : uid  , 'folder' : EMAIL_FOLDER})
+            body , attachments = getMailBody(M, uid , request.GET['mode'])
+            return Response({'body' : body , 'uid' : uid  , 'folder' : EMAIL_FOLDER , 'attachments' : attachments})
         elif request.method=='PATCH':
             if 'action' in request.GET:
                 actionType = request.GET['action']

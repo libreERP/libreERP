@@ -96,7 +96,7 @@
       <!-- the html/text mail viewer -->
 
       <div class="row" ng-if="!editor && viewerMail != -1" style="padding-top:10px;">
-        <div class="row" style="border-bottom:solid 2px #e4e1e1;">
+        <div class="row" style="{{emailInView.attachments.length == 0 ? 'border-bottom:solid 2px #e4e1e1;':''}}">
           <div class="col-md-10">
             <div class="col-md-2">
               <img ng-src="{{emailInView.originator | getDP}}" height="60px" width="60px" style="position:relative;left:-10px;top:-5px;"/>
@@ -109,6 +109,7 @@
                 From : <span class="text-muted"> {{emailInView.sender | emailAddress}}</span>
                 To : <span class="text-muted">{{emailInView.to | emailAddress}}</span>
               </div>
+
             </div>
           </div>
           <div class="col-md-2 pull-right">
@@ -117,8 +118,17 @@
             <span style="float:right">{{emailInView.date | date:'hh:mm a'}}</span>
           </div>
         </div>
+        <div class="row" ng-if="emailInView.attachments.length >0" style="border-bottom:solid 2px #e4e1e1;">
+          <div class="container-fluid" style="padding:0px;">
+            <span ng-repeat="f in emailInView.attachments" class="col-md-3" style="margin-right:5px;">
+              <div class="card bg-white" style="padding:10px;margin:5px;cursor:pointer;position:relative;" ng-click="downloadFile(f.name)">
+                <i class="fa {{f.name | fileTypeIcon}} fa-2x" ></i> <span style="margin-bottom:10px;position:relative;bottom:5px;left:10px;">{{f.name}}</span>
+              </div>
+            </span>
+          </div>
+        </div>
         <div class="row">
-          <div class="container-fluid bg-white" style="height:585px;position:absolute;overflow:auto;width:100%;">
+          <div class="container-fluid bg-white" style="height:67vh;position:absolute;overflow:auto;width:100%;">
             <div ng-bind-html="emailInView.body" ng-if="emailInView.bodyFormat != 'plain'" style="padding-top:5px;"></div>
             <div ng-if="emailInView.bodyFormat == 'plain'" style="padding-top:5px;">{{emailInView.plainBody}}</div>
           </div>

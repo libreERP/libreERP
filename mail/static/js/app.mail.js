@@ -304,6 +304,10 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     }
   }
 
+  $scope.downloadFile = function(filename) {
+    $window.open('/api/mail/attachment/?folder=' + $scope.folderSelected + '&uid' + $scope.emailInView.uid + '&file=' + filename);
+  };
+
   $scope.getMailBody = function(uid , folder , format){
     if (typeof format == 'undefined') {
       format = 'html'
@@ -316,8 +320,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
           if (response.data.body == null) {
             $scope.getMailBody(response.data.uid , response.data.folder , 'plain')
           }else {
+            $scope.emails[i].attachments = response.data.attachments;
             if (response.config.params.mode == 'plain') {
-              // $scope.emails[i].plainBody = removeHtmlTags(response.data.body);
               $scope.emails[i].plainBody = response.data.body;
               $scope.emails[i].bodyFormat = 'plain';
             } else {
@@ -325,6 +329,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
               $scope.emails[i].bodyFormat = 'html';
               $scope.emails[i].body = response.data.body;
             }
+            console.log($scope.emails[i]);
           }
         }
       }
