@@ -1,19 +1,20 @@
 <div style="position:relative; min-height:90vh;top:0px;right:0px;padding:0px;" ng-controller="projectManagement.taskBoard.createTask">
-    <div class="col-md-4" style="padding:10px;height:100%;position:absolute;">
-      <button type="button" class="btn btn-primary" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
-          Save <i class="fa fa-floppy-o"></i>
-      </button>
-      <button type="button" class="btn btn-primary" ng-click="edit()" ng-if="form.mode=='view'">
-          Edit <i class="fa fa-pencil"></i>
-      </button>
-
+    <div class="col-md-4" style="padding:10px;height:100%;position:absolute;overflow:auto;">
       <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
       <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
       <div class="form-group">
           Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null">
-          <button type="button" class="btn btn-default btn-sm pull-right" ng-click="addSubTask()">
+          <div class="btn-group btn-group-sm pull-right">
+            <button type="button" class="btn btn-default btn-sm" ng-click="addSubTask()">
               <i class="fa fa-plus"></i>  Sub task
-          </button>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
+                Save <i class="fa fa-floppy-o"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="edit()" ng-if="form.mode=='view'">
+                Edit <i class="fa fa-pencil"></i>
+            </button>
+          </div>
       </div>
       <hr>
       <div class="row" ng-repeat="st in form.subTasks" style="margin-left:-10px;margin-right:-10px;">

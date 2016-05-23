@@ -12,6 +12,10 @@ from email.message import Message
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
+from email.MIMEText import MIMEText
+from email.MIMEBase import MIMEBase
+from email import encoders
+import mimetypes
 
 import datetime
 import os
@@ -69,8 +73,6 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    # if request.user.username != 'pradeep':
-        # raise PermissionDenied()
     EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
     EMAIL_PASSWORD = '01812440042'
 
@@ -79,6 +81,7 @@ def sendMailView(request):
     msg['From'] = "Pradeep <pradeep.yadav@goryd.in>"
     msg['To'] = toAddr
     msg['Date'] = email.utils.formatdate(time.time())
+    msg['Signed-by'] = 'goryd.in'
     if 'subject' in request.data:
         msg['Subject'] = request.data['subject']
     if 'cc' in request.data:
@@ -90,12 +93,14 @@ def sendMailView(request):
     if 'attachments' in request.data:
         for pk in request.data['attachments'].split(','):
             filePath = mailAttachment.objects.get(pk = int(pk)).attachment.path
+            filename = basename(filePath.split('_' + request.user.username + '_')[-1])
             with open(filePath, "rb") as fil:
-                msg.attach(MIMEApplication(
-                    fil.read(),
-                    Content_Disposition='attachment; filename="%s"' % basename(filePath.split('_' + request.user.username + '_')[-1]),
-                    Name=basename(filePath.split('_' + request.user.username + '_')[-1])
-                ))
+                typeParts = mimetypes.guess_type(filename)[0].split('/');
+                part = MIMEBase(typeParts[0], typeParts[1])
+                part.set_payload((fil).read())
+                encoders.encode_base64(part)
+                part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+                msg.attach(part)
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
@@ -161,17 +166,12 @@ def mailBoxView(request):
         indexes = range(len(mailUIDs)-1 - page*9, endIndex , -1) # this generates from 8 to 0 as -1 in the middle does is not included in the list
         for index in indexes:
             num = mailUIDs[index]
-            # print "fetching " + str(num)
             subject , date , sender , to , flags = getMailHeader(M , num)
-            # print date
-            # if date != None:
             content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
         return Response(content)
-        # print "closing mail box"
         M.close()
     else:
         print "ERROR: Unable to open mailbox ", rv
-    # print "logging out mailbox"
     M.logout()
 
 def getMailBody(M , id , mode):
