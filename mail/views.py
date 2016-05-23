@@ -31,6 +31,8 @@ from rest_framework.decorators import api_view
 from API.permissions import *
 from .models import mailAttachment
 from .serializers import *
+from django.core.files.base import ContentFile
+import time
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -76,6 +78,7 @@ def sendMailView(request):
     msg = MIMEMultipart()
     msg['From'] = "Pradeep <pradeep.yadav@goryd.in>"
     msg['To'] = toAddr
+    msg['Date'] = email.utils.formatdate(time.time())
     if 'subject' in request.data:
         msg['Subject'] = request.data['subject']
     if 'cc' in request.data:
@@ -83,11 +86,10 @@ def sendMailView(request):
         toAddr += ',' + request.data['cc']
     if 'bcc' in request.data:
         toAddr += ',' + request.data['bcc']
-
     msg.attach(MIMEText(request.data['body'].encode('utf-8'), 'html'))
     if 'attachments' in request.data:
-        for pk in request.data['attachments']:
-            filePath = mailAttachment.objects.get(pk = pk).attachment.path
+        for pk in request.data['attachments'].split(','):
+            filePath = mailAttachment.objects.get(pk = int(pk)).attachment.path
             with open(filePath, "rb") as fil:
                 msg.attach(MIMEApplication(
                     fil.read(),
@@ -97,12 +99,19 @@ def sendMailView(request):
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
-    S = smtplib.SMTP_SSL('mail.goryd.in', 465)
+    S = smtplib.SMTP_SSL('103.195.184.68', 465)
     # S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     text = msg.as_string()
     for address in toAddr.split(','):
         S.sendmail(EMAIL_ACCOUNT, address, text)
+
+    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
+    EMAIL_PASSWORD = '01812440042'
+    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
+    M.append('INBOX.Sent', '', imaplib.Time2Internaldate(time.time()), text)
+    M.logout()
     S.quit()
     return Response(status = status.HTTP_200_OK)
 
@@ -136,6 +145,7 @@ def mailBoxView(request):
 
 
     rv, data = M.select(EMAIL_FOLDER)
+    print dir(M)
     if rv == 'OK':
         rv, data = M.uid('SEARCH', None, '(' + query + ')')
         # rv, data = M.sort('REVERSE DATE', 'UTF-8' , "ALL")
@@ -153,8 +163,9 @@ def mailBoxView(request):
             num = mailUIDs[index]
             # print "fetching " + str(num)
             subject , date , sender , to , flags = getMailHeader(M , num)
-            if date != None:
-                content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
+            # print date
+            # if date != None:
+            content.append({'uid' : num, 'subject' : subject , 'date' : date , 'sender' : sender , 'to' : to , 'flags':flags })
         return Response(content)
         # print "closing mail box"
         M.close()
@@ -171,7 +182,7 @@ def getMailBody(M , id , mode):
         for part in msg.walk():
             if part.get_content_type()=='text/'+mode:
                 body = part.get_payload(decode = True)
-        if msg.is_multipart() and mode == 'html' :
+        if msg.is_multipart() and mode == 'html' and body:
             for part in msg.walk():
                 content_disposition = part.get("Content-Disposition", None);
                 cid = part.get("Content-ID", None);
@@ -184,7 +195,10 @@ def getMailBody(M , id , mode):
                     dispositions = content_disposition.strip().split(";")
                     if bool(content_disposition and dispositions[0].lower() == "attachment"):
                         attachments.append({'content_type' : part.get_content_type() ,'name' : part.get_filename()})
-        return body , attachments
+        try:
+            return body , attachments
+        except:
+            return None , attachments
 
 @api_view(['GET','PATCH'])
 def emailView(request):
@@ -220,8 +234,8 @@ def emailView(request):
                     elif actionType == 'removeFlag':
                         action = '-FLAGS'
                     rv , data = M.uid('STORE' , uid , action , '\\'+ request.GET['flag'])
-                    if request.GET['flag'] == 'Deleted':
-                        M.expunge()
+                    # if request.GET['flag'] == 'Deleted':
+                    #     M.expunge()
                 elif actionType == 'move':
                     rv , data = M.uid('COPY' , uid ,  str(request.GET['to']))
                     if rv == 'OK':
@@ -270,7 +284,7 @@ class mailAttachmentViewSet(viewsets.ModelViewSet):
     queryset = mailAttachment.objects.all()
 
 
-@api_view(['GET'])
+@api_view(['GET' , 'POST'])
 def mailAttachmentView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
@@ -290,14 +304,25 @@ def mailAttachmentView(request):
         if rv == 'OK':
             msg = email.message_from_string(data[0][1])
             if msg.is_multipart():
+                files = []
                 for part in msg.walk():
                     content_disposition = part.get("Content-Disposition", None);
                     if content_disposition:
                         dispositions = content_disposition.strip().split(";")
-                        if bool(content_disposition and dispositions[0].lower() == "attachment") and part.get_filename() == request.GET['file']:
-                            print part.get_filename()
-                            response = HttpResponse(content_type= part.get("Content-Type" , None) )
-                            response['Content-Disposition'] = 'attachment; filename=' + part.get_filename()
-                            response.write(part.get_payload(decode = True))
-                            return response
+                        if bool(content_disposition and dispositions[0].lower() == "attachment"):
+                            if request.method == 'GET':
+                                if part.get_filename() == request.GET['file']:
+                                    response = HttpResponse(content_type= part.get("Content-Type" , None) )
+                                    response['Content-Disposition'] = 'attachment; filename=' + part.get_filename()
+                                    response.write(part.get_payload(decode = True))
+                                    return response
+                            else:
+                                f = ContentFile(part.get_payload(decode = True))
+                                m = mailAttachment(user = request.user)
+                                m.attachment.save(part.get_filename() , f)
+                                m.save()
+                                files.append(m.pk)
+                d = mailAttachmentSerializer(mailAttachment.objects.filter(pk__in = files), many = True)
+                return Response(d.data)
+
     return Response(status=status.HTTP_404_NOT_FOUND)

@@ -103,6 +103,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   $scope.reply = function(mode){
     $scope.editor=!$scope.editor;
     var mail = angular.copy($scope.emailInView);
+    mail.attachments = [];
     var parts = mail.subject.split(':');
     mail.subject = parts[parts.length-1];
     var replyStr;
@@ -122,7 +123,14 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
       mail.to = '';
       mail.cc = '';
       replyStr = '<br><br><div>-----------Forwarded message---------------<br>'
-
+      $http({method : 'POST' , url : '/api/mail/mailAttachment/?folder=' + $scope.folderSelected + '&uid=' + $scope.emailInView.uid }).
+      then(function(response) {
+        for (var i = 0; i < response.data.length; i++) {
+          response.data[i].filename = response.data[i].attachment.split('_' + $scope.me.username + '_')[1];
+          $scope.editorData.attachments.push(response.data[i]);
+        }
+        console.log($scope.editorData);
+      });
     }
     var frm =mail.sender.match(/\w*@\w*.\w*/)[0];
     var to = $scope.emailInView.to.match(/\w*@\w*.\w*/)[0];
@@ -134,7 +142,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     if (mail.bodyFormat == 'plain') {
       mail.plainBody = replyStr + mail.plainBody;
     }
-    mail.attachments = [];
+
     $scope.editorData = mail;
   }
   $scope.newMail = function(){
@@ -227,17 +235,17 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   });
 
   $scope.moveMails = function(folder){
-    selectedMode = false;
+    var selectedMode = false;
     for (var i = 0; i < $scope.emails.length; i++) {
       if ($scope.emails[i].selected){
-        dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[i].uid};
+        var dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[i].uid};
         $http({method:'PATCH' , url:'/api/mail/email/' , params : dataToSend});
         selectedMode = true;
       }
 
     }
     if (!selectedMode) {
-      dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[$scope.viewerMail].uid};
+      var dataToSend = {action: 'move' , folder : $scope.folderSelected , to : folder, uid: $scope.emails[$scope.viewerMail].uid};
       $http({method:'PATCH' , url:'/api/mail/email/' , params : dataToSend});
     }
     $scope.deleteMail(false);
@@ -249,15 +257,15 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
   $scope.deleteMail = function(remove){
     // if remove == true then only remove it from the UI and do not send the delete commend to the server
     if (typeof remove == 'undefined') {
-      remove = false;
+      var remove = false;
     }
     $scope.selectAll = false;
-    selectedMode = false;
-    i = $scope.emails.length;
+    var selectedMode = false;
+    var i = $scope.emails.length;
     while (i--) {
       if ($scope.emails[i].selected == true){
         if (!remove) {
-          dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[i].uid};
+          var dataToSend = {action : 'move' , folder : $scope.folderSelected,to : 'INBOX.Trash', uid : $scope.emails[i].uid};
           $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
         }
         $scope.emails.splice(i,1)
@@ -266,7 +274,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     }
     if (!selectedMode) {
       if (!remove) {
-        dataToSend = {action : 'addFlag' , flag : 'Deleted' , folder : $scope.folderSelected , uid : $scope.emails[$scope.viewerMail].uid};
+        var dataToSend = {action : 'move' , folder : $scope.folderSelected,to : 'INBOX.Trash' , uid : $scope.emails[$scope.viewerMail].uid};
         $http({method : 'PATCH' , url : '/api/mail/email/' , params : dataToSend})
       }
       $scope.emails.splice($scope.viewerMail, 1);
@@ -315,11 +323,12 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     dataToSend = {folder : folder , uid : uid , mode : format}
     $http({method : 'GET' , url : '/api/mail/email/' , params: dataToSend}).
     then(function(response){
+      if (response.data.body == null) {
+        $scope.getMailBody(response.data.uid , response.data.folder , 'plain')
+        return;
+      }
       for (var i = 0; i < $scope.emails.length; i++) {
         if ($scope.emails[i].uid == response.data.uid){
-          if (response.data.body == null) {
-            $scope.getMailBody(response.data.uid , response.data.folder , 'plain')
-          }else {
             $scope.emails[i].attachments = response.data.attachments;
             if (response.config.params.mode == 'plain') {
               $scope.emails[i].plainBody = response.data.body;
@@ -329,11 +338,10 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
               $scope.emails[i].bodyFormat = 'html';
               $scope.emails[i].body = response.data.body;
             }
-            console.log($scope.emails[i]);
+            $scope.emailInView = $scope.emails[i];
           }
         }
-      }
-    });
+      });
   }
 
   $scope.nextPage = function(){
@@ -387,8 +395,8 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
 
   $scope.prevMail = function(){
     $scope.viewerMail -= 1;
-    if ($scope.viewerMail<=0){
-      $scope.viewerMail = 1;
+    if ($scope.viewerMail<0){
+      $scope.viewerMail = 0;
     };
   };
 });
