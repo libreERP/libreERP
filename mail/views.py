@@ -31,7 +31,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets , permissions , serializers, status
 from rest_framework.decorators import api_view
-
+from url_filter.integrations.drf import DjangoFilterBackend
 from API.permissions import *
 from .models import mailAttachment
 from .serializers import *
@@ -73,8 +73,8 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    EMAIL_PASSWORD = '01812440042'
+    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
+    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
     toAddr = request.data['to']
     msg = MIMEMultipart()
@@ -104,16 +104,14 @@ def sendMailView(request):
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
-    S = smtplib.SMTP_SSL('103.195.184.68', 465)
+    S = smtplib.SMTP_SSL('127.0.0.1', 465)
     # S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     text = msg.as_string()
     for address in toAddr.split(','):
         S.sendmail(EMAIL_ACCOUNT, address, text)
 
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    EMAIL_PASSWORD = '01812440042'
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL('127.0.0.1')
     M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     M.append('INBOX.Sent', '', imaplib.Time2Internaldate(time.time()), text)
     M.logout()
@@ -130,8 +128,8 @@ def mailBoxView(request):
     # if request.user.username != 'pradeep':
     #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    EMAIL_PASSWORD = '01812440042'
+    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
+    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
     EMAIL_FOLDER = str(request.GET['folder'])
     try:
@@ -142,7 +140,7 @@ def mailBoxView(request):
         query = str(request.GET['query']).replace('/' , '"')
     except:
         query = "ALL"
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL('127.0.0.1')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -211,10 +209,10 @@ def emailView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    EMAIL_PASSWORD = '01812440042'
+    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
+    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL('127.0.0.1')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -269,10 +267,12 @@ def foldersDetailsView(request):
     # if request.user.username != 'pradeep':
     #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
+    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+
+    M = imaplib.IMAP4_SSL('127.0.0.1')
     try:
-        rv, data = M.login(EMAIL_ACCOUNT, '01812440042')
+        rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
         print "LOGIN FAILED!!! "
 
@@ -289,10 +289,10 @@ def mailAttachmentView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = "pradeep.yadav@goryd.in"
-    EMAIL_PASSWORD = '01812440042'
+    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
+    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL('127.0.0.1')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -326,3 +326,18 @@ def mailAttachmentView(request):
                 return Response(d.data)
 
     return Response(status=status.HTTP_404_NOT_FOUND)
+
+class proxyAccountViewSet(viewsets.ModelViewSet):
+    permission_classes = (isAdmin,)
+    serializer_class = proxyAccountSerializer
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['user']
+    def get_queryset(self):
+        u = self.request.user
+        if not u.is_superuser:
+            raise PermissionDenied()
+        a , new = proxyAccount.objects.get_or_create(user = User.objects.get(pk = int(self.request.GET['user'])))
+        if new:
+            a.passKey = randomPassword()
+            a.save()
+        return proxyAccount.objects.all()

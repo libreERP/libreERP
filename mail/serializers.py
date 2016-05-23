@@ -3,6 +3,14 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import *
 from .models import *
+import random, string
+
+def randomPassword():
+    length = 20
+    chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+    rnd = random.SystemRandom()
+    return ''.join(rnd.choice(chars) for i in range(length))
+
 
 class mailAttachmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,3 +22,15 @@ class mailAttachmentSerializer(serializers.ModelSerializer):
         a.attachment = validated_data.pop('attachment')
         a.save()
         return a
+
+class proxyAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = proxyAccount
+        fields = ('pk' , 'user' , 'passKey', 'active', 'updated')
+        read_only_fields = ('passKey','user',)
+    def update(self , instance , validated_data):
+        print instance
+        instance.passKey = randomPassword()
+        instance.active = validated_data['active']
+        instance.save()
+        return instance

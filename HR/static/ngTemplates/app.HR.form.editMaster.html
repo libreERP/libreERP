@@ -26,5 +26,18 @@
     <label >Staff ?</label>
     <input type="checkbox" ng-model="data.is_staff" >
   </div>
+  <hr>
+  <div ng-controller="admin.manageUsers.mailAccount">
+    <div class="form-group">
+      <label>Email access?</label>
+      <input type="checkbox" ng-model="data.mailAccount.active" >
+    </div>
+    <div class="form-group">
+      <button type="button" class="btn btn-primary" ng-click="generateMailPasskey()">Save and Generate Passkey</button>
+    </div>
+    <div class="row container-fluid">
+      password : <span style="font-size:20px;">{{data.mailAccount.passKey}}</span>
+    </div>
+  </div>
 
 </div>

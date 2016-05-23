@@ -10,3 +10,10 @@ class mailAttachment(models.Model):
     user = models.ForeignKey(User , related_name = 'mailAttachments' , null = False)
     attachment = models.FileField(upload_to = getMailAttachmentPath , null = True)
     created = models.DateTimeField(auto_now_add = True)
+
+class proxyAccount(models.Model):
+    passKey = models.CharField(max_length = 100 , null = True)
+    user = models.ForeignKey(User , null = False , related_name='mailAccount')
+    created = models.DateTimeField(auto_now_add = True)
+    updated = models.DateField(auto_now=True)
+    active = models.BooleanField(default = False)

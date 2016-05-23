@@ -1,4 +1,16 @@
 
+app.controller('admin.manageUsers.mailAccount' , function($scope , $http){
+  $scope.generateMailPasskey = function() {
+    console.log($scope);
+    console.log($scope.data);
+    $http({method : 'PATCH' , url : '/api/mail/account/' + $scope.data.mailAccount.pk + '/?user=' +  $scope.data.mailAccount.user , data : {active : $scope.data.mailAccount.active}}).
+    then(function(response) {
+      $scope.data.mailAccount = response.data;
+    });
+  }
+});
+
+
 app.controller('admin.manageUsers' , function($scope , $http , $aside , $state , Flash , $users , $filter){
 
   var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
@@ -113,7 +125,13 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
         console.log(target);
         $http({method : 'GET' , url : '/api/HR/usersAdminMode/' + target + '/'}).
         then(function(response){
-          $scope.addTab({title : 'Edit master data  for ' + response.data.first_name + ' ' + response.data.last_name , cancel : true , app : 'editMaster' , data : response.data , active : true})
+          $http({method : 'GET' , url : '/api/mail/account/?user=' + target }).
+          then((function(userData){
+            return function(response) {
+              userData.mailAccount = response.data[0];
+              $scope.addTab({title : 'Edit master data  for ' + userData.first_name + ' ' + userData.last_name , cancel : true , app : 'editMaster' , data : userData , active : true})
+            }
+          })(response.data))
         })
       } else if (action == 'editPermissions') {
         u = $users.get(target)
@@ -194,7 +212,7 @@ app.controller('admin.manageUsers' , function($scope , $http , $aside , $state ,
   };
 
   $scope.updateUserMasterDetails = function(index){
-    userData = $scope.tabs[index].data;
+    var userData = $scope.tabs[index].data;
     dataToSend = {
       username : userData.username,
       last_name : userData.last_name,
