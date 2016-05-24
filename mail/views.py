@@ -73,8 +73,8 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
-    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     toAddr = request.data['to']
     msg = MIMEMultipart()
@@ -128,8 +128,8 @@ def mailBoxView(request):
     # if request.user.username != 'pradeep':
     #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
-    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     EMAIL_FOLDER = str(request.GET['folder'])
     try:
@@ -209,8 +209,8 @@ def emailView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
-    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
@@ -267,8 +267,8 @@ def foldersDetailsView(request):
     # if request.user.username != 'pradeep':
     #     raise PermissionDenied()
 
-    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
-    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
@@ -289,8 +289,8 @@ def mailAttachmentView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
-    EMAIL_PASSWORD = request.user.mailAccount.get().passKey
+    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
