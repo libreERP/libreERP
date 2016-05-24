@@ -78,7 +78,7 @@ def sendMailView(request):
 
     toAddr = request.data['to']
     msg = MIMEMultipart()
-    msg['From'] = "Pradeep <pradeep.yadav@goryd.in>"
+    msg['From'] = "%s <%s>" %(request.user.get_full_name() , EMAIL_ACCOUNT)
     msg['To'] = toAddr
     msg['Date'] = email.utils.formatdate(time.time())
     msg['Signed-by'] = 'goryd.in'
@@ -104,14 +104,14 @@ def sendMailView(request):
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
-    S = smtplib.SMTP_SSL('127.0.0.1', 465)
+    S = smtplib.SMTP_SSL('103.195.184.68', 465)
     # S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     text = msg.as_string()
     for address in toAddr.split(','):
         S.sendmail(EMAIL_ACCOUNT, address, text)
 
-    M = imaplib.IMAP4_SSL('127.0.0.1')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     M.append('INBOX.Sent', '', imaplib.Time2Internaldate(time.time()), text)
     M.logout()
@@ -140,7 +140,7 @@ def mailBoxView(request):
         query = str(request.GET['query']).replace('/' , '"')
     except:
         query = "ALL"
-    M = imaplib.IMAP4_SSL('127.0.0.1')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -212,7 +212,7 @@ def emailView(request):
     EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
     EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
-    M = imaplib.IMAP4_SSL('127.0.0.1')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -270,7 +270,7 @@ def foldersDetailsView(request):
     EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
     EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
-    M = imaplib.IMAP4_SSL('127.0.0.1')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -292,7 +292,7 @@ def mailAttachmentView(request):
     EMAIL_ACCOUNT = "%s@goryd.in" %(request.user.username)
     EMAIL_PASSWORD = request.user.mailAccount.get().passKey
 
-    M = imaplib.IMAP4_SSL('127.0.0.1')
+    M = imaplib.IMAP4_SSL('103.195.184.68')
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
