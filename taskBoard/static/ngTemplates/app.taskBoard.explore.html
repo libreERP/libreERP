@@ -3,18 +3,28 @@
       <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
       <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
       <div class="form-group">
-          Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null">
-          <div class="btn-group btn-group-sm pull-right">
-            <button type="button" class="btn btn-default btn-sm" ng-click="addSubTask()">
-              <i class="fa fa-plus"></i>  Sub task
-            </button>
-            <button type="button" class="btn btn-primary btn-sm" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
-                Save <i class="fa fa-floppy-o"></i>
-            </button>
-            <button type="button" class="btn btn-primary btn-sm" ng-click="edit()" ng-if="form.mode=='view'">
-                Edit <i class="fa fa-pencil"></i>
-            </button>
+        <div class="row">
+          <div class="col-md-9">
+            Responsible : {{form.to.pk | getName}} <br>
+            <span ng-if="form.followers.length >0">
+              Followers : <span ng-repeat="f in form.followers">{{f | getName}} </span>
+            </span>
           </div>
+          <div class="col-md-3">
+            <!-- Personal :  <input type="checkbox" ng-model="form.personal" ng-disabled="form.pk != null"> -->
+            <div class="btn-group btn-group-sm pull-right">
+              <button type="button" class="btn btn-default btn-sm" ng-click="addSubTask()">
+                <i class="fa fa-plus"></i>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" ng-click="save()" ng-if="['edit' , 'new'].indexOf(form.mode) != -1">
+                <i class="fa fa-floppy-o"></i>
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" ng-click="edit()" ng-if="form.mode=='view'">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <hr>
       <div class="row" ng-repeat="st in form.subTasks" style="margin-left:-10px;margin-right:-10px;">
@@ -25,8 +35,8 @@
                   <i ng-if="st.status == 'inProgress'" class="fa fa-spin fa-spinner fa-2x" style="color:#02bb20;"></i>
                   <i ng-if="st.status == 'stuck'" class="fa fa-wheelchair fa-2x" style="color:#de6915;"></i>
                   <i ng-if="st.status == 'complete'" class="fa fa-check fa-2x" style="color:#099c0a;"></i>
-                  <div class="btn-group pull-right">
-                    <button type="button" class="btn btn-default btn-sm" ng-click="editSubTask($index)"><i class="fa fa-pencil pull-right"></i> Edit</button>
+                  <div class="btn-group pull-right btn-group-sm">
+                    <button type="button" class="btn btn-default" ng-click="editSubTask($index)"><i class="fa fa-pencil pull-right"></i> Edit</button>
                     <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <span class="caret"></span>
                       <span class="sr-only">Toggle Dropdown</span>

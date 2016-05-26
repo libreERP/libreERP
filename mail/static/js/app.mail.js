@@ -135,7 +135,7 @@ app.controller('controller.mail' , function($scope , $http , $timeout , $users ,
     var frm =mail.sender.match(/\w*@\w*.\w*/)[0];
     var to = $scope.emailInView.to.match(/\w*@\w*.\w*/)[0];
     replyStr += 'From : <strong>'+ mail.sender.split('<')[0] +'</strong><<a href="mailto:'+ frm + '">'+ frm +'</a>><br>'
-    replyStr += 'Date : '+ mail.date.toISOString().slice(0,10).replace(/-/g,"-") + '<br>'
+    replyStr += 'Date : '+ mail.date + '<br>'
     replyStr += 'subject : '+ mail.subject.split(':')[1] + '<br>'
     replyStr += 'To : <strong>'+ angular.copy($scope.emailInView.to.split('<')[0]) + '</strong><<a href="mailto:'+ to + '">' + to + '</a>><br></div><br>'
     mail.body = replyStr + mail.body;

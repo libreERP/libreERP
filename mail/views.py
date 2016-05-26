@@ -73,7 +73,7 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     toAddr = request.data['to']
@@ -81,7 +81,7 @@ def sendMailView(request):
     msg['From'] = "%s <%s>" %(request.user.get_full_name() , EMAIL_ACCOUNT)
     msg['To'] = toAddr
     msg['Date'] = email.utils.formatdate(time.time())
-    msg['Signed-by'] = 'goryd.in'
+    msg['Signed-by'] = globalSettings.EMAIL_HOST_SUFFIX
     if 'subject' in request.data:
         msg['Subject'] = request.data['subject']
     if 'cc' in request.data:
@@ -104,20 +104,19 @@ def sendMailView(request):
             mailAttachment.objects.get(pk = pk).delete()
             os.remove(filePath)
 
-    S = smtplib.SMTP_SSL('103.195.184.68', 465)
+    S = smtplib.SMTP_SSL(globalSettings.EMAIL_HOST, 465)
     # S.starttls()
     S.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     text = msg.as_string()
     for address in toAddr.split(','):
         S.sendmail(EMAIL_ACCOUNT, address, text)
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
     M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     M.append('INBOX.Sent', '', imaplib.Time2Internaldate(time.time()), text)
     M.logout()
     S.quit()
     return Response(status = status.HTTP_200_OK)
-
 
 @api_view(['GET'])
 def mailBoxView(request):
@@ -125,10 +124,7 @@ def mailBoxView(request):
     View to get the mailbox selected, ideally 10 at a time.
     """
 
-    # if request.user.username != 'pradeep':
-    #     raise PermissionDenied()
-
-    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     EMAIL_FOLDER = str(request.GET['folder'])
@@ -140,7 +136,7 @@ def mailBoxView(request):
         query = str(request.GET['query']).replace('/' , '"')
     except:
         query = "ALL"
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -148,7 +144,6 @@ def mailBoxView(request):
 
 
     rv, data = M.select(EMAIL_FOLDER)
-    print dir(M)
     if rv == 'OK':
         rv, data = M.uid('SEARCH', None, '(' + query + ')')
         # rv, data = M.sort('REVERSE DATE', 'UTF-8' , "ALL")
@@ -209,10 +204,10 @@ def emailView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -249,10 +244,8 @@ def getFolders(M):
     fodlersStatus = []
     rv, mailboxes = M.list()
     if rv == 'OK':
-        # print "Mailboxes:"
         for folder in mailboxes:
             flag , delimiter , mailbox_name =  parse_list_response(folder)
-            # print "parsed response :"  + mailbox_name
             status =  M.status(mailbox_name, '(MESSAGES RECENT UIDNEXT UIDVALIDITY UNSEEN)')
             fodlersStatus.append(status)
         return fodlersStatus
@@ -263,14 +256,10 @@ def foldersDetailsView(request):
     get the folder details
     """
 
-
-    # if request.user.username != 'pradeep':
-    #     raise PermissionDenied()
-
-    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:
@@ -289,10 +278,10 @@ def mailAttachmentView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = str("%s@goryd.in" %(request.user.username))
+    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
-    M = imaplib.IMAP4_SSL('103.195.184.68')
+    M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
     try:
         rv, data = M.login(EMAIL_ACCOUNT, EMAIL_PASSWORD)
     except imaplib.IMAP4.error:

@@ -178,7 +178,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = '127.0.0.1'
+EMAIL_HOST_SUFFIX = 'goryd.in'
 EMAIL_HOST_USER = 'ciocpky@gmail.com'
 EMAIL_HOST_PASSWORD = 'pradeepyadav'
 EMAIL_PORT = 587

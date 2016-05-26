@@ -22,7 +22,8 @@ class taskViewSet(viewsets.ModelViewSet):
         qs1 = task.objects.filter(to = u) # someone assigned to me
         qs2 = task.objects.filter(followers__in = [u,]) # I am one of the followers
         qs3 = task.objects.filter(user = u) # i assigned to sometone
-        return qs1 | qs2 | qs3
+        qs = qs1 | qs2 | qs3
+        return qs.order_by('-created').distinct()
 
 class subTaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

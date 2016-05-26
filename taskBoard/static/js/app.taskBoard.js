@@ -324,30 +324,31 @@ app.controller('projectManagement.taskBoard.default' , function($scope , $http ,
     searchField: 'title',
     getParams : [{key : 'to' , value : $scope.me.pk},],
     multiselectOptions : [{icon : 'fa fa-plus' , text : 'Add' },],
-    filters : [
-      {icon : 'fa fa-file' , key : 'newFilter' , btnClass:'default' , orderable : true, options : [
-        {icon : '' , value : 'following'},
-        {icon : '' , value : 'following2'},
-        {icon : '' , value : 'following3'},
-      ]},
-      {icon : 'fa fa-file' , key : 'newFilter2' , btnClass:'default' , orderable : false, options : [
-        {icon : '' , value : 'following'},
-        {icon : '' , value : 'following4'},
-        {icon : '' , value : 'following5'},
-      ]},
-    ],
-    drills : [
-      {icon : 'fa fa-bars' , name : 'someCombo' , btnClass : 'primary' , options : [
-        {key : 'drill1', value : true},
-        {key : 'drill2', value : false},
-        {key : 'drill3', value : true},
-      ]},
-      {icon : 'fa fa-plus' , name : 'someCombo2' , btnClass : 'default' , options : [
-        {key : 'drill4', value : true},
-        {key : 'drill5', value : false},
-        {key : 'drill6', value : true},
-      ]}
-    ]
+    itemsNumPerView : [9,18,27],
+    // filters : [
+    //   {icon : 'fa fa-file' , key : 'newFilter' , btnClass:'default' , orderable : true, options : [
+    //     {icon : '' , value : 'following'},
+    //     {icon : '' , value : 'following2'},
+    //     {icon : '' , value : 'following3'},
+    //   ]},
+    //   {icon : 'fa fa-file' , key : 'newFilter2' , btnClass:'default' , orderable : false, options : [
+    //     {icon : '' , value : 'following'},
+    //     {icon : '' , value : 'following4'},
+    //     {icon : '' , value : 'following5'},
+    //   ]},
+    // ],
+    // drills : [
+    //   {icon : 'fa fa-bars' , name : 'someCombo' , btnClass : 'primary' , options : [
+    //     {key : 'drill1', value : true},
+    //     {key : 'drill2', value : false},
+    //     {key : 'drill3', value : true},
+    //   ]},
+    //   {icon : 'fa fa-plus' , name : 'someCombo2' , btnClass : 'default' , options : [
+    //     {key : 'drill4', value : true},
+    //     {key : 'drill5', value : false},
+    //     {key : 'drill6', value : true},
+    //   ]}
+    // ]
   }
 
   $scope.tableAction = function(target , action , mode){
