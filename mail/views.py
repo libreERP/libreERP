@@ -73,7 +73,7 @@ def sendMailView(request):
     """
     A view to to send a mail via SMTP
     """
-    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
+    EMAIL_ACCOUNT = str("%s@%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     toAddr = request.data['to']
@@ -124,7 +124,7 @@ def mailBoxView(request):
     View to get the mailbox selected, ideally 10 at a time.
     """
 
-    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
+    EMAIL_ACCOUNT = str("%s@%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     EMAIL_FOLDER = str(request.GET['folder'])
@@ -204,7 +204,7 @@ def emailView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
+    EMAIL_ACCOUNT = str("%s@%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
@@ -256,7 +256,7 @@ def foldersDetailsView(request):
     get the folder details
     """
 
-    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
+    EMAIL_ACCOUNT = str("%s@%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
@@ -278,7 +278,7 @@ def mailAttachmentView(request):
     EMAIL_FOLDER = str(request.GET['folder'])
     uid = int(request.GET['uid'])
 
-    EMAIL_ACCOUNT = str("%s%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
+    EMAIL_ACCOUNT = str("%s@%s" %(request.user.username , globalSettings.EMAIL_HOST_SUFFIX))
     EMAIL_PASSWORD = str(request.user.mailAccount.get().passKey)
 
     M = imaplib.IMAP4_SSL(globalSettings.EMAIL_HOST)
