@@ -220,5 +220,5 @@ REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
 }
 
-WAMP_SERVER = 'goryd.in'
+WAMP_SERVER = '52.35.168.83'
 # WAMP_SERVER = '127.0.0.1'

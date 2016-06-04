@@ -16,6 +16,7 @@ tablesToBackup = ['ERP.module',
     'gitweb.device',
     'gitweb.profile',
     'gitweb.commitNotification',
+    'allauth.socialaccount.socialapp.sites',
 ]
 
 print sys.argv

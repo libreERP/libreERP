@@ -14,3 +14,4 @@ monthdelta==0.9.1
 fabric==1.10.2
 gitPython==1.0.2
 pycrypto
+MySQL-python

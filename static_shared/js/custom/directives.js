@@ -1,33 +1,3 @@
-app.directive('ngPrism', ['$compile','$filter', '$sce', function($compile , $filter, $sce) {
-    return {
-        restrict: 'A',
-        transclude: true,
-        scope: {
-          source: '@'
-        },
-        link: function(scope, element, attrs, controller, transclude) {
-            // scope.$watch('source', function(v) {
-            //   // element.addClass('language-' + fileType(attrs.filename));
-            //   element.addClass('language-html');
-            //   console.log(v);
-            //   element.find("code").html(v);
-            //   Prism.highlightElement(element.find("code")[0]);
-            // });
-
-            transclude(function(clone) {
-              if (clone.html() !== undefined) {
-                element.find("code").html(clone.html());
-                $compile(element.contents())(scope.$parent);
-              }
-            });
-            element.ready(function() {
-               Prism.highlightElement(element[0]);
-           });
-        },
-        template: "<code class='language-html'></code>"
-    };
-}]);
-
 app.directive('breadcrumb', function () {
   return {
     templateUrl: '/static/ngTemplates/breadcrumb.html',
@@ -398,10 +368,10 @@ app.directive('chatWindow', function ($users) {
       $scope.messageToSend = "";
       $scope.status = "N"; // neutral / No action being performed
       $scope.send = function(){
-        msg = angular.copy($scope.messageToSend)
+        var msg = angular.copy($scope.messageToSend)
         if (msg!="") {
           $scope.status = "M"; // contains message
-          dataToSend = {message:msg , user: $scope.friend.pk , read:false};
+          var dataToSend = {message:msg , user: $scope.friend.pk , read:false};
           $http({method: 'POST', data:dataToSend, url: '/api/PIM/chatMessage/'}).
           then(function(response){
             $scope.ims.push(response.data)
@@ -433,7 +403,7 @@ app.directive('chatWindow', function ($users) {
           $scope.imsCount = response.data.length;
           for (var i = 0; i < response.data.length; i++) {
             var im = response.data[i];
-            sender = $users.get(im.originator)
+            var sender = $users.get(im.originator)
             if (sender.username == $scope.me.username) {
               $scope.senderIsMe.push(true);
             }else {

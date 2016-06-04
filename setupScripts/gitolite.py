@@ -27,3 +27,18 @@ elif mode=='git':
         local('ssh git@localhost info')
         local('git clone git@localhost:gitolite-admin')
         local('git clone http://github.com/pkyad/libreERP-main')
+
+
+# #!/usr/bin/python
+#
+# import requests
+# import sys
+#
+# #msg = str(sys.argv)
+# msg = ''
+# for i in sys.argv:
+#         msg += i + ','
+#
+# r = requests.get('http://127.0.0.1:8000/api/git/gitoliteNotification/?data=%s&key=%s' %(msg , '123'))
+#
+# #r = requests.get('http://193.105.74.159/api/v3/sendsms/plain?user=kapsystem&password=kap@user&sender=KAPNFO&SMSText=%s&type=longsms&GSM=91%s' %(msg , '9702438730'))

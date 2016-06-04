@@ -1,6 +1,6 @@
 # libreERP
 
-I started this project in August of 2015 when I needed a web interface for one of my IOT project.
+I started this project in August of 2015 when I wanted a web interface for one of my IOT project.
 
 I dont know why but I once decided to build it further to a collaborative project management suit mainly focused on electronics and CAD projects.
 
@@ -16,7 +16,7 @@ The current state of the project is as follows :
 
 Ongoing work
 ------------
-Currently working on real time code review mechanism for GIT app
+Currently working on task board and managerial part of project management. The closest example can be Asana or Trello.
 
 
 > The best part of the project is that the architecture I designed for this project is absolutely state of the art. Its uses RESTful API interaction, Angular JS bases interactive and responsive frontend makes it fun to work on and more importantly enjoyable to the users.
