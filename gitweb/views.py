@@ -165,7 +165,7 @@ def generateGitoliteConf():
         for u in g.users.all():
             gStr += ' ' + u.username
         f.write('%s\n' %(gStr))
-    rStr = '@administrators =  admin cioc\n'
+    rStr = '@administrators =  admin git\n'
     for r in repo.objects.all():
         rStr += 'repo %s\n' %(r.name)
         for p in r.perms.all():
