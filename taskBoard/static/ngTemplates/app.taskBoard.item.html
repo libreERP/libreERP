@@ -3,7 +3,7 @@
     <h4>{{data.title}}</h4>
     <small>Due date : {{data.dueDate | date:'dd-MMM'}}</small>
     <div class="pull-right">
-      Percentage completion : {{getPercentageComplete()}}
+      Percentage completion : {{data.completion}}
     </div>
     <div ng-if="data.project">
       <hr>

@@ -165,6 +165,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
   }
 
   $scope.fetchData = function(){
+    console.log("came");
     var fetch = {method : '' , url : ''};
     // getting the data from the server based on the state of the filter params
     if (typeof $scope.getStr == 'undefined' && $scope.searchField!='') {
@@ -191,7 +192,7 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
 
     for (var i = 0; i < $scope.filters.length; i++) {
       var f = $scope.filters[i];
-      paramToSend[f.key] = f.options[f.active].value ;
+      paramToSend[f.key] = f.options[f.active].value + ':'+ f.ascend ;
     };
 
     $http({method: fetch.method, url: fetch.url , params : paramToSend }).

@@ -4,6 +4,9 @@ from django.db import models
 from projects.models import MEDIA_TYPE_CHOICES, project
 from gitweb.models import commitNotification
 # Create your models here.
+from django.db.models.signals import post_save , pre_delete
+from django.dispatch import receiver
+import math
 from time import time
 
 def getTaskUploadsPath(instance , filename ):
@@ -28,6 +31,7 @@ class task(models.Model):
     to = models.ForeignKey(User , null = True , related_name='tasks')
     personal = models.BooleanField(default = False)
     project = models.ForeignKey(project , null = True)
+    completion = models.PositiveIntegerField(default=0)
 
 TASK_STATUS_CHOICES = (
     ('notStarted','notStarted'),
@@ -56,3 +60,22 @@ class timelineItem(models.Model):
     task = models.ForeignKey(task , null = False)
     text = models.TextField(max_length=2000 , null=True)
     commit = models.ForeignKey(commitNotification, related_name="tasks", null = True)
+
+@receiver(post_save, sender=subTask, dispatch_uid="server_post_save")
+def updateTask(sender, instance, **kwargs):
+    t = instance.task
+    percnt = 0
+    for s in t.subTasks.all():
+        if s.status == 'complete':
+            percnt += 100
+        elif s.status == 'inProgress':
+            percnt += 50
+        elif s.status == 'stuck':
+            percnt += 25
+    cnt = t.subTasks.count()
+    if cnt>0:
+        percnt = math.floor(percnt/cnt)
+    else:
+        percnt = 100
+    t.completion = percnt
+    t.save()
