@@ -344,7 +344,7 @@ class gitoliteNotificationApi(APIView):
                     t = datetime.datetime(*time.gmtime(c.committed_date)[:6])
                     t = t.replace(tzinfo=utc)
                     # print sha , t , c.summary
-                    if parts[3] != 'admin':
+                    if parts[3] != 'git':
                         cn , new = commitNotification.objects.get_or_create(sha = sha , repo = r , branch = br , user = User.objects.get(username = parts[3]) , message = c.summary , time = t )
                         if new:
                             notifyUpdates(cn , sha, 'git:commitNotification')
