@@ -271,7 +271,11 @@ app.controller('projectManagement.taskBoard.task.item' , function($scope){
 
 });
 
-app.controller('projectManagement.taskBoard.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+app.controller('projectManagement.taskBoard.default' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions , $rootScope){
+
+  $scope.forceRefetch = function() {
+    $rootScope.$broadcast('forceRefetch' , {});
+  };
 
   $scope.data = {tableData : []};
 
@@ -284,7 +288,9 @@ app.controller('projectManagement.taskBoard.default' , function($scope , $http ,
           position:'left',
           size : 'xl',
           backdrop : true,
-      })
+      }).result.then(function() {}, function() {
+          $rootScope.$broadcast('forceRefetch' , {});
+      });
   }
 
   var views = [{

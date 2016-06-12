@@ -1,9 +1,9 @@
 <div style="position:relative; min-height:90vh;top:0px;right:0px;padding:0px;" ng-controller="projectManagement.taskBoard.createTask">
-    <div class="col-md-4" style="padding:10px;height:100%;position:absolute;overflow:auto;">
-      <h3 style="word-wrap:break-word;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
-      <h3 style="word-wrap:break-word;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
+    <div class="col-md-4" style="padding:0px;height:100%;position:absolute;overflow:auto;">
+      <h3 style="word-wrap:break-word;margin-left:20px;" class="text-muted" ng-if="form.title.length==0">Untitled..</h3>
+      <h3 style="word-wrap:break-word;margin-left:20px;" ng-if="form.title.length!=0">{{form.title | humanize}}</h3>
       <div class="form-group">
-        <div class="row">
+        <div class="row" style="margin:0px;">
           <div class="col-md-9">
             Responsible : {{form.to.pk | getName}} <br>
             <span ng-if="form.followers.length >0">
@@ -27,7 +27,7 @@
         </div>
       </div>
       <hr>
-      <div class="row" ng-repeat="st in form.subTasks" style="margin-left:-10px;margin-right:-10px;">
+      <div class="row" ng-repeat="st in form.subTasks" style="margin-left:0px;margin-right:0px;">
         <!-- <div class="container-fluid subTask {{$index ==2 ? 'activeTask' :''}}" > -->
           <div class="container-fluid subTask" >
               <div  ng-if="!st.inEditor">

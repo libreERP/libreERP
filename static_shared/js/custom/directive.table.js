@@ -164,6 +164,10 @@ app.controller('genericTable' , function($scope , $http, $templateCache, $timeou
     }
   }
 
+  $scope.$on('forceRefetch' , function(evt , input) {
+    $scope.fetchData();
+  });
+
   $scope.fetchData = function(){
     console.log("came");
     var fetch = {method : '' , url : ''};
