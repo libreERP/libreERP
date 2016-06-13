@@ -321,7 +321,7 @@ class gitoliteNotificationApi(APIView):
     """
     renderer_classes = (JSONRenderer,)
     permission_classes = (permissions.AllowAny ,)
-    def get(self , request , format = None):
+    def post(self , request , format = None):
         if request.GET['key'] != globalSettings.GITOLITE_KEY:
             return Response(status=status.HTTP_403_FORBIDDEN)
         parts = request.GET['data'].split(',')

@@ -29,6 +29,7 @@ elif mode=='git':
         local('git clone http://github.com/pkyad/libreERP-main')
 
 
+# nano gitolite/src/triggers/notify.py
 # #!/usr/bin/python
 #
 # import requests
@@ -39,6 +40,13 @@ elif mode=='git':
 # for i in sys.argv:
 #         msg += i + ','
 #
-# r = requests.get('http://127.0.0.1:8000/api/git/gitoliteNotification/?data=%s&key=%s' %(msg , '123'))
+# r = requests.post('http://127.0.0.1:8000/api/git/gitoliteNotification/?data=%s&key=%s' %(msg , '123'))
 #
-# #r = requests.get('http://193.105.74.159/api/v3/sendsms/plain?user=kapsystem&password=kap@user&sender=KAPNFO&SMSText=%s&type=longsms&GSM=91%s' %(msg , '9702438730'))
+# Run the following command to make the script executable
+# sudo chmod u+x gitolite/src/triggers/notify.py
+#
+# add the following in the  $HOME/.gitolite.rc
+# -------------
+# POST_GIT => [
+#     'notify.py'
+# ],

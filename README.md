@@ -61,6 +61,20 @@ Now you can start the WAMP server with::
 
 You also need to set the WAMP_SERVER ip address in the ../libreERP/libreERP/settings.py
 
+### Git server
+---------------
+I am using gitolite for GIT repo hosting. On a system with root run the script and pass root as argumanet. Eg.
+
+    $ sudo python setupScripts/gitolite.py root
+
+This will create a git user on the machine. Now switch the user using  `su - git` and run the following command
+
+    $ python [path of the gitolite.py used earlier] git
+
+in both the above command the system will ask you some questions like password for new user , path of the ssh key etc etc. just keep pressing enter for those.
+
+Few steps are given in setupScripts/gitolite.py file. Please complete them too. Those are for linking the gitolite and the ERP server.
+
 ### Demo
 ------
 
