@@ -21,9 +21,9 @@ app.config(function($stateProvider){
 
 });
 
-app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions, $aside){
+app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http, $users , Flash , $permissions, $aside , $injector){
     $scope.reset = function() {
-      $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined}
+      $scope.form = {title : '' , description :'' , dueDate : new Date() , followers : [] , files : [] , subTasks : [] , personal : true , pk : undefined , mode : 'new' , project : undefined, to : undefined , disableProjectField : false}
       $scope.commentEditor = {text : ''};
       $scope.data = {pk : undefined , commitNotifications : [] , gitPage :0 , messages : [] , messagePage : 0 , addFile : false};
       $scope.explore = {mode :'git'};
@@ -32,6 +32,21 @@ app.controller('projectManagement.taskBoard.createTask' , function($scope ,$http
     }
 
     $scope.reset();
+    console.log($scope.$parent.$parent);
+    var project;
+    try{
+      project = $injector.get('project');
+    }catch(e){
+      project = null;
+    }
+
+    if (project != null && typeof project != 'undefined') {
+      $http.get('/api/projects/projectSearch/' + project + '/').
+      then(function(response){
+        $scope.form.project = response.data;
+        $scope.form.disableProjectField = true;
+      });
+    };
 
     $scope.projectSearch = function(query) {
       return $http.get('/api/projects/projectSearch/?title__contains=' + query).
@@ -288,6 +303,11 @@ app.controller('projectManagement.taskBoard.default' , function($scope , $http ,
           position:'left',
           size : 'xl',
           backdrop : true,
+          resolve : {
+            project : function() {
+              return null;
+            }
+          }
       }).result.then(function() {}, function() {
           $rootScope.$broadcast('forceRefetch' , {});
       });

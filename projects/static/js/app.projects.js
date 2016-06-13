@@ -33,25 +33,6 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
     $scope.addTab({title : 'Browse task : ' + t.title , cancel : true , app : 'taskBrowser' , data : {pk : t.pk , name : t.title} , active : true})
   }
 
-    $scope.getPercentageComplete = function(index) {
-      var percentage = 0;
-      var t = $scope.project.tasks[index];
-      for (var i = 0; i < t.subTasks.length; i++) {
-        if(t.subTasks[i].status == 'complete'){
-          percentage += 100;
-        }else if (t.subTasks[i].status == 'inProgress') {
-          percentage += 50;
-        }else if (t.subTasks[i].status == 'stuck') {
-          percentage += 25;
-        }
-      }
-      if (t.subTasks.length >0) {
-        return Math.floor(percentage/t.subTasks.length);
-      }else {
-        return 100;
-      }
-    }
-
     $scope.sendMessage = function() {
       if ($scope.commentEditor.text.length == 0) {
         return;
@@ -82,6 +63,13 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
 
     $scope.mode = 'new';
 
+    $scope.fetchTasks = function() {
+      $http({method : 'GET' , url : '/api/taskBoard/task/?project=' + $scope.tab.data.pk }).
+      then(function(response) {
+        $scope.project.tasks = response.data;
+      });
+    }
+
     $http({method : 'GET' , url : '/api/projects/project/' + $scope.tab.data.pk + '/'}).
     then(function(response) {
         $scope.project = response.data;
@@ -91,10 +79,7 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
             $scope.project.repos[i].rawCommitNotifications = []
             $scope.fetchNotifications(i);
         }
-        $http({method : 'GET' , url : '/api/taskBoard/task/?project=' + $scope.tab.data.pk }).
-        then(function(response) {
-          $scope.project.tasks = response.data;
-        })
+        $scope.fetchTasks();
         $http({method : 'GET' , url : '/api/projects/timelineItem/?category=message&project=' + $scope.tab.data.pk }).
         then(function(response) {
           $scope.project.messages = response.data;
@@ -109,7 +94,15 @@ app.controller('projectManagement.projects.project.explore' , function($scope , 
             position:'left',
             size : 'xl',
             backdrop : true,
-        })
+            resolve : {
+              project : function() {
+                return $scope.project.pk;
+              }
+            }
+        }).result.then(function() {}, function() {
+          console.log("create task1");
+          $scope.fetchTasks();
+        });
     }
 
     $scope.loadMore = function(index) {

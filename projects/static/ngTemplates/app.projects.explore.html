@@ -110,13 +110,13 @@
             </div>
             <div class="row hoverList" ng-repeat="t in project.tasks" style="padding-top:10px;padding-bottom:10px;" ng-click="openTask($index)">
                 <div class="col-md-1">
-                    <i class="fa fa-check-circle-o fa-2x pull-right" style="color:{{ getPercentageComplete($index)>70 ?'#569a23':'#d94f66'}};"></i>
+                    <i class="fa fa-check-circle-o fa-2x pull-right" style="color:{{ t.completion>70 ?'#569a23':'#d94f66'}};"></i>
                 </div>
                 <div class="col-md-5">
                     <span style="font-size:18px;">{{t.title}}</span>
                 </div>
                 <div class="col-md-2">
-                    {{getPercentageComplete($index)}}
+                    {{t.completion}}
                 </div>
                 <div class="col-md-2">
                     {{t.to | getName}}
