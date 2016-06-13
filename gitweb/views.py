@@ -199,7 +199,7 @@ def generateGitoliteConf():
     keyDir = os.path.join(gitoliteDir , 'keydir')
     shutil.rmtree(keyDir)
     os.mkdir(keyDir)
-    shutil.copyfile(os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'admin.pub'), os.path.join(keyDir , 'admin.pub'))
+    shutil.copyfile(os.path.join(os.path.dirname(globalSettings.BASE_DIR) , 'git.pub'), os.path.join(keyDir , 'git.pub'))
     for p in profile.objects.all():
         idx = 0
         for d in p.devices.all():
