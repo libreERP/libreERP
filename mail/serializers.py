@@ -26,11 +26,9 @@ class mailAttachmentSerializer(serializers.ModelSerializer):
 class proxyAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = proxyAccount
-        fields = ('pk' , 'user' , 'passKey', 'active', 'updated')
+        fields = ('pk' , 'user' , 'passKey', 'updated')
         read_only_fields = ('passKey','user',)
     def update(self , instance , validated_data):
-        print instance
         instance.passKey = randomPassword()
-        instance.active = validated_data['active']
         instance.save()
         return instance

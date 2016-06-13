@@ -16,4 +16,3 @@ class proxyAccount(models.Model):
     user = models.ForeignKey(User , null = False , related_name='mailAccount')
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateField(auto_now=True)
-    active = models.BooleanField(default = False)

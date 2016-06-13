@@ -3,7 +3,7 @@ app.controller('admin.manageUsers.mailAccount' , function($scope , $http){
   $scope.generateMailPasskey = function() {
     console.log($scope);
     console.log($scope.data);
-    $http({method : 'PATCH' , url : '/api/mail/account/' + $scope.data.mailAccount.pk + '/?user=' +  $scope.data.mailAccount.user , data : {active : $scope.data.mailAccount.active}}).
+    $http({method : 'PATCH' , url : '/api/mail/account/' + $scope.data.mailAccount.pk + '/?user=' +  $scope.data.mailAccount.user}).
     then(function(response) {
       $scope.data.mailAccount = response.data;
     });
