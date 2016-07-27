@@ -48,8 +48,8 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
     $scope.recommended = response.data.results;
   });
 
-  $scope.readRecommended = function(url){
-    $scope.getAndRead(getPK(url))
+  $scope.readRecommended = function(pk){
+    $scope.getAndRead(pk)
   }
 
   $scope.getAndRead = function(id){
@@ -230,7 +230,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
             source : $scope.editor.source,
             header : $scope.editor.header,
             title : $scope.editor.title,
-            users : [$scope.me.url],
+            users : [$scope.me.pk],
             sourceFormat : 'html',
             state : 'published',
             tags : tags,
@@ -272,7 +272,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
             source : $scope.editor.source,
             header : $scope.editor.header,
             title : $scope.editor.title,
-            users : [$scope.me.url],
+            users : [$scope.me.pk],
             sourceFormat : 'html',
             state : 'saved',
             tags : tags,

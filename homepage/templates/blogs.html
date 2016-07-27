@@ -1,0 +1,150 @@
+{% extends "blogsBase.html" %}
+{% load staticfiles %}
+
+{% block specific_head %}
+  <title>Blogs</title>
+{% endblock %}
+
+{% block specific_css %}
+<link href="{% static 'css/blogs.css' %}" rel="stylesheet">
+{% endblock %}
+{% block header %}
+  <div class="row container-fluid">
+    <div class="col-md-2 col-md-offset-2 text-center">
+      <img src="{% static 'images/libraryIcon.png' %}" width="50" /> <br>
+      <span style="font-size:18px;">Your research starts here!</span>
+    </div>
+    <div class="col-md-4 col-md-offset-2 text-right">
+      <a href="#">Pravin (89)</a> |
+      <a href="#">My Account</a> |
+      <a href="#">Help</a> |
+      <a href="#">Log out</a>
+    </div>
+  </div>
+
+{% endblock %}
+{% block content %}
+  <div class="row" style="background-color:#bad5ec;padding:10px;border-top:solid 2px #0ec193;border-bottom:solid 2px #0ec193;margin-top:30px;">
+    <div class="col-md-4 col-md-offset-2">
+      <div class="navLinks">
+        <a href="">Search</a>
+        <a href="">Browse</a>
+        <a href="">Donate</a>
+        <a href="">Saved Paper</a>
+      </div>
+    </div>
+    <div class="col-md-2 col-md-offset-2">
+      <input type="text" class="form-control" placeholder="Search" name="name" value="">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row">
+            <p style="font-size:30px;padding:20px;">
+              Search Example.com For Student Essays, Research Papers And Book Reports.
+            </p>
+            <p style="padding:20px;">
+              We have a virtual warehouse full of term papers. Find the perfect one by entering your search below.
+            </p>
+          </div>
+          <div class="row" style="background-color:#bad5ec;padding:20px;margin:5px;">
+            <input type="text" class="form-control" placeholder="Search over 10,000 articles">
+          </div>
+
+        </div>
+        <div class="col-md-4">
+          <img src="{% static 'images/advertisementBanner.jpg' %}" style="width:100%;margin-top:30px;" /> <br>
+        </div>
+      </div>
+      <div class="row" style="padding:20px;">
+        <p style="color:#b80e69;font-size:20px;">
+          Or browse the category..
+        </p>
+        <hr>
+        <div class="row">
+          <div class="col-md-4">
+              <div class="articleBrowser">
+                <ul style="padding-left:20px;">
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+
+                  <li class="categoryHead">Help
+                  </li>
+                  <li>Help
+                  </li>
+                </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+              <div class="articleBrowser">
+                <ul style="padding-left:20px;">
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+
+                  <li class="categoryHead">Help
+                  </li>
+                  <li>Help
+                  </li>
+                </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+              <div class="articleBrowser">
+                <ul style="padding-left:20px;">
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+                  <li class="categoryHead">Help
+                  </li>
+
+                  <li class="categoryHead">Help
+                  </li>
+                  <li>Help
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+{% block footer %}
+
+  <div class="row" style="padding:20px;margin-top:20px;">
+    <hr>
+    <div class="col-md-3 text-center">
+      <i class="fa fa-facebook fa-2x"></i>
+      <i class="fa fa-twitter fa-2x"></i>
+    </div>
+    <div class="col-md-6 text-center">
+      <a href="#">Privacy Policy</a> |
+      <a href="#">Terms of Service</a> |
+      <a href="#"> Copyright Information</a> |
+      <a href="#">Contact Us</a> |
+      <a href="#">Help</a> |
+      <a href="#">Advertise With Us</a>
+    </div>
+    <div class="col-md-3 text-center">
+      Copyright (C) 2016 libreERP
+    </div>
+  </div>
+
+{% endblock %}
+{% block specific_js %}
+
+
+{% endblock %}

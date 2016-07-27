@@ -12,9 +12,11 @@
     {% block specific_css %}{% endblock %}
   </head>
   <body id="page-top" class="index">
+    <div class="container-fluid">
       {% block header %}{% endblock %}
       {% block content %}{% endblock %}
       {% block footer %}{% endblock %}
+    </div>
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 

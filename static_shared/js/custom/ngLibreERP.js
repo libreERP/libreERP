@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce' , 'hljs', 'mwl.confirm', 'ngAudio']);
+var app = angular.module('app' , ['ui.router', 'ui.bootstrap', 'ngSanitize', 'ngAside' , 'ngDraggable' , 'flash' , 'chart.js' , 'ngTagsInput' , 'ui.tinymce' , 'hljs', 'mwl.confirm', 'ngAudio', 'uiSwitch']);
 
 app.config(function($stateProvider ,  $urlRouterProvider , $httpProvider , $provide , hljsServiceProvider){
   hljsServiceProvider.setOptions({

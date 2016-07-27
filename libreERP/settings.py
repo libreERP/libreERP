@@ -93,7 +93,7 @@ SOCIALACCOUNT_PROVIDERS = \
                 'gender',
                 'updated_time'],
             'EXCHANGE_TOKEN': True,
-            'LOCALE_FUNC': 'path.to.callable',
+            'LOCALE_FUNC': lambda request: 'en_US',
             'VERIFIED_EMAIL': False,
             'VERSION': 'v2.4'}
         }
@@ -190,7 +190,7 @@ DEFAULT_FROM_EMAIL = 'ciocpky@gmail.com'
 
 STATIC_URL = '/static/'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ALLOW_HEADERS = (
     'x-requested-with',

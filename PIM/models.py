@@ -125,7 +125,7 @@ class blogPost(models.Model):
         ('whitepaper' , 'whitepaper'),
         ('product' , 'product'),
     )
-
+    public = models.BooleanField(default = False)
     title = models.CharField(max_length = 500 , null=True)
     state = models.CharField(max_length = 20 , choices = STATE_CHOICES , default = 'saved')
     created = models.DateTimeField(auto_now_add=True)

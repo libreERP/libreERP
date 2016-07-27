@@ -1,0 +1,25 @@
+.navLinks > a{
+  margin:20px;
+  font-size: 19px;
+  text-decoration: none;
+}
+
+.navLinks > a:hover{
+  color: white;
+}
+
+.navLinks{
+  margin-top: 5px;
+}
+.articleBrowser{
+  border-radius:5px;
+  background: #ddeeff;
+  padding:5px;
+  border: 2px solid #65a5cf;
+}
+.padded{
+  padding:10px;
+}
+.categoryHead{
+  border-bottom:2px solid #b7cddb;
+}

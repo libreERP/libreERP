@@ -1,7 +1,21 @@
 from rest_framework import viewsets , permissions , serializers
+from django.shortcuts import render
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+
+def blogs(request):
+    print 'home'
+    return render(request , 'blogs.html', {})
+
+def categoryView(request , category):
+    print 'cat' , category
+    return render(request , 'blogs.html', {})
+
+def articleView(request , category , title):
+    print 'article' , title
+    return render(request , 'blogs.html', {})
+
 
 class settingsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, isOwner, )
