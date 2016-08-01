@@ -26,28 +26,21 @@
       </div>
       <div class="row" style="padding:20px;">
         <p style="color:#b80e69;font-size:20px;">
-          Or browse the category..
+          Or browse the latest submissions..
         </p>
         <hr>
         <div class="row">
           <div class="col-md-4">
               <div class="articleBrowser">
                 <ul style="padding-left:20px;">
-                  <li class="categoryHead">Help
+                  {% for a in recents %}
+                  <li class="categoryHead"><a href="/blogs/article/{{a.title}}">{{a.title}}</a>
                   </li>
-                  <li class="categoryHead">Help
-                  </li>
-                  <li class="categoryHead">Help
-                  </li>
-
-                  <li class="categoryHead">Help
-                  </li>
-                  <li>Help
-                  </li>
+                  {% endfor %}
                 </ul>
             </div>
           </div>
-          <div class="col-md-4">
+          <!-- <div class="col-md-4">
               <div class="articleBrowser">
                 <ul style="padding-left:20px;">
                   <li class="categoryHead">Help
@@ -80,7 +73,7 @@
                   </li>
                 </ul>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

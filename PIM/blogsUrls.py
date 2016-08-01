@@ -7,8 +7,9 @@ urlpatterns = [
     url(r'^$', blogs , name="blogsHome"),
     url(r'^pages/(?P<page>\w+)/$', pagesView , name='pageView'),
     url(r'^browse$', browseView , name='browseView'),
-    url(r'^browse/(?P<category>[-%&+0-9a-zA-Z ]+)/$', categoryView , name='blogsCategoryView'),
-    url(r'^browse/(?P<category>[-%&+0-9a-zA-Z ]+)/(?P<title>[-%&+0-9a-zA-Z ]+)/$', articleView , name = 'blogsArticleView'),
+    url(r'^category/(?P<category>[-%&+0-9a-zA-Z ]+)/$', categoryView , name='blogsCategoryView'),
+    url(r'^article/(?P<title>[-%&+0-9a-zA-Z ]+)/$', articleView , name = 'blogsArticleView'),
     url(r'^accounts/$', accountsView , name = 'blogsAccountsView'),
     url(r'^search/$', searchView , name = 'blogsSearchView'),
+    url(r'^donate/$', donateView , name = 'blogsDonateView'),
 ]

@@ -32,3 +32,6 @@
 .categoryHead{
   border-bottom:2px solid #b7cddb;
 }
+.categoryHead > a{
+  text-decoration: none;
+}

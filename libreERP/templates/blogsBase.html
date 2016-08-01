@@ -7,7 +7,7 @@
     <!-- stock css libraries -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
-    <link href="{% static 'css/blogs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/public.blogs.css' %}" rel="stylesheet">
     <title>Blogs</title>
     {% block specific_head %}{% endblock %}
     {% block specific_css %}{% endblock %}
@@ -36,9 +36,9 @@
       <div class="row" style="background-color:#bad5ec;padding:10px;border-top:solid 2px #0ec193;border-bottom:solid 2px #0ec193;margin-top:30px;">
         <div class="col-md-4 col-md-offset-2">
           <div class="navLinks">
-            <a href="/blogs/search">Search</a>
+            <a href="/blogs">Search</a>
             <a href="/blogs/browse">Browse</a>
-            <a href="">Donate</a>
+            <a href="/blogs/donate">Donate</a>
             <a href="">Saved Paper</a>
           </div>
         </div>

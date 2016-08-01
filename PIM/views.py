@@ -4,11 +4,20 @@ from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
 from models import blogPost
+from PIM.models import blogCategory
 
 def blogs(request):
     print 'home'
+    recents = blogPost.objects.all().order_by('-created')[:5]
+    print recents
     totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution})
+    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution , 'recents' : recents})
+
+def donateView(request):
+    print 'donate'
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.donate.html', {'totalContribution' : totalContribution})
+
 
 def accountsView(request):
     print 'home'
@@ -18,12 +27,13 @@ def accountsView(request):
 def searchView(request):
     print 'home'
     totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.accounts.html', {'totalContribution' : totalContribution})
+    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution})
 
 def browseView(request):
     print 'home'
+    categories = blogCategory.objects.all()
     totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.browse.html', {'totalContribution' : totalContribution})
+    return render(request , 'blogs.browse.html', {'totalContribution' : totalContribution , 'categories' : categories})
 
 def pagesView(request , page):
     totalContribution = request.user.articles.all().count()
@@ -31,15 +41,17 @@ def pagesView(request , page):
 
 def categoryView(request , category):
     print 'cat' , category
-    blogs = blogPost.objects.all()
+    blogs = blogCategory.objects.get(title = category).articles.all()
     print blogs
     totalContribution = request.user.articles.all().count()
     print totalContribution
     return render(request , 'blogs.list.html', {'blogs' : blogs , 'totalContribution' : totalContribution})
 
-def articleView(request , category , title):
+def articleView(request , title):
     print 'article' , title
-    return render(request , 'blogs.list.html', {})
+    totalContribution = request.user.articles.all().count()
+    blog = blogPost.objects.get(title=title)
+    return render(request , 'blogs.article.view.html', {'blog' : blog, 'totalContribution' : totalContribution })
 
 
 class settingsViewSet(viewsets.ModelViewSet):

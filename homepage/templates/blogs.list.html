@@ -1,11 +1,13 @@
 {% extends "blogsBase.html" %}
 {% load staticfiles %}
 
+{% block specific_css %}{% endblock %}
+
 {% block content %}
   <div class="col-md-8 col-md-offset-2" style="margin-top:20px;">
     <ul>
       {% for b in blogs %}
-      <li><a href="#">{{ b.title }}</a>
+      <li><a href="/blogs/article/{{b.title}}">{{ b.title }}</a>
         <p>
           {{ b.header | safe }}
         </p>

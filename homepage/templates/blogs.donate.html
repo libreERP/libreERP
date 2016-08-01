@@ -1,0 +1,50 @@
+{% extends "blogsBase.html" %}
+{% load staticfiles %}
+
+{% block specific_css %}
+<link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
+<link rel="stylesheet" href="{% static 'css/angular-ui-switch.min.css' %}" charset="utf-8">
+<!-- custom css -->
+{% endblock %}
+
+{% block content %}
+  {% verbatim %}
+
+  <div class="col-md-8 col-md-offset-2" ng-app="app" ng-controller="public.blogs.donate" >
+    <h3>Donate and help others</h3>
+    <div class="row" style="margin-bottom:10px;">
+      <div class="col-md-1">
+        Title:
+      </div>
+      <div class="col-md-5">
+        <input type="text" ng-model="title" class="form-control">
+      </div>
+      <div class="col-md-1">
+        Category:
+      </div>
+      <div class="col-md-5">
+        <input type="text" ng-model="category" class="form-control">
+      </div>
+    </div>
+    <div class="row">
+      <textarea ui-tinymce="tinymceOptions" ng-model="editor"></textarea>
+    </div>
+  </div>
+
+
+  <br>
+  {% endverbatim %}
+{% endblock %}
+
+{% block specific_js %}
+<script src="{% static 'js/angular.min.js' %}"></script>
+<script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+<script src="{% static 'js/tinymce.min.js' %}"></script>
+
+<script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
+<script src="{% static 'js/ng-tinymce.js' %}"></script>
+<script src="{% static 'js/ng-tags-input.min.js' %}"></script>
+<script src="{% static 'js/angular-ui-switch.min.js' %}"></script>
+<script src="{% static 'js/public.blogs.donate.js' %}"></script>
+
+{% endblock %}

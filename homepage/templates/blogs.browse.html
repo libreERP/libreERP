@@ -27,26 +27,10 @@
         </p>
         <hr>
         <div class="row">
-          <div class="col-md-4 categoryList">
-            <a href="/blogs/browse/Computers-and-Technology">Computers and Technology</a> <br>
-            <a href="/blogs/browse/English-and-Litrature">English and Litrature</a> <br>
-            <a href="/blogs/browse/Film-and-Music">Film and Music</a><br>
-            <a href="/blogs/browse/Historic-Events">Historic Events</a><br>
-            <a href="/blogs/browse/Novels">Novels</a><br>
-          </div>
-          <div class="col-md-4 categoryList">
-            <a href="/blogs/browse/Other-Topics">Other Topics</a> <br>
-            <a href="/blogs/browse/People">People</a> <br>
-            <a href="/blogs/browse/Philosophy">Philosophy</a><br>
-            <a href="/blogs/browse/Religion">Religion</a><br>
-            <a href="/blogs/browse/Science">Science</a><br>
-          </div>
-          <div class="col-md-4 categoryList">
-            <a href="/blogs/browse/Social-Issues">Social Issues</a> <br>
-            <a href="/blogs/browse/Psycology">Psycology</a> <br>
-            <a href="/blogs/browse/Politics">Politics</a><br>
-            <a href="/blogs/browse/Environment">Environment</a><br>
-            <a href="/blogs/browse/Culture">Culture</a><br>
+          <div class="col-md-6 categoryList">
+            {% for c in categories %}
+            <a href="/blogs/category/{{c.title}}">{{c.title}}</a> <br>
+            {% endfor %}
           </div>
         </div>
       </div>
