@@ -3,18 +3,43 @@ from django.shortcuts import render
 from url_filter.integrations.drf import DjangoFilterBackend
 from .serializers import *
 from API.permissions import *
+from models import blogPost
 
 def blogs(request):
     print 'home'
-    return render(request , 'blogs.html', {})
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution})
+
+def accountsView(request):
+    print 'home'
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.accounts.html', {'totalContribution' : totalContribution})
+
+def searchView(request):
+    print 'home'
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.accounts.html', {'totalContribution' : totalContribution})
+
+def browseView(request):
+    print 'home'
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.browse.html', {'totalContribution' : totalContribution})
+
+def pagesView(request , page):
+    totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.'+page+'.html', {'totalContribution' : totalContribution})
 
 def categoryView(request , category):
     print 'cat' , category
-    return render(request , 'blogs.html', {})
+    blogs = blogPost.objects.all()
+    print blogs
+    totalContribution = request.user.articles.all().count()
+    print totalContribution
+    return render(request , 'blogs.list.html', {'blogs' : blogs , 'totalContribution' : totalContribution})
 
 def articleView(request , category , title):
     print 'article' , title
-    return render(request , 'blogs.html', {})
+    return render(request , 'blogs.list.html', {})
 
 
 class settingsViewSet(viewsets.ModelViewSet):

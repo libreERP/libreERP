@@ -7,6 +7,15 @@
 .navLinks > a:hover{
   color: white;
 }
+.categoryList > a{
+  font-size: 16px;
+}
+
+@media (max-width: 800px) {
+  .navLinks > a{
+    text-align: center;
+  }
+}
 
 .navLinks{
   margin-top: 5px;

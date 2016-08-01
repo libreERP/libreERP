@@ -1,4 +1,55 @@
+app.controller('admin.settings.configure.blog' , function($scope , $stateParams , $http , $aside , $state , Flash , $users , $filter){
+  console.log('hey');
+
+  $scope.editor = {title : '' , pk : null}
+
+  $http({method : 'GET' , url : '/api/PIM/blogTags/'}).
+  then(function(response) {
+    $scope.tags = response.data;
+  })
+
+  $scope.edit = function(index) {
+    $scope.tagBackup = angular.copy($scope.tags[index]);
+    $scope.tags.splice(index , 1)
+    $scope.editor.title = angular.copy($scope.tagBackup.title);
+    $scope.editor.pk = angular.copy($scope.tagBackup.pk);
+  }
+
+  $scope.saveCategory = function() {
+    var url = '/api/PIM/blogTags/'
+    var method = 'POST';
+    var dataToSend = {
+      title : $scope.editor.title
+    };
+    if($scope.editor.pk != null){
+      $scope.tagBackup.title = $scope.editor.title;
+      url += $scope.editor.pk + '/';
+      method = 'PATCH';
+    }
+
+    $http({method : method , url : url , data : dataToSend}).
+    then(function(response) {
+      $scope.tags.push(response.data);
+      $scope.editor = {title : '' , pk : null};
+    })
+
+  }
+
+  $scope.delete = function(index) {
+    $http({method : 'DELETE' , url : '/api/PIM/blogTags/' + $scope.tags[index].pk +'/'}).
+    then(function(response) {
+      $scope.tags.splice(index , 1);
+    })
+  }
+
+  $scope.cancelEditor = function() {
+    $scope.tags.push($scope.tagBackup);
+    $scope.editor = {title : '' , pk : null};
+  }
+
+});
 app.controller('admin.settings.configure' , function($scope , $stateParams , $http , $aside , $state , Flash , $users , $filter){
+
   // settings for dashboard controller
   if (typeof $stateParams.canConfigure == 'undefined') {
     return;

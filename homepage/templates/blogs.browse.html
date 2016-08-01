@@ -1,0 +1,56 @@
+{% extends "blogsBase.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row">
+            <p style="font-size:30px;padding:20px;">
+              Search or Browse for category.
+            </p>
+          </div>
+          <div class="row" style="background-color:#bad5ec;padding:20px;margin:5px;">
+            <input type="text" class="form-control" placeholder="Search over 10,000 articles">
+          </div>
+
+        </div>
+        <div class="col-md-4">
+          <img src="{% static 'images/advertisementBanner.jpg' %}" style="width:100%;margin-top:30px;" /> <br>
+        </div>
+      </div>
+      <div class="row" style="padding:20px;">
+        <p style="color:#b80e69;font-size:20px;">
+          Or browse the category..
+        </p>
+        <hr>
+        <div class="row">
+          <div class="col-md-4 categoryList">
+            <a href="/blogs/browse/Computers-and-Technology">Computers and Technology</a> <br>
+            <a href="/blogs/browse/English-and-Litrature">English and Litrature</a> <br>
+            <a href="/blogs/browse/Film-and-Music">Film and Music</a><br>
+            <a href="/blogs/browse/Historic-Events">Historic Events</a><br>
+            <a href="/blogs/browse/Novels">Novels</a><br>
+          </div>
+          <div class="col-md-4 categoryList">
+            <a href="/blogs/browse/Other-Topics">Other Topics</a> <br>
+            <a href="/blogs/browse/People">People</a> <br>
+            <a href="/blogs/browse/Philosophy">Philosophy</a><br>
+            <a href="/blogs/browse/Religion">Religion</a><br>
+            <a href="/blogs/browse/Science">Science</a><br>
+          </div>
+          <div class="col-md-4 categoryList">
+            <a href="/blogs/browse/Social-Issues">Social Issues</a> <br>
+            <a href="/blogs/browse/Psycology">Psycology</a> <br>
+            <a href="/blogs/browse/Politics">Politics</a><br>
+            <a href="/blogs/browse/Environment">Environment</a><br>
+            <a href="/blogs/browse/Culture">Culture</a><br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

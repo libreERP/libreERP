@@ -7,15 +7,65 @@
     <!-- stock css libraries -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
-
+    <link href="{% static 'css/blogs.css' %}" rel="stylesheet">
+    <title>Blogs</title>
     {% block specific_head %}{% endblock %}
     {% block specific_css %}{% endblock %}
   </head>
   <body id="page-top" class="index">
     <div class="container-fluid">
-      {% block header %}{% endblock %}
+      <div class="row container-fluid">
+        <div class="col-md-2 col-md-offset-2 text-center">
+          <a href="/blogs">
+            <img src="{% static 'images/libraryIcon.png' %}" width="50" /> <br>
+          </a>
+          <span style="font-size:18px;">Your research starts here!</span>
+        </div>
+        <div class="col-md-4 col-md-offset-2 text-right">
+          {% if user.is_authenticated %}
+            <a href="/blogs/accounts">{{user.first_name}} {{ user.last_name}}  ({{totalContribution}})</a> |
+          {% endif %}
+          {% if not user.is_authenticated %}
+            <a href="/login">Login/Register</a> |
+          {% endif %}
+          <a href="/blogs/accounts">My Account</a> |
+          <a href="/blogs/pages/help">Help</a> |
+          <a href="/logout">Log out</a>
+        </div>
+      </div>
+      <div class="row" style="background-color:#bad5ec;padding:10px;border-top:solid 2px #0ec193;border-bottom:solid 2px #0ec193;margin-top:30px;">
+        <div class="col-md-4 col-md-offset-2">
+          <div class="navLinks">
+            <a href="/blogs/search">Search</a>
+            <a href="/blogs/browse">Browse</a>
+            <a href="">Donate</a>
+            <a href="">Saved Paper</a>
+          </div>
+        </div>
+        <div class="col-md-2 col-md-offset-2">
+          <input type="text" class="form-control" placeholder="Search" name="name" value="">
+        </div>
+      </div>
       {% block content %}{% endblock %}
-      {% block footer %}{% endblock %}
+      <br>
+      <div class="row col-md-12" style="padding:20px;margin-top:20px;">
+        <hr>
+        <div class="col-md-3 text-center">
+          <i class="fa fa-facebook fa-2x"></i>
+          <i class="fa fa-twitter fa-2x"></i>
+        </div>
+        <div class="col-md-6 text-center">
+          <a href="/blogs/pages/privacy">Privacy Policy</a> |
+          <a href="/blogs/pages/terms">Terms of Service</a> |
+          <a href="/blogs/pages/copyright"> Copyright Information</a> |
+          <a href="/blogs/pages/contactUs">Contact Us</a> |
+          <a href="/blogs/pages/help">Help</a> |
+          <a href="/blogs/pages/advertise">Advertise With Us</a>
+        </div>
+        <div class="col-md-3 text-center">
+          Copyright (C) 2016 libreERP
+        </div>
+      </div>
     </div>
     <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

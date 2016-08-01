@@ -64,6 +64,9 @@ app.filter('timeAgo' , function(){
 app.filter('humanize' , function(){
   return function(input){
     // insert a space before all caps
+    if (typeof input == 'undefined') {
+      return ''
+    }
     if (input.length<=3) {
       return input;
     }
