@@ -12,6 +12,15 @@ app.controller('public.blogs.donate' , function($scope, $http){
 
   console.log('loaded');
 
+  $scope.categorySearch = function(query) {
+    return $http.get('/api/PIM/blogTags/?title__contains=' + query).
+    then(function(response){
+      return response.data;
+    })
+  };
+
+  $scope.mode = 'new'
+
   $scope.tinymceOptions = {
     selector: 'textarea',
     content_css : '/static/css/bootstrap.min.css',
@@ -26,18 +35,19 @@ app.controller('public.blogs.donate' , function($scope, $http){
         text: 'Publish',
         icon: false,
         onclick: function() {
-          tags = '';
-          for (var i = 0; i < $scope.editor.tags.length; i++) {
-            tags += $scope.editor.tags[i].title;
-            if (i != $scope.editor.tags.length-1) {
-              tags += ',';
-            }
-          }
-          dataToSend = {
-            source : $scope.editor.source,
-            header : $scope.editor.header,
-            title : $scope.editor.title,
-            users : [$scope.me.pk],
+          var tmp = document.createElement("DIV");
+          tmp.innerHTML = $scope.editorText;
+          var header = tmp.textContent || tmp.innerText || "";
+
+          var tags = []
+          tags.push($scope.category.pk)
+
+
+          var dataToSend = {
+            source : $scope.editorText,
+            header : header,
+            title : $scope.title,
+            users : [1],
             sourceFormat : 'html',
             state : 'published',
             tags : tags,
@@ -53,14 +63,11 @@ app.controller('public.blogs.donate' , function($scope, $http){
 
           $http({method : method , url : url, data : dataToSend}).
           then(function(response){
-            Flash.create('success' , response.status + ' : ' + response.statusText);
-            $scope.editor.source = '';
-            $scope.editor.header = '';
-            $scope.editor.title = '';
-            $scope.editor.tags = [];
-            $scope.editor.mode = 'hedaer';
+            $scope.editorText = '';
+            $scope.title = '';
+            $scope.category = null;
+            alert('Success')
           }, function(response){
-            Flash.create('danger' , response.status + ' : ' + response.statusText);
           });
         }
       });

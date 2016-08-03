@@ -23,11 +23,11 @@
         Category:
       </div>
       <div class="col-md-5">
-        <input type="text" ng-model="category" class="form-control">
+        <input type="text" ng-model="category" class="form-control" uib-typeahead="c as c.title for c in categorySearch($viewValue)" placeholder="Search and select a category">
       </div>
     </div>
     <div class="row">
-      <textarea ui-tinymce="tinymceOptions" ng-model="editor"></textarea>
+      <textarea ui-tinymce="tinymceOptions" ng-model="editorText"></textarea>
     </div>
   </div>
 

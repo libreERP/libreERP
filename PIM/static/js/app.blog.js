@@ -133,7 +133,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
         }
       }
     } else{
-      dataToSend = {
+      var dataToSend = {
         user : $scope.me.pk,
         parent : $scope.articleInView.pk,
       }
@@ -168,7 +168,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
 
   $scope.comment = {text :''};
   $scope.comment = function(){
-    dataToSend = {
+    var dataToSend = {
       user : $scope.me.pk,
       text : $scope.comment.text,
       parent : $scope.articleInView.pk,
@@ -219,14 +219,11 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
         text: 'Publish',
         icon: false,
         onclick: function() {
-          tags = '';
+          var tags = [];
           for (var i = 0; i < $scope.editor.tags.length; i++) {
-            tags += $scope.editor.tags[i].title;
-            if (i != $scope.editor.tags.length-1) {
-              tags += ',';
-            }
+            tags.push($scope.editor.tags[i].pk)
           }
-          dataToSend = {
+          var dataToSend = {
             source : $scope.editor.source,
             header : $scope.editor.header,
             title : $scope.editor.title,
@@ -235,7 +232,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
             state : 'published',
             tags : tags,
           };
-
+          
           if ($scope.mode == 'edit') {
             method = 'PATCH';
             url = $scope.editor.url;
@@ -268,7 +265,7 @@ app.controller("controller.home.blog", function($scope , $state , $users ,  $sta
               tags += ',';
             }
           }
-          dataToSend = {
+          var dataToSend = {
             source : $scope.editor.source,
             header : $scope.editor.header,
             title : $scope.editor.title,

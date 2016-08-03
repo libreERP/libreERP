@@ -129,11 +129,8 @@ class blogSerializer(serializers.ModelSerializer):
                 pass
         b.save()
         b.users.add (self.context['request'].user)
-        if 'tags' in self.context['request'].data and self.context['request'].data['tags'] != '':
-            tags = self.context['request'].data['tags']
-            for tag in tags.split(','):
-                b.tags.add( blogCategory.objects.get(title = tag.replace('-' , ' ')))
-
+        for tag in self.context['request'].data['tags']:
+            b.tags.add(blogCategory.objects.get(pk = tag))
         b.save()
         return b
 
