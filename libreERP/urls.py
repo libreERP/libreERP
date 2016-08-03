@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^token', tokenAuthentication , name ='tokenAuthentication'),
     url(r'^logout/', logoutView , name ='logout'),
     url(r'^corporate/', index , name ='index'),
-    url(r'^blogs/', include('PIM.blogsUrls')), # public blogs app
+    url(r'^blogs/', include('blogs.urls')), # public blogs app
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
     url(r'^accounts/', include('allauth.urls')),
 ]
