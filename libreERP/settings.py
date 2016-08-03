@@ -31,6 +31,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT = 'blogs' # the url to which the user will be redirected once successfully loggedin
+# Options are : ERP , ecommerce , blogs , corporate
+
+LOGOUT_REDIRECT = 'blogs' # similarly the url to which the user will be directed one logged out
+
 USE_CDN = False # when turned on the application will use the cndjs.com and other similar
 #content delivery network for css and jss libraries
 # Application definition

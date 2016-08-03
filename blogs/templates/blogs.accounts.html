@@ -2,21 +2,75 @@
 {% load staticfiles %}
 
 {% block content %}
-  {% verbatim %}
 
   <div class="col-md-8 col-md-offset-2" ng-app="app" ng-controller="public.blogs.accounts" >
     <h3>Accounts</h3>
 
-    {{testVar}}
-
-
-
+    <uib-tabset active="active">
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-file"></i> My Contributions
+        </uib-tab-heading>
+        <h3>Here is all your uploaded articles</h3>
+        {% for a in contributedArticles %}
+          <ul>
+            <li><a href="/blogs/article/{{a.title}}">{{a.title}}</a></li>
+          </ul>
+        {% endfor %}
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-user"></i> Profile
+        </uib-tab-heading>
+        {% verbatim %}
+          <div class="col-md-6">
+            <h3>Here you can change your profile details</h3>
+            <form action="index.html" method="post">
+              <div class="form-group">
+                <label>First Name</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Display Pic</label>
+                <input type="file">
+              </div>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+          </div>
+        {% endverbatim %}
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-key"></i> Password
+        </uib-tab-heading>
+        <div class="col-md-6">
+          <h3>Password change</h3>
+          <form action="index.html" method="post">
+            <div class="form-group">
+              <label>Old Password</label>
+              <input type="password" class="form-control" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" class="form-control" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-success" >Submit</button>
+          </form>
+        </div>
+      </uib-tab>
+    </uib-tabset>
 
   </div>
 
-
   <br>
-  {% endverbatim %}
 {% endblock %}
 
 {% block blogs_specific_js %}

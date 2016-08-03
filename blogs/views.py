@@ -22,22 +22,35 @@ def donateView(request):
         totalContribution = request.user.articles.all().count()
     return render(request , 'blogs.donate.html', {'totalContribution' : totalContribution})
 
+def savedView(request):
+    print 'saved'
+    if request.user.is_anonymous():
+        totalContribution = 0
+    else:
+        totalContribution = request.user.articles.all().count()
+    return render(request , 'blogs.saved.html', {'totalContribution' : totalContribution})
+
 
 def accountsView(request):
     print 'home'
     if request.user.is_anonymous():
         totalContribution = 0
+        contributedArticles = []
     else:
-        totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.accounts.html', {'totalContribution' : totalContribution})
+        contributedArticles = request.user.articles.all()
+        totalContribution = contributedArticles.count()
+    return render(request , 'blogs.accounts.html', {'totalContribution' : totalContribution , 'contributedArticles' : contributedArticles})
 
 def searchView(request):
-    print 'home'
+    key = request.POST['key']
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution})
+
+    blogs = blogPost.objects.filter(title__contains=key)
+
+    return render(request , 'blogs.search.html', {'totalContribution' : totalContribution , 'results' : blogs})
 
 def browseView(request):
     print 'home'

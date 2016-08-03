@@ -41,7 +41,7 @@ def loginView(request):
         if request.GET:
             return redirect(request.GET['next'])
         else:
-            return redirect(reverse('ERP'))
+            return redirect(reverse(globalSettings.LOGIN_REDIRECT))
     if request.method == 'POST':
     	usernameOrEmail = request.POST['username']
     	password = request.POST['password']
@@ -58,7 +58,7 @@ def loginView(request):
                 if request.GET:
                     return redirect(request.GET['next'])
                 else:
-                    return redirect(reverse('ERP'))
+                    return redirect(reverse(globalSettings.LOGIN_REDIRECT))
             else:
                 authStatus = {'status' : 'warning' , 'message' : 'Your account is not active.' }
         else:
@@ -85,13 +85,13 @@ def registerView(request):
             if request.GET:
                 return redirect(request.GET['next'])
             else:
-                return redirect(reverse('ecommerce'))
+                return redirect(globalSettings.LOGIN_REDIRECT)
     return render(request , 'register.html' , {'msg' : msg})
 
 
 def logoutView(request):
     logout(request)
-    return redirect('index')
+    return redirect(globalSettings.LOGOUT_REDIRECT)
 
 @login_required(login_url = '/login')
 def home(request):
