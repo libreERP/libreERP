@@ -7,7 +7,10 @@
 
       <ul>
         {% for a in results %}
-        <li><a href="/blogs/article/{{a.title}}">{{a.title}}</a></li>
+        <li><a href="/blogs/article/{{a.title}}">{{a.title}}</a>
+        <p>
+          {{a.header | safe}}
+        </p></li>
         {% endfor %}
       </ul>
 

@@ -45,7 +45,7 @@ app.controller('public.blogs.donate' , function($scope, $http){
 
           var dataToSend = {
             source : $scope.editorText,
-            header : header,
+            header : header.substring(0,400),
             title : $scope.title,
             users : [1],
             sourceFormat : 'html',

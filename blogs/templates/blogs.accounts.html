@@ -53,14 +53,19 @@
         </uib-tab-heading>
         <div class="col-md-6">
           <h3>Password change</h3>
-          <form action="index.html" method="post">
+          <form action="/accounts/password/change/" method="post">
+            {% csrf_token %}
             <div class="form-group">
               <label>Old Password</label>
-              <input type="password" class="form-control" autocomplete="off">
+              <input id="id_oldpassword" name="oldpassword" type="password" class="form-control" autocomplete="off">
             </div>
             <div class="form-group">
               <label>New Password</label>
-              <input type="password" class="form-control" autocomplete="off">
+              <input id="id_password1" name="password1" type="password" class="form-control" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input id="id_password2" name="password2" type="password" class="form-control" autocomplete="off">
             </div>
             <button type="submit" class="btn btn-success" >Submit</button>
           </form>
