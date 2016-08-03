@@ -1,0 +1,21 @@
+{% extends "blogsBase.html" %}
+{% load staticfiles %}
+
+{% block specific_css %}
+<link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
+<link rel="stylesheet" href="{% static 'css/angular-ui-switch.min.css' %}" charset="utf-8">
+<!-- custom css -->
+{% block blogs_specific_css %}{% endblock %}
+{% endblock %}
+
+{% block specific_js %}
+<script src="{% static 'js/angular.min.js' %}"></script>
+<script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+
+<script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
+<script src="{% static 'js/ng-tags-input.min.js' %}"></script>
+<script src="{% static 'js/angular-ui-switch.min.js' %}"></script>
+
+{% block blogs_specific_js %}{% endblock %}
+
+{% endblock %}
