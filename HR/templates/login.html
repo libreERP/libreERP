@@ -28,8 +28,8 @@
         {% if authStatus.status != 'default' %}
           <div class="alert alert-{{authStatus.status}}">{{authStatus.message}}</div>
         {% endif %}
-        <label for="username" class="sr-only">Username</label>
-        <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
+        <label for="username" class="sr-only">Username/Email</label>
+        <input name="username" type="text" class="form-control" placeholder="Username/Email" required autofocus>
         <label for="password" class="sr-only">Password</label>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
         <button style="margin-bottom:20px;" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
