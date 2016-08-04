@@ -17,9 +17,9 @@ from allauth.account.adapter import DefaultAccountAdapter
 
 class AccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
-        return '/'
+        return globalSettings.ON_REGISTRATION_SUCCESS_REDIRECT
 
-def getModules(user , includeAll):
+def getModules(user , includeAll=False):
     if user.is_superuser:
         if includeAll:
             return module.objects.all()

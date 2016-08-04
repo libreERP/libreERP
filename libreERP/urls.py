@@ -4,12 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from homepage.views import index
-from HR.views import loginView , logoutView , home , registerView , tokenAuthentication
+from HR.views import loginView , logoutView , home , registerView , tokenAuthentication , root
 from ecommerce.views import ecommerceHome , partnerRegistration
 
 urlpatterns = [
+    url(r'^$', root , name ='root'),
     url(r"^ecommerce/", ecommerceHome , name = 'ecommerce'), # public  ecommerce app
-    url(r'^$', home , name ='ERP'),
+    url(r'^ERP/', home , name ='ERP'),
     url(r'^api/', include('API.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', loginView , name ='login'),

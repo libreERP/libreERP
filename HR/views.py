@@ -92,6 +92,9 @@ def logoutView(request):
     logout(request)
     return redirect(globalSettings.LOGOUT_REDIRECT)
 
+def root(request):
+    return redirect(globalSettings.ROOT_APP)
+
 @login_required(login_url = '/login')
 def home(request):
     u = request.user
