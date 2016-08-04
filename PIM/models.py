@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from meta.models import ModelMeta
 # Create your models here.
 def getThemeImageUploadPath(instance , filename ):
     return 'PIM/images/theme/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
@@ -106,7 +107,7 @@ class calendar(models.Model):
 class blogCategory(models.Model):
     title = models.CharField(max_length = 50 , null = False , unique=True)
 
-class blogPost(models.Model):
+class blogPost(ModelMeta , models.Model):
     FORMAT_CHOICES = (
         ('md' , 'md'), # mark down
         ('html' , 'html'),
@@ -136,6 +137,10 @@ class blogPost(models.Model):
     source = models.TextField(max_length = 40000 , null = True)
     tags = models.ManyToManyField(blogCategory , related_name = 'articles' , blank = True)
     contentType = models.CharField(max_length = 15 , choices = CONTENT_TYPE_CHOICE , default = 'article')
+
+    _metadata = {
+        'title': 'title',
+    }
 
 class blogLike(models.Model):
     parent = models.ForeignKey(blogPost , related_name = 'likes')

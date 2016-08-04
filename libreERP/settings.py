@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'meta',
     'API', # uncategorised REST points
     'ERP', # permissions, overall management of the platform
     'HR', # people aspect of the platform

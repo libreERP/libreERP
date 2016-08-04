@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load meta %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" charset="utf-8">
     <link href="{% static 'css/public.blogs.css' %}" rel="stylesheet">
     <title>{{serviceName}}</title>
+    {% include "meta/meta.html" %}
     {% block specific_head %}{% endblock %}
     {% block specific_css %}{% endblock %}
   </head>
@@ -22,19 +23,24 @@
           <span style="font-size:18px;">{{tagLine}}</span>
         </div>
         <div class="col-md-4 col-md-offset-2 text-right">
-          {% if user.is_authenticated %}
-            <a href="/blogs/accounts">{{user.first_name}} {{ user.last_name}}  ({{totalContribution}})</a> |
-          {% endif %}
-          {% if not user.is_authenticated %}
-            <a href="/login">Login/Register</a> |
-          {% endif %}
-          {% if user.is_authenticated %}
-          <a href="/blogs/accounts">My Account</a> |
-          {% endif %}
-          <a href="/blogs/pages/help">Help</a>
-          {% if user.is_authenticated %}|
-          <a href="/logout">Log out</a>
-          {% endif %}
+          <div class="row">
+            {% if user.is_authenticated %}
+              <a href="/blogs/accounts">{{user.first_name}} {{ user.last_name}}  ({{totalContribution}})</a> |
+            {% endif %}
+            {% if not user.is_authenticated %}
+              <a href="/login">Login/Register</a> |
+            {% endif %}
+            {% if user.is_authenticated %}
+            <a href="/blogs/accounts">My Account</a> |
+            {% endif %}
+            <a href="/blogs/pages/help">Help</a>
+            {% if user.is_authenticated %}|
+            <a href="/logout">Log out</a>
+            {% endif %}
+          </div>
+          <div class="row">
+            <img src="{{DPSrc}}" class="img-responsive img-circle pull-right" width="50" style="margin-top:10px;" />
+          </div>
         </div>
       </div>
       <div class="row" style="background-color:#4682b5;padding:10px;border-top:solid 2px #194a73;border-bottom:solid 2px #194a73;margin-top:30px;">
