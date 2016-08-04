@@ -27,15 +27,15 @@
         <div class="col-md-8">
           <div class="row">
             <p style="font-size:30px;padding:20px;">
-              Search Example.com For Student Essays, Research Papers And Book Reports.
+              {{homeHead1}}
             </p>
             <p style="padding:20px;">
-              We have a virtual warehouse full of term papers. Find the perfect one by entering your search below.
+              {{homeHead2}}
             </p>
           </div>
           <div class="row" style="background-color:#bad5ec;padding:20px;margin:5px;">
             <form action="search/" method="post">{% csrf_token %}
-              <input name="key" type="text" class="form-control" placeholder="Search over 10,000 articles">
+              <input name="key" type="text" class="form-control" placeholder="Search over {{articlesCount}} articles">
               <input type="submit">
             </form>
           </div>

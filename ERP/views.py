@@ -19,9 +19,12 @@ class AccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
         return '/'
 
-def getModules(user):
+def getModules(user , includeAll):
     if user.is_superuser:
-        return module.objects.filter(~Q(name='public'))
+        if includeAll:
+            return module.objects.all()
+        else:
+            return module.objects.filter(~Q(name='public'))
     else:
         ma = []
         for m in application.objects.filter(owners__in = [user,]).values('module').distinct():
@@ -40,8 +43,12 @@ class moduleViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['name']
     def get_queryset(self):
+        includeAll = False
+        if 'mode' in self.request.GET:
+            if self.request.GET['mode'] == 'search':
+                includeAll = True
         u = self.request.user
-        return getModules(u)
+        return getModules(u , includeAll)
 
 def getApps(user):
     aa = []

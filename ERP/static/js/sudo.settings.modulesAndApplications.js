@@ -92,7 +92,7 @@ app.controller('sudo.admin.settings.modulesAndApplications.editor' , function($s
     })
   }
   $scope.moduleSearch = function(query) {
-    return $http.get('/api/ERP/module/?name__contains=' + query).
+    return $http.get('/api/ERP/module/?mode=search&name__contains=' + query).
     then(function(response){
       return response.data;
     })

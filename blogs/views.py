@@ -8,35 +8,52 @@ from PIM.models import *
 from HR.models import profile
 from django.contrib.auth.decorators import login_required
 from .models import *
+from ERP.models import appSettingsField , application
+
+def getSettings():
+    sts = appSettingsField.objects.filter(app = application.objects.get(name = 'app.blogs.public'))
+    toReturn = {}
+    for s in sts:
+        if s.fieldType == 'flag':
+            toReturn[s.name] = s.flag
+        else:
+            toReturn[s.name] = s.value
+    print toReturn
+    return toReturn
 
 def blogs(request):
-    print 'home'
+    sts = getSettings()
     recents = blogPost.objects.all().order_by('-created')[:5]
-    print recents
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.home.html', {'totalContribution' : totalContribution , 'recents' : recents})
+    ctx = {'totalContribution' : totalContribution , 'recents' : recents}
+    return render(request , 'blogs.home.html', dict(sts.items() + ctx.items()))
 
 @login_required(login_url = '/login')
 def donateView(request):
+    sts = getSettings()
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.donate.html', {'totalContribution' : totalContribution})
+    ctx = {'totalContribution' : totalContribution}
+    return render(request , 'blogs.donate.html', dict(sts.items() + ctx.items()))
 
 def savedView(request):
+    sts = getSettings()
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
     bookmarks = request.user.blogsBookmarked.all()
-    return render(request , 'blogs.saved.html', {'totalContribution' : totalContribution , 'bookmarks':bookmarks })
+    ctx = {'totalContribution' : totalContribution , 'bookmarks':bookmarks }
+    return render(request , 'blogs.saved.html', dict(sts.items() + ctx.items()))
 
 @login_required(login_url = '/login')
 def accountsView(request):
+    sts = getSettings()
     usrProfile = profile.objects.get(user = request.user)
     if request.method == 'POST':
         if request.GET['page'] == 'profile' :
@@ -96,9 +113,10 @@ def accountsView(request):
         'email' : usrProfile.email,
         'profileTab' : profileTab,
         'passwordTab' : passwordTab}
-    return render(request , 'blogs.accounts.html', ctx)
+    return render(request , 'blogs.accounts.html', dict(sts.items() + ctx.items()))
 
 def searchView(request):
+    sts = getSettings()
     key = request.POST['key']
     if request.user.is_anonymous():
         totalContribution = 0
@@ -106,37 +124,41 @@ def searchView(request):
         totalContribution = request.user.articles.all().count()
 
     blogs = blogPost.objects.filter(title__contains=key)
-
-    return render(request , 'blogs.search.html', {'totalContribution' : totalContribution , 'results' : blogs , 'key' : key})
+    ctx = {'totalContribution' : totalContribution , 'results' : blogs , 'key' : key}
+    return render(request , 'blogs.search.html',  dict(sts.items() + ctx.items()))
 
 def browseView(request):
-    print 'home'
+    sts = getSettings()
     categories = blogCategory.objects.all()
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.browse.html', {'totalContribution' : totalContribution , 'categories' : categories})
+    ctx = {'totalContribution' : totalContribution , 'categories' : categories}
+    return render(request , 'blogs.browse.html', dict(sts.items() + ctx.items()))
 
 def pagesView(request , page):
+    sts = getSettings()
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.'+page+'.html', {'totalContribution' : totalContribution})
+    ctx = {'totalContribution' : totalContribution}
+    return render(request , 'blogs.'+page+'.html', dict(sts.items() + ctx.items()))
 
 def categoryView(request , category):
-    print 'cat' , category
+    sts = getSettings()
     blogs = blogCategory.objects.get(title = category).articles.all()
-    print blogs
+
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    print totalContribution
-    return render(request , 'blogs.list.html', {'blogs' : blogs , 'totalContribution' : totalContribution})
+    ctx = {'blogs' : blogs , 'totalContribution' : totalContribution}
+    return render(request , 'blogs.list.html', dict(sts.items() + ctx.items()))
 
 def articleView(request , title):
+    sts = getSettings()
     blog = blogPost.objects.filter(title=title)[0]
     if request.user.is_anonymous():
         totalContribution = 0
@@ -187,4 +209,4 @@ def articleView(request , title):
         'liked' : liked,
         'likesCount':likesCount,
         'comments' : comments }
-    return render(request , 'blogs.article.view.html', ctx )
+    return render(request , 'blogs.article.view.html', dict(sts.items() + ctx.items()) )

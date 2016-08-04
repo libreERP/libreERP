@@ -14,7 +14,7 @@
           </div>
           <div class="row" style="background-color:#bad5ec;padding:20px;margin:5px;">
             <form action="/blogs/search/" method="post">{% csrf_token %}
-              <input name="key" type="text" class="form-control" placeholder="Search over 10,000 articles">
+              <input name="key" type="text" class="form-control" placeholder="Search over {{articlesCount}} articles">
               <input type="submit" style="display:None;">
             </form>
           </div>
