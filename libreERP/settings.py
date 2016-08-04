@@ -20,6 +20,10 @@ MESSAGE_TAGS = {
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+DEFAULT_APPS_ON_REGISTER = ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings']
+# the apps to which the user will be given access to upon registeration through public registeration site
+
+SITE_ADDRESS = 'http://127.0.0.1:8000' # the url prefix of the site
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/

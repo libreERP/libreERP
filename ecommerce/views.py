@@ -472,8 +472,6 @@ class serviceRegistrationApi(APIView):
             return Response(status = status.HTTP_404_NOT_FOUND)
         else:
             print service.objects.get(user = u).pk
-        print self
-        print request
         return Response(status = status.HTTP_200_OK)
 
 
@@ -538,7 +536,7 @@ class serviceRegistrationApi(APIView):
 
             ak = accountsKey(user=user, activation_key=activation_key,
                 key_expires=key_expires)
-            link = 'http://127.0.0.1:8000/token/?key=%s' % (activation_key)
+            link = globalSettings.SITE_ADDRESS + '/token/?key=%s' % (activation_key)
             ctx = {
                 'logoUrl' : 'http://design.ubuntu.com/wp-content/uploads/ubuntu-logo32.png',
                 'heading' : 'Welcome',

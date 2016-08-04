@@ -27,13 +27,12 @@ def tokenAuthentication(request):
     user.is_active = True
     user.save()
     user.accessibleApps.all().delete()
-    for a in ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings']:
+    for a in globalSettings.DEFAULT_APPS_ON_REGISTER:
         app = application.objects.get(name = a)
         p = permission.objects.create(app =  app, user = user , givenBy = User.objects.get(pk=1))
     login(request , user)
     authStatus = {'status' : 'success' , 'message' : 'Account actived, please login.' }
     return render(request , 'login.html' , {'authStatus' : authStatus ,'useCDN' : globalSettings.USE_CDN})
-
 
 def loginView(request):
     authStatus = {'status' : 'default' , 'message' : '' }
