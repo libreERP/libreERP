@@ -6,7 +6,7 @@
   <div class="col-md-8 col-md-offset-2" ng-app="app" ng-controller="public.blogs.accounts" >
     <h3>Accounts</h3>
 
-    <uib-tabset active="active">
+    <uib-tabset>
       <uib-tab>
         <uib-tab-heading>
           <i class="fa fa-file"></i> My Contributions
@@ -18,54 +18,55 @@
           </ul>
         {% endfor %}
       </uib-tab>
+      {% if profileTab %}
+      <uib-tab active="true">
+      {% else %}
       <uib-tab>
+      {% endif %}
         <uib-tab-heading>
           <i class="fa fa-user"></i> Profile
         </uib-tab-heading>
-        {% verbatim %}
           <div class="col-md-6">
             <h3>Here you can change your profile details</h3>
-            <form action="index.html" method="post">
-              <div class="form-group">
-                <label>First Name</label>
-                <input type="text" class="form-control">
-              </div>
-              <div class="form-group">
-                <label>Last Name</label>
-                <input type="text" class="form-control">
-              </div>
+            <form action="/blogs/accounts/?page=profile" enctype="multipart/form-data" method="post"> {% csrf_token %}
               <div class="form-group">
                 <label>Email</label>
-                <input type="email" class="form-control">
+                <input id="email" name="email" type="email" class="form-control" value="{{email}}">
               </div>
               <div class="form-group">
                 <label>Display Pic</label>
-                <input type="file">
+                <input id="dp" name="dp" type="file">
+              </div>
+              <div class="form-group">
+                <img class="img-responsive" width="200px" src="{{DPSrc}}" style="top:-5px; position:relative; width:200px">
               </div>
               <button type="submit" class="btn btn-primary">Save</button>
             </form>
           </div>
-        {% endverbatim %}
       </uib-tab>
+      {% if passwordTab %}
+      <uib-tab active="true">
+      {% else %}
       <uib-tab>
+      {% endif %}
         <uib-tab-heading>
           <i class="fa fa-key"></i> Password
         </uib-tab-heading>
         <div class="col-md-6">
           <h3>Password change</h3>
-          <form action="/accounts/password/change/" method="post">
+          <form action="/blogs/accounts/?page=password" method="post">
             {% csrf_token %}
             <div class="form-group">
               <label>Old Password</label>
-              <input id="id_oldpassword" name="oldpassword" type="password" class="form-control" autocomplete="off">
+              <input id="oldpassword" name="oldpassword" type="password" class="form-control" autocomplete="off">
             </div>
             <div class="form-group">
               <label>New Password</label>
-              <input id="id_password1" name="password1" type="password" class="form-control" autocomplete="off">
+              <input id="password1" name="password1" type="password" class="form-control" autocomplete="off">
             </div>
             <div class="form-group">
               <label>Confirm New Password</label>
-              <input id="id_password2" name="password2" type="password" class="form-control" autocomplete="off">
+              <input id="password2" name="password2" type="password" class="form-control" autocomplete="off">
             </div>
             <button type="submit" class="btn btn-success" >Submit</button>
           </form>

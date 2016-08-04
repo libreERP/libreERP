@@ -2,10 +2,11 @@
   margin:20px;
   font-size: 19px;
   text-decoration: none;
+  color: white;
 }
 
 .navLinks > a:hover{
-  color: white;
+  color: #062f46;
 }
 .categoryList > a{
   font-size: 16px;
