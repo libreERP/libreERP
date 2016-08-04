@@ -11,7 +11,11 @@
         <uib-tab-heading>
           <i class="fa fa-file"></i> My Contributions
         </uib-tab-heading>
-        <h3>Here is all your uploaded articles</h3>
+        {% if contributed %}
+        <h4>Here is all your uploaded articles</h4>
+        {% else %}
+        <h4>Looks like you have not contributed any article yet. Navigate to <a href="/blogs/donate">Donate</a> link above to start helping others.</h4>
+        {% endif %}
         {% for a in contributedArticles %}
           <ul>
             <li><a href="/blogs/article/{{a.title}}">{{a.title}}</a></li>
@@ -27,7 +31,7 @@
           <i class="fa fa-user"></i> Profile
         </uib-tab-heading>
           <div class="col-md-6">
-            <h3>Here you can change your profile details</h3>
+            <h4>Here you can change your profile details</h4>
             <form action="/blogs/accounts/?page=profile" enctype="multipart/form-data" method="post"> {% csrf_token %}
               <div class="form-group">
                 <label>Email</label>
@@ -44,6 +48,7 @@
             </form>
           </div>
       </uib-tab>
+      {% if showPasswordTab %}
       {% if passwordTab %}
       <uib-tab active="true">
       {% else %}
@@ -53,7 +58,7 @@
           <i class="fa fa-key"></i> Password
         </uib-tab-heading>
         <div class="col-md-6">
-          <h3>Password change</h3>
+          <h4>Password change</h4>
           <form action="/blogs/accounts/?page=password" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -72,6 +77,7 @@
           </form>
         </div>
       </uib-tab>
+      {% endif %}
     </uib-tabset>
 
   </div>

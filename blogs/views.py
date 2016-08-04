@@ -121,13 +121,22 @@ def accountsView(request):
     else:
         DPSrc = user.profile.displayPicture.url
 
+    if len(user.username)==0:
+        showPasswordTab = False
+    else:
+        showPasswordTab = True
+    contributed = False
+    if totalContribution>0:
+        contributed = True
     ctx = {'totalContribution' : totalContribution ,
         'contributedArticles' : contributedArticles,
         'DPSrc' : DPSrc,
         'email' : user.profile.email,
         'profileTab' : profileTab,
         'passwordTab' : passwordTab,
-        'DPSrc':DPSrc,}
+        'showPasswordTab' : showPasswordTab,
+        'DPSrc':DPSrc,
+        'contributed' : contributed}
     return render(request , 'blogs.accounts.html', dict(sts.items() + ctx.items()))
 
 def searchView(request):
