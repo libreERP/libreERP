@@ -24,7 +24,11 @@
   <div class="row">
     <div class="col-md-8 col-md-offset-2">
       <div class="row">
+        {% if showAdvertisement %}
         <div class="col-md-8">
+        {% else %}
+        <div class="col-md-12">
+        {% endif %}
           <div class="row">
             <p style="font-size:30px;padding:20px;">
               {{homeHead1}}
@@ -41,9 +45,13 @@
           </div>
 
         </div>
+        {% if showAdvertisement %}
         <div class="col-md-4">
-          <img src="{% static 'images/advertisementBanner.jpg' %}" style="width:100%;margin-top:30px;" /> <br>
+          <a href="{{advertisementURL}}">
+            <img src="{{baseUrl}}{{advertisementImageURL}}" style="width:100%;margin-top:30px;" /> <br>
+          </a>
         </div>
+        {% endif %}
       </div>
       <div class="row" style="padding:20px;">
         <p style="color:#b80e69;font-size:20px;">
