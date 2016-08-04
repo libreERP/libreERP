@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate
 from API.permissions import *
 from PIM.models import *
 from HR.models import profile
+from django.contrib.auth.decorators import login_required
+from .models import *
 
 def blogs(request):
     print 'home'
@@ -17,8 +19,8 @@ def blogs(request):
         totalContribution = request.user.articles.all().count()
     return render(request , 'blogs.home.html', {'totalContribution' : totalContribution , 'recents' : recents})
 
+@login_required(login_url = '/login')
 def donateView(request):
-    print 'donate'
     if request.user.is_anonymous():
         totalContribution = 0
     else:
@@ -26,14 +28,14 @@ def donateView(request):
     return render(request , 'blogs.donate.html', {'totalContribution' : totalContribution})
 
 def savedView(request):
-    print 'saved'
     if request.user.is_anonymous():
         totalContribution = 0
     else:
         totalContribution = request.user.articles.all().count()
-    return render(request , 'blogs.saved.html', {'totalContribution' : totalContribution})
+    bookmarks = request.user.blogsBookmarked.all()
+    return render(request , 'blogs.saved.html', {'totalContribution' : totalContribution , 'bookmarks':bookmarks })
 
-
+@login_required(login_url = '/login')
 def accountsView(request):
     usrProfile = profile.objects.get(user = request.user)
     if request.method == 'POST':
@@ -54,11 +56,17 @@ def accountsView(request):
                 messages.error(request, "New password and confirm password does not match!")
             if len(p) == 0:
                 messages.error(request, "Please provide the current password!")
+            if len(p1) == 0:
+                messages.error(request, "New password can not be left blank!")
             user = request.user
-            if p1 == p2 and authenticate(username = user.username , password = p) is not None:
+            if p1 == p2 and len(p1)!=0 and authenticate(username = user.username , password = p) is not None:
                 user.set_password(p1)
                 user.save()
                 messages.success(request, "Password updated successfully!")
+            else:
+                if len(p) != 0:
+                    messages.error(request, "Current password is not correct!")
+
     if 'page' in request.GET:
         tab = request.GET['page']
         if tab == 'profile':
@@ -77,12 +85,11 @@ def accountsView(request):
         contributedArticles = request.user.articles.all()
         totalContribution = contributedArticles.count()
 
-    if profile.objects.get(user = request.user).displayPicture=='':
+    if request.user.is_anonymous() or profile.objects.get(user = request.user).displayPicture=='':
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = usrProfile.displayPicture.url
-    # messages.error(request, "Huge success!")
-    # messages.info(request, "Huge success!")
+
     ctx = {'totalContribution' : totalContribution ,
         'contributedArticles' : contributedArticles,
         'DPSrc' : DPSrc,
@@ -100,7 +107,7 @@ def searchView(request):
 
     blogs = blogPost.objects.filter(title__contains=key)
 
-    return render(request , 'blogs.search.html', {'totalContribution' : totalContribution , 'results' : blogs})
+    return render(request , 'blogs.search.html', {'totalContribution' : totalContribution , 'results' : blogs , 'key' : key})
 
 def browseView(request):
     print 'home'
@@ -130,10 +137,54 @@ def categoryView(request , category):
     return render(request , 'blogs.list.html', {'blogs' : blogs , 'totalContribution' : totalContribution})
 
 def articleView(request , title):
-    print 'article' , title
+    blog = blogPost.objects.filter(title=title)[0]
     if request.user.is_anonymous():
         totalContribution = 0
     else:
+        if 'action' in request.GET:
+            act = request.GET['action']
+            if act == 'save':
+                bb , new = blogBookmark.objects.get_or_create(user = request.user , blog = blog)
+                bb.save()
+            elif act == 'removeSave':
+                bb = blogBookmark.objects.get(user = request.user , blog = blog)
+                bb.delete()
+            elif act == 'removeLike':
+                bl = blogLike.objects.get(user = request.user , parent = blog)
+                bl.delete()
+            elif act == 'like':
+                bl , new = blogLike.objects.get_or_create(user = request.user , parent = blog)
+                bl.save()
+            elif act == 'comment' and 'textarea' in request.POST:
+                txt = request.POST['textarea']
+                c = blogComment(user = request.user , parent = blog , text = txt)
+                c.save()
         totalContribution = request.user.articles.all().count()
-    blog = blogPost.objects.get(title=title)
-    return render(request , 'blogs.article.view.html', {'blog' : blog, 'totalContribution' : totalContribution })
+    if not request.user.is_anonymous() and blogBookmark.objects.filter(user = request.user , blog = blog).count() >0:
+        saved = True
+    else:
+        saved = False
+    likesCount = blogLike.objects.filter(parent = blog).count()
+    if not request.user.is_anonymous() and blogLike.objects.filter(user = request.user , parent = blog).count() >0:
+        liked = True
+    else:
+        liked = False
+    comments = []
+    for c in blogComment.objects.filter(parent = blog):
+        dp = c.user.profile.displayPicture
+        if dp == '':
+            dp = '/static/images/userIcon.png'
+        else:
+            dp = dp.url
+        comments.append({
+            'name' : c.user.get_full_name(),
+            'image' : dp,
+            'text' : c.text
+        })
+    ctx = {'blog' : blog,
+        'totalContribution' : totalContribution,
+        'saved': saved,
+        'liked' : liked,
+        'likesCount':likesCount,
+        'comments' : comments }
+    return render(request , 'blogs.article.view.html', ctx )

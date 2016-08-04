@@ -43,12 +43,14 @@
             <a href="/blogs">Search</a>
             <a href="/blogs/browse">Browse</a>
             <a href="/blogs/donate">Donate</a>
+            {% if not user.is_anonymous %}
             <a href="/blogs/saved">Saved Paper</a>
+            {% endif %}
           </div>
         </div>
         <div class="col-md-2 col-md-offset-2">
           <form action="/blogs/search/" method="post">{% csrf_token %}
-            <input name="key" type="text" class="form-control" placeholder="Search over 10,000 articles">
+            <input name="key" type="text" class="form-control" placeholder="Search over 10,000 articles" value="{{key}}">
             <input type="submit" style="display:None;">
           </form>
         </div>

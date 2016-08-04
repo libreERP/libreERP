@@ -3,11 +3,77 @@
 
 {% block content %}
   <div class="col-md-8 col-md-offset-2" style="margin-top:20px;">
-    <h2>{{blog.title}}</h2>
-    <hr>
-    <div class="container-fluid">
-      {{blog.source | safe}}
+    <div class="row">
+      <div class="col-md-9">
+        <h3>{{blog.title}}</h3>
+      </div>
+      <div class="col-md-3 text-right">
+        {% if not user.is_anonymous %}
+          {% if liked %}
+            <a href="?action=removeLike" style="text-decoration:None;"> {{likesCount}}
+            <span class="fa-stack fa-lg">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
+            </span>
+            {% else %}
+            <a href="?action=like" style="text-decoration:None;"> {{likesCount}}
+              <i class="fa fa-thumbs-up fa-2x"></i>
+          {% endif %}
+          </a>
+          {% if saved %}
+            <a href="?action=removeSave">
+            <span class="fa-stack fa-lg">
+              <i class="fa fa-square fa-stack-2x"></i>
+              <i class="fa fa-floppy-o fa-stack-1x fa-inverse"></i>
+            </span>
+            {% else %}
+            <a href="?action=save">
+              <i class="fa fa-floppy-o fa-2x"></i>
+          {% endif %}
+          </a>
+        {% else %}
+          <a href="?action=removeLike" style="text-decoration:None;"> {{likesCount}} Reader/s liked this</a>
+        {% endif %}
+      </div>
     </div>
+    <hr>
+    <div class="row">
+      <div class="container-fluid">
+        {{blog.source | safe}}
+      </div>
+    </div>
+    <hr>
+    <h3>Comments.... </h3>
+    {% if not user.is_anonymous %}
+      <div class="row">
+        <form action="?action=comment" method="post">{% csrf_token %}
+          <div class="col-md-10 col-xs-10">
+            <textarea name="textarea" id="textarea" class="form-control" rows="4" cols="40"></textarea>
+          </div>
+          <button class="col-md-2 col-xs-2 btn btn-default" type="submit" name="button">Submit</button>
+        </form>
+      </div>
+    {% endif %}
+    {% for c in comments %}
+      <hr>
+      <div class="row">
+        <div class="container-fluid">
+          <div class="col-md-2 col-xs-2">
+            <div class="row">
+              <img src="{{c.image}}" class="img-responsive img-circle" width="100px"/>
+            </div>
+            <div class="row">
+              <strong>{{c.name}}</strong>
+            </div>
+          </div>
+          <div class="col-md-10 col-xs-10" style="border:solid 2px #eeeeee;border-radius:8px;">
+            <p>
+              {{c.text}}
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
   </div>
   <br>
 

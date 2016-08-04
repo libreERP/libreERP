@@ -8,10 +8,10 @@ app.config(function( $httpProvider ){
 
 });
 
-app.controller('public.blogs.donate' , function($scope, $http){
+app.controller('public.blogs.donate' , function($scope, $http, $timeout){
 
+  $scope.message = {show : false , 'text' : '' , class : ''}
   console.log('loaded');
-
   $scope.categorySearch = function(query) {
     return $http.get('/api/PIM/blogTags/?title__contains=' + query).
     then(function(response){
@@ -66,67 +66,23 @@ app.controller('public.blogs.donate' , function($scope, $http){
             $scope.editorText = '';
             $scope.title = '';
             $scope.category = null;
-            alert('Success')
+            $scope.message.show = true;
+            $scope.message.text = 'Article posted succesfully';
+            $scope.message.class = 'success';
+            $timeout( function() {
+              $scope.message.show = false;
+              $scope.message.text = ''
+            }, 5000);
           }, function(response){
+            $scope.message.show = true;
+            $scope.message.class = 'danger';
+            $timeout(3000 , function() {
+              $scope.message.show = false;
+              $scope.message.text = ''
+            },5000);
           });
-        }
-      });
-      editor.addButton( 'saveBtn', {
-        text: 'Save',
-        icon: false,
-        onclick: function() {
-          tags = '';
-          for (var i = 0; i < $scope.editor.tags.length; i++) {
-            tags += $scope.editor.tags[i].title;
-            if (i != $scope.editor.tags.length-1) {
-              tags += ',';
-            }
-          }
-          dataToSend = {
-            source : $scope.editor.source,
-            header : $scope.editor.header,
-            title : $scope.editor.title,
-            users : [$scope.me.pk],
-            sourceFormat : 'html',
-            state : 'saved',
-            tags : tags,
-          };
-
-          if ($scope.mode == 'edit') {
-            method = 'PATCH';
-            url = $scope.editor.url;
-          } else if ($scope.mode == 'new') {
-            method = 'POST';
-            url = '/api/PIM/blog/';
-          }
-
-          $http({method : method , url : url, data : dataToSend}).
-          then(function(response){
-            Flash.create('success' , response.status + ' : ' + response.statusText);
-            $scope.editor.source = '';
-            $scope.editor.header = '';
-            $scope.editor.title = '';
-            $scope.editor.tags = [];
-            $scope.editor.mode = 'hedaer';
-          }, function(response){
-            Flash.create('danger' , response.status + ' : ' + response.statusText);
-          });
-        }
-      });
-      editor.addButton( 'cancelBtn', {
-        text: 'Cancel',
-        icon: false,
-        onclick: function() {
-          if ($scope.mode == 'edit') {
-            $state.go('home.blog' , { action:'list'} )
-          } else {
-            $state.go('home.blog' , {id : '' , action:'list'} )
-          }
-
         }
       });
     },
   };
-
-
 });

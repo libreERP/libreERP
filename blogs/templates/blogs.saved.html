@@ -2,14 +2,15 @@
 {% load staticfiles %}
 
 {% block content %}
-  {% verbatim %}
-    <div class="col-md-8 col-md-offset-2">
-      <h3>Saved articles</h3>
-        
-
-
-
-    </div>
-
-  {% endverbatim %}
+  <div class="col-md-8 col-md-offset-2">
+    <h3>Saved articles</h3>
+    <hr>
+    {% for b in bookmarks %}
+    <li><a href="/blogs/article/{{b.blog.title}}">{{ b.blog.title }}</a>
+      <p>
+        {{ b.blog.header | safe }}
+      </p>
+    </li>
+    {% endfor %}
+  </div>
 {% endblock %}
