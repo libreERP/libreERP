@@ -147,5 +147,5 @@ def newSocialAccountCallback(request, sociallogin,**kwargs):
 
 @receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
 def user_signed_up_(request, user, **kwargs):
-    user.username = user.email
+    user.username = user.email+str(user.pk)
     user.save()
