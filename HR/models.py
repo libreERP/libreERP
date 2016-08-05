@@ -3,7 +3,9 @@ from django.contrib.auth.models import User, Group
 from time import time
 from django.utils import timezone
 import datetime
-
+from allauth.socialaccount.signals import social_account_added
+from allauth.account.signals import user_signed_up
+from django.dispatch import receiver
 
 def getSignaturesPath(instance , filename):
     return 'HR/images/Sign/%s_%s_%s' % (str(time()).replace('.', '_'), instance.user.username, filename)
@@ -135,3 +137,15 @@ class designation(models.Model):
     secondaryApprover = models.ForeignKey(User , related_name = "alsoApproving" , null=True)
 
 User.designation = property(lambda u : designation.objects.get_or_create(user = u)[0])
+
+@receiver(social_account_added, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
+def newSocialAccountCallback(request, sociallogin,**kwargs):
+    print sociallogin
+    print dir(sociallogin)
+    print request
+    print dir(request)
+
+@receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
+def user_signed_up_(request, user, **kwargs):
+    user.username = user.email
+    user.save()
