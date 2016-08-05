@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.bootstrap', 'ngSanitize', 'ngTagsInput' , 'ui.tinymce']);
+var app = angular.module('app' , ['ui.bootstrap', 'ngSanitize' , 'ui.tinymce']);
 
 app.config(function( $httpProvider ){
 

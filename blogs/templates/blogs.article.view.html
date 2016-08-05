@@ -32,14 +32,18 @@
           {% endif %}
           </a>
         {% else %}
-          <a href="?action=removeLike" style="text-decoration:None;"> {{likesCount}} Reader/s liked this</a>
+          <span style="text-decoration:None;"> {{likesCount}} Reader/s liked this</span>
         {% endif %}
       </div>
     </div>
     <hr>
     <div class="row">
       <div class="container-fluid">
-        {{blog.source | safe}}
+        {% if user.is_anonymous %}
+          {{blog.header | safe}} <a href="/{{login_url}}?next=/blogs/article/{{blog.title}}/">Login to continue reading it...</a>
+        {% else %}
+          {{blog.source | safe}}
+        {% endif %}
       </div>
     </div>
     <hr>

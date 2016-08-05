@@ -38,7 +38,13 @@
   <script type="text/javascript">
     USER = {{user.pk}};
   </script>
+
+  {% if USE_CDN %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.3.4/tinymce.min.js"></script>
+  {% else %}
   <script src="{% static 'js/tinymce.min.js' %}"></script>
+  {% endif %}
+
   <script src="{% static 'js/ng-tinymce.js' %}"></script>
   <script src="{% static 'js/public.blogs.donate.js' %}"></script>
 {% endblock %}

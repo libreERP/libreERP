@@ -1,4 +1,4 @@
-var app = angular.module('app' , ['ui.bootstrap', 'ngSanitize', 'ngTagsInput' ]);
+var app = angular.module('app' , ['ui.bootstrap', 'ngSanitize' ]);
 
 app.config(function( $httpProvider ){
 

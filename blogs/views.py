@@ -33,7 +33,7 @@ def blogs(request):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution , 'recents' : recents,'DPSrc':DPSrc,}
+    ctx = {'totalContribution' : totalContribution , 'recents' : recents,'DPSrc':DPSrc, 'USE_CDN' : globalSettings.USE_CDN }
     return render(request , 'blogs.home.html', dict(sts.items() + ctx.items()))
 
 @login_required(login_url = globalSettings.LOGIN_URL)
@@ -48,7 +48,7 @@ def donateView(request):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution,'DPSrc':DPSrc,}
+    ctx = {'totalContribution' : totalContribution,'DPSrc':DPSrc,'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.donate.html', dict(sts.items() + ctx.items()))
 
 def savedView(request):
@@ -63,7 +63,7 @@ def savedView(request):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution , 'bookmarks':bookmarks,'DPSrc':DPSrc, }
+    ctx = {'totalContribution' : totalContribution , 'bookmarks':bookmarks,'DPSrc':DPSrc, 'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.saved.html', dict(sts.items() + ctx.items()))
 
 @login_required(login_url = globalSettings.LOGIN_URL)
@@ -122,7 +122,7 @@ def accountsView(request):
     else:
         DPSrc = user.profile.displayPicture.url
 
-    if len(user.username)==0:
+    if user.username == user.email + str(user.pk):
         showPasswordTab = False
     else:
         showPasswordTab = True
@@ -137,7 +137,8 @@ def accountsView(request):
         'passwordTab' : passwordTab,
         'showPasswordTab' : showPasswordTab,
         'DPSrc':DPSrc,
-        'contributed' : contributed}
+        'contributed' : contributed,
+        'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.accounts.html', dict(sts.items() + ctx.items()))
 
 def searchView(request):
@@ -154,7 +155,7 @@ def searchView(request):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution , 'results' : blogs , 'key' : key,'DPSrc':DPSrc,}
+    ctx = {'totalContribution' : totalContribution , 'results' : blogs , 'key' : key,'DPSrc':DPSrc,'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.search.html',  dict(sts.items() + ctx.items()))
 
 def browseView(request):
@@ -169,7 +170,7 @@ def browseView(request):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution , 'categories' : categories,'DPSrc':DPSrc,}
+    ctx = {'totalContribution' : totalContribution , 'categories' : categories,'DPSrc':DPSrc,'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.browse.html', dict(sts.items() + ctx.items()))
 
 def pagesView(request , page):
@@ -183,7 +184,7 @@ def pagesView(request , page):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'totalContribution' : totalContribution,'DPSrc':DPSrc,}
+    ctx = {'totalContribution' : totalContribution,'DPSrc':DPSrc,'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.'+page+'.html', dict(sts.items() + ctx.items()))
 
 def categoryView(request , category):
@@ -198,9 +199,10 @@ def categoryView(request , category):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
-    ctx = {'blogs' : blogs , 'totalContribution' : totalContribution,'DPSrc':DPSrc,}
+    ctx = {'blogs' : blogs , 'totalContribution' : totalContribution,'DPSrc':DPSrc,'USE_CDN' : globalSettings.USE_CDN}
     return render(request , 'blogs.list.html', dict(sts.items() + ctx.items()))
 
+# @login_required(login_url = globalSettings.LOGIN_URL)
 def articleView(request , title):
     sts = getSettings()
     blog = blogPost.objects.filter(title=title)[0]
@@ -253,6 +255,10 @@ def articleView(request , title):
         DPSrc = '/static/images/userIcon.png'
     else:
         DPSrc = user.profile.displayPicture.url
+    if globalSettings.LOGIN_URL == 'login':
+        login_url = 'login'
+    else:
+        login_url = 'accounts/login/'
     ctx = {'blog' : blog,
         'totalContribution' : totalContribution,
         'saved': saved,
@@ -260,5 +266,7 @@ def articleView(request , title):
         'likesCount':likesCount,
         'comments' : comments,
         'DPSrc':DPSrc,
-        'meta': meta }
+        'meta': meta,
+        'USE_CDN' : globalSettings.USE_CDN,
+        'login_url' : login_url}
     return render(request , 'blogs.article.view.html', dict(sts.items() + ctx.items()) )

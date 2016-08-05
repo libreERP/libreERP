@@ -2,18 +2,23 @@
 {% load staticfiles %}
 
 {% block specific_css %}
-<link rel="stylesheet" href="{% static 'css/ng-tags-input.min.css' %}" charset="utf-8">
 <link rel="stylesheet" href="{% static 'css/angular-ui-switch.min.css' %}" charset="utf-8">
 <!-- custom css -->
 {% block blogs_specific_css %}{% endblock %}
 {% endblock %}
 
 {% block specific_js %}
+
+{% if not USE_CDN %}
 <script src="{% static 'js/angular.min.js' %}"></script>
 <script src="{% static 'js/angular-sanitize.min.js' %}"></script>
-
 <script src="{% static 'js/ui-bootstrap-tpls-0.14.3.min.js' %}"></script>
-<script src="{% static 'js/ng-tags-input.min.js' %}"></script>
+{% else %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.9/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.1.2/ui-bootstrap-tpls.min.js"></script>
+
+{% endif %}
 <script src="{% static 'js/angular-ui-switch.min.js' %}"></script>
 
 {% block blogs_specific_js %}{% endblock %}
