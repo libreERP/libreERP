@@ -18,6 +18,16 @@ from allauth.account.adapter import DefaultAccountAdapter
 class AccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
         return globalSettings.ON_REGISTRATION_SUCCESS_REDIRECT
+    def is_open_for_signup(self, request):
+        """
+        Checks whether or not the site is open for signups.
+
+        Next to simply returning True/False you can also intervene the
+        regular flow by raising an ImmediateHttpResponse
+
+        (Comment reproduced from the overridden method.)
+        """
+        return False
 
 def getModules(user , includeAll=False):
     if user.is_superuser:

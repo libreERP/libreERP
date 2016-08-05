@@ -14,3 +14,4 @@ monthdelta==0.9.1
 fabric==1.10.2
 gitPython==2.0.6
 pycrypto
+django-bootstrap-form==3.2.1

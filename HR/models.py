@@ -104,7 +104,6 @@ class rank(models.Model):
     user = models.ForeignKey(User , related_name = "ranksAuthored" , null=False)
     created = models.DateTimeField(auto_now_add = True)
 
-
 class designation(models.Model):
     DOMAIN_CHOICES = (
         ('Not selected..' , 'Not selected..'),
@@ -120,7 +119,7 @@ class designation(models.Model):
     UNIT_TYPE_CHOICE = (
         ('Not selected..' , 'Not selected..'),
         ('Research and Development' , 'Research and Development'),
-        ('Operational' , 'Operational'),
+        ('Operations' , 'Operations'),
         ('Management' , 'Management'),
     )
 
@@ -138,14 +137,7 @@ class designation(models.Model):
 
 User.designation = property(lambda u : designation.objects.get_or_create(user = u)[0])
 
-@receiver(social_account_added, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
-def newSocialAccountCallback(request, sociallogin,**kwargs):
-    print sociallogin
-    print dir(sociallogin)
-    print request
-    print dir(request)
-
-@receiver(user_signed_up, dispatch_uid="some.unique.string.id.for.allauth.user_signed_up")
+@receiver(user_signed_up, dispatch_uid="user_signed_up")
 def user_signed_up_(request, user, **kwargs):
     user.username = user.email+str(user.pk)
     user.save()

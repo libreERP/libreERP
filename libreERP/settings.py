@@ -71,6 +71,7 @@ INSTALLED_APPS = (
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'bootstrapform',
     'meta',
     'API', # uncategorised REST points
     'ERP', # permissions, overall management of the platform
@@ -207,12 +208,14 @@ USE_TZ = True
 
 EMAIL_HOST = '127.0.0.1'
 EMAIL_HOST_SUFFIX = 'goryd.in'
+
 EMAIL_HOST_USER = 'ciocpky@gmail.com'
 EMAIL_HOST_PASSWORD = 'pradeepyadav'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'ciocpky@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DEFAULT_FROM_EMAIL = 'ciocpky@gmail.com'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
