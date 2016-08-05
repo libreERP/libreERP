@@ -9,6 +9,7 @@ from HR.models import profile
 from django.contrib.auth.decorators import login_required
 from .models import *
 from ERP.models import appSettingsField , application
+from django.conf import settings as globalSettings
 
 def getSettings():
     sts = appSettingsField.objects.filter(app = application.objects.get(name = 'app.blogs.public'))
@@ -35,7 +36,7 @@ def blogs(request):
     ctx = {'totalContribution' : totalContribution , 'recents' : recents,'DPSrc':DPSrc,}
     return render(request , 'blogs.home.html', dict(sts.items() + ctx.items()))
 
-@login_required(login_url = '/login')
+@login_required(login_url = globalSettings.LOGIN_URL)
 def donateView(request):
     sts = getSettings()
     user = request.user
@@ -65,7 +66,7 @@ def savedView(request):
     ctx = {'totalContribution' : totalContribution , 'bookmarks':bookmarks,'DPSrc':DPSrc, }
     return render(request , 'blogs.saved.html', dict(sts.items() + ctx.items()))
 
-@login_required(login_url = '/login')
+@login_required(login_url = globalSettings.LOGIN_URL)
 def accountsView(request):
     sts = getSettings()
     user = request.user

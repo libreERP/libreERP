@@ -35,6 +35,8 @@ def tokenAuthentication(request):
     return render(request , 'login.html' , {'authStatus' : authStatus ,'useCDN' : globalSettings.USE_CDN})
 
 def loginView(request):
+    if globalSettings.LOGIN_URL != 'login':
+        return redirect(reverse(globalSettings.LOGIN_URL))
     authStatus = {'status' : 'default' , 'message' : '' }
     if request.user.is_authenticated():
         if request.GET:
@@ -66,6 +68,8 @@ def loginView(request):
     return render(request , 'login.html' , {'authStatus' : authStatus ,'useCDN' : globalSettings.USE_CDN})
 
 def registerView(request):
+    if globalSettings.REGISTER_URL != 'register':
+        return redirect(reverse(globalSettings.REGISTER_URL))
     msg = {'status' : 'default' , 'message' : '' }
     if request.method == 'POST':
     	name = request.POST['name']
@@ -95,7 +99,7 @@ def logoutView(request):
 def root(request):
     return redirect(globalSettings.ROOT_APP)
 
-@login_required(login_url = '/login')
+@login_required(login_url = globalSettings.LOGIN_URL)
 def home(request):
     u = request.user
     if u.is_superuser:
