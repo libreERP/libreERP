@@ -35,6 +35,9 @@
 {% endblock %}
 
 {% block blogs_specific_js %}
+  <script type="text/javascript">
+    USER = {{user.pk}};
+  </script>
   <script src="{% static 'js/tinymce.min.js' %}"></script>
   <script src="{% static 'js/ng-tinymce.js' %}"></script>
   <script src="{% static 'js/public.blogs.donate.js' %}"></script>

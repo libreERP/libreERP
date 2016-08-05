@@ -47,7 +47,7 @@ app.controller('public.blogs.donate' , function($scope, $http, $timeout){
             source : $scope.editorText,
             header : header.substring(0,400),
             title : $scope.title,
-            users : [1],
+            users : [USER],
             sourceFormat : 'html',
             state : 'published',
             tags : tags,
