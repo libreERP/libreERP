@@ -206,7 +206,6 @@ def categoryView(request , category):
 def articleView(request , title):
     sts = getSettings()
     blog = blogPost.objects.filter(title=title)[0]
-    meta = blog.as_meta(request)
     user = request.user
     if user.is_anonymous():
         totalContribution = 0
@@ -266,7 +265,6 @@ def articleView(request , title):
         'likesCount':likesCount,
         'comments' : comments,
         'DPSrc':DPSrc,
-        'meta': meta,
         'USE_CDN' : globalSettings.USE_CDN,
         'login_url' : login_url}
     return render(request , 'blogs.article.view.html', dict(sts.items() + ctx.items()) )
