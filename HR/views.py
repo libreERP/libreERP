@@ -89,7 +89,7 @@ def registerView(request):
                 return redirect(request.GET['next'])
             else:
                 return redirect(globalSettings.LOGIN_REDIRECT)
-    return render(request , 'register.html' , {'msg' : msg})
+    return render(request , 'register.simple.html' , {'msg' : msg})
 
 
 def logoutView(request):

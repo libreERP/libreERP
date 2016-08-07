@@ -1,0 +1,44 @@
+{% load staticfiles%}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/app.HR.css' %}" charset="utf-8">
+  </head>
+  <body class="register" >
+    <!-- <div class="col-md-8" style="background-image: url('/static/images/register.jpg');height:100%;position:absolute;left:0px;">
+    </div> -->
+    <div class="col-md-6 col-md-offset-3" style="height:100%;position:absolute;">
+      <form method="post" action="">{% csrf_token %}
+        <h2 class="form-signin-heading" style="color:#344141;;margin-top:200px;">Register</h2>
+        {% if msg.status != 'default' %}
+          <div class="alert alert-{{msg.status}}">{{msg.message}}</div>
+        {% endif %}
+        <div class="form-group">
+          <label for="name" >Name</label>
+          <input name="name" type="text" class="form-control" placeholder="Name" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="email" >Email</label>
+          <input name="email" type="text" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <label for="password" >Password</label>
+          <input name="password" type="password" class="form-control" placeholder="Password" required>
+        </div>
+        <p style="color:#344141;">
+          On clicking Sign Up, you agree to the terms and conditions
+        </p>
+        <button class="btn btn-primary" type="submit">Sign up</button>
+      </form>
+    </div>
+
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
