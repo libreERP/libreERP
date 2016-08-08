@@ -75,7 +75,6 @@ INSTALLED_APPS = (
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'bootstrapform',
-    'meta',
     'robots',
     'API', # uncategorised REST points
     'ERP', # permissions, overall management of the platform

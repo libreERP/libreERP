@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^blogs/', include('blogs.urls')), # public blogs app
     url(r'^api-auth/', include('rest_framework.urls', namespace ='rest_framework')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^robots\.txt$', include('robots.urls')),
+    url(r'^robots\.txt', include('robots.urls')),
 ]
 
 if settings.DEBUG:
