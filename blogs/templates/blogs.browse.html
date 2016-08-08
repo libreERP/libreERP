@@ -17,7 +17,7 @@
             </p>
           </div>
           <div class="row" style="background-color:#bad5ec;padding:20px;margin:5px;">
-            <form action="/blogs/search/" method="post">{% csrf_token %}
+            <form action="{% url 'blogsSearchView' %}" method="post">{% csrf_token %}
               <input name="key" type="text" class="form-control" placeholder="Search over {{articlesCount}} articles">
               <input type="submit" style="display:None;">
             </form>
@@ -39,7 +39,7 @@
         <div class="row">
           <div class="col-md-6 categoryList">
             {% for c in categories %}
-            <a href="/blogs/category/{{c.title}}">{{c.title}}</a> <br>
+            <a href="{% url 'blogsCategoryView'  c.title %}">{{c.title}}</a> <br>
             {% endfor %}
           </div>
         </div>

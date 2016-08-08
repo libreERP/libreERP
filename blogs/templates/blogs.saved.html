@@ -6,7 +6,7 @@
     <h3>Saved articles</h3>
     <hr>
     {% for b in bookmarks %}
-    <li><a href="/blogs/article/{{b.blog.title}}">{{ b.blog.title }}</a>
+    <li><a href="{% url 'blogsArticleView' b.title %}">{{ b.blog.title }}</a>
       <p>
         {{ b.blog.header | safe }}
       </p>

@@ -40,7 +40,7 @@
     <div class="row">
       <div class="container-fluid">
         {% if user.is_anonymous %}
-          {{blog.header | safe}} <a href="/{{login_url}}?next=/blogs/article/{{blog.title}}/">Login to continue reading it...</a>
+          {{blog.header | safe}} <a href="/{{login_url}}?next={% url 'blogsArticleView' blog.title %}">Login to continue reading it...</a>
         {% else %}
           {{blog.source | safe}}
         {% endif %}
