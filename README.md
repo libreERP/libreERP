@@ -77,7 +77,7 @@ Few steps are given in setupScripts/gitolite.py file. Please complete them too. 
 
 ### Demo
 ------
-
+ If you want my help to get the server installed please contact me. I will try my best to provide full support.
 
 You can checkout the source code. The source is licensed as per the terms and conditions of GPL 2. Build instructions are very easy to follow and within 10 minutes (on linux) you can have the environment up and ready. The DB is SQLite and already in the project folder but in the settings you can comment out the SQLite part and uncomment the DB connection settings for MySQL
 
@@ -122,3 +122,16 @@ Setup mySQL DB
 
     $ apt-get install libmysqlclient-dev
     $ pip install MySQL-python
+
+
+Donation
+------------------
+
+If you feel that this project can be useful for you and want to sponsor few developments , please send your proposed module's details to  pkyisky@gmail.com .
+
+
+I want to thank the following people for their kind support through sponsored development
+------------------------------------------------------------------------------------------
+
+1. Pravin Kumar
+2. Sagar Agarwal
