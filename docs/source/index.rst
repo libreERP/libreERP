@@ -12,7 +12,8 @@ Contents:
    :maxdepth: 2
 
 
-   modules/models
+   modules/PIM
+   modules/blogs
 
 
 Indices and tables

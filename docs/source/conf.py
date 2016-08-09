@@ -34,8 +34,11 @@ import sys
 import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.dirname(os.path.abspath('..')))
-from django.conf import settings
-settings.configure()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'libreERP.settings')
+
+import django
+
+django.setup()
 
 extensions = [
     'sphinx.ext.autodoc',
