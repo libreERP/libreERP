@@ -2,3 +2,4 @@
 !spec/*.html~
 *.pyc
 !spec/*.pyc
+docs/build
