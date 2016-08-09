@@ -13,6 +13,7 @@ The current state of the project is as follows :
 5. blogging is ready
 6. An API backed IMAP-SMTP web email client is looking great, I am facing issue in authenticating the Dovecot IMAP server with the Django's user data. The workaround I am using is that for each user the system will use proxy login to retrieve the mails and return the JSON response.
 7. a github like portal that is focused on providing secure system to host git repos is working fine. The users can also browse the files and commits diffs from the web interface. Real time comments on code diff is awesome. You can discuss without leaving the window or refreshing it. This part of the project is using gitolite as authorization layer and gitPython for for python-git data fetching.
+8. A public blogging site which can help people share articles without being in the ERP network. Login is required to read the full article.
 
 Ongoing work
 ------------
@@ -133,5 +134,5 @@ If you feel that this project can be useful for you and want to sponsor few deve
 I want to thank the following people for their kind support through sponsored development
 ------------------------------------------------------------------------------------------
 
-1. Pravin Kumar
-2. Sagar Agarwal
+1. Pravin Kumar (assignmenthouse.com)
+2. Sagar Agarwal (goryd.in)
