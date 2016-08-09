@@ -61,7 +61,11 @@ app.controller('public.blogs.donate' , function($scope, $http, $timeout){
             url = '/api/PIM/blog/';
           }
           if ($scope.editorText.length <700) {
-            $scope.message = {show : false , text : 'Article too short to be published , are you sure if you done!' , class : 'warning'};
+            console.log("came to min length");
+            $scope.message.show = true;
+            $scope.message.text = 'Article too short to be published , are you sure if you done!' ;
+            $scope.message.class = 'warning';
+            $scope.$apply();
             $timeout(function(){
               $scope.message.show = false;
             },5000);
