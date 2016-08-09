@@ -260,7 +260,7 @@ def articleView(request , title):
         login_url = 'accounts/login/'
     u = blog.users.all()[0]
     ctx = {'blog' : blog,
-        'user' : u,
+        'author' : u,
         'totalContribution' : totalContribution,
         'saved': saved,
         'liked' : liked,
