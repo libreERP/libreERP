@@ -86,8 +86,8 @@ app.controller("controller.home.calendar", function($scope , $http ,$aside, $sta
 
   $scope.date = new Date();
   $scope.templates = '/static/ngTemplates/app.home.calendar.items.html';
+});
 
-})
 app.controller('controller.home.calendar.aside', function($scope, $uibModalInstance , $http, $users , input , Flash ,$filter) {
   $scope.baseUrl = '/api/PIM/calendar/';
 
