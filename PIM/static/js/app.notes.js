@@ -14,9 +14,9 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
       if ($scope.notebooks[newValue].pages.length == 0) {
         dataToSend =  {
           source : 'blank',
-          parent : $scope.notebooks[newValue].url,
+          parent : $scope.notebooks[newValue].pk,
           title : 'untitled',
-          user : $scope.me.url,
+          user : $scope.me.pk,
         }
         $http({ method : 'POST' , url : '/api/PIM/page/' , data : dataToSend }).
         then(function(response){
@@ -37,7 +37,7 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
       $scope.bookInView = 0;
     } else{
       dataToSend = {
-        user : $scope.me.url,
+        user : $scope.me.pk,
         title : 'untitled',
       }
       $http({ method : 'POST' , url : '/api/PIM/notebook/' , data : dataToSend }).
@@ -95,7 +95,7 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
       fontFamily: 'arial black',
       left: e.layerX,
       top: e.layerY ,
-      fontSize:30,
+      fontSize:20,
     });
     // newText.set('selectable', true);
     // console.log(newText);
