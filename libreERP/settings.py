@@ -27,9 +27,9 @@ ON_REGISTRATION_SUCCESS_REDIRECT = '/blogs' # when signup using google the user 
 
 SITE_ADDRESS = 'http://127.0.0.1:8000' # the url prefix of the site
 
-ROOT_APP = 'blogs' # the defaulr app
+ROOT_APP = 'ERP' # the defaulr app
 
-LOGIN_URL = 'account_login' # this can be 'login' or 'account_login'
+LOGIN_URL = 'login' # this can be 'login' or 'account_login'
 REGISTER_URL = 'register' # this can be 'register' or 'account_signup'
 
 # Quick-start development settings - unsuitable for production
