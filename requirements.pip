@@ -1,5 +1,5 @@
-django==1.9
-djangorestframework==3.3.2
+django==1.10
+djangorestframework==3.4.3
 markdown==2.6
 django-filter==0.11
 django-url-filter==0.2
