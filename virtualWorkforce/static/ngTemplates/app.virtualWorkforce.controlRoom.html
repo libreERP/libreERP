@@ -1,122 +1,102 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
 
-  <uib-tabset>
-    <uib-tab >
-      <uib-tab-heading>
-        Sesson Management
-      </uib-tab-heading>
-
-      <div class="row" style="padding:15px;padding-top:20px;">
-        <div class="col-md-6" style="padding-right:20px;">
-          <div class="row">
-            <strong>Available Processes</strong> <small>Drag and drop a process to a reqource to run it.</small>
-          </div>
-          <div class="row" style="border:2px solid #eeeeee;">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>John</td>
-                  <td>Doe</td>
-                  <td>john@example.com</td>
-                </tr>
-                <tr>
-                  <td>Mary</td>
-                  <td>Moe</td>
-                  <td>mary@example.com</td>
-                </tr>
-                <tr>
-                  <td>July</td>
-                  <td>Dooley</td>
-                  <td>july@example.com</td>
-                </tr>
-              </tbody>
-
-            </table>
-          </div>
-
-        </div>
-        <div class="col-md-6">
-          <div class="row">
-            <strong>Available Resources</strong>
-          </div>
-          <div class="row" style="border:2px solid #eeeeee;">
-            <div class="col-md-4 text-center" ng-repeat="i in [1,2,4,5]" style="padding:25px;">
-              <i class="fa fa-4x fa-desktop"></i> <br>
-              BB1024 {{i}}
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
+  <div class="row" style="padding:15px;padding-top:20px;">
+    <div class="col-md-6" style="padding-right:20px;">
       <div class="row">
-        <div class="container-fluid">
-          <div class="col-md-1 text-center">
-            <i class="fa fa-2x fa-play"></i> <br> <br>
-            <i class="fa fa-2x fa-pause"></i> <br> <br>
-            <i class="fa fa-2x fa-stop-circle"></i>
-          </div>
-          <div class="col-md-11">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th>
-                  </th>
-                  <th>Firstname</th>
-                  <th>Lastname</th>
-                  <th>Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <input type="checkbox">
-                  </td>
-                  <td>John</td>
-                  <td>Doe</td>
-                  <td>john@example.com</td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="checkbox">
-                  </td>
-                  <td>Mary</td>
-                  <td>Moe</td>
-                  <td>mary@example.com</td>
-                </tr>
-                <tr>
-                  <td>
-                    <input type="checkbox">
-                  </td>
-                  <td>July</td>
-                  <td>Dooley</td>
-                  <td>july@example.com</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <strong>Available Processes</strong> <small>Drag and drop a process to a reqource to run it.</small>
+      </div>
+      <div class="row" style="border:2px solid #eeeeee;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Firstname</th>
+              <th>Lastname</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>John</td>
+              <td>Doe</td>
+              <td>john@example.com</td>
+            </tr>
+            <tr>
+              <td>Mary</td>
+              <td>Moe</td>
+              <td>mary@example.com</td>
+            </tr>
+            <tr>
+              <td>July</td>
+              <td>Dooley</td>
+              <td>july@example.com</td>
+            </tr>
+          </tbody>
+
+        </table>
       </div>
 
-    </uib-tab>
-    <uib-tab >
-      <uib-tab-heading>
-        Queue Management
-      </uib-tab-heading>
-
-    </uib-tab>
-    <uib-tab >
-      <uib-tab-heading>
-        Scheduler <i class="fa fa-clock-o"></i>
-      </uib-tab-heading>
-
-    </uib-tab>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <strong>Available Resources</strong>
+      </div>
+      <div class="row" style="border:2px solid #eeeeee;">
+        <div class="col-md-4 text-center" ng-repeat="i in [1,2,4,5]" style="padding:25px;">
+          <i class="fa fa-4x fa-desktop"></i> <br>
+          BB1024 {{i}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="container-fluid">
+      <div class="col-md-1 text-center">
+        <i class="fa fa-2x fa-play"></i> <br> <br>
+        <i class="fa fa-2x fa-pause"></i> <br> <br>
+        <i class="fa fa-2x fa-stop-circle"></i>
+      </div>
+      <div class="col-md-11">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>
+              </th>
+              <th>Firstname</th>
+              <th>Lastname</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="checkbox">
+              </td>
+              <td>John</td>
+              <td>Doe</td>
+              <td>john@example.com</td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox">
+              </td>
+              <td>Mary</td>
+              <td>Moe</td>
+              <td>mary@example.com</td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox">
+              </td>
+              <td>July</td>
+              <td>Dooley</td>
+              <td>july@example.com</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
 </div>
