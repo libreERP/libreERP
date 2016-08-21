@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_APPS_ON_REGISTER = ['app.ecommerce' , 'app.ecommerce.orders' , 'app.ecommerce.offerings','app.ecommerce.earnings']
 # the apps to which the user will be given access to upon registeration through public registeration site
 
-ON_REGISTRATION_SUCCESS_REDIRECT = '/blogs' # when signup using google the user will be redirected to this url
+ON_REGISTRATION_SUCCESS_REDIRECT = '/ERP' # when signup using google the user will be redirected to this url
 
 SITE_ADDRESS = 'http://127.0.0.1:8000' # the url prefix of the site
 
@@ -47,10 +47,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT = 'blogs' # the url to which the user will be redirected once successfully loggedin
+LOGIN_REDIRECT = 'ERP' # the url to which the user will be redirected once successfully loggedin
 # Options are : ERP , ecommerce , blogs , corporate
 
-LOGOUT_REDIRECT = 'blogs' # similarly the url to which the user will be directed one logged out
+LOGOUT_REDIRECT = 'ERP' # similarly the url to which the user will be directed one logged out
 
 USE_CDN = False # when turned on the application will use the cndjs.com and other similar
 #content delivery network for css and jss libraries
@@ -253,5 +253,5 @@ REST_FRAMEWORK = {
     # 'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
 }
 
-WAMP_SERVER = '52.35.168.83'
-# WAMP_SERVER = '127.0.0.1'
+# WAMP_SERVER = 'pradeepyadav.net'
+WAMP_SERVER = 'localhost'

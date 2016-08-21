@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.conf import settings as globalSettings
 from django.core.exceptions import ObjectDoesNotExist , SuspiciousOperation
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 # Related to the REST Framework
 from rest_framework import viewsets , permissions , serializers
 from rest_framework.exceptions import *
@@ -134,11 +135,13 @@ class userAdminViewSet(viewsets.ModelViewSet):
     serializer_class = userAdminSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated ,)
+    permission_classes = (permissions.AllowAny ,)
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']
     serializer_class = userSerializer
     def get_queryset(self):
+        print self.request.META
+        print "came here"
         if 'mode' in self.request.GET:
             if self.request.GET['mode']=="mySelf":
                 if self.request.user.is_authenticated:
