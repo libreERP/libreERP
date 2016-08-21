@@ -89,7 +89,8 @@ INSTALLED_APPS = (
     'gitweb', # github.com local server with file browsing and diff viewer
     'taskBoard',
     'projects',
-    'blogs',
+    'blogs', # publically accesible blogging site
+    'virtualWorkforce',
 )
 
 SITE_ID = 1

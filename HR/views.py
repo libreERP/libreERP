@@ -140,8 +140,6 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_fields = ['username']
     serializer_class = userSerializer
     def get_queryset(self):
-        print self.request.META
-        print "came here"
         if 'mode' in self.request.GET:
             if self.request.GET['mode']=="mySelf":
                 if self.request.user.is_authenticated:
