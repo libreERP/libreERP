@@ -1,7 +1,6 @@
 <breadcrumb></breadcrumb>
 <div class="container-fluid">
-
-  <div class="row" style="padding:15px;padding-top:20px;">
+  <div class="row" style="padding:15px;padding-top:0px;">
     <div class="col-md-6" style="padding-right:20px;">
       <div class="row">
         <strong>Available Processes</strong> <small>Drag and drop a process to a reqource to run it.</small>
@@ -41,8 +40,8 @@
       <div class="row">
         <strong>Available Resources</strong>
       </div>
-      <div class="row" style="border:2px solid #eeeeee;">
-        <div class="col-md-4 text-center" ng-repeat="i in [1,2,4,5]" style="padding:25px;">
+      <div class="row" style="border:2px solid #eeeeee;max-height:50vh;overflow:auto;">
+        <div class="col-md-3 text-center" ng-repeat="i in [1,2,4,5,6,7]" style="padding:20px;">
           <i class="fa fa-4x fa-desktop"></i> <br>
           BB1024 {{i}}
         </div>
@@ -63,9 +62,13 @@
             <tr>
               <th>
               </th>
-              <th>Firstname</th>
-              <th>Lastname</th>
-              <th>Email</th>
+              <th>ID
+              </th>
+              <th>
+                Process
+              </th>
+              <th>User</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -76,6 +79,9 @@
               <td>John</td>
               <td>Doe</td>
               <td>john@example.com</td>
+              <td>
+                1 Min Ago
+              </td>
             </tr>
             <tr>
               <td>
@@ -84,6 +90,9 @@
               <td>Mary</td>
               <td>Moe</td>
               <td>mary@example.com</td>
+              <td>
+                1 Min Ago
+              </td>
             </tr>
             <tr>
               <td>
@@ -92,6 +101,9 @@
               <td>July</td>
               <td>Dooley</td>
               <td>july@example.com</td>
+              <td>
+                1 Min Ago
+              </td>
             </tr>
           </tbody>
         </table>
