@@ -6,6 +6,9 @@ from .models import *
 from PIM.serializers import *
 from HR.serializers import userSearchSerializer
 from rest_framework.response import Response
+from fabric.api import *
+import os
+from django.conf import settings as globalSettings
 
 class moduleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,7 +35,52 @@ class applicationAdminSerializer(serializers.ModelSerializer):
     def create(self , validated_data):
         app =  application(**validated_data)
         app.module = module.objects.get(pk = self.context['request'].data['module']);
-        app.save()
+        # create the folder too as well as the folowing structure
+        # app
+        #     ---static
+        #         -----js
+        #         -----css
+        #         -----ngTemplates
+        parts = app.name.split('.')
+        appName = parts[1]
+        if len(app.name.split('.'))==2:
+            with lcd(globalSettings.BASE_DIR):
+                cmd = 'python manage.py startapp %s' %(appName)
+                local(cmd)
+
+        fileName = os.path.join(globalSettings.BASE_DIR , 'libreERP' , 'settings.py') # filepath for settings.py
+        f = open(fileName , 'r')
+        search = False
+        lines = f.readlines()
+        for l in lines:
+            if l.find('INSTALLED_APPS') != -1:
+                search = True
+            if search:
+                if l.find(')') != -1:
+                    index = lines.index(l)
+                    break
+        lines.insert(index , ("\t'%s',# %s\n" %(appName , app.description)))
+        f = open(fileName, "w")
+        f.writelines(lines)
+        f.close()
+        os.makedirs(os.path.join(globalSettings.BASE_DIR ,appName,'static'))
+        os.makedirs(os.path.join(globalSettings.BASE_DIR ,appName,'static', 'js'))
+        os.makedirs(os.path.join(globalSettings.BASE_DIR ,appName,'static', 'css'))
+        os.makedirs(os.path.join(globalSettings.BASE_DIR ,appName,'static', 'ngTemplates'))
+        if app.haveJs:
+            # create a JS file
+            jsPath = os.path.join(globalSettings.BASE_DIR ,appName,'static', 'js' , ('%s.js' %(app.name)))
+            f = open(jsPath, 'w')
+            f.write('// you need to first configure the states for this app')
+            f.close()
+        if app.haveCss:
+            #create a css file too
+            jsPath = os.path.join(globalSettings.BASE_DIR ,appName,'static', 'css' , ('%s.css' %(app.name)))
+            f = open(jsPath, 'w')
+            f.write('/*here you can place all your app specific css class*/')
+            f.close()
+        doNothing()
+        # app.save()
         return app
 
     def update (self, instance, validated_data):

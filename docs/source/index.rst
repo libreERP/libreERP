@@ -14,6 +14,7 @@ Contents:
 
    modules/PIM
    modules/blogs
+   newAppGuide
 
 
 Indices and tables
