@@ -12,7 +12,6 @@
       </button>
     </div>
   </div>
-
   <div class="modal-body" >
     <div class="container-fluid">
       <div class="form-group">
@@ -23,32 +22,7 @@
         <label>Description</label>
         <textarea ng-model="data.description" rows="3" cols="40" class="form-control"></textarea>
       </div>
-
-      <div class="form-group">
-        <label>Users</label>
-        <div class="input-group">
-          <input type="text" class="form-control" ng-model = "data.user" uib-typeahead="user as getName(user) for user in userSearch($viewValue)" placeholder="Search and select a user to add him/her in this group">
-          <span class="input-group-btn">
-            <button class="btn btn-success" type="button" ng-click="addUser()">Add <i class="fa fa-plus"></i></button>
-          </span>
-        </div><!-- /input-group -->
-      </div>
-      <!-- {{data}} -->
-      <div class="col-md-4" style="padding:10px;" ng-repeat="u in data.users">
-        <div class="card container-fluid" style="padding-left:0px;position:relative;">
-          <div style="position:absolute;right:0px;top:0px;padding:5px;cursor:pointer;">
-            <i class="fa fa-times" ng-click="removeUser($index)"></i>
-          </div>
-          <div class="col-md-4" style="padding-top:5px;">
-            <img ng-src="{{u | getDP}}" class="img-circle" alt="DP" height="50" width="50" />
-          </div>
-          <div class="col-md-8">
-            {{u | getName}} <br>
-            ID : <strong>{{u}}</strong>
-          </div>
-        </div>
-      </div>
+      <users-Field data="data.users" url="/api/HR/userSearch/" col="4" label="users"></users-Field>
     </div>
   </div>
-
 </div>

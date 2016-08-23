@@ -135,7 +135,7 @@ class userAdminViewSet(viewsets.ModelViewSet):
     serializer_class = userAdminSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.AllowAny ,)
+    permission_classes = (permissions.IsAuthenticated ,)
     filter_backends = [DjangoFilterBackend]
     filter_fields = ['username']
     serializer_class = userSerializer
