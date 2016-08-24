@@ -255,4 +255,4 @@ REST_FRAMEWORK = {
 }
 
 # WAMP_SERVER = 'pradeepyadav.net'
-WAMP_SERVER = 'localhost'
+WAMP_SERVER = '10.112.143.38'

@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^git/', include('gitweb.urls')),
     url(r'^projects/', include('projects.urls')),
     url(r'^taskBoard/', include('taskBoard.urls')),
+    url(r'^virtualWorkforce/', include('virtualWorkforce.urls')),
 ]
