@@ -5,11 +5,11 @@ app.config(function($stateProvider){
     url: "/GIT",
     views: {
        "": {
-          templateUrl: '/static/ngTemplates/app.GIT.html',
+          templateUrl: '/static/ngTemplates/genericAppBase.html',
        },
        "menu@projectManagement.GIT": {
-          templateUrl: '/static/ngTemplates/app.GIT.menu.html',
-          controller : 'projectManagement.GIT.menu',
+          templateUrl: '/static/ngTemplates/genericMenu.html',
+          controller : 'controller.generic.menu',
         },
         "@projectManagement.GIT": {
           templateUrl: '/static/ngTemplates/app.GIT.default.html',
@@ -323,22 +323,27 @@ app.controller('projectManagement.GIT.exploreNotification' , function($scope, $h
 });
 
 
-app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+app.controller('controller.generic.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
   // settings main page controller
+
+  var parts = $state.current.name.split('.');
+  $scope.moduleName = parts[0];
+  $scope.appName = parts[1];
 
   var getState = function(input){
     var parts = input.name.split('.');
     // console.log(parts);
-    return input.name.replace('app' , 'projectManagement')
+    return input.name.replace('app' , $scope.moduleName)
   }
 
   $scope.apps = [];
+  $scope.rawApps = [];
 
   $scope.buildMenu = function(apps){
     for (var i = 0; i < apps.length; i++) {
       var a = apps[i];
       var parts = a.name.split('.');
-      if (a.module != 10 || parts.length != 3 || parts[1] != 'GIT') {
+      if (parts.length != 3 || parts[1] != $scope.appName) {
         continue;
       }
       a.state = getState(a)
@@ -347,21 +352,39 @@ app.controller('projectManagement.GIT.menu' , function($scope , $http , $aside ,
     }
   }
 
-  var as = $permissions.app();
+  var as = $permissions.apps();
   if(typeof as.success == 'undefined'){
+    $scope.rawApps = as;
     $scope.buildMenu(as);
   } else {
     as.success(function(response){
       $scope.buildMenu(response);
+      $scope.rawApps = response;
     });
   };
+
+  $scope.getIcon = function() {
+    if ($scope.rawApps.length == 0) {
+      return ''
+    }else {
+      for (var i = 0; i < $scope.rawApps.length; i++) {
+        if($scope.rawApps[i].name == 'app.'+ $scope.appName ){
+          return $scope.rawApps[i].icon;
+        }
+      }
+    }
+  };
+
+  $scope.goToRoot = function() {
+    $state.go($scope.moduleName + '.' + $scope.appName)
+  }
 
   $scope.isActive = function(index){
     var app = $scope.apps[index]
     if (angular.isDefined($state.params.app)) {
       return $state.params.app == app.name.split('.')[2]
     } else {
-      return  $state.is(app.name.replace('app' , 'projectManagement'))
+      return  $state.is(app.name.replace('app' , $scope.moduleName))
     }
   }
 

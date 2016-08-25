@@ -116,7 +116,7 @@ app.controller('admin.settings.menu' , function($scope , $http , $aside , $state
     }
   }
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

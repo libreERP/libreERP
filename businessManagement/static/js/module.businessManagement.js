@@ -42,7 +42,7 @@ app.controller('businessManagement.menu' , function($scope , $users , Flash , $p
     }
   }
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

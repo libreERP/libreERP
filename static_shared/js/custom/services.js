@@ -58,7 +58,7 @@ app.factory('$permissions', function($http){
       }
       return modules;
     },
-    app : function(input){
+    apps : function(input){
 
       // similar to above
       if (typeof input != 'undefined') {

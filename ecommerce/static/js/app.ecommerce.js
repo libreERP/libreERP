@@ -79,7 +79,7 @@ app.controller('businessManagement.ecommerce.menu' , function($scope , $http , $
     }
   }
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

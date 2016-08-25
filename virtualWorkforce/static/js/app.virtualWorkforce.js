@@ -90,7 +90,7 @@ app.controller('businessManagement.virtualWorkforce.menu' , function($scope , $h
     }
   }
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

@@ -250,7 +250,7 @@ app.controller('projectManagement.projects.menu' , function($scope , $http , $as
     }
   }
 
-  var as = $permissions.app();
+  var as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

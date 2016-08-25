@@ -85,7 +85,7 @@ app.controller('controller.home.menu' , function($scope ,$state, $http, $permiss
 
 
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

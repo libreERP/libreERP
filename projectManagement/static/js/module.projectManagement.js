@@ -42,7 +42,7 @@ app.controller('projectManagement.menu' , function($scope , $users , Flash , $pe
     }
   }
 
-  var as = $permissions.app();
+  var as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {

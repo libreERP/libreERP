@@ -75,7 +75,7 @@ app.controller('admin.menu' , function($scope , $users , Flash , $permissions){
     }
   }
 
-  as = $permissions.app();
+  as = $permissions.apps();
   if(typeof as.success == 'undefined'){
     $scope.buildMenu(as);
   } else {
