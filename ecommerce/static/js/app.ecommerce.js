@@ -5,11 +5,11 @@ app.config(function($stateProvider){
     url: "/ecommerce",
     views: {
        "": {
-          templateUrl: '/static/ngTemplates/app.ecommerce.vendor.html',
+          templateUrl: '/static/ngTemplates/genericAppBase.html',
        },
        "menu@businessManagement.ecommerce": {
-          templateUrl: '/static/ngTemplates/app.ecommerce.vendor.menu.html',
-          controller : 'businessManagement.ecommerce.menu',
+          templateUrl: '/static/ngTemplates/genericMenu.html',
+          controller : 'controller.generic.menu',
         },
         "@businessManagement.ecommerce": {
           templateUrl: '/static/ngTemplates/app.ecommerce.vendor.default.html',

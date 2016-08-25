@@ -402,3 +402,70 @@ app.controller('main' , function($scope , $state , $users , $aside , $http , $ti
   }
 
 });
+
+app.controller('controller.generic.menu' , function($scope , $http , $aside , $state, Flash , $users , $filter , $permissions){
+  // settings main page controller
+
+  var parts = $state.current.name.split('.');
+  $scope.moduleName = parts[0];
+  $scope.appName = parts[1];
+
+  var getState = function(input){
+    var parts = input.name.split('.');
+    // console.log(parts);
+    return input.name.replace('app' , $scope.moduleName)
+  }
+
+  $scope.apps = [];
+  $scope.rawApps = [];
+
+  $scope.buildMenu = function(apps){
+    for (var i = 0; i < apps.length; i++) {
+      var a = apps[i];
+      var parts = a.name.split('.');
+      if (parts.length != 3 || parts[1] != $scope.appName) {
+        continue;
+      }
+      a.state = getState(a)
+      a.dispName = parts[parts.length -1];
+      $scope.apps.push(a);
+    }
+  }
+
+  var as = $permissions.apps();
+  if(typeof as.success == 'undefined'){
+    $scope.rawApps = as;
+    $scope.buildMenu(as);
+  } else {
+    as.success(function(response){
+      $scope.buildMenu(response);
+      $scope.rawApps = response;
+    });
+  };
+
+  $scope.getIcon = function() {
+    if ($scope.rawApps.length == 0) {
+      return ''
+    }else {
+      for (var i = 0; i < $scope.rawApps.length; i++) {
+        if($scope.rawApps[i].name == 'app.'+ $scope.appName ){
+          return $scope.rawApps[i].icon;
+        }
+      }
+    }
+  };
+
+  $scope.goToRoot = function() {
+    $state.go($scope.moduleName + '.' + $scope.appName)
+  }
+
+  $scope.isActive = function(index){
+    var app = $scope.apps[index]
+    if (angular.isDefined($state.params.app)) {
+      return $state.params.app == app.name.split('.')[2]
+    } else {
+      return  $state.is(app.name.replace('app' , $scope.moduleName))
+    }
+  }
+
+});

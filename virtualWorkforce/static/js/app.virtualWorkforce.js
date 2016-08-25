@@ -5,11 +5,11 @@ app.config(function($stateProvider){
     url: "/virtualWorkforce",
     views: {
        "": {
-          templateUrl: '/static/ngTemplates/app.virtualWorkforce.html',
+          templateUrl: '/static/ngTemplates/genericAppBase.html',
        },
        "menu@businessManagement.virtualWorkforce": {
-          templateUrl: '/static/ngTemplates/app.virtualWorkforce.menu.html',
-          controller : 'businessManagement.virtualWorkforce.menu',
+          templateUrl: '/static/ngTemplates/genericMenu.html',
+          controller : 'controller.generic.menu',
         },
         "@businessManagement.virtualWorkforce": {
           templateUrl: '/static/ngTemplates/app.virtualWorkforce.default.html',
