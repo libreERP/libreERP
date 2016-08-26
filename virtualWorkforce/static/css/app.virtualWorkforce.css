@@ -1,0 +1,11 @@
+.jobList .success{
+  background: #c8e6c9;
+}
+
+.jobList .error{
+  background: #ffcdd2;
+}
+
+.jobList .running , .jobList .paused, .jobList .pending{
+  background: white;
+}

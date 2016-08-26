@@ -31,6 +31,44 @@ app.controller('businessManagement.virtualWorkforce.controlRoom' , function($sco
     }
   }
 
+  $scope.pause = function() {
+    for (var i = 0; i < $scope.jobs.length; i++) {
+      if ($scope.jobs[i].selected) {
+        $scope.jobs[i].status = 'paused';
+      }
+    }
+  }
+
+  $scope.stop = function() {
+    for (var i = 0; i < $scope.jobs.length; i++) {
+      if ($scope.jobs[i].selected) {
+        $scope.jobs[i].status = 'stop';
+      }
+    }
+  }
+
+  $scope.play = function() {
+    for (var i = 0; i < $scope.jobs.length; i++) {
+      if ($scope.jobs[i].selected) {
+        $scope.jobs[i].status = 'success';
+      }
+    }
+  }
+
+  $scope.onDropComplete = function(data , event , robot) {
+    var toPush = {
+      process : data,
+      user : $scope.me.pk,
+      status : 'pending',
+      updated : Date(),
+      robot : robot,
+    }
+    $scope.jobs.push(toPush)
+  }
+
+  $scope.me = $users.get('mySelf');
+
+  $scope.jobs = [];
 
 
 

@@ -4,61 +4,52 @@
   <div class="row">
     <div class="container-fluid">
       <div class="col-md-1 text-center">
-        <i class="fa fa-2x fa-play"></i> <br> <br>
-        <i class="fa fa-2x fa-pause"></i> <br> <br>
-        <i class="fa fa-2x fa-stop-circle"></i>
+        <i class="fa fa-2x fa-play" ng-click="play()"></i> <br> <br>
+        <i class="fa fa-2x fa-pause" ng-click="pause()"></i> <br> <br>
+        <i class="fa fa-2x fa-stop-circle" ng-click="stop()"></i>
       </div>
       <div class="col-md-11">
-        <table class="table table-hover">
+        <table class="table table-bordered jobList" ng-if="jobs.length != 0">
           <thead>
             <tr>
               <th>
               </th>
-              <th>ID
+              <th>Robot
               </th>
               <th>
                 Process
               </th>
               <th>User</th>
               <th>Status</th>
+              <th>Updated</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr ng-repeat="j in jobs" style="{{j.selected? 'border-left:solid 3px #3f51b5 !important;':''}}" class="{{j.status}}">
               <td>
-                <input type="checkbox">
+                <input type="checkbox" ng-model="j.selected">
               </td>
-              <td>John</td>
-              <td>Doe</td>
-              <td>john@example.com</td>
               <td>
-                1 Min Ago
+                {{j.robot}}
               </td>
-            </tr>
-            <tr>
               <td>
-                <input type="checkbox">
+                {{j.process.name}}
               </td>
-              <td>Mary</td>
-              <td>Moe</td>
-              <td>mary@example.com</td>
               <td>
-                1 Min Ago
+                {{j.user | getName}}
               </td>
-            </tr>
-            <tr>
               <td>
-                <input type="checkbox">
+                {{j.status}}
               </td>
-              <td>July</td>
-              <td>Dooley</td>
-              <td>july@example.com</td>
               <td>
-                1 Min Ago
+                {{j.updated | timeAgo}}
               </td>
             </tr>
           </tbody>
         </table>
+        <div class="text-center text-muted" style="font-size:18px;" ng-if="jobs.length ==0">
+          No jobs to show, drag one from the process list to any resouce.
+        </div>
       </div>
     </div>
   </div>
@@ -82,8 +73,8 @@
         <strong>Available Resources</strong>
       </div>
       <div class="row" style="border:2px solid #eeeeee;max-height:50vh;overflow:auto;">
-        <div class="col-md-3 text-center" ng-repeat="i in [1,2,4,5,6,7]" style="padding:20px;">
-          <i class="fa fa-4x fa-desktop"></i> <br>
+        <div class="col-md-3 text-center" ng-repeat="r in [1,2,4,5,6,7]" style="padding:20px;" >
+          <i class="fa fa-4x fa-desktop" ng-drop="true" ng-drop-success="onDropComplete($data,$event , r)"></i> <br>
           BB1024 {{i}}
         </div>
       </div>

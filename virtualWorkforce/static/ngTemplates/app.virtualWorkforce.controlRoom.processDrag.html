@@ -1,1 +1,6 @@
-{{data}}
+<div ng-repeat="obj in data" >
+  <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true" class="col-md-12 card draggable" style="padding:15px; margin-bottom:10px;border:solid 2px #795548;">
+    <span>{{obj.name}}</span>
+    <span class="pull-right">Author : {{obj.creator | getName}}</span>
+  </div>
+</div>

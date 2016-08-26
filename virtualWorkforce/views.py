@@ -10,6 +10,8 @@ class processViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = processSerializer
     queryset = process.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filter_fields = ['name']
 
 class processFileVersionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

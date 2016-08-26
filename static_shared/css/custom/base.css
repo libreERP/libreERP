@@ -2,6 +2,10 @@
   border-top:6px solid var(--themeMain) !important;
 }*/
 
+.draggable{
+  cursor: move;
+}
+
 .hoverList:hover {
   background-color: #eeeeee;
   cursor: pointer;
