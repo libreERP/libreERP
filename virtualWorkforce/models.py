@@ -47,3 +47,10 @@ class logParameter(models.Model):
     typ = models.CharField(max_length = 15 , choices = DATA_TYPE_CHOICES , default = 'string')
     value = models.CharField(max_length = 100 , null = False)
     parent = models.ForeignKey(processRunLog , null = False , related_name = 'logParameters')
+
+class robot(models.Model):
+    created = models.DateTimeField(auto_now_add = True)
+    user = models.ForeignKey(User , null = False , related_name = 'robotsOwned')
+    name = models.CharField(max_length = 100 , null = False)
+    sha = models.CharField(max_length = 500 , null = False) # just another security check , will try to see if i can use the sha authentication
+    serverKey = models.CharField(max_length = 200 , null = False) # used to send it in the messages to the robot to authenticate (generated and issued by the robot)
