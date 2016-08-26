@@ -4,7 +4,7 @@ app.controller('businessManagement.virtualWorkforce.controlRoom' , function($sco
   $scope.data = {tableData : null};
 
 
-  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/genericTable/tableDefault.html'},
+  var views = [{name : 'table' , icon : 'fa-bars' , template : '/static/ngTemplates/app.virtualWorkforce.controlRoom.processDrag.html'},
   ];
 
   $scope.config = {

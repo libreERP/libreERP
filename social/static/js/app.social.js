@@ -540,7 +540,7 @@ app.controller('controller.social.aside.picture', function($scope, $uibModalInst
   var views = [{
     name: 'drag',
     icon: '',
-    template: '/static/ngTemplates/draggablePhoto.html'
+    template: '/static/ngTemplates/app.social.draggablePhoto.html'
   }];
   var getParams = [{
     key: 'albumEditor',
@@ -1014,7 +1014,7 @@ app.controller('controller.social.profile', function($scope, $state, $http, $tim
   var views = [{
     name: 'drag',
     icon: '',
-    template: '/static/ngTemplates/draggablePhoto.html'
+    template: '/static/ngTemplates/app.social.draggablePhoto.html'
   }]; // to be used in the album editor
   var getParams = [{
     key: 'albumEditor',

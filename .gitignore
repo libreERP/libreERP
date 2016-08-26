@@ -3,3 +3,4 @@
 *.pyc
 !spec/*.pyc
 docs/build
+media_root
